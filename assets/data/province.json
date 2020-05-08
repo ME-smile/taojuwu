@@ -1,0 +1,207 @@
+{
+  "RECORDS": [{
+      "province_id": 1,
+      "area_id": 2,
+      "province_name": "北京市",
+      "sort": 0
+    },
+    {
+      "province_id": 2,
+      "area_id": 2,
+      "province_name": "天津市",
+      "sort": 0
+    },
+    {
+      "province_id": 3,
+      "area_id": 2,
+      "province_name": "河北省",
+      "sort": 0
+    },
+    {
+      "province_id": 4,
+      "area_id": 2,
+      "province_name": "山西省",
+      "sort": 0
+    },
+    {
+      "province_id": 5,
+      "area_id": 2,
+      "province_name": "内蒙古自治区",
+      "sort": 0
+    },
+    {
+      "province_id": 6,
+      "area_id": 5,
+      "province_name": "辽宁省",
+      "sort": 0
+    },
+    {
+      "province_id": 7,
+      "area_id": 5,
+      "province_name": "吉林省",
+      "sort": 0
+    },
+    {
+      "province_id": 8,
+      "area_id": 5,
+      "province_name": "黑龙江省",
+      "sort": 0
+    },
+    {
+      "province_id": 9,
+      "area_id": 1,
+      "province_name": "上海市",
+      "sort": 0
+    },
+    {
+      "province_id": 10,
+      "area_id": 1,
+      "province_name": "江苏省",
+      "sort": 0
+    },
+    {
+      "province_id": 11,
+      "area_id": 1,
+      "province_name": "浙江省",
+      "sort": 0
+    },
+    {
+      "province_id": 12,
+      "area_id": 1,
+      "province_name": "安徽省",
+      "sort": 0
+    },
+    {
+      "province_id": 13,
+      "area_id": 3,
+      "province_name": "福建省",
+      "sort": 0
+    },
+    {
+      "province_id": 14,
+      "area_id": 1,
+      "province_name": "江西省",
+      "sort": 0
+    },
+    {
+      "province_id": 15,
+      "area_id": 2,
+      "province_name": "山东省",
+      "sort": 0
+    },
+    {
+      "province_id": 16,
+      "area_id": 4,
+      "province_name": "河南省",
+      "sort": 0
+    },
+    {
+      "province_id": 17,
+      "area_id": 4,
+      "province_name": "湖北省",
+      "sort": 0
+    },
+    {
+      "province_id": 18,
+      "area_id": 4,
+      "province_name": "湖南省",
+      "sort": 0
+    },
+    {
+      "province_id": 19,
+      "area_id": 3,
+      "province_name": "广东省",
+      "sort": 0
+    },
+    {
+      "province_id": 20,
+      "area_id": 3,
+      "province_name": "广西壮族自治区",
+      "sort": 0
+    },
+    {
+      "province_id": 21,
+      "area_id": 3,
+      "province_name": "海南省",
+      "sort": 0
+    },
+    {
+      "province_id": 22,
+      "area_id": 7,
+      "province_name": "重庆市",
+      "sort": 0
+    },
+    {
+      "province_id": 23,
+      "area_id": 7,
+      "province_name": "四川省",
+      "sort": 0
+    },
+    {
+      "province_id": 24,
+      "area_id": 7,
+      "province_name": "贵州省",
+      "sort": 0
+    },
+    {
+      "province_id": 25,
+      "area_id": 7,
+      "province_name": "云南省",
+      "sort": 0
+    },
+    {
+      "province_id": 26,
+      "area_id": 7,
+      "province_name": "西藏自治区",
+      "sort": 0
+    },
+    {
+      "province_id": 27,
+      "area_id": 6,
+      "province_name": "陕西省",
+      "sort": 0
+    },
+    {
+      "province_id": 28,
+      "area_id": 6,
+      "province_name": "甘肃省",
+      "sort": 0
+    },
+    {
+      "province_id": 29,
+      "area_id": 6,
+      "province_name": "青海省",
+      "sort": 0
+    },
+    {
+      "province_id": 30,
+      "area_id": 6,
+      "province_name": "宁夏回族自治区",
+      "sort": 0
+    },
+    {
+      "province_id": 31,
+      "area_id": 6,
+      "province_name": "新疆维吾尔自治区",
+      "sort": 0
+    },
+    {
+      "province_id": 32,
+      "area_id": 8,
+      "province_name": "香港特别行政区",
+      "sort": 0
+    },
+    {
+      "province_id": 33,
+      "area_id": 8,
+      "province_name": "澳门特别行政区",
+      "sort": 0
+    },
+    {
+      "province_id": 34,
+      "area_id": 8,
+      "province_name": "台湾省",
+      "sort": 0
+    }
+  ]
+}

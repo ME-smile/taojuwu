@@ -1,0 +1,51 @@
+class ApiPath {
+  static const HOST = "http://buyi.taoju5.com";
+
+  static const String curtainMall = '/api/goods/goodsListByConditions';
+
+  static const String curtainDetail = '/api/goods/goodsDetail';
+
+  static const String sms = '/api/login/sendRegisterMobileCode';
+
+  static const String loginBySms = '/api/login/mobileLogin';
+
+  static const String loginByPwd = '/api/login/login';
+
+  static const String skuAttr = '/api/order/wcAttr';
+
+  static const String userAdd = '/api/client/add';
+
+  static const String userList = '/api/client/lists';
+
+  static const String categoryUserList = '/api/client/lists_with_type';
+
+  static const String userDetail = '/api/client/info';
+
+  static const String orderList = '/api/order/order';
+
+  static const String orderDetail = '/api/order/orderDetail';
+
+  static const String tag = '/api/order/tag';
+
+  static const String collect = '/api/member/addCollection';
+
+  static const String cancelCollect = '/api/member/cancelCollection';
+
+  static const String addCart = '/api/goods/addCart';
+
+  static const String cartList = '/api/goods/cartList';
+
+  static const String delCart = '/api/goods/deleteCart';
+
+  static const String addAddress = '/api/member/addAddress';
+
+  static const String editAddress = '/api/member/addAddress';
+
+  static const String saveMesure = '/api/order/saveMeasure';
+
+  static const String createOrder = '/api/order/orderCreate';
+
+  static const String orderRemind = '/api/order/notice';
+
+  static const String orderCancel = '/api/order/orderClose';
+}
