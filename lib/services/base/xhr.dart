@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 // import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/services/api_path.dart';
 import 'package:taojuwu/models/user/user_info_model.dart';
+import 'package:taojuwu/widgets/loading_dialog.dart';
 
 class Xhr {
   static Xhr xhr = Xhr._internal();
@@ -60,14 +62,32 @@ class Xhr {
   /*
    * post请求
    */
-  post(url, {data, formdata, options, cancelToken}) async {
+  post(
+    context,
+    url, {
+    data,
+    formdata,
+    options,
+    cancelToken,
+    bool isShowLoading = true,
+  }) async {
     Response response;
     try {
+      if (isShowLoading) {
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return LoadingDialog();
+            });
+      }
       response = await dio.post(url,
           queryParameters: data,
           data: formdata,
           options: options,
           cancelToken: cancelToken);
+
+      Navigator.of(context).pop();
     } on DioError catch (e) {
       formatError(e);
     }

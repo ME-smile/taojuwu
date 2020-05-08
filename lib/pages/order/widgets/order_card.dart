@@ -50,7 +50,7 @@ class OrderCard extends StatelessWidget {
                   showButton
                       ? OutlineButton(
                           onPressed: () {
-                            OTPService.orderRemind(params: {
+                            OTPService.orderRemind(context, params: {
                               'order_id': orderModelData?.orderId,
                               'status': Constants.ORDER_STATUS_BUTTON_ACTION[
                                   orderModelData?.orderStatus ?? '']

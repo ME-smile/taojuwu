@@ -39,12 +39,13 @@ class OrderProvider with ChangeNotifier {
   String get goodsSkuListText =>
       orderGoods
           ?.map((item) =>
-              '${item?.skuId ?? ''}:${item?.count??''}:${item?.isShade ?? ''}:${item?.totalPrice ?? ''}')
+              '${item?.skuId ?? ''}:${item?.count ?? ''}:${item?.isShade ?? ''}:${item?.totalPrice ?? ''}')
           ?.toList()
           ?.join(',') ??
       '';
-  String get cartId => orderGoods?.map((item)=>item.cartId)?.toList()?.join(',');
-  List<String> get attr => orderGoods?.map((item) =>item.attr)?.toList() ?? [];
+  String get cartId =>
+      orderGoods?.map((item) => item.cartId)?.toList()?.join(',');
+  List<String> get attr => orderGoods?.map((item) => item.attr)?.toList() ?? [];
 
   int get totalCount => orderGoods?.length ?? 0;
 
@@ -53,12 +54,10 @@ class OrderProvider with ChangeNotifier {
   String _orderMark;
   String _deposit;
 
-
   String get measureTime => _measureTime;
   String get installTime => _installTime;
   String get orderMark => _orderMark;
   String get deposit => _deposit;
-
 
   set orderMark(String orderMark) {
     _orderMark = orderMark;
@@ -79,8 +78,6 @@ class OrderProvider with ChangeNotifier {
     _installTime = date;
     notifyListeners();
   }
-
-
 
   bool beforeCreateOrder() {
     // debugPrint({
@@ -107,7 +104,7 @@ class OrderProvider with ChangeNotifier {
     // }.toString(),);
     log({
       'order_earnest_money': deposit,
-      'cart_id':cartId??'',
+      'cart_id': cartId ?? '',
       'client_uid': clientUid,
       'shop_id': shopId,
       'measure_id':
@@ -149,6 +146,7 @@ class OrderProvider with ChangeNotifier {
   void createOrder() {
     if (!beforeCreateOrder()) return;
     OTPService.createOrder(
+      context,
       params: {
         'order_earnest_money': deposit,
         'client_uid': clientUid,

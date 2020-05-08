@@ -66,7 +66,7 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
                 if (!RegexUtil.isMobileSimple(params['client_mobile'].trim())) {
                   return CommonKit.toast(context, '请输入正确的手机号');
                 }
-                OTPService.addUser(params).then((ZYResponse response) {
+                OTPService.addUser(context, params).then((ZYResponse response) {
                   CommonKit.toast(context, response.message ?? '');
                 }).catchError((err) => err);
               },

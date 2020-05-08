@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
     if (pwd.trim().isEmpty) {
       return CommonKit.toast(context, '密码不能为空哦');
     }
-    OTPService.loginByPwd({'username': tel, 'password': pwd})
+    OTPService.loginByPwd(context, {'username': tel, 'password': pwd})
         .then((ZYResponse response) {
       if (response.valid) {
         CommonKit.toast(context, '登录成功');
