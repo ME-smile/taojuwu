@@ -166,19 +166,19 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     cartParams.addAll({'wc_attr': jsonEncode(getAttrArgs(provider))});
     cartParams
         .addAll({'cart_detail': jsonEncode(getCartDetail(provider?.goods))});
-    OTPService.addCart(context, params: cartParams).then((ZYResponse response) {
-      CommonKit.toast(context, response.message ?? '');
-    }).catchError((err) => err);
+    OTPService.addCart(context, params: cartParams)
+        .then((ZYResponse response) {})
+        .catchError((err) => err);
   }
 
   bool beforePurchase(
       GoodsProvider goodsProvider, ClientProvider clientProvider) {
     if (clientProvider?.clientId == null) {
-      CommonKit.toast(context, '请选择客户');
+      CommonKit.showInfo('请选择客户');
       return false;
     }
     if (goodsProvider?.hasSetSize != true) {
-      CommonKit.toast(context, '请先填写尺寸');
+      CommonKit.showInfo('请先填写尺寸');
       return false;
     }
     return true;
@@ -424,11 +424,11 @@ class BottomActionButtonBar extends StatelessWidget {
   bool beforePurchase(GoodsProvider goodsProvider,
       ClientProvider clientProvider, BuildContext context) {
     if (clientProvider?.clientId == null) {
-      CommonKit.toast(context, '请选择客户');
+      CommonKit.showInfo('请选择客户');
       return false;
     }
     if (goodsProvider?.hasSetSize != true) {
-      CommonKit.toast(context, '请先填写尺寸');
+      CommonKit.showInfo('请先填写尺寸');
       return false;
     }
     return true;
@@ -527,7 +527,7 @@ class BottomActionButtonBar extends StatelessWidget {
     cartParams
         .addAll({'cart_detail': jsonEncode(getCartDetail(provider?.goods))});
     OTPService.addCart(context, params: cartParams).then((ZYResponse response) {
-      CommonKit.toast(context, response.message ?? '');
+      // CommonKit.toast(context, response.message ?? '');
     }).catchError((err) => err);
   }
 

@@ -13,7 +13,7 @@ class ZYResponse<T> {
 
   void showError(BuildContext context) {
     if (valid) return;
-    CommonKit.toast(context, message ?? '未知错误');
+    CommonKit.showToast(message ?? '未知错误');
   }
 
   ZYResponse.fromJson(Map<String, dynamic> json) {
@@ -21,10 +21,9 @@ class ZYResponse<T> {
         ? json['code']
         : int.parse(json['code']);
     this.message = json['msg'] ?? json['message'] ?? '';
-   
   }
 
-    ZYResponse.fromJsonWithData(Map<String, dynamic> json) {
+  ZYResponse.fromJsonWithData(Map<String, dynamic> json) {
     this.code = json['code'].runtimeType == int
         ? json['code']
         : int.parse(json['code']);

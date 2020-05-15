@@ -141,23 +141,23 @@ class OrderProvider with ChangeNotifier {
     ClientProvider clientProvider =
         Provider.of<ClientProvider>(context, listen: false);
     if (clientProvider?.hasChoosenCustomer == false) {
-      CommonKit.toast(context, '请选择客户');
+      CommonKit.showInfo('请选择客户');
       return false;
     }
     if (addressId == null) {
-      CommonKit.toast(context, '请填写收货人');
+      CommonKit.showInfo('请填写收货人');
       return false;
     }
     if (measureTime == null || measureTime?.trim()?.isEmpty == true) {
-      CommonKit.toast(context, '请选择上门量尺意向时间');
+      CommonKit.showInfo('请选择上门量尺意向时间');
       return false;
     }
     if (installTime == null || installTime?.trim()?.isEmpty == true) {
-      CommonKit.toast(context, '请选择客户意向安装时间');
+      CommonKit.showInfo('请选择客户意向安装时间');
       return false;
     }
     if (deposit == null || deposit?.trim()?.isEmpty == true) {
-      CommonKit.toast(context, '请输入定金');
+      CommonKit.showInfo('请输入定金');
       return false;
     }
     return true;

@@ -72,20 +72,19 @@ class _LoginPageState extends State<LoginPage> {
     String tel = _phoneController.text;
     String code = _smsController.text;
     if (tel.trim().isEmpty) {
-      return CommonKit.toast(context, '手机号不能为空哦');
+      return CommonKit.showInfo('手机号不能为空哦');
     }
     if (code.trim().isEmpty) {
-      return CommonKit.toast(context, '验证码不能为空哦');
+      return CommonKit.showInfo('验证码不能为空哦');
     }
     OTPService.loginBySms(context, {'mobile': tel, 'mobile_code': code})
         .then((ZYResponse response) {
       if (response.valid) {
-        CommonKit.toast(context, '登录成功');
         _phoneController.text = '';
         _smsController.text = '';
         RouteHandler.goHomePage(context);
       } else {
-        CommonKit.toast(context, '${response.message ?? "登录失败"}');
+        // CommonKit.toast(context, '${response.message ?? "登录失败"}');
       }
     }).catchError((err) => err);
   }
@@ -94,25 +93,25 @@ class _LoginPageState extends State<LoginPage> {
     String tel = _phoneController.text;
     String pwd = _pwdController.text;
     if (tel.trim().isEmpty) {
-      return CommonKit.toast(context, '手机号不能为空哦');
+      return CommonKit.showInfo('手机号不能为空哦');
     }
 
     if (RegexUtil.isTel(tel)) {
-      return CommonKit.toast(context, '请输入正确的手机号');
+      return CommonKit.showInfo('请输入正确的手机号');
     }
     if (pwd.trim().isEmpty) {
-      return CommonKit.toast(context, '密码不能为空哦');
+      return CommonKit.showInfo('密码不能为空哦');
     }
     OTPService.loginByPwd(context, {'username': tel, 'password': pwd})
         .then((ZYResponse response) {
       if (response.valid) {
-        CommonKit.toast(context, '登录成功');
+        // CommonKit.toast(context, '登录成功');
         _phoneController.text = '';
         _pwdController.text = '';
         afterLogin(response.data);
         RouteHandler.goHomePage(context);
       } else {
-        CommonKit.toast(context, '${response.message ?? "登录失败"}');
+        // CommonKit.toast(context, '${response.message ?? "登录失败"}');
       }
     }).catchError((err) => err);
   }
@@ -219,18 +218,18 @@ class _LoginPageState extends State<LoginPage> {
                               callback: () async {
                                 String tel = _phoneController.text;
                                 if (tel.trim().isEmpty) {
-                                  return CommonKit.toast(context, '手机号不能为空哦');
+                                  return CommonKit.showInfo('手机号不能为空哦');
                                 }
                                 if (!RegexUtil.isMobileExact(tel)) {
-                                  return CommonKit.toast(context, '请输入正确的手机号');
+                                  return CommonKit.showInfo('请输入正确的手机号');
                                 }
                                 return OTPService.getSms(
                                         context, {'mobile': tel})
                                     .then((ZYResponse response) {
                                   if (response.valid) {
-                                    CommonKit.toast(context, '验证码发送成功,请注意查收');
+                                    CommonKit.showInfo('验证码发送成功,请注意查收');
                                   } else {
-                                    CommonKit.toast(context, '验证码发送失败,请稍后重试');
+                                    CommonKit.showInfo('验证码发送失败,请稍后重试');
                                   }
                                 }).catchError((err) => err);
                               },

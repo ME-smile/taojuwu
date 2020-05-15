@@ -1,20 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:toast/toast.dart';
 
 class CommonKit {
-  static void toast(BuildContext context, String msg) {
-    Toast.show(msg ?? '', context,
-        duration: Toast.LENGTH_SHORT,
-        gravity: Toast.CENTER,
-        backgroundColor: Color(0xEE888888),
-        textColor: Colors.white,
-        backgroundRadius: 5);
-  }
-
   static Function debounce(Function callback, [int delay = 300]) {
     Timer _debounce;
     Function fn = () {
@@ -28,6 +17,22 @@ class CommonKit {
 
   static void showSuccess() {
     EasyLoading.showSuccess('提交成功');
+  }
+
+  static void showLoading() {
+    EasyLoading.show(status: '正在加载');
+  }
+
+  static void showError() {
+    EasyLoading.showError('网络错误');
+  }
+
+  static void showToast(String msg) {
+    EasyLoading.showToast(msg);
+  }
+
+  static void showInfo(String msg) {
+    EasyLoading.showInfo(msg);
   }
 }
 

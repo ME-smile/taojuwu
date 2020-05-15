@@ -29,20 +29,20 @@ class ScanButton extends StatelessWidget {
             RouteHandler.goCurtainDetailPage(
                 context, response?.data['goods_id']);
           } else {
-            CommonKit.toast(context, '识别失败');
+            CommonKit.showToast('识别失败');
           }
         }).catchError((err) {
-          CommonKit.toast(context, '识别出错');
+          CommonKit.showToast('识别出错');
         });
       } else {
-        CommonKit.toast(context, '未识别的商品');
+        CommonKit.showToast('未识别的商品');
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
-        CommonKit.toast(context, '访问相机被拒绝');
+        CommonKit.showToast('访问相机被拒绝');
       }
     } on FormatException catch (_) {
-      CommonKit.toast(context, '识别失败');
+      CommonKit.showToast('识别失败');
     }
   }
 

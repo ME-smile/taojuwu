@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
         'subtitle': '一起买，价格更优惠',
         'icon': 'combo@2x.png',
         'callback': () {
-          CommonKit.toast(context, '暂未开放');
+          CommonKit.showInfo('暂未开放');
         },
         'color': const Color(0xFFC9BCA9),
       },

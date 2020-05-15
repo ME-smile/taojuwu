@@ -146,27 +146,27 @@ class _EditAddressPageState extends State<EditAddressPage> {
 
   bool beforeCommit(ClientProvider provider) {
     if (provider?.name == null || provider?.name?.trim()?.isEmpty == true) {
-      CommonKit.toast(context, '请填写联系人');
+      CommonKit.showInfo('请填写联系人');
       return false;
     }
     if (provider?.gender == null) {
-      CommonKit.toast(context, '请填写性别');
+      CommonKit.showInfo('请填写性别');
       return false;
     }
     if (provider?.tel == null ||
         provider?.tel?.trim()?.isEmpty == true ||
         RegexUtil.isMobileSimple(provider?.tel) == false) {
-      CommonKit.toast(context, '请输入正确的手机号');
+      CommonKit.showInfo('请输入正确的手机号');
       return false;
     }
     if (provider?.address == null ||
         provider?.address?.trim()?.isEmpty == true) {
-      CommonKit.toast(context, '请填写正确的收货地址');
+      CommonKit.showInfo('请填写正确的收货地址');
       return false;
     }
     if (provider?.detailAddress == null ||
         provider?.detailAddress?.trim()?.isEmpty == true) {
-      CommonKit.toast(context, '请记得填写门牌号哦');
+      CommonKit.showInfo('请记得填写门牌号哦');
       return false;
     }
     return true;
@@ -344,8 +344,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
 
                               Navigator.of(context).pop();
                             } else {
-                              CommonKit.toast(
-                                  context, '${response?.message ?? ''}');
+                              CommonKit.showToast('${response?.message ?? ''}');
                             }
                           }).catchError((err) => err);
                         })

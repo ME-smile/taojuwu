@@ -60,10 +60,11 @@ class _CartCardViewState extends State<CartCardView> {
                           'cart_id_array': '${['${cartModel?.cartId}' ?? '0']}'
                         }).then((ZYResponse response) {
                           print(response);
-                          if(response.valid && response.message.contains('success')){
+                          if (response.valid &&
+                              response.message.contains('success')) {
                             provider?.removeGoods(cartModel?.cartId);
                           }
-                          CommonKit.toast(context, response.message);
+                          CommonKit.showToast(response?.message ?? '');
                         }).catchError((err) => err);
                       },
                     )

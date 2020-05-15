@@ -39,6 +39,7 @@ dependencies:
   charts_flutter: ^0.9.0
   barcode_scan: ^3.0.0
   flutter_easyloading: ^1.1.4
+  flutter_spinkit: ^4.1.2+1
   image_picker: ^0.6.6+1
   # barcode_scan:
   #   git:

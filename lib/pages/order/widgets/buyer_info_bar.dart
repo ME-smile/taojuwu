@@ -19,7 +19,7 @@ class BuyerInfoBar extends StatelessWidget {
       return InkWell(
           onTap: () {
             if (provider?.hasChoosenCustomer == false) {
-              return CommonKit.toast(context, '请先选择客户');
+              return CommonKit.showInfo('请先选择客户');
             }
             RouteHandler.goEditAddressPage(context, id: provider?.clientId);
           },
