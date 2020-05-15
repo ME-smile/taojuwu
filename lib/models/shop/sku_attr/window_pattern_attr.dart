@@ -6,6 +6,16 @@ class WindowPatternAttr {
   static const installModes = ['顶装', '侧装'];
   static const openModes = ['整体对开', '整体单开'];
 
+  static const installModeMap = {
+    '顶装': 0,
+    '顶装满墙': 0,
+    '侧装': 1,
+  };
+
+  static const openModeMap = {
+    '整体对开': 0,
+    '整体单开': 1,
+  };
   static const installModesPic = {
     '顶装': 'curtain/size_000011.png',
     '侧装': 'curtain/size_000001.png'
@@ -57,8 +67,5 @@ class WindowPatternAttr {
     ]
   };
 
-  static Map<String, dynamic> patternMap={};
-  
-  
-  
+  static Map<String, dynamic> patternMap = {};
 }

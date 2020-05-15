@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/user_choose_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
@@ -17,60 +19,81 @@ class MeasureOrderPage extends StatefulWidget {
 
 class _MeasureOrderPageState extends State<MeasureOrderPage> {
   @override
+  void initState() {
+    super.initState();
+    OrderProvider orderProvider =
+        Provider.of<OrderProvider>(context, listen: false);
+    orderProvider?.orderType = 2;
+  }
+
+  @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     TextTheme accentTextTheme = themeData.accentTextTheme;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('下测量单'),
-        centerTitle: true,
-        actions: <Widget>[
-          UserChooseButton(),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              BuyerInfoBar(),
-              VSpacing(20),
-              // BuyerInfoBar(),
-              SellerInfoBar(),
-              CustomerNeedBar(),
-              VSpacing(20),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                child: Text(
-                  Constants.SERVER_PROMISE,
-                  style: textTheme.caption,
-                ),
-              ),
+    return WillPopScope(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('下测量单'),
+            centerTitle: true,
+            actions: <Widget>[
+              UserChooseButton(),
             ],
           ),
-        ),
-      ),
-      bottomNavigationBar: Container(
-        // alignment: Alignment.bottomRight,
-        padding: EdgeInsets.symmetric(
-          vertical: UIKit.height(10),
-          horizontal: UIKit.width(20)
-        ),
-        color: themeData.primaryColor,
-        child: Row(
-          children: <Widget>[
-            Spacer(),
-            FlatButton(
-              color: themeData.accentColor,
-              child: Text(
-                '提交订单',
-                style: accentTextTheme.button,
+          body: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  BuyerInfoBar(),
+                  VSpacing(20),
+                  // BuyerInfoBar(),
+                  SellerInfoBar(),
+                  VSpacing(20),
+                  CustomerNeedBar(),
+                  VSpacing(20),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    child: Text(
+                      Constants.SERVER_PROMISE,
+                      style: textTheme.caption,
+                    ),
+                  ),
+                ],
               ),
-              onPressed: () {},
             ),
-          ],
+          ),
+          bottomNavigationBar: Consumer<OrderProvider>(
+            builder: (BuildContext context, OrderProvider provider, _) {
+              return Container(
+                // alignment: Alignment.bottomRight,
+                padding: EdgeInsets.symmetric(
+                    vertical: UIKit.height(10), horizontal: UIKit.width(20)),
+                color: themeData.primaryColor,
+                child: Row(
+                  children: <Widget>[
+                    Spacer(),
+                    FlatButton(
+                      color: themeData.accentColor,
+                      child: Text(
+                        '提交订单',
+                        style: accentTextTheme.button,
+                      ),
+                      onPressed: () {
+                        provider?.createMeasureOrder(context);
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
-      ),
-    );
+        onWillPop: () {
+          OrderProvider orderProvider =
+              Provider.of<OrderProvider>(context, listen: false);
+          orderProvider?.orderType = 1;
+          Navigator.of(context).pop();
+          return Future.value(false);
+        });
   }
 }

@@ -5,6 +5,7 @@ import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
+import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_listTile.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -25,7 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ? const Color(0xFFF8F8F8)
           : Colors.white,
       appBar: AppBar(
-        title: Text('个人中心'),
+        title: Text('设置'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -135,29 +136,34 @@ class ProfileHeader extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-            child: CircleAvatar(
-              backgroundColor: Colors.blue,
-              radius: UIKit.sp(60),
+            child: ZYAssetImage(
+              'default_avatar@2x.png',
+              width: UIKit.width(100),
+              height: UIKit.width(100),
             ),
           ),
           Consumer<UserProvider>(
-            builder: (BuildContext context,UserProvider provider,_){
-              return  Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text.rich(TextSpan(text: provider?.userInfo?.nickName??'', style: textTheme.title, children: [
-                TextSpan(text: provider?.userInfo?.userTel??"暂无联系方式", style: textTheme.body1)
-              ])),
-              Text(
-                provider?.userInfo?.shopName,
-                style: textTheme.caption,
-              )
-            ],
-          );
+            builder: (BuildContext context, UserProvider provider, _) {
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text.rich(TextSpan(
+                      text: provider?.userInfo?.nickName ?? '',
+                      style: textTheme.title,
+                      children: [
+                        TextSpan(
+                            text: provider?.userInfo?.userTel ?? "暂无联系方式",
+                            style: textTheme.body1)
+                      ])),
+                  Text(
+                    provider?.userInfo?.shopName,
+                    style: textTheme.caption,
+                  )
+                ],
+              );
             },
           ),
-         
         ],
       ),
     );

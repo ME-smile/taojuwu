@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/user/category_customer_model.dart';
 import 'package:taojuwu/providers/client_provider.dart';
+import 'package:taojuwu/providers/goods_provider.dart';
+import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -32,34 +34,28 @@ class CustomerTablePage extends StatelessWidget {
   }
 
   static Map<String, dynamic> params = {
-    'page_index': 1,
-    'page_size': 20,
+    // 'page_index': 1,
+    // 'page_size': 20,
   };
 
   static Widget _tableCell(dynamic text, BuildContext context, int id,
       {CategoryCustomerModelBean bean}) {
     return TableCell(
-      child:
-          Consumer(builder: (BuildContext context, ClientProvider provider, _) {
+      child: Consumer3(builder: (BuildContext context, ClientProvider provider,
+          GoodsProvider goodsProvider, OrderProvider orderProvider, _) {
         return InkWell(
           onTap: () {
             if (provider.isForSelectedClient) {
-              RouteHandler.goCurtainDetailPage(context, provider?.goodsId ?? 0);
               provider?.isForSelectedClient = false;
-              provider?.name = text;
-              provider?.tel = bean?.clientMobile;
-              provider?.gender = '${bean?.clientSex}';
-              provider?.clientId = bean?.id;
-              provider?.saveClientInfo(
-                  name: text,
-                  clientId: id,
-                  tel: '${bean?.clientMobile}',
-                  provinceId: '${bean?.provinceId}',
-                  cityId: '${bean?.cityId}',
-                  gender: '${bean?.clientSex}',
-                  districtId: '${bean?.districtId}');
+              provider?.saveClientInfo(clientId: id, name: bean?.clientName);
+              if (orderProvider?.isMeasureOrder == true) {
+                orderProvider?.orderType = 1;
+                return RouteHandler.goMeasureOrderPage(context);
+              }
+              return RouteHandler.goCurtainDetailPage(
+                  context, goodsProvider?.goodsId);
             } else {
-              RouteHandler.goCustomerDetailPage(context, id);
+              return RouteHandler.goCustomerDetailPage(context, id);
             }
           },
           child: Padding(
@@ -89,17 +85,42 @@ class CustomerTablePage extends StatelessWidget {
             ),
             preferredSize: Size.fromHeight(UIKit.height(48))),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          child: ZYFutureBuilder(
-              futureFunc: OTPService.categoryUserList,
-              params: params,
-              builder: (BuildContext context,
-                  CategoryCustomerModelListResp response) {
-                wrapper = response.data;
-                beans = wrapper.data;
-
-                return Table(
+      body: Container(
+        child: ZYFutureBuilder(
+            futureFunc: OTPService.categoryUserList,
+            params: params,
+            builder:
+                (BuildContext context, CategoryCustomerModelListResp response) {
+              wrapper = response.data;
+              beans = wrapper.data;
+              // return ListView.separated(
+              //     shrinkWrap: true,
+              //     itemBuilder: (BuildContext context, int i) {
+              //       CategoryCustomerModelBean bean = beans[i];
+              //       return Row(
+              //         children: <Widget>[
+              //           _tableCell(bean?.clientName ?? '-', context, bean?.id,
+              //               bean: bean),
+              //           _tableCell(
+              //               Constants.GENDER_MAP[bean?.clientSex] ?? '未知',
+              //               context,
+              //               bean?.id,
+              //               bean: bean),
+              //           _tableCell(bean?.clientAge ?? '-', context, bean?.id,
+              //               bean: bean),
+              //           _tableCell(bean?.goodCategory ?? '-', context, bean?.id,
+              //               bean: bean),
+              //           _tableCell(bean?.enterTime ?? '-', context, bean?.id,
+              //               bean: bean),
+              //         ],
+              //       );
+              //     },
+              //     separatorBuilder: (BuildContext context, int i) {
+              //       return Divider();
+              //     },
+              //     itemCount: beans?.length ?? 0);
+              return Container(
+                child: Table(
                   children: List.generate(beans.length, (int i) {
                     CategoryCustomerModelBean bean = beans[i];
                     return TableRow(
@@ -124,9 +145,9 @@ class CustomerTablePage extends StatelessWidget {
                               bean: bean),
                         ]);
                   }),
-                );
-              }),
-        ),
+                ),
+              );
+            }),
       ),
     );
   }

@@ -1,14 +1,49 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
+import 'package:taojuwu/models/zy_response.dart';
+import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 
 class ScanButton extends StatelessWidget {
   const ScanButton({Key key}) : super(key: key);
-  void scan() async {
-    ScanResult barcode = await BarcodeScanner.scan();
-    print(barcode);
+  void scan(BuildContext context) async {
+    try {
+      ScanResult barcode = await BarcodeScanner.scan(
+          options: ScanOptions(strings: {
+        'cancel': '取消',
+        'flash_on': '打开闪光灯',
+        'flash_off': '关闭闪光灯'
+      }));
+      if (barcode != null) {
+        List<String> splits = barcode?.rawContent?.split(',');
+        String type = splits?.first;
+        String model = splits?.last;
+        OTPService.scanQR(context, params: {'type': type, 'model': model})
+            .then((ZYResponse response) {
+          if (response?.valid == true && response?.data != null) {
+            RouteHandler.goCurtainDetailPage(
+                context, response?.data['goods_id']);
+          } else {
+            CommonKit.toast(context, '识别失败');
+          }
+        }).catchError((err) {
+          CommonKit.toast(context, '识别出错');
+        });
+      } else {
+        CommonKit.toast(context, '未识别的商品');
+      }
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.cameraAccessDenied) {
+        CommonKit.toast(context, '访问相机被拒绝');
+      }
+    } on FormatException catch (_) {
+      CommonKit.toast(context, '识别失败');
+    }
   }
 
   @override
@@ -18,7 +53,9 @@ class ScanButton extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
           child: IconButton(
             icon: ZYIcon.scan,
-            onPressed: scan,
+            onPressed: () {
+              scan(context);
+            },
           )),
     );
   }

@@ -25,14 +25,21 @@ class CustomerProfileHeader extends StatelessWidget {
       // padding: EdgeInsets.symmetric( horizontal: UIKit.width(20), vertical: UIKit.height(10)),
       child: Row(
         children: <Widget>[
-        
-          CircleAvatar(
-            radius: UIKit.sp(80),
-       
-            backgroundImage: NetworkImage(
-                'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2130220465,3793234634&fm=26&gp=0.jpg'),
-          ),
+          // CircleAvatar(
+          //   radius: UIKit.sp(80),
+          //   backgroundImage:
+          //       AssetImage(UIKit.getAssetsImagePath('customer_avatar@2x.png')),
+          // ),
+
           // SizedBox(),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+            child: Image.asset(
+              UIKit.getAssetsImagePath('customer_avatar@2x.png'),
+              width: UIKit.width(120),
+              height: UIKit.height(120),
+            ),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[

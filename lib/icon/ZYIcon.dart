@@ -1,11 +1,30 @@
 import 'package:flutter/material.dart';
-class ZYIcon{
+
+class ZYIcon {
   static const Icon prev = Icon(_ZYIcon(0xe643));
   static const Icon cart = Icon(_ZYIcon(0xe67c));
 
   static const Icon del = Icon(_ZYIcon(0xe644));
-  static const Icon search = Icon(_ZYIcon(0xe64a));
-  static const Icon add = Icon(_ZYIcon(0xe64d),color: const Color(0xFF171717),);
+
+  static const Icon clear = Icon(_ZYIcon(0xe65e));
+  static const Icon plus_blank = Icon(_ZYIcon(0xe693));
+  static const Icon plus_full = Icon(
+    _ZYIcon(0xe6bd),
+    color: Colors.black,
+  );
+  static const Icon sub_blank = Icon(_ZYIcon(0xe67a));
+  static const Icon sub_full = Icon(
+    _ZYIcon(0xe678),
+    color: Colors.black,
+  );
+  static const Icon search = Icon(
+    _ZYIcon(0xe64a),
+    color: const Color(0xFF979797),
+  );
+  static const Icon add = Icon(
+    _ZYIcon(0xe64d),
+    color: const Color(0xFF171717),
+  );
   static const Icon plus = Icon(_ZYIcon(0xe602));
   static const Icon substract = Icon(_ZYIcon(0xe676));
 
@@ -16,12 +35,20 @@ class ZYIcon{
   static const Icon scan = Icon(_ZYIcon(0xe606));
   static const Icon check = Icon(_ZYIcon(0xe6e5));
   static const Icon user_add = Icon(_ZYIcon(0xe64b));
-  static const Icon like = Icon(_ZYIcon(0xe79d),color: Colors.red,);
-  static const Icon unlike = Icon(_ZYIcon(0xe79d),);
+  static const Icon like = Icon(
+    _ZYIcon(0xe79d),
+    color: Colors.red,
+  );
+  static const Icon unlike = Icon(
+    _ZYIcon(0xe79d),
+  );
   static const Icon tel_book = Icon(_ZYIcon(0xe667));
 
   static const Icon eye = Icon(_ZYIcon(0xe63c));
-  static const Icon edit = Icon(_ZYIcon(0xe657));
+  static const Icon edit = Icon(
+    _ZYIcon(0xe657),
+    size: 14,
+  );
   static const Icon checked = Icon(_ZYIcon(0xe7ba));
 
   static const Icon filter = Icon(_ZYIcon(0xe8ec));
@@ -29,12 +56,21 @@ class ZYIcon{
   static const Icon disabled = Icon(_ZYIcon(0xe706));
   static const Icon share = Icon(_ZYIcon(0xe999));
   static const Icon fill_checked = Icon(_ZYIcon(0xe7d3));
-    
-  static const Icon user =Icon(_ZYIcon(0xe67b));
-  static const Icon dot = Icon(_ZYIcon(0xe63f),color: const Color(0xFF6ABD13),size: 16,);
+
+  static const Icon user = Icon(_ZYIcon(0xe67b));
+  static const Icon dot = Icon(
+    _ZYIcon(0xe63f),
+    color: const Color(0xFF6ABD13),
+    size: 16,
+  );
 }
 
-class _ZYIcon extends IconData{
-   final String fontFamily;
-  const _ZYIcon(int codePoint,{this.fontFamily='Taojuwu'}) : super(codePoint);
+class _ZYIcon extends IconData {
+  final String fontFamily;
+  const _ZYIcon(int codePoint, {this.fontFamily = 'Taojuwu'})
+      : super(codePoint);
+}
+
+class ZYIcons {
+  static const IconData plus = IconData(0xe602, fontFamily: 'Taojuwu');
 }

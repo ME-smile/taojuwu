@@ -21,17 +21,14 @@ class UIKit {
   }
 
   static String getNetworkImgPath(String path) {
-    return path.contains('http') ? path : '${Constants.HOST}/$path';
+    return path?.contains('http') == true ? path : '${Constants.HOST}/$path';
   }
 
-
-  static String getGreetWord(DateTime time){
-    // 6-12 上午好 // 12-18 下午好 
-    int h = time.hour+1;
-    if(6<h && h<13) return '上午好';
-    if(13<=h && h<19) return '下午好';
+  static String getGreetWord(DateTime time) {
+    // 6-12 上午好 // 12-18 下午好
+    int h = time.hour + 1;
+    if (6 < h && h < 13) return '上午好';
+    if (13 <= h && h < 19) return '下午好';
     return '晚上好';
   }
-
-  
 }

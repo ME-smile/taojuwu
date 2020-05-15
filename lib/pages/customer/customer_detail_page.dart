@@ -11,11 +11,10 @@ import 'widgets/kongo_bar.dart';
 
 class CustomerDetailPage extends StatelessWidget {
   final int id;
-  const CustomerDetailPage(this.id,{Key key}) : super(key: key);
+  const CustomerDetailPage(this.id, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       backgroundColor: const Color(0xFFFFF8F8F8),
       appBar: AppBar(
@@ -24,32 +23,32 @@ class CustomerDetailPage extends StatelessWidget {
         actions: <Widget>[
           FlatButton(
               onPressed: () {
-                RouteHandler.goCustomerEditPage(context,title:'编辑客户',id:id);
+                RouteHandler.goCustomerEditPage(context, title: '编辑客户', id: id);
               },
               child: Text('编辑')),
         ],
       ),
       body: ZYFutureBuilder(
-        futureFunc: OTPService.userDetail, 
-        params: {'id':id},
-        builder: (BuildContext context,CustomerDetailModelResp response){
-          CustomerDetailModel bean = response.data;
-          return SingleChildScrollView(
-            child: Column(
-               children: <Widget>[
-                 CustomerProfileHeader(
-                   name: bean?.clientName,
-                   type:bean?.clientType,
-                   age: bean?.clientAge,
-                   address: bean?.detailAddress,
-                   gender: bean?.clientSex,
-                 ),
-                  KongoBar(),
-                  CustomerInfoFrame(model: bean,)
-               ]
-            ),
-          );
-        }),
+          futureFunc: OTPService.customerDetail,
+          params: {'id': id},
+          builder: (BuildContext context, CustomerDetailModelResp response) {
+            CustomerDetailModel bean = response.data;
+            return SingleChildScrollView(
+              child: Column(children: <Widget>[
+                CustomerProfileHeader(
+                  name: bean?.clientName,
+                  type: bean?.clientType,
+                  age: bean?.clientAge,
+                  address: bean?.detailAddress,
+                  gender: bean?.clientSex,
+                ),
+                KongoBar(),
+                CustomerInfoFrame(
+                  model: bean,
+                )
+              ]),
+            );
+          }),
     );
   }
 }

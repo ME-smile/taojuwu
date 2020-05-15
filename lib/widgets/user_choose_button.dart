@@ -16,7 +16,6 @@ class UserChooseButton extends StatelessWidget {
       return InkWell(
           onTap: () {
             provider?.isForSelectedClient = true;
-            provider?.goodsId = id;
             RouteHandler.goCustomerPage(context);
           },
           child: Row(
@@ -24,7 +23,10 @@ class UserChooseButton extends StatelessWidget {
               ZYIcon.user,
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                  child: Text(provider?.name??'请选择'))
+                  child: Text(provider?.name != null &&
+                          provider?.name?.isNotEmpty == true
+                      ? provider?.name
+                      : '请选择'))
             ],
           ));
     });

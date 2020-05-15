@@ -2,26 +2,61 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/order/order_model.dart';
-import 'package:taojuwu/models/zy_response.dart';
+import 'package:taojuwu/pages/order/utils/order_kit.dart';
 import 'package:taojuwu/router/handlers.dart';
-import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/v_spacing.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderModelData orderModelData;
   const OrderCard(this.orderModelData, {Key key}) : super(key: key);
+
+  String get createTimeStr {
+    var createTime = orderModelData?.createTime;
+    if (createTime is num) {
+      createTime = createTime * 1000;
+    } else {
+      createTime = 0;
+    }
+    return DateUtil.formatDateMs(createTime ?? 0,
+            isUtc: false, format: 'yyyy-MM-dd HH:mm:ss') ??
+        '';
+  }
+
   bool get showButton =>
-      Constants
-          .ORDER_STATUS_BUTTON_TEXT_MAP[orderModelData?.statusName ?? ''] !=
-      null;
+      Constants.ORDER_STATUS_BUTTON_ACTION[orderModelData?.orderStatus ?? 0]
+          ['show_button'];
+
+  Function callback(BuildContext context) {
+    Map<int, Function> dict = {
+      1: remindOrder(context, '是否提醒审核', 1),
+      2: remindOrder(context, '是否提醒测量', 2),
+      3: remindOrder(context, '是否提醒退款', 3),
+      6: remindOrder(context, '是否提醒安装', 3),
+      8: () {
+        RouteHandler.goAfterSaleServicePage(context);
+      },
+      14: () {
+        RouteHandler.goOrderDetailPage(context, orderModelData?.orderId);
+      }
+    };
+
+    return dict[orderModelData?.orderStatus];
+  }
+
+  Function remindOrder(BuildContext context, String title, int status) {
+    Function fn = () {
+      OrderKit.remindOrder(context, title, orderModelData?.orderId, status)
+          .catchError((err) => err);
+    };
+    return fn;
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
 
-    String createTime = DateUtil.formatDateMs(orderModelData?.createTime ?? 0,
-        format: 'yyyy-MM-dd HH:mm:ss');
     final List<OrderModel> models = orderModelData?.models;
     return Container(
       color: themeData.primaryColor,
@@ -42,27 +77,15 @@ class OrderCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Text('应收定金:${orderModelData?.orderEarnestMoney}'),
+                  Text('应收定金:${orderModelData?.orderEarnestMoneyStr}'),
                   Text(
-                    '创建时间:$createTime',
+                    '创建时间:$createTimeStr',
                     style: textTheme.caption,
                   ),
-                  showButton
-                      ? OutlineButton(
-                          onPressed: () {
-                            OTPService.orderRemind(context, params: {
-                              'order_id': orderModelData?.orderId,
-                              'status': Constants.ORDER_STATUS_BUTTON_ACTION[
-                                  orderModelData?.orderStatus ?? '']
-                            }).then((ZYResponse response) {
-                              print(response);
-                            }).catchError((err) => err);
-                          },
-                          child: Text(Constants.ORDER_STATUS_BUTTON_TEXT_MAP[
-                                  orderModelData?.statusName ?? ''] ??
-                              ''),
-                        )
-                      : VSpacing(20),
+                  OrderKit.buildButton(context, orderModelData, callback: () {
+                    RouteHandler.goOrderDetailPage(
+                        context, orderModelData?.orderId);
+                  })
                 ],
               ),
             ],
@@ -96,20 +119,33 @@ class OrderItemView extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.network(
-              UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+            ZYNetImage(
+              imgPath: model?.picture?.picCoverSmall,
               height: UIKit.height(180),
             ),
+            // Image.network(
+            //   UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+            //   height: UIKit.height(180),
+            // ),
             Expanded(
                 child: Container(
               height: UIKit.height(180),
-              padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+              padding: EdgeInsets.only(left: UIKit.width(20)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Text(model?.goodsName),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(model?.goodsName),
+                      Text(
+                        model?.statusName ?? '未知状态',
+                        style: TextStyle(color: const Color(0xFFDE6D6C)),
+                      ),
+                    ],
+                  ),
                   Text.rich(TextSpan(
                       text: '￥${model?.price ?? '0.00'}',
                       children: [
@@ -126,10 +162,6 @@ class OrderItemView extends StatelessWidget {
                 ],
               ),
             )),
-            Text(
-              model?.statusName ?? '未知状态',
-              style: TextStyle(color: const Color(0xFFDE6D6C)),
-            ),
           ],
         ),
       ),

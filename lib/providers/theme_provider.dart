@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ThemeProvider with ChangeNotifier {
@@ -11,6 +12,7 @@ class ThemeProvider with ChangeNotifier {
     //       caption:const TextStyle(color: TaojuwuColors.ACCENT_TEXT_COLOR),
     // ),
     primaryColor: Colors.white,
+
     // fontFamily: UIKit.quickFont,
     scaffoldBackgroundColor: TaojuwuColors.SCAFFOLD_BG_COLOR,
     splashColor: Colors.transparent,
@@ -43,13 +45,17 @@ class ThemeProvider with ChangeNotifier {
       subtitle: const TextStyle(color: TaojuwuColors.ACCENT_TEXT_COLOR),
       caption: const TextStyle(color: TaojuwuColors.ACCENT_TEXT_COLOR),
     ),
+    disabledColor: TaojuwuColors.DISABLED_COLOR,
+
     buttonTheme: ButtonThemeData(
-        textTheme: ButtonTextTheme.normal,
-        buttonColor: TaojuwuColors.BUTTON_BG_COLOR,
-        disabledColor: TaojuwuColors.DISADBLED_COLOR,
-        highlightColor: Colors.transparent,
-        splashColor: Colors.transparent),
+      textTheme: ButtonTextTheme.normal,
+      buttonColor: TaojuwuColors.BUTTON_BG_COLOR,
+      disabledColor: TaojuwuColors.DISABLED_COLOR,
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
+    ),
     buttonColor: TaojuwuColors.BUTTON_BG_COLOR,
+    // cupertinoOverrideTheme: CupertinoThemeData(primaryColor: Colors.white),
     brightness: Brightness.light,
     textTheme: TextTheme(
         headline: TextStyle(
@@ -82,8 +88,9 @@ class TaojuwuColors {
   static const Color BORDER_COLOR = Color(0xFFC7C8CB);
   static const Color HINT_TEXT_COLOR = BORDER_COLOR;
   static const Color LABEL_TEXT_COLOR = Color(0xFF2E2E2E);
-  static const Color DISADBLED_COLOR = Colors.grey;
   static const Color ACCENT_TEXT_COLOR = Colors.white;
   static const Color ACCENT_COLOR = Color(0xFF171717);
   static const Color SCAFFOLD_BG_COLOR = Color(0xFFF8F8F8);
+  static const Color DISABLED_COLOR = Colors.grey;
+  // static const Color ACCENT_BUTTON_BORDER = Color(0xFF2B2B2B);
 }

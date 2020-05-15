@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -27,7 +28,7 @@ class App extends StatelessWidget {
                 noDataText: '我也是有底线的哦',
                 failedText: '加载失败',
                 canLoadingText: '下拉加载更多',
-                idleText: '我也是有底线的哦',
+                idleText: '加载更多数据',
                 idleIcon: Text(''),
               ), // Configure default bottom indicator
           headerTriggerDistance:
@@ -47,8 +48,9 @@ class App extends StatelessWidget {
           hideFooterWhenNotFull:
               false, // Disable pull-up to load more functionality when Viewport is less than one screen
           enableBallisticLoad: true,
-          child: MaterialApp(
-            title: 'taojuwu',
+          child: FlutterEasyLoading(
+              child: MaterialApp(
+            title: '淘居屋',
             debugShowCheckedModeBanner: false,
             onGenerateRoute: Application.router.generator,
             darkTheme:
@@ -60,7 +62,7 @@ class App extends StatelessWidget {
             //   GlobalMaterialLocalizations.delegate,
             //   GlobalWidgetsLocalizations.delegate,
             // ],
-          ));
+          )));
     });
   }
 }

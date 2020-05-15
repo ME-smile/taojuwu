@@ -67,7 +67,9 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
                   return CommonKit.toast(context, '请输入正确的手机号');
                 }
                 OTPService.addUser(context, params).then((ZYResponse response) {
-                  CommonKit.toast(context, response.message ?? '');
+                  if (response?.valid == true) {
+                    Navigator.of(context).pop();
+                  }
                 }).catchError((err) => err);
               },
               child: Text('完成'))
@@ -86,7 +88,7 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
                 ],
               )
             : ZYFutureBuilder(
-                futureFunc: OTPService.userDetail,
+                futureFunc: OTPService.customerDetail,
                 params: {'id': widget.id},
                 builder:
                     (BuildContext context, CustomerDetailModelResp response) {

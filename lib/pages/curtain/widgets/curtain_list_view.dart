@@ -1,8 +1,8 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class _ListCard extends StatelessWidget {
   final CurtainGoodItemBean bean;
@@ -20,13 +20,21 @@ class _ListCard extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
         child: Column(
           children: <Widget>[
-            ExtendedImage.network(
-              UIKit.getNetworkImgPath(
+            // ExtendedImage.network(
+            //   UIKit.getNetworkImgPath(
+            //     bean?.picCoverMid,
+            //   ),
+            //   width: width - 2 * UIKit.width(20),
+            //   fit: BoxFit.fill,
+            // ),
+            ZYNetImage(
+              imgPath: UIKit.getNetworkImgPath(
                 bean?.picCoverMid,
               ),
-              width: width - 2 * UIKit.width(20),
               fit: BoxFit.fill,
+              width: width - 2 * UIKit.width(20),
             ),
+
             Text(bean?.goodsName ?? ''),
             Text('${bean?.displayPrice ?? "0.00"}')
           ],

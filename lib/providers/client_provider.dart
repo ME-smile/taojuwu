@@ -1,67 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:taojuwu/application.dart';
+import 'package:taojuwu/models/user/customer_detail_model.dart';
 
 class ClientProvider with ChangeNotifier {
-  String _name;
-  String _tel;
-  String _gender;
-  String _addressId;
-  String _detailAddress;
+  CustomerDetailModel clientModel;
   int _clientId;
-  int _goodsId;
-  String _provinceId;
-  String _cityId;
-  String _districtId;
-  String _provinceName;
-  String _cityName;
-  String _districtName;
+
+  int _addressId;
+  String _clientName;
+  void clearClientInfo() {
+    _clientId = null;
+
+    _clientName = null;
+    clientModel = null;
+
+    notifyListeners();
+  }
+  //通过计数器标示是否更新客户
+
+  // int _count=0;
 
   bool _isForSelectedClient = false;
-  int get goodsId => _goodsId;
+
   int get clientId => _clientId;
-  String get tel => _tel;
-  String get provinceId => _provinceId;
-  String get cityId => _cityId;
-  String get districtId => _districtId;
-  String get provinceName => _provinceName;
-  String get cityName => _cityName;
-  String get districtName => _districtName;
+  String get tel => clientModel?.clientMobile ?? '';
+  int get provinceId => clientModel?.provinceId ?? -1;
+  int get cityId => clientModel?.cityId ?? -1;
+  int get districtId => clientModel?.districtId ?? -1;
+  String get provinceName => clientModel?.provinceName ?? '';
+  String get cityName => clientModel?.cityName ?? '';
+  String get districtName => clientModel?.districtName ?? '';
   bool get isForSelectedClient => _isForSelectedClient;
-  String get detailAddress => _detailAddress;
-  String get gender => _gender;
-  String get name => _name;
-  String get addressId => _addressId;
+  String get detailAddress => clientModel?.detailAddress;
+  int get gender => clientModel?.clientSex ?? 1;
+  String get name => _clientName ?? clientModel?.clientName ?? '';
+  int get addressId => _addressId;
   String get address =>
-      '${_provinceName ?? ''}${_cityName ?? ''}${_districtName ?? ''}';
+      '${provinceName ?? ''}${cityName ?? ''}${districtName ?? ''}';
 
   bool get hasChoosenCustomer => clientId != null;
   set name(String name) {
-    _name = name;
+    clientModel?.clientName = name;
     notifyListeners();
   }
 
   set provinceName(String provinceName) {
-    _provinceName = provinceName;
+    clientModel?.provinceName = provinceName;
     notifyListeners();
   }
 
   set cityName(String cityName) {
-    _cityName = cityName;
+    clientModel?.cityName = cityName;
     notifyListeners();
   }
 
   set districtName(String districtName) {
-    _districtName = districtName;
+    clientModel?.districtName = districtName;
     notifyListeners();
   }
 
-  set gender(String gender) {
-    _gender = gender;
+  set gender(int gender) {
+    clientModel?.clientSex = gender;
     notifyListeners();
   }
 
   set detailAddress(String detailAddress) {
-    _detailAddress = detailAddress;
+    clientModel?.detailAddress = detailAddress;
     notifyListeners();
   }
 
@@ -71,17 +74,12 @@ class ClientProvider with ChangeNotifier {
   }
 
   set tel(String tel) {
-    _tel = tel;
+    clientModel?.clientMobile = tel;
     notifyListeners();
   }
 
-  set addressId(String id) {
+  set addressId(int id) {
     _addressId = id;
-    notifyListeners();
-  }
-
-  set goodsId(int id) {
-    _goodsId = id;
     notifyListeners();
   }
 
@@ -91,83 +89,41 @@ class ClientProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearClientInfo() {
-    _tel = '';
-    _gender = '';
-    _provinceId = '';
-    _cityId = '';
-    _districtId = '';
-    _detailAddress = '';
-    notifyListeners();
-  }
-
   void setAddress(String provinceName, String cityName, String districtName) {
-    _provinceName = provinceName;
-    _cityName = cityName;
-    _districtName = districtName;
     notifyListeners();
   }
 
-  void setAddressId(String provinceId, String cityId, String districtId) {
-    _provinceId = provinceId;
-    _cityName = cityId;
-    _districtName = districtId;
+  void setAddressId(int provinceId, int cityId, int districtId) {
+    clientModel?.provinceId = provinceId;
+    clientModel?.cityId = cityId;
+    clientModel?.districtId = districtId;
     notifyListeners();
   }
 
-  set provinceId(String id) {
-    _provinceId = id;
+  set provinceId(int id) {
+    clientModel?.provinceId = id;
     notifyListeners();
   }
 
-  set cityId(String id) {
-    _cityId = id;
+  set cityId(int id) {
+    clientModel?.cityId = id;
     notifyListeners();
   }
 
-  set districtId(String id) {
-    _districtId = id;
+  set districtId(int id) {
+    clientModel?.districtId = id;
     notifyListeners();
   }
 
-  void saveClientInfo(
-      {String name,
-      String tel,
-      String address,
-      int clientId,
-      String gender,
-      String provinceId,
-      String cityId,
-      String districtId,
-      String provinceName,
-      String cityName,
-      String addressId,
-      String districtName}) {
-    Application.sp.setString('clientName', name);
-    Application.sp.setString('clientTel', tel);
-    Application.sp.setString('clientGender', gender);
-    Application.sp.setString('clientProvinceId', provinceId);
-    Application.sp.setString('clientCityId', cityId);
-    Application.sp.setString('clientDistrictId', districtId);
-    Application.sp.setString('clientProvinceName', provinceName);
-    Application.sp.setString('clientCityName', cityName);
-    Application.sp.setString('clientDistrictName', districtName);
-    Application.sp.setString('clientAddress', address);
-    Application.sp.setInt('clientId', clientId);
-    Application.sp.setString('clientAddressId', addressId);
+  setClientModel(CustomerDetailModel model) {
+    clientModel = model;
+    _clientName = model?.clientName;
   }
 
-  initClientInfo() {
-    _name = Application.sp.get('clientName');
-    _tel = Application.sp.get('clientTel');
-    _provinceId = Application.sp.get('clientProvinceId');
-    _cityId = Application.sp.get('clientCityId');
-    _districtName = Application.sp.get('clientDistrictId');
-    _provinceName = Application.sp.get('clientProvinceName');
-    _cityName = Application.sp.get('clientCityName');
-    _districtName = Application.sp.get('clientDistrictName');
-    _clientId = Application.sp.get('clientId');
-    _gender = Application.sp.get('clientGender');
-    _addressId = Application.sp.get('clientAddressId');
+  saveClientInfo({int clientId, int addressId, String name}) {
+    _clientId = clientId;
+    _addressId = addressId;
+    _clientName = name;
+    notifyListeners();
   }
 }

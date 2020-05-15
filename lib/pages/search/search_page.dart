@@ -23,11 +23,13 @@ class _SearchPageState extends State<SearchPage> {
   int type;
   List<String> history = [];
   UserProvider provider;
+  TextEditingController inputController;
   @override
   void initState() {
     super.initState();
     type = widget.type;
     provider = Provider.of<UserProvider>(context, listen: false);
+    inputController = TextEditingController();
     loadHistory();
   }
 
@@ -173,6 +175,12 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    inputController?.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
@@ -187,6 +195,8 @@ class _SearchPageState extends State<SearchPage> {
               children: <Widget>[
                 Expanded(
                   child: TextField(
+                    controller: inputController,
+                    enableInteractiveSelection: false,
                     // textAlignVertical: TextAlignVertical(y: .5),
                     onSubmitted: (String text) {
                       if (text?.trim()?.isEmpty == true) {
@@ -195,16 +205,22 @@ class _SearchPageState extends State<SearchPage> {
                       addHistory(text);
                       jumpTo(text);
                     },
+
                     decoration: InputDecoration(
                         // fillColor: Colors.grey,
                         filled: true,
-                        fillColor: Color(0Xfff7f8f9),
-                        prefixIcon: ZYIcon.search,
-                        suffixIcon: ZYIcon.del,
-
-                        // contentPadding: EdgeInsets.symmetric(
-                        //     horizontal: UIKit.width(20),
-                        //     vertical: UIKit.height(16)),
+                        fillColor: Color(0xFFEDEFF1),
+                        prefixIcon: Container(
+                          child: ZYIcon.search,
+                        ),
+                        suffixIcon: InkWell(
+                          child: ZYIcon.del,
+                          onTap: () {
+                            inputController?.text = ' ';
+                          },
+                        ),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: UIKit.height(2)),
                         hintText: HINT_TEXT_MAP[type]),
                   ),
                 ),
@@ -244,11 +260,15 @@ class _SearchPageState extends State<SearchPage> {
                     onTap: () {
                       jumpTo(history[i] ?? '');
                     },
-                    child: Padding(
+                    child: Container(
+                      color: const Color(0xFFEDEFF1),
                       padding: EdgeInsets.symmetric(
+                          horizontal: UIKit.width(30),
+                          vertical: UIKit.height(10)),
+                      margin: EdgeInsets.symmetric(
                           horizontal: UIKit.width(15),
                           vertical: UIKit.height(15)),
-                      child: Chip(label: Text(history[i] ?? '')),
+                      child: Text(history[i] ?? ''),
                     ),
                   );
                 }),

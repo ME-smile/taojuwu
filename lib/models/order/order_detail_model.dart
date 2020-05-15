@@ -105,7 +105,7 @@ class OrderDetailModel {
   String tailMoney;
   String orderEstimatedPrice;
   String adjustMoney;
-  int adjustMoneyRemark;
+  String adjustMoneyRemark;
   String realityPayMoney;
   int noticeStatus;
   String installRemark;
@@ -134,9 +134,27 @@ class OrderDetailModel {
   List<String> promotionTypeInfo;
   String promotionTypeName;
   String orderTypeName;
+
   Distribution distribution;
   List<Reason> reason;
-
+  int get goodsNum =>
+      orderGoods
+          ?.where((item) => item.isSelectedGoods == 1)
+          ?.toList()
+          ?.length ??
+      0;
+  String get windowNum => '${orderWindowNum ?? '1'}';
+  bool get canCancel => orderStatus != 15 ?? true;
+  bool get isMeasureOrder => orderType == 2 ?? false;
+  bool get isShowAllInfo => [1, 2].contains(orderStatus) ?? false;
+  bool get isShowManuscript => (isShowAllInfo && isMeasureOrder) ?? false;
+  bool get haNotsSelectedProduct => orderStatus == 14;
+  bool get hasAudited => orderStatus > 1;
+  bool get hasMeasured => orderStatus > 2;
+  bool get hasInstalled => orderStatus >= 7;
+  bool get hasProducted => orderStatus > 5;
+  bool get hasFinished => orderStatus >= 8 && orderStatus != 14;
+  bool get hasPaid => orderStatus > 4;
   OrderDetailModel.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
     orderNo = json['order_no'];
@@ -210,14 +228,14 @@ class OrderDetailModel {
     measureTime = json['measure_time'];
     realityMeasureTime = '${json['reality_measure_time']}';
     installTime = json['install_time'];
-    realityInstallTime = json['reality_install_time'];
+    realityInstallTime = '${json['reality_install_time']}';
     measureManuscriptsPicture = json['measure_manuscripts_picture'];
     orderWindowNum = '${json['order_window_num'] ?? ''}';
     orderEarnestMoney = json['order_earnest_money'];
     tailMoney = json['tail_money'];
     orderEstimatedPrice = json['order_estimated_price'];
     adjustMoney = json['adjust_money'];
-    adjustMoneyRemark = json['adjust_money_remark'];
+    adjustMoneyRemark = '${json['adjust_money_remark'] ?? ''}';
     realityPayMoney = json['reality_pay_money'];
     noticeStatus = json['notice_status'];
     installRemark = json['install_remark'];
@@ -242,6 +260,7 @@ class OrderDetailModel {
     if (json['order_goods'] != null) {
       orderGoods = new List<OrderGoods>();
       json['order_goods'].forEach((v) {
+        v['parent_order_status'] = orderStatus ?? -1;
         orderGoods.add(new OrderGoods.fromJson(v));
       });
     }
@@ -398,7 +417,7 @@ class OrderGoods {
   String tmpExpressNo;
   int giftFlag;
   int isVirtual;
-  int refundDesc;
+  String refundDesc;
   String refundPic;
   int refundGoodsStatus;
   int isSelectedGoods;
@@ -411,7 +430,13 @@ class OrderGoods {
   List<String> refundOperation;
   String statusName;
   OrderGoodsMeasure orderGoodsMeasure;
+
+  int parentOrderStatus;
   String earnestMoney;
+  bool get hasSelectedProduct => isSelectedGoods == 1;
+  bool get canCancel => orderStatus != 15 && refundStatus == 0;
+  bool get subOrderHasSameStatusWithParent =>
+      (orderStatus == parentOrderStatus) ?? false;
 
   OrderGoods(
       {this.orderGoodsId,
@@ -466,7 +491,8 @@ class OrderGoods {
       this.refundOperation,
       this.statusName,
       this.orderGoodsMeasure,
-      this.earnestMoney});
+      this.earnestMoney,
+      this.parentOrderStatus});
 
   OrderGoods.fromJson(Map<String, dynamic> json) {
     orderGoodsId = json['order_goods_id'];
@@ -508,15 +534,16 @@ class OrderGoods {
     tmpExpressNo = json['tmp_express_no'];
     giftFlag = json['gift_flag'];
     isVirtual = json['is_virtual'];
-    refundDesc = json['refund_desc'];
+    refundDesc = '${json['refund_desc'] ?? ''}';
     refundPic = json['refund_pic'];
     refundGoodsStatus = json['refund_goods_status'];
     isSelectedGoods = json['is_selected_goods'];
     isShade = json['is_shade'];
+    parentOrderStatus = json['parent_order_status'];
     Map map = json['wc_attr'];
 
     List<Map<String, dynamic>> wrapper = [];
-    map.forEach((key, val) {
+    map?.forEach((key, val) {
       Map<String, dynamic> tmp = {};
       tmp['attr_name'] = Constants.ATTR_MAP[int.parse('$key')];
       tmp['attr'] = val is List ? val : [val];
@@ -528,9 +555,9 @@ class OrderGoods {
     estimatedPrice = json['estimated_price'];
     expressInfo = json['express_info'];
     shippingStatusName = json['shipping_status_name'];
-    pictureInfo = json['picture_info'] != null
-        ? new PictureInfo.fromJson(json['picture_info'])
-        : null;
+    // pictureInfo = json['picture_info'] != null
+    //     ? new PictureInfo.fromJson(json['picture_info'])
+    //     : null;
     if (json['refund_operation'] != null) {
       // refundOperation = new List<Null>();
       // json['refund_operation'].forEach((v) { refundOperation.add(new Null.fromJson(v)); });
@@ -691,7 +718,8 @@ class OrderGoodsMeasure {
   String installPicture;
   String installRemark;
   int createTime;
-  String updateTime;
+  int updateTime;
+  String partsName;
 
   OrderGoodsMeasure(
       {this.id,
@@ -728,6 +756,7 @@ class OrderGoodsMeasure {
       this.installPicture,
       this.installRemark,
       this.createTime,
+      this.partsName,
       this.updateTime});
 
   OrderGoodsMeasure.fromJson(Map<String, dynamic> json) {
@@ -766,6 +795,7 @@ class OrderGoodsMeasure {
     installRemark = json['install_remark'];
     createTime = json['create_time'];
     updateTime = json['update_time'];
+    partsName = json['parts_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -805,6 +835,7 @@ class OrderGoodsMeasure {
     data['install_remark'] = this.installRemark;
     data['create_time'] = this.createTime;
     data['update_time'] = this.updateTime;
+    data['parts_name'] = this.partsName;
     return data;
   }
 }

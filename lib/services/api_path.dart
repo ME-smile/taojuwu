@@ -19,7 +19,7 @@ class ApiPath {
 
   static const String categoryUserList = '/api/client/lists_with_type';
 
-  static const String userDetail = '/api/client/info';
+  static const String customerDetail = '/api/client/info';
 
   static const String orderList = '/api/order/order';
 
@@ -48,4 +48,22 @@ class ApiPath {
   static const String orderRemind = '/api/order/notice';
 
   static const String orderCancel = '/api/order/orderClose';
+
+  static const String orderGoodsCancel = '/api/order/orderRefund';
+
+  static const String createMeasureOrder = '/api/order/orderMeasureCreate';
+
+  static const String getMeasureData = '/api/order/orderGoodsMeasureData';
+
+  static const String selectProduct = '/api/order/addMeasureOrderGoods';
+
+  static const String confirmToSelect = '/api/order/orderSelectedGoods';
+
+  static const String editPrice = '/api/order/orderAdjustMoney';
+
+  static const String scanQR = '/api/goods/scanqrcode';
+
+  static const String uploadImg = '/api/upload/uploadImage';
+
+  static const String afterSale = '/api/order/addOrderQuestion';
 }

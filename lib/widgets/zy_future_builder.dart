@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/utils/ui_kit.dart';
 
 import 'network_error.dart';
 
@@ -26,7 +25,7 @@ class ZYFutureBuilder<T> extends StatefulWidget {
             Container(
               color: Colors.white,
               alignment: Alignment.center,
-              height: UIKit.width(200),
+              height: double.infinity,
               child: CupertinoActivityIndicator(),
             );
 
@@ -47,14 +46,16 @@ class _ZYFutureBuilderState<T> extends State<ZYFutureBuilder<T>> {
   }
 
   void _request() {
-    setState(() {
-      if (widget.params == null)
-        _future = widget.futureFunc(context);
-      else {
-        _future = widget.futureFunc(context, params: widget.params);
-        oldParams = widget.params.values.join();
-      }
-    });
+    if (mounted) {
+      setState(() {
+        if (widget.params == null)
+          _future = widget.futureFunc(context);
+        else {
+          _future = widget.futureFunc(context, params: widget.params);
+          oldParams = widget.params.values.join();
+        }
+      });
+    }
   }
 
   @override

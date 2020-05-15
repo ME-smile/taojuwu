@@ -129,14 +129,11 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
               onTap: () {
                 // Navigator.pop(context, model);
                 if (provider.isForSelectedClient) {
-                  RouteHandler.goCurtainDetailPage(context, provider?.goodsId);
                   provider?.isForSelectedClient = false;
-                  provider?.name = model?.clientName;
-                  provider?.clientId = model?.id;
+                  provider?.clientId = model?.id ?? -1;
                   provider?.saveClientInfo(
-                    name: model?.clientName,
-                    clientId: model?.id,
-                  );
+                      clientId: model?.id ?? -1, name: model?.clientName);
+                  Navigator.of(context).pop();
                 } else {
                   RouteHandler.goCustomerDetailPage(context, model?.id);
                 }

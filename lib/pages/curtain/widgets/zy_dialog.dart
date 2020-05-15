@@ -84,7 +84,6 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
         'tap': (WindowShadeAttrBean bean) {
           setState(() {
             tmp = bean;
-
           });
         },
         'confirm': () {
@@ -126,7 +125,7 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
             },
             child: SingleChildScrollView(
                 child: Wrap(
-              runAlignment: WrapAlignment.center,
+              runAlignment: WrapAlignment.start,
               crossAxisAlignment: WrapCrossAlignment.start,
               direction: Axis.horizontal,
               spacing: 8,
@@ -140,7 +139,7 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
                   showBorder:
                       title != '配饰选择' ? tmp.id == item.id : item.isChecked,
                   callback: () {
-                   dict[title]['tap'](item);
+                    dict[title]['tap'](item);
                   },
                 );
               }),

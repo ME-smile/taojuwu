@@ -17,6 +17,7 @@ import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
+import 'package:taojuwu/widgets/zy_submit_button.dart';
 
 class PreMeasureDataPage extends StatefulWidget {
   PreMeasureDataPage({Key key}) : super(key: key);
@@ -410,24 +411,14 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
               ),
             ),
           ),
-          bottomNavigationBar: Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: UIKit.width(50),
-            ),
-            child: RaisedButton(
-                onPressed: () {
-                  if (!beforeSendData(provider)) return;
-                  OTPService.saveMeasure(context, params: params)
-                      .then((ZYResponse response) {
-                    provider?.measureId = response?.data;
-                    Navigator.of(context).pop();
-                  }).catchError((err) => err);
-                },
-                child: Text(
-                  '确认',
-                  style: Theme.of(context).accentTextTheme.button,
-                )),
-          ),
+          bottomNavigationBar: ZYSubmitButton('确认', () {
+            if (!beforeSendData(provider)) return;
+            OTPService.saveMeasure(context, params: params)
+                .then((ZYResponse response) {
+              provider?.measureId = response?.data;
+              Navigator.of(context).pop();
+            }).catchError((err) => err);
+          }),
         );
       },
     );

@@ -1,10 +1,10 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class _GridCard extends StatelessWidget {
   final CurtainGoodItemBean bean;
@@ -28,15 +28,22 @@ class _GridCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                ExtendedImage.network(
-                  UIKit.getNetworkImgPath(bean.picCoverMid),
-                  cache: true,
+                // ExtendedImage.network(
+                //   UIKit.getNetworkImgPath(bean.picCoverMid),
+                //   cache: true,
+                //   width: (width - 20) / 2,
+                //   height: (width - 20) / 2,
+                //   fit: BoxFit.cover,
+                // ),
+
+                ZYNetImage(
+                  imgPath: bean?.picCoverMid ?? '',
                   width: (width - 20) / 2,
                   height: (width - 20) / 2,
                   fit: BoxFit.cover,
                 ),
                 Expanded(
-                  child: Text(bean.goodsName ?? '',
+                  child: Text(bean?.goodsName ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.left,

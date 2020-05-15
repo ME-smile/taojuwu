@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:fluro/fluro.dart';
 import 'package:taojuwu/providers/client_provider.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
+import 'package:taojuwu/providers/order_provider.dart';
 
 import 'package:taojuwu/providers/theme_provider.dart';
 import 'package:taojuwu/providers/user_provider.dart';
@@ -36,6 +37,9 @@ void main() async {
         ),
         ChangeNotifierProvider<GoodsProvider>(
           create: (_) => GoodsProvider(),
+        ),
+        ChangeNotifierProvider<OrderProvider>(
+          create: (BuildContext context) => OrderProvider(context),
         )
       ],
       child: App(),

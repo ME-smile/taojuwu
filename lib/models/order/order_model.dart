@@ -39,7 +39,7 @@ class OrderModelData {
   double orderEarnestMoney;
   double tailMoney;
   double orderEstimatedPrice;
-  // Null orderWindowNum;
+  String orderWindowNum;
   int clientId;
   String measureTime;
   String installTime;
@@ -47,6 +47,18 @@ class OrderModelData {
   String statusName;
   String clientName;
   List<OrderModel> models;
+  int get goodsCount =>
+      models?.where((item) => item.isSelectedGoods == 1)?.length ?? 0;
+  bool get isMeasureOrder => orderType == 2 ?? false;
+  bool get hasNotsSelectedProduct => orderStatus == 14;
+  bool get hasAudited => orderStatus > 1;
+  bool get hasMeasured => orderStatus > 2;
+  bool get hasInstalled => orderStatus >= 7;
+  bool get hasProducted => orderStatus > 5;
+  bool get hasFinished => orderStatus >= 8 && orderStatus != 14;
+  String get orderEarnestMoneyStr {
+    return orderEarnestMoney.toStringAsFixed(2);
+  }
 
   OrderModelData.fromJson(Map<String, dynamic> json) {
     orderId = int.parse('${json['order_id']}');
@@ -54,10 +66,11 @@ class OrderModelData {
     orderType = int.parse('${json['order_type']}');
     orderStatus = int.parse('${json['order_status']}');
     receiverName = json['receiver_name'];
-    createTime = int.parse('${json['create_time']}' ?? 0) * 1000;
+    createTime = json['create_time'] ?? 0;
     orderEarnestMoney = double.parse('${json['order_earnest_money']}');
     tailMoney = double.parse('${json['tail_money']}');
     orderEstimatedPrice = double.parse('${json['order_estimated_price']}');
+    orderWindowNum = '${json['order_window_num'] ?? '1'}';
     clientId = int.parse('${json['client_id']}');
     measureTime = json['measure_time'];
     installTime = json['install_time'];
@@ -84,6 +97,11 @@ class OrderModel {
   int orderStatus;
   String statusName;
   OrderThumbnailPicture picture;
+  String roomName = '';
+  double width = 0.0;
+  double height = 0.0;
+  String style = '';
+  String mode = '';
 
   OrderModel.fromJson(Map<String, dynamic> json) {
     orderGoodsId = json['order_goods_id'].runtimeType == int
@@ -109,6 +127,25 @@ class OrderModel {
             ? json['wc_attr'].values.toList()
             : [];
     attrs = list.map((item) => OrderProductAttr.fromJson(item)).toList();
+    if (json['wc_attr'] != null) {
+      roomName = json['wc_attr']['1'] == null
+          ? ''
+          : json['wc_attr']['1']['name'] ?? '';
+      width = json['wc_attr']['9'] == null
+          ? 0.0
+          : json['wc_attr']['9'][0] != null
+              ? double.parse(json['wc_attr']['9'][0]['value'] ?? '0.0')
+              : 0.0;
+      height = json['wc_attr']['9'] == null
+          ? 0.0
+          : json['wc_attr']['9'][1] != null
+              ? double.parse(json['wc_attr']['9'][1]['value'] ?? '0.0')
+              : 0.0;
+      style = json['wc_attr']['2'] == null
+          ? ''
+          : json['wc_attr']['2']['name'] ?? '';
+    }
+    mode = json['measure_data'] ?? '';
     orderStatus = json['order_status'].runtimeType == int
         ? json['order_status']
         : int.parse(json['order_status']);
@@ -148,19 +185,21 @@ class OrderProductAttr {
   String title = '';
 
   OrderProductAttr.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    value = '${json['value']}';
-    if (['宽', '高'].contains(name)) {
-      name += ' ${double.parse(value) / 100}米 ';
+    if (json != null) {
+      name = json['name'];
+      value = '${json['value']}';
+      if (['宽', '高'].contains(name)) {
+        name += ' ${double.parse(value) / 100}米 ';
+      }
+      if (name.contains('空间')) {
+        title = '${json['value']}';
+      }
+      id = '${json['id']}';
+      picture = json['picture'] ?? '';
+      price = '${json['price'] ?? ''}';
+      amount = '${json['amount']}';
+      subtotal = '${json['subtotal']}';
     }
-    if (name.contains('空间')) {
-      title = '${json['value']}';
-    }
-    id = '${json['id']}';
-    picture = json['picture'] ?? '';
-    price = json['price'];
-    amount = '${json['amount']}';
-    subtotal = '${json['subtotal']}';
   }
 
   @override
@@ -171,11 +210,6 @@ class OrderProductAttr {
   Map<String, dynamic> toJson() => {
         'name': name,
         'id': id,
-        // 'picture': picture,
-        // 'amount': amount,
-        // 'subtoltal': subtotal,
-        // 'value': value,
-        // 'price': price
       };
 }
 

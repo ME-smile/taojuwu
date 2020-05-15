@@ -33,6 +33,9 @@ class Routes {
   static const String orderCommitSuccess = '/orderCommitSuccess';
   static const String orderSearch = '/orderSearch';
   static const String customerSearch = '/customerSearch';
+  static const String afterSaleService = '/afterSaleService';
+  static const String measureDataPreview = '/measureDataPreview';
+  static const String editOpenMode = '/editOpenMode';
   static void configureRoutes(Router router) {
     router.notFoundHandler = new Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -70,5 +73,8 @@ class Routes {
     router.define(orderCommitSuccess, handler: RouteHandler.orderCommitSuccess);
     router.define(orderSearch, handler: RouteHandler.orderSearch);
     router.define(customerSearch, handler: RouteHandler.customerSearch);
+    router.define(afterSaleService, handler: RouteHandler.afterSaleService);
+    router.define(measureDataPreview, handler: RouteHandler.measureDataPreview);
+    router.define(editOpenMode, handler: RouteHandler.editOpenMode);
   }
 }

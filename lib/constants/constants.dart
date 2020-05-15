@@ -1,6 +1,8 @@
 class Constants {
   static const HOST = "http://buyi.taoju5.com";
   //订单状态
+
+  //order_status 订单状态 1待审核 2待测量 3待付款 4付款待审核 5生产中 6等待预约安装 7待安装 8已完成 9已取消 10售后维权 11售后维权已处理 12售后维权已关闭 -1退款中 13订单自动完成 14待选品' 15取消待审核
   static const String ORDER_STATUS_ALL = '全部';
   static const String ORDER_STATUS_TO_AUDIT = '待审核';
   static const String ORDER_STATUS_TO_MEASURE = '待测量';
@@ -10,17 +12,19 @@ class Constants {
   static const String ORDER_STATUS_TO_INSTALL = '待安装';
   static const String ORDER_STATUS_FINISHED = '已完成';
 
+  static const String ORDER_STATUS_PRODUCTED = '生产完成';
+
   static const String ORDER_STATUS_PAIED_TO_AUDIT = '付尾款待审核';
   static const String ORDER_STATUS_TO_SCHEDULE_INSTALL = '等待预约安装';
 
   static const String ORDER_STATUS_TO_PAY = '待付款';
-  // static const String ORDER_STATUS_TO_INSTALL = ''
-  static const List<String> SHOW_CANCEL_BUTTON_STATUS = [
-    ORDER_STATUS_TO_AUDIT,
-    ORDER_STATUS_TO_MEASURE,
-  ];
+
+  static const String ORDER_STATUS_WAIT_TO_REFUND = '退款申请';
+
+  static const ORDER_STATUS_TO_SELECT_CODE = 14;
+
   static const Map ORDER_STATUS_TAB_MAP = {
-    '0': ORDER_STATUS_ALL,
+    '': ORDER_STATUS_ALL,
     '1': ORDER_STATUS_TO_AUDIT,
     '2': ORDER_STATUS_TO_MEASURE,
     '3': ORDER_STATUS_TO_SELECT,
@@ -31,61 +35,81 @@ class Constants {
   };
 
   static const Map ORDER_STATUS_MAP = {
-    '0': ORDER_STATUS_ALL,
-    '1': ORDER_STATUS_TO_AUDIT,
-    '2': ORDER_STATUS_TO_MEASURE,
-    '3': ORDER_STATUS_TO_SELECT,
-    '4': ORDER_STATUS_PAY_TAIL,
-    '5': ORDER_STATUS_PRODUCTING,
-    '6': ORDER_STATUS_TO_INSTALL,
-    '7': ORDER_STATUS_FINISHED,
+    '': ORDER_STATUS_ALL,
+    '1': ORDER_STATUS_ALL,
+    '2': ORDER_STATUS_TO_AUDIT,
+    '3': ORDER_STATUS_TO_MEASURE,
+    '4': ORDER_STATUS_TO_SELECT,
+    '5': ORDER_STATUS_PAY_TAIL,
+    '6': ORDER_STATUS_PRODUCTING,
+    '7': ORDER_STATUS_TO_INSTALL,
+    '8': ORDER_STATUS_FINISHED,
   };
 
-  static const Map ORDER_STATUS_BUTTON_TEXT_MAP = {
-    ORDER_STATUS_TO_AUDIT: '提醒审核',
-    ORDER_STATUS_TO_MEASURE: ' 提醒测量',
-    ORDER_STATUS_TO_INSTALL: '提醒安装',
-    '': '订单状态未知'
-  };
   static const Map ORDER_STATUS_BUTTON_ACTION = {
-    ORDER_STATUS_TO_AUDIT: 1,
-    ORDER_STATUS_TO_MEASURE: 2,
-    ORDER_STATUS_BUTTON_TEXT_MAP: 3,
-    '': ''
+    0: {
+      'show_button': false,
+    },
+    1: {'show_button': true, 'button_text': '提醒审核'},
+    2: {'show_button': true, 'button_text': '提醒测量'},
+    3: {'show_button': false},
+    4: {'show_button': false},
+    5: {'show_button': false},
+    6: {'show_button': true, 'button_text': '提醒安装'},
+    7: {'show_button': true, 'button_text': '售后维权'},
+    8: {'show_button': true, 'button_text': '售后维权'},
+    9: {'show_button': true, 'button_text': '提醒审核'},
+    14: {'show_button': true, 'button_text': '去选品'}
   };
-  static const Map<String, Map<String, String>> ORDER_STATUS_TIP_MAP = {
-    ORDER_STATUS_TO_AUDIT: {
+
+  static const Map<int, Map<String, String>> ORDER_STATUS_TIP_MAP = {
+    -1: {'title': '退款申请已提交', 'subtitle': '等待审核'},
+    0: {'title': '', 'subtitle': ''},
+    1: {
       'title': '订单已提交',
       'subtitle': '等待审核',
     },
-    ORDER_STATUS_TO_MEASURE: {
+    2: {
       'title': '订单已审核',
       'subtitle': '等待测量人员上门测量',
     },
-    ORDER_STATUS_PAY_TAIL: {
+    3: {
       'title': '测量完成',
       'subtitle': '等待客户支付尾款',
     },
-    ORDER_STATUS_TO_PAY: {
-      'title': '测量完成',
-      'subtitle': '等待客户支付尾款',
-    },
-    ORDER_STATUS_PAIED_TO_AUDIT: {
+
+    4: {
       'title': '订单已付尾款',
       'subtitle': '等待审核',
     },
-    ORDER_STATUS_PRODUCTING: {
+
+    // ORDER_STATUS_TO_PAY: {
+    //   'title': '测量完成',
+    //   'subtitle': '等待客户支付尾款',
+    // },
+    // ORDER_STATUS_PAIED_TO_AUDIT: {
+    //   'title': '订单已付尾款',
+    //   'subtitle': '等待审核',
+    // },
+    5: {
       'title': '审核完成',
       'subtitle': '商品正在工厂生产中',
     },
-    ORDER_STATUS_TO_SCHEDULE_INSTALL: {
+    6: {
       'title': '商品已准备完毕',
       'subtitle': '联系预约安装时间',
     },
-    ORDER_STATUS_TO_INSTALL: {
+    7: {
       'title': '等待安装',
       'subtitle': '预约安装时间',
-    }
+    },
+    8: {'title': '交易成功', 'subtitle': ''},
+    9: {'title': '已取消', 'subtitle': ''},
+    10: {'title': '售后问题已提交', 'subtitle': '我们将尽快为您解决'},
+    11: {'title': '交易完成', 'subtitle': '售后问题已处理'},
+    14: {'title': '已完成测量', 'subtitle': '请根据房型选择商品'},
+    15: {'title': '已完成测量', 'subtitle': '请根据房型选择商品'},
+    // ORDER_STATUS_PRODUCTED: {'title': '交易成功', 'subtitle': ''},
   };
 
   static const Map<dynamic, String> GENDER_MAP = {

@@ -40,7 +40,7 @@ class BottomPicker extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 Container(
-                  height:  UIKit.height(90),
+                  height: UIKit.height(90),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -49,13 +49,12 @@ class BottomPicker extends StatelessWidget {
                           Navigator.of(context).pop();
                         },
                         child: Padding(
-                          padding:
-                              EdgeInsets.only(left: UIKit.height(30)),
+                          padding: EdgeInsets.only(left: UIKit.height(30)),
                           child: Text(
                             '取消',
                             style: TextStyle(
                                 color: const Color(0xFF6E7486),
-                                fontSize:UIKit.sp(32)),
+                                fontSize: UIKit.sp(32)),
                           ),
                         ),
                       ),
@@ -66,15 +65,16 @@ class BottomPicker extends StatelessWidget {
                             fontSize: UIKit.sp(36)),
                       ),
                       GestureDetector(
-                        onTap: callback,
+                        onTap: () {
+                          callback();
+                        },
                         child: Padding(
-                          padding:
-                              EdgeInsets.only(right:UIKit.width(30)),
+                          padding: EdgeInsets.only(right: UIKit.width(30)),
                           child: Text(
                             '确定',
                             style: TextStyle(
                                 color: const Color(0xFF2196f3),
-                                fontSize:UIKit.sp(32)),
+                                fontSize: UIKit.sp(32)),
                           ),
                         ),
                       )

@@ -60,8 +60,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   @override
   void initState() {
     super.initState();
-    animationController = new AnimationController(
-        duration: const Duration(milliseconds: 2000), vsync: this);
+
     tabController = TabController(length: tabs.length, vsync: this);
 
     params['keyword'] = widget.keyword;
@@ -87,11 +86,11 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   ];
 
   GZXDropdownMenuController menuController = GZXDropdownMenuController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   int currentSortType = 0;
-  bool hideFilterView = true;
-  AnimationController animationController;
+
   TabController tabController;
   Animation<Offset> animation;
   bool isGridMode = true;
@@ -122,12 +121,19 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     );
   }
 
+  closeEndDrawer() {
+    if (_scaffoldKey.currentState.isEndDrawerOpen) {
+      return Navigator.of(context).pop();
+    }
+    return;
+  }
+
   Widget _buildFilter3() {
     return InkWell(
       onTap: () {
         setState(() {
           menuController?.show(0);
-          hideFilterView = true;
+          closeEndDrawer();
         });
       },
       child: Text.rich(TextSpan(
@@ -143,11 +149,103 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           if (menuController?.isShow == true) {
             menuController?.hide();
           }
-          hideFilterView = !hideFilterView;
+          ScaffoldState state = _scaffoldKey.currentState;
+          if (!state.isEndDrawerOpen) {
+            state.openEndDrawer();
+          } else {
+            closeEndDrawer();
+          }
+          // hideFilterView = !hideFilterView;
         });
       },
       child: Text.rich(
           TextSpan(text: '筛选', children: [WidgetSpan(child: ZYIcon.filter)])),
+    );
+  }
+
+  Widget endDrawer(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+
+    return Container(
+      width: 200,
+      color: Colors.white,
+      height: double.infinity,
+      padding: EdgeInsets.symmetric(
+          horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
+            decoration: BoxDecoration(
+                border: Border(
+                    left: BorderSide(color: themeData.accentColor, width: 5))),
+            child: Text('品类'),
+          ),
+          ListBody(
+            children: List.generate(tagWrapper?.category?.length ?? 0, (int i) {
+              TagBean item = tagWrapper?.category[i];
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    currentCategory = i;
+                    isRefresh = true;
+                    params['category_id'] = item?.id;
+
+                    requestGoodsData();
+                  });
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: UIKit.width(20), vertical: UIKit.height(10)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(item.name),
+                      currentCategory == i
+                          ? ZYIcon.check
+                          : SizedBox(
+                              width: 24,
+                              height: 24,
+                            )
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ),
+          Divider(),
+          Container(
+            alignment: Alignment.centerLeft,
+            padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
+            decoration: BoxDecoration(
+                border: Border(
+                    left: BorderSide(color: themeData.accentColor, width: 5))),
+            child: Text('系列'),
+          ),
+          ListBody(
+            children: List.generate(tagWrapper?.tag?.length ?? 0, (int i) {
+              TagBean item = tagWrapper?.tag[i];
+              return Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: UIKit.width(20), vertical: UIKit.height(10)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(item.name),
+                    currentStyle == i
+                        ? ZYIcon.check
+                        : SizedBox(
+                            width: 24,
+                            height: 24,
+                          )
+                  ],
+                ),
+              );
+            }),
+          ),
+        ],
+      ),
     );
   }
 
@@ -179,7 +277,11 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       } else {
         _refreshController?.loadComplete();
         setState(() {
-          goodsList.addAll(wrapper?.data);
+          wrapper?.data?.forEach((item) {
+            if (goodsList?.contains(item) == false) {
+              goodsList.add(item);
+            }
+          });
         });
       }
     }).catchError((err) {
@@ -194,7 +296,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   @override
   void dispose() {
     super.dispose();
-    animationController?.dispose();
     menuController?.dispose();
     tabController?.dispose();
     _refreshController?.dispose();
@@ -207,10 +308,18 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     width = MediaQuery.of(context).size.width;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        backgroundColor: themeData.primaryColor,
         onPressed: () {
           RouteHandler.goMeasureOrderPage(context);
         },
-        child: Icon(Icons.edit),
+        child: ZYAssetImage(
+          'create_measure_order@2x.png',
+          width: UIKit.width(60),
+          height: UIKit.height(60),
+          callback: () {
+            RouteHandler.goMeasureOrderPage(context);
+          },
+        ),
       ),
       appBar: AppBar(
         centerTitle: true,
@@ -220,13 +329,15 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           ),
           ScanButton()
         ],
-        title: TabBar(
-            controller: tabController,
-            indicatorSize: TabBarIndicatorSize.label,
-            labelPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-            tabs: List.generate(tabs.length, (int i) {
-              return Text(tabs[i]);
-            })),
+        title: Center(
+          child: TabBar(
+              controller: tabController,
+              indicatorSize: TabBarIndicatorSize.label,
+              labelPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              tabs: List.generate(tabs.length, (int i) {
+                return Text(tabs[i]);
+              })),
+        ),
         bottom: PreferredSize(
             child: GoodsFilterHeader(
               filter1: _buildFilter1(),
@@ -236,207 +347,103 @@ class _CurtainMallPageState extends State<CurtainMallPage>
             ),
             preferredSize: Size.fromHeight(48)),
       ),
-      body: TabBarView(controller: tabController, children: [
-        Container(
-          alignment: Alignment.center,
-          // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-          child: Stack(
-            children: <Widget>[
-              SmartRefresher(
-                enablePullDown: true,
-                enablePullUp: true,
-                onRefresh: () async {
-                  params['page_index'] = 1;
-                  isRefresh = true;
-                  requestGoodsData();
-                },
-                onLoading: () async {
-                  params['page_index']++;
-                  isRefresh = false;
-                  requestGoodsData();
-                },
-                controller: _refreshController,
-                child: isLoading
-                    ? Center(
-                        child: CupertinoActivityIndicator(),
-                      )
-                    : goodsList?.isEmpty == true
-                        ? NoData()
-                        : Container(
-                            margin: EdgeInsets.only(bottom: 50),
-                            child: isGridMode
-                                ? GoodsGridView(
-                                    goodsList,
-                                  )
-                                : GoodsListView(
-                                    goodsList,
-                                  ),
-                          ),
-              ),
-              Offstage(
-                offstage: tabController.index == 0 && hideFilterView,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      hideFilterView = !hideFilterView;
-                    });
+      body: Scaffold(
+        key: _scaffoldKey,
+        endDrawer: endDrawer(context),
+        body: TabBarView(controller: tabController, children: [
+          Container(
+            alignment: Alignment.center,
+            // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+            child: Stack(
+              children: <Widget>[
+                SmartRefresher(
+                  enablePullDown: true,
+                  enablePullUp: true,
+                  onRefresh: () async {
+                    params['page_index'] = 1;
+                    isRefresh = true;
+                    requestGoodsData();
                   },
-                  child: Container(
-                      alignment: Alignment.centerRight,
-                      width: MediaQuery.of(context).size.width,
-                      color: Color.fromARGB(100, 0, 0, 0),
-                      child: Container(
-                        width: 200,
-                        color: Colors.white,
-                        height: double.infinity,
-                        padding: EdgeInsets.symmetric(
-                            horizontal: UIKit.width(20),
-                            vertical: UIKit.height(20)),
-                        child: Column(
-                          children: [
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: UIKit.width(15)),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      left: BorderSide(
-                                          color: themeData.accentColor,
-                                          width: 5))),
-                              child: Text('品类'),
-                            ),
-                            ListBody(
-                              children: List.generate(
-                                  tagWrapper?.category?.length ?? 0, (int i) {
-                                TagBean item = tagWrapper?.category[i];
-                                return InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      currentCategory = i;
-                                      isRefresh = true;
-                                      params['category_id'] = item?.id;
-                                      hideFilterView = true;
-                                      requestGoodsData();
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: UIKit.width(20),
-                                        vertical: UIKit.height(10)),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(item.name),
-                                        currentCategory == i
-                                            ? ZYIcon.check
-                                            : SizedBox(
-                                                width: 24,
-                                                height: 24,
-                                              )
-                                      ],
+                  onLoading: () async {
+                    params['page_index']++;
+                    isRefresh = false;
+                    requestGoodsData();
+                  },
+                  controller: _refreshController,
+                  child: isLoading
+                      ? Center(
+                          child: CupertinoActivityIndicator(),
+                        )
+                      : goodsList?.isEmpty == true
+                          ? NoData()
+                          : Container(
+                              margin: EdgeInsets.only(bottom: 50),
+                              child: isGridMode
+                                  ? GoodsGridView(
+                                      goodsList,
+                                    )
+                                  : GoodsListView(
+                                      goodsList,
                                     ),
-                                  ),
-                                );
-                              }),
                             ),
-                            Divider(),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: UIKit.width(15)),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      left: BorderSide(
-                                          color: themeData.accentColor,
-                                          width: 5))),
-                              child: Text('系列'),
-                            ),
-                            ListBody(
-                              children: List.generate(
-                                  tagWrapper?.tag?.length ?? 0, (int i) {
-                                TagBean item = tagWrapper?.tag[i];
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: UIKit.width(20),
-                                      vertical: UIKit.height(10)),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(item.name),
-                                      currentStyle == i
-                                          ? ZYIcon.check
-                                          : SizedBox(
-                                              width: 24,
-                                              height: 24,
-                                            )
-                                    ],
-                                  ),
-                                );
-                              }),
-                            ),
-                          ],
-                        ),
-                      )),
                 ),
-              ),
-              GZXDropDownMenu(
-                  controller: menuController,
-                  animationMilliseconds: 400,
-                  menus: [
-                    GZXDropdownMenuBuilder(
-                        dropDownHeight: 40.0 * SORT_TYPES.length,
-                        dropDownWidget: Column(
-                          children: List.generate(SORT_TYPES.length, (int i) {
-                            bool isCurrentOption = currentSortType == i;
-                            return Flexible(
-                                child: InkWell(
-                              onTap: () {
-                                if (isCurrentOption) return;
-                                setState(() {
-                                  currentSortType = i;
-                                  isRefresh = true;
-                                  params['order'] = sortParams[i]['order'];
-                                  params['sort'] = sortParams[i]['sort'];
-                                  menuController?.hide();
-                                  requestGoodsData();
-                                });
-                              },
-                              child: Container(
-                                  height: 30,
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 50),
-                                    child: Text.rich(
-                                      TextSpan(
-                                          text: SORT_TYPES[i],
-                                          style: TextStyle(
-                                              color: isCurrentOption
-                                                  ? textTheme.body1.color
-                                                  : Colors.grey),
-                                          children: [
-                                            WidgetSpan(
-                                                child: SizedBox(width: 20)),
-                                            WidgetSpan(
-                                                child: isCurrentOption
-                                                    ? ZYIcon.check
-                                                    : SizedBox(
-                                                        width: 24,
-                                                        height: 24,
-                                                      ))
-                                          ]),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  )),
-                            ));
-                          }),
-                        ))
-                  ])
-            ],
-          ),
-        )
-      ]),
+                GZXDropDownMenu(
+                    controller: menuController,
+                    animationMilliseconds: 400,
+                    menus: [
+                      GZXDropdownMenuBuilder(
+                          dropDownHeight: 40.0 * SORT_TYPES.length,
+                          dropDownWidget: Column(
+                            children: List.generate(SORT_TYPES.length, (int i) {
+                              bool isCurrentOption = currentSortType == i;
+                              return Flexible(
+                                  child: InkWell(
+                                onTap: () {
+                                  if (isCurrentOption) return;
+                                  setState(() {
+                                    currentSortType = i;
+                                    isRefresh = true;
+                                    params['order'] = sortParams[i]['order'];
+                                    params['sort'] = sortParams[i]['sort'];
+                                    menuController?.hide();
+                                    requestGoodsData();
+                                  });
+                                },
+                                child: Container(
+                                    height: 30,
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 50),
+                                      child: Text.rich(
+                                        TextSpan(
+                                            text: SORT_TYPES[i],
+                                            style: TextStyle(
+                                                color: isCurrentOption
+                                                    ? textTheme.body1.color
+                                                    : Colors.grey),
+                                            children: [
+                                              WidgetSpan(
+                                                  child: SizedBox(width: 20)),
+                                              WidgetSpan(
+                                                  child: isCurrentOption
+                                                      ? ZYIcon.check
+                                                      : SizedBox(
+                                                          width: 24,
+                                                          height: 24,
+                                                        ))
+                                            ]),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    )),
+                              ));
+                            }),
+                          ))
+                    ])
+              ],
+            ),
+          )
+        ]),
+      ),
     );
   }
 }

@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/models/user/user_info_model.dart';
+
 // import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/services/api_path.dart';
-import 'package:taojuwu/models/user/user_info_model.dart';
+import 'package:taojuwu/utils/common_kit.dart';
+// import 'package:taojuwu/models/user/user_info_model.dart';
 import 'package:taojuwu/widgets/loading_dialog.dart';
 
 class Xhr {
@@ -16,9 +19,7 @@ class Xhr {
         "ACCEPT": 'application/json',
       },
       queryParameters: {
-        'token': UserInfo.instance.token ?? '',
-        // 'token':
-        //     'MDAwMDAwMDAwMJjcemKSuIGetZ58ZH-tqJrJnoncl7qOq5t6mpGai2HRfM2fqX-1l2m1eIyrgYiCY8yCcKE'
+        'token': UserInfo.instance.token,
       },
       sendTimeout: TIMER,
       receiveTimeout: TIMER,
@@ -72,12 +73,14 @@ class Xhr {
     bool isShowLoading = true,
   }) async {
     Response response;
+    BuildContext ctx;
     try {
       if (isShowLoading) {
         showDialog(
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) {
+              ctx = context;
               return LoadingDialog();
             });
       }
@@ -86,8 +89,8 @@ class Xhr {
           data: formdata,
           options: options,
           cancelToken: cancelToken);
-
-      Navigator.of(context).pop();
+      CommonKit.showSuccess();
+      Navigator.of(ctx).pop();
     } on DioError catch (e) {
       formatError(e);
     }

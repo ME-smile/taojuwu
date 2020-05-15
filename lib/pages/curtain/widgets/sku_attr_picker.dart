@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/zy_submit_button.dart';
 
 class SkuAttrPicker extends StatelessWidget {
   final String title;
@@ -26,9 +27,7 @@ class SkuAttrPicker extends StatelessWidget {
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: UIKit.width(10),
-                    vertical: UIKit.height(20)
-                  ),
+                      horizontal: UIKit.width(10), vertical: UIKit.height(20)),
                   child: Row(
                     children: <Widget>[
                       Expanded(child: SizedBox()),
@@ -47,17 +46,20 @@ class SkuAttrPicker extends StatelessWidget {
                   ),
                 ),
                 Expanded(child: child),
-                Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: UIKit.width(50),
-                  ),
-                   width: MediaQuery.of(context).size.width,
-                  child: RaisedButton(onPressed: (){
-                    callback();
-                  },child: Text(
-                      '确定',
-                      style: Theme.of(context).textTheme.button,),
-                )),
+                ZYSubmitButton('确定', () {
+                  callback();
+                })
+                // Container(
+                //   margin: EdgeInsets.symmetric(
+                //     horizontal: UIKit.width(50),
+                //   ),
+                //    width: MediaQuery.of(context).size.width,
+                //   child: RaisedButton(onPressed: (){
+                //     callback();
+                //   },child: Text(
+                //       '确定',
+                //       style: Theme.of(context).textTheme.button,),
+                // )),
               ],
             )),
       ),

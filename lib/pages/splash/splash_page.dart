@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:taojuwu/providers/client_provider.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 
@@ -20,8 +19,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    ClientProvider clientProvider = Provider.of<ClientProvider>(context,listen: false);
-    clientProvider?.initClientInfo();
     _scaleTween = Tween(begin: 0, end: 1);
     _logoController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500))

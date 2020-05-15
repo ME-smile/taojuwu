@@ -11,7 +11,7 @@ import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/send_sms_button.dart';
-import 'package:taojuwu/widgets/zy_assetImage.dart';
+// import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _pwdController = TextEditingController();
   final TextEditingController _smsController = TextEditingController();
   UserProvider _userProvider;
-  bool _isPwdMode = true;
+  bool _isPwdMode = false;
 
   @override
   void initState() {
@@ -156,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 InkWell(
                   child: Text(
-                    '手机号码登录/注册',
+                    '手机号码登录',
                     style: textTheme.subhead,
                   ),
                   onTap: () {
@@ -287,22 +287,22 @@ class _LoginPageState extends State<LoginPage> {
                 ])),
           ),
           VSpacing(100),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text('第三方账号登入  '),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                child: ZYAssetImage(
-                  'wechat.png',
-                  width: UIKit.width(80),
-                  height: UIKit.height(80),
-                ),
-              ),
-              ZYAssetImage('qq.png',
-                  width: UIKit.width(80), height: UIKit.height(80)),
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: <Widget>[
+          //     Text('第三方账号登入  '),
+          //     Padding(
+          //       padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+          //       child: ZYAssetImage(
+          //         'wechat.png',
+          //         width: UIKit.width(80),
+          //         height: UIKit.height(80),
+          //       ),
+          //     ),
+          //     ZYAssetImage('qq.png',
+          //         width: UIKit.width(80), height: UIKit.height(80)),
+          //   ],
+          // ),
         ],
       ),
     );

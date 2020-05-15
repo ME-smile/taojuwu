@@ -32,9 +32,9 @@ class GoodsProvider with ChangeNotifier {
   CustomerModelBean targetCustomer;
   Map<String, dynamic> attrParams;
 
-  String _width='0.0';
-  String _height='0.0';
-  String _dy='0.0';
+  String _width = '0.0';
+  String _height = '0.0';
+  String _dy = '0.0';
 
   int _curInstallMode = 0;
   int _curOpenMode = 0;
@@ -47,6 +47,9 @@ class GoodsProvider with ChangeNotifier {
   int tmpWindowStyle = 0;
   int tmpWindowType = 0;
   bool _hasInit = false;
+
+  int _createType = 1;
+
   GoodsProvider();
 
   void initData(
@@ -81,16 +84,15 @@ class GoodsProvider with ChangeNotifier {
     _curRoomAttrBean =
         roomAttr?.data?.isNotEmpty == true ? roomAttr?.data?.first : null;
     _hasInit = true;
-    _width = '0.0';
-    _height = '0.0';
-    _dy = '0.0';
   }
 
+  int get goodsId => _goods?.goodsId ?? -1;
   WindowGauzeAttrBean get curWindowGauzeAttrBean => _curwindowGauzeAttrBean;
   CraftAttrBean get curCraftAttrBean => _curCraftAttrBean;
   PartAttrBean get curPartAttrBean => _curPartAttrBean;
   WindowShadeAttrBean get curWindowShadeAttrBean => _curWindowShadeAttrBean;
   CanopyAttrBean get curCanopyAttrBean => _curCanopyAttrBean;
+  int get createType => _createType;
   List<AccessoryAttrBean> get curAccessoryAttrBeans =>
       accessoryAttr?.data?.isNotEmpty == true
           ? accessoryAttr?.data
@@ -109,8 +111,10 @@ class GoodsProvider with ChangeNotifier {
   double get widthCM => double.parse(_width);
   double get heightCM => double.parse(_height);
   double get dyCM => double.parse(_dy);
-  double get widthM => double.parse(((double.parse(_width)) / 100).toStringAsFixed(3));
-  double get heightM => double.parse(((double.parse(_height)) / 100).toStringAsFixed(3));
+  double get widthM =>
+      double.parse(((double.parse(_width)) / 100).toStringAsFixed(3));
+  double get heightM =>
+      double.parse(((double.parse(_height)) / 100).toStringAsFixed(3));
   get measureId => _goods?.measureId;
   ProductBean get goods => _goods;
   WindowGauzeAttr get windowGauzeAttr => _windowGauzeAttr;
@@ -142,8 +146,9 @@ class GoodsProvider with ChangeNotifier {
     return tmp;
   }
 
+  bool get isMeasureOrder => createType == 2;
   bool get hasSetSize => measureId != null;
-  bool get hasLike => goods?.isCollect==1??false;
+  bool get hasLike => goods?.isCollect == 1 ?? false;
   bool get hasWindowGauze =>
       curWindowGauzeAttrBean?.name?.contains('不要窗纱') == false;
   set curWindowGauzeAttrBean(WindowGauzeAttrBean bean) {
@@ -158,6 +163,16 @@ class GoodsProvider with ChangeNotifier {
 
   set curCraftAttrBean(CraftAttrBean bean) {
     _curCraftAttrBean = bean;
+    notifyListeners();
+  }
+
+  void initSize(String width, String height, String dy,
+      {String installMode: '顶装', String openMode: '整体对开'}) {
+    _width = width;
+    _height = height;
+    _dy = dy;
+    _curInstallMode = WindowPatternAttr.installModeMap[installMode];
+    _curOpenMode = WindowPatternAttr.openModeMap[openMode];
     notifyListeners();
   }
 
@@ -231,7 +246,7 @@ class GoodsProvider with ChangeNotifier {
     targetCustomer = bean;
   }
 
-  set isCollect(int flag){
+  set isCollect(int flag) {
     goods?.isCollect = flag;
     notifyListeners();
   }
@@ -270,7 +285,6 @@ class GoodsProvider with ChangeNotifier {
   }
 
   double get windowShadeClothPrice {
-
     return curWindowShadeAttrBean?.price ?? 0.0;
   }
 
@@ -297,7 +311,7 @@ class GoodsProvider with ChangeNotifier {
       return widthM * unitPrice;
     } else {
       // 配饰价格计算 acc-->accesspry
-    
+
       double heightFactor = 1.0;
       if (heightCM > 270) {
         heightFactor = 1.5;
@@ -322,5 +336,13 @@ class GoodsProvider with ChangeNotifier {
       }
     }
     return double.parse(tmp.toStringAsFixed(3));
+  }
+
+  void clearGoodsInfo() {
+    _width = '0.0';
+    _height = '0.0';
+    _dy = '0.0';
+    _goods = null;
+    notifyListeners();
   }
 }

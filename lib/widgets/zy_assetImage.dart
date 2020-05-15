@@ -8,7 +8,7 @@ class ZYAssetImage extends StatelessWidget {
   final double height;
   final BoxFit fit;
   const ZYAssetImage(this.path,
-      {Key key, this.callback, this.width: 20, this.height: 20,this.fit})
+      {Key key, this.callback, this.width: 20, this.height: 20, this.fit})
       : super(key: key);
 
   @override

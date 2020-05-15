@@ -7,9 +7,23 @@
       "sort": 1
     },
     {
+      "city_id": 1,
+      "province_id": 1,
+      "city_name": "北京城区",
+      "zipcode": "100000",
+      "sort": 1
+    },
+    {
       "city_id": 2,
       "province_id": 2,
       "city_name": "天津市",
+      "zipcode": "100000",
+      "sort": 0
+    },
+    {
+      "city_id": 2,
+      "province_id": 2,
+      "city_name": "天津城区",
       "zipcode": "100000",
       "sort": 0
     },
@@ -507,6 +521,13 @@
       "city_id": 73,
       "province_id": 9,
       "city_name": "上海市",
+      "zipcode": "200000",
+      "sort": 0
+    },
+    {
+      "city_id": 73,
+      "province_id": 9,
+      "city_name": "上海城区",
       "zipcode": "200000",
       "sort": 0
     },
@@ -1627,6 +1648,20 @@
       "city_id": 234,
       "province_id": 22,
       "city_name": "重庆市",
+      "zipcode": "400000",
+      "sort": 0
+    },
+    {
+      "city_id": 234,
+      "province_id": 22,
+      "city_name": "市辖区",
+      "zipcode": "400000",
+      "sort": 0
+    },
+    {
+      "city_id": 234,
+      "province_id": 22,
+      "city_name": "县",
       "zipcode": "400000",
       "sort": 0
     },

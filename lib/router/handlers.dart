@@ -4,9 +4,13 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/export/export_pages.dart';
+import 'package:taojuwu/pages/after_sale_service/after_sale_service_page.dart';
+
 import 'package:taojuwu/pages/cart/cart_page.dart';
 import 'package:taojuwu/pages/curtain/curtain_detail_page.dart';
 import 'package:taojuwu/pages/curtain/curtain_mall_page.dart';
+import 'package:taojuwu/pages/curtain/subPages/edit_open_mode_page.dart';
+import 'package:taojuwu/pages/curtain/subPages/measure_data_preview_page.dart';
 import 'package:taojuwu/pages/curtain/subPages/pre_measure_data_page.dart';
 import 'package:taojuwu/pages/customer/customer_detail_page.dart';
 import 'package:taojuwu/pages/customer/customer_edit_page.dart';
@@ -90,17 +94,20 @@ class RouteHandler {
 
   static Handler order = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    return OrderPage();
+    String clientId = params['clientId']?.first;
+    return OrderPage(
+      clientId: clientId,
+    );
   });
 
-  static goOrderPage(BuildContext context) {
-    _jumpTo(context, Routes.order);
+  static goOrderPage(BuildContext context, {int clientId}) {
+    _jumpTo(context, '${Routes.order}?clientId=$clientId');
   }
 
   static Handler orderDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int id = int.parse(params['id']?.first);
-    return OrderDetailPage(id);
+    return OrderDetailPage(id: id);
   });
 
   static goOrderDetailPage(BuildContext context, int id) {
@@ -245,11 +252,14 @@ class RouteHandler {
 
   static Handler editAddress = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    return EditAddressPage();
+    int id = int.parse(params['id']?.first ?? '-1') ?? -1;
+    return EditAddressPage(
+      id: id,
+    );
   });
 
-  static goEditAddressPage(BuildContext context) {
-    _jumpTo(context, Routes.editAddress);
+  static goEditAddressPage(BuildContext context, {int id}) {
+    _jumpTo(context, '${Routes.editAddress}?id=$id');
   }
 
   static Handler search = Handler(
@@ -302,11 +312,14 @@ class RouteHandler {
 
   static Handler orderCommitSuccess = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    return OrderCommitSuccessPage();
+    int clientId = int.parse(params['clientId']?.first) ?? -1;
+    return OrderCommitSuccessPage(
+      clientId: clientId,
+    );
   });
 
-  static goOrderCommitSuccessPage(BuildContext context) {
-    _jumpTo(context, Routes.orderCommitSuccess);
+  static goOrderCommitSuccessPage(BuildContext context, String clientId) {
+    _jumpTo(context, '${Routes.orderCommitSuccess}?clientId=$clientId');
   }
 
   static Handler orderSearch = Handler(
@@ -335,5 +348,32 @@ class RouteHandler {
   static goCustomerSearchPage(BuildContext context, {String keyword: ''}) {
     keyword = FluroConvertUtils.fluroCnParamsEncode(keyword);
     _jumpTo(context, '${Routes.customerSearch}?keyword=$keyword');
+  }
+
+  static Handler afterSaleService = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    return AfterSaleServicePage();
+  });
+
+  static goAfterSaleServicePage(BuildContext context) {
+    _jumpTo(context, Routes.afterSaleService);
+  }
+
+  static Handler measureDataPreview = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    return MeasureDataPreviewPage();
+  });
+
+  static goMeasureDataPreviewPage(BuildContext context) {
+    _jumpTo(context, Routes.measureDataPreview);
+  }
+
+  static Handler editOpenMode = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    return EditOpenModePage();
+  });
+
+  static goEditOpenModePage(BuildContext context) {
+    _jumpTo(context, Routes.editOpenMode);
   }
 }

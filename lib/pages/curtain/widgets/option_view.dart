@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class OptionView extends StatelessWidget {
   final String img;
@@ -33,18 +34,18 @@ class OptionView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      color: showBorder
-                          ? Theme.of(context).accentColor
-                          : Colors.transparent,
-                      width: 1.2)),
-              child: Image.network(
-                UIKit.getNetworkImgPath(img),
-                width: UIKit.width(150),
-                height: UIKit.width(150),
-              ),
-            ),
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: showBorder
+                            ? Theme.of(context).accentColor
+                            : Colors.transparent,
+                        width: 1.2)),
+                child: ZYNetImage(
+                  imgPath: img,
+                  callback: callback,
+                  width: UIKit.width(150),
+                  height: UIKit.width(150),
+                )),
             Padding(
               padding: EdgeInsets.only(top: UIKit.height(10)),
               child: Text(

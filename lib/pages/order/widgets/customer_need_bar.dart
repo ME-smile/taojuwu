@@ -74,19 +74,27 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                 offstage: widget.isHideMeasureWindowNum,
                 child: OptBar(
                   title: '需测量窗数:'.padLeft(17),
-                  text: '请选择',
+                  text: '${provider?.windowNum ?? '请选择'}',
                   callback: () async {
                     await showCupertinoModalPopup<void>(
                         context: context,
                         builder: (BuildContext context) {
+                          String tmpOption;
                           return BottomPicker(
                             title: '测量窗数',
-                            callback: () {},
+                            callback: () {
+                              provider?.windowNum = tmpOption ?? '1';
+                              Navigator.of(context).pop();
+                            },
                             child: CupertinoPicker(
                                 scrollController: ageController,
                                 itemExtent: 70,
                                 onSelectedItemChanged: (int index) {
-                                  // initIndex = index;
+                                  if (index > 0 && index < 9) {
+                                    tmpOption = '${index + 1}';
+                                  } else {
+                                    tmpOption = '10+';
+                                  }
                                 },
                                 children: List.generate(11, (int i) {
                                   return Center(
