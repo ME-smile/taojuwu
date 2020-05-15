@@ -179,7 +179,7 @@ class OTPService {
   static Future<ZYResponse> loginByPwd(
       BuildContext context, Map<String, String> params) async {
     Response response =
-        await xhr.post(context, ApiPath.loginByPwd, data: params ?? {});
+        await xhr.post(ApiPath.loginByPwd, data: params ?? {});
 
     return ZYResponse.fromJsonWithData(response.data);
   }
@@ -209,7 +209,7 @@ class OTPService {
   static Future<ZYResponse> addUser(
       BuildContext context, Map<String, dynamic> params) async {
     Response response =
-        await xhr.post(context, ApiPath.userAdd, data: params ?? {});
+        await xhr.post(ApiPath.userAdd, data: params ?? {});
     return ZYResponse.fromJsonWithData(response.data);
   }
 
@@ -253,20 +253,20 @@ class OTPService {
 
   static Future<ZYResponse> collect(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response = await xhr.post(context, ApiPath.collect, data: params);
+    Response response = await xhr.post(ApiPath.collect, data: params);
     return ZYResponse.fromJson(response.data);
   }
 
   static Future<ZYResponse> cancelCollect(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(context, ApiPath.cancelCollect, data: params);
+        await xhr.post(ApiPath.cancelCollect, data: params);
     return ZYResponse.fromJson(response.data);
   }
 
   static Future<ZYResponse> addCart(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response = await xhr.post(context, ApiPath.addCart, data: params);
+    Response response = await xhr.post(ApiPath.addCart, data: params);
 
     return ZYResponse.fromJson(response.data);
   }
@@ -307,7 +307,7 @@ class OTPService {
   static Future<ZYResponse<dynamic>> createOrder(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(context, ApiPath.createOrder, formdata: params);
+        await xhr.post(ApiPath.createOrder, formdata: params);
 
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
@@ -315,7 +315,7 @@ class OTPService {
   static Future<ZYResponse<dynamic>> orderRemind(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(context, ApiPath.orderRemind, formdata: params);
+        await xhr.post(ApiPath.orderRemind, formdata: params);
 
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
@@ -323,7 +323,7 @@ class OTPService {
   static Future<ZYResponse<dynamic>> orderCancel(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(context, ApiPath.orderCancel, formdata: params);
+        await xhr.post(ApiPath.orderCancel, formdata: params);
 
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
@@ -331,7 +331,7 @@ class OTPService {
   static Future<ZYResponse<dynamic>> orderGoodsCancel(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(context, ApiPath.orderGoodsCancel, data: params);
+        await xhr.post(ApiPath.orderGoodsCancel, data: params);
 
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
@@ -339,47 +339,47 @@ class OTPService {
   static Future<ZYResponse<dynamic>> createMeasureOrder(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(context, ApiPath.createMeasureOrder, formdata: params);
+        await xhr.post( ApiPath.createMeasureOrder, formdata: params);
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
   static Future<MeasureDataModelResp> getMeasureData(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(context, ApiPath.getMeasureData, formdata: params);
+        await xhr.post(ApiPath.getMeasureData, formdata: params);
     return MeasureDataModelResp.fromJson(response.data);
   }
 
   static Future<ZYResponse<dynamic>> selectProduct(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(context, ApiPath.selectProduct, formdata: params);
+        await xhr.post(ApiPath.selectProduct, formdata: params);
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
   static Future<ZYResponse<dynamic>> confirmToSelect(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(context, ApiPath.confirmToSelect, data: params);
+        await xhr.post(ApiPath.confirmToSelect, data: params);
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
   static Future<ZYResponse<dynamic>> editPrice(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(context, ApiPath.editPrice, data: params);
+        await xhr.post( ApiPath.editPrice, data: params);
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
   static Future<ZYResponse<dynamic>> scanQR(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response = await xhr.post(context, ApiPath.scanQR, data: params);
+    Response response = await xhr.post(ApiPath.scanQR, data: params);
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
   static Future<ZYResponse<dynamic>> uploadImg(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response = await xhr.post(context, ApiPath.uploadImg,
+    Response response = await xhr.post( ApiPath.uploadImg,
         data: params,
         options: Options(
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}));
@@ -389,7 +389,7 @@ class OTPService {
   static Future<ZYResponse<dynamic>> afterSale(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response = await xhr.post(
-      context,
+      
       ApiPath.afterSale,
       data: params,
     );

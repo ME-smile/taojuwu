@@ -200,7 +200,7 @@ class _SearchPageState extends State<SearchPage> {
                     // textAlignVertical: TextAlignVertical(y: .5),
                     onSubmitted: (String text) {
                       if (text?.trim()?.isEmpty == true) {
-                        return CommonKit.toast(context, '请输入关键字');
+                        return CommonKit.showInfo( '请输入关键字');
                       }
                       addHistory(text);
                       jumpTo(text);

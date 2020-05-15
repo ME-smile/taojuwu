@@ -437,7 +437,7 @@ class OrderKit {
                             Provider.of(ctx, listen: false);
                         double deltaPrice = 0.0;
                         if (deltaMoney?.trim()?.isEmpty == true) {
-                          return CommonKit.toast(context, '请输入正确的金额');
+                          return CommonKit.showInfo('请输入正确的金额');
                         }
                         if (provider?.isMinus == true) {
                           deltaPrice = double.parse(deltaMoney) ?? 0;

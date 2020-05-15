@@ -218,19 +218,19 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
 
   bool beforeSendData(GoodsProvider provider) {
     if (width?.trim()?.isEmpty == true) {
-      CommonKit?.toast(context, '请填写宽度');
+      CommonKit?.showInfo( '请填写宽度');
       return false;
     }
     if (double.parse(width) == 0) {
-      CommonKit?.toast(context, '宽度不能为0哦');
+      CommonKit?.showInfo('宽度不能为0哦');
       return false;
     }
     if (height?.trim()?.isEmpty == true) {
-      CommonKit?.toast(context, '请填写高度');
+      CommonKit?.showInfo( '请填写高度');
       return false;
     }
     if (double.parse(width) == 0) {
-      CommonKit?.toast(context, '高度不能为0哦');
+      CommonKit?.showInfo('高度不能为0哦');
       return false;
     }
     provider?.width = width;

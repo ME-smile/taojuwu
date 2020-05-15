@@ -61,10 +61,10 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
           FlatButton(
               onPressed: () {
                 if (params['client_name'].trim().isEmpty) {
-                  return CommonKit.toast(context, '用户名不能为空哦');
+                  return CommonKit.showInfo( '用户名不能为空哦');
                 }
                 if (!RegexUtil.isMobileSimple(params['client_mobile'].trim())) {
-                  return CommonKit.toast(context, '请输入正确的手机号');
+                  return CommonKit.showInfo('请输入正确的手机号');
                 }
                 OTPService.addUser(context, params).then((ZYResponse response) {
                   if (response?.valid == true) {

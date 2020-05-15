@@ -210,7 +210,7 @@ class OrderProvider with ChangeNotifier {
         }'''
       },
     ).then((ZYResponse response) {
-      CommonKit.toast(ctx, response.message ?? '');
+     
       if (response.valid) {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid);
         GoodsProvider goodsProvider =
