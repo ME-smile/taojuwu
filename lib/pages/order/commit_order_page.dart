@@ -65,7 +65,7 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
                 VSpacing(20),
                 SellerInfoBar(),
                 VSpacing(20),
-                Container(
+                Flexible(
                   child: ListView.separated(
                       controller: controller,
                       shrinkWrap: true,

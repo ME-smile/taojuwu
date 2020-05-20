@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -51,8 +52,16 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   Map<String, dynamic> cartParams;
   Map<String, dynamic> collectParams;
   GoodsProvider goodsProvider;
-  bool hasCollect = false;
+
   int id;
+  int clientId;
+  ValueNotifier<bool> hasCollected = ValueNotifier<bool>(false);
+
+  @override
+  void dispose() {
+    super.dispose();
+    hasCollected?.dispose();
+  }
 
   @override
   void initState() {
@@ -61,6 +70,8 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
 
     ClientProvider clientProvider =
         Provider.of<ClientProvider>(context, listen: false);
+
+    clientId = clientProvider?.clientId;
     cartParams = {
       'client_uid': clientProvider?.clientId,
     };
@@ -70,6 +81,11 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
       'fav_id': widget.id,
       'client_uid': clientProvider?.clientId
     };
+
+    OTPService.fetchCurtainDetailData(
+      context,
+      params: {'goods_id': widget.id},
+    ).then((data) {}).catchError((err) => err);
   }
 
   void setCartParams(GoodsProvider goodsProvider) {
@@ -79,16 +95,23 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     cartParams['wc_attr'] = '${getAttrArgs(goodsProvider)}';
   }
 
-  void collect(
+  collect(
     BuildContext context,
   ) {
-    if (!hasCollect) {
+    // final Completer<bool> completer = new Completer<bool>();
+    if (hasCollected?.value == false) {
       OTPService.collect(context, params: collectParams)
-          .then((ZYResponse response) {})
-          .catchError((err) => err);
+          .then((ZYResponse response) {
+        if (response?.valid == true) {
+          hasCollected.value = true;
+        }
+      }).catchError((err) => err);
     } else {
-      OTPService.cancelCollect(context, params: collectParams).then((data) {
-        print(data);
+      OTPService.cancelCollect(context, params: collectParams)
+          .then((ZYResponse response) {
+        if (response?.valid == true) {
+          hasCollected.value = false;
+        }
       }).catchError((err) => err);
     }
   }
@@ -115,12 +138,12 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
         'name': provider?.curWindowGauzeAttrBean?.name ?? '',
         'id': provider?.curWindowGauzeAttrBean?.id ?? ''
       },
-      //窗纱
+      //工艺方式
       '4': {
         'name': provider?.curCraftAttrBean?.name ?? '',
         'id': provider?.curCraftAttrBean?.id ?? ''
       },
-      //配件
+      //型材
       '5': {
         'name': provider?.curPartAttrBean?.name ?? '',
         'id': provider?.curPartAttrBean?.id ?? ''
@@ -142,6 +165,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
         'name': provider?.curWindowShadeAttrBean?.name ?? '',
         'id': provider?.curWindowShadeAttrBean?.id ?? ''
       },
+      // 配饰
       '13': (provider?.curAccessoryAttrBeans?.isEmpty == true
               ? [provider?.accessoryAttr?.data?.first]
               : provider?.curAccessoryAttrBeans)
@@ -190,23 +214,23 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     TextTheme textTheme = themeData.textTheme;
     return ZYFutureBuilder(
         futureFunc: OTPService.fetchCurtainDetailData,
-        params: {'goods_id': widget.id},
+        params: {'goods_id': widget.id, 'client_uid': clientId},
         builder: (BuildContext context, data) {
-          ProductBeanRes productBeanRes = data[0];
-          ProductBeanDataWrapper wrapper = productBeanRes.data;
-          ProductBean bean = wrapper.goodsDetail;
-          WindowGauzeAttr windowGauzeAttr = data[1];
-          CraftAttr craftAttr = data[2];
-          PartAttr partAttr = data[3];
-          WindowShadeAttr windowShadeAttr = data[4];
-          CanopyAttr canopyAttr = data[5];
-          AccessoryAttr accessoryAttr = data[6];
-          RoomAttr roomAttr = data[7];
-          setCartParams(goodsProvider);
           return Consumer<GoodsProvider>(
             builder: (BuildContext context, GoodsProvider goodsProvider, _) {
+              ProductBeanRes productBeanRes = data[0];
+              ProductBeanDataWrapper wrapper = productBeanRes.data;
+              ProductBean bean = wrapper.goodsDetail;
+              WindowGauzeAttr windowGauzeAttr = data[1];
+              CraftAttr craftAttr = data[2];
+              PartAttr partAttr = data[3];
+              WindowShadeAttr windowShadeAttr = data[4];
+              CanopyAttr canopyAttr = data[5];
+              AccessoryAttr accessoryAttr = data[6];
+              RoomAttr roomAttr = data[7];
+
               if (goodsProvider?.hasInit == false) {
-                goodsProvider?.initData(
+                goodsProvider?.initDataWithFilter(
                     bean: bean,
                     windowGauzeAttr: windowGauzeAttr,
                     craftAttr: craftAttr,
@@ -215,204 +239,232 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                     canopyAttr: canopyAttr,
                     accessoryAttr: accessoryAttr,
                     roomAttr: roomAttr);
-                hasCollect = goodsProvider?.hasLike ?? false;
               }
-              return Scaffold(
-                  body: NestedScrollView(
-                      headerSliverBuilder:
-                          (BuildContext context, bool innerBoxIsScrolled) {
-                        return <Widget>[
-                          SliverAppBar(
-                            actions: <Widget>[
-                              UserChooseButton(
-                                id: widget.id,
-                              )
-                            ],
-                            expandedHeight: 400,
-                            floating: false,
-                            pinned: true,
-                            flexibleSpace: FlexibleSpaceBar(
-                              background: Container(
-                                margin: EdgeInsets.only(top: 80),
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: NetworkImage(
-                                          UIKit.getNetworkImgPath(
-                                              bean?.picCoverMid))),
+              setCartParams(goodsProvider);
+              hasCollected?.value = goodsProvider?.hasLike;
+
+              print(hasCollected.value);
+              return WillPopScope(
+                  child: Scaffold(
+                      body: NestedScrollView(
+                          headerSliverBuilder:
+                              (BuildContext context, bool innerBoxIsScrolled) {
+                            return <Widget>[
+                              SliverAppBar(
+                                actions: <Widget>[
+                                  UserChooseButton(
+                                    id: widget.id,
+                                  )
+                                ],
+                                expandedHeight: 400,
+                                floating: false,
+                                pinned: true,
+                                flexibleSpace: FlexibleSpaceBar(
+                                  background: Container(
+                                    margin: EdgeInsets.only(top: 80),
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                              UIKit.getNetworkImgPath(
+                                                  bean?.picCoverMid))),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          )
-                        ];
-                      },
-                      body: CustomScrollView(
-                        slivers: <Widget>[
-                          SliverToBoxAdapter(
-                            child: Container(
-                              color: themeData.primaryColor,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: UIKit.width(20),
-                                  vertical: UIKit.height(20)),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                              )
+                            ];
+                          },
+                          body: CustomScrollView(
+                            slivers: <Widget>[
+                              SliverToBoxAdapter(
+                                child: Container(
+                                  color: themeData.primaryColor,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: UIKit.width(20),
+                                      vertical: UIKit.height(20)),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text.rich(TextSpan(
+                                              text:
+                                                  '${bean?.goodsName}      ' ??
+                                                      '',
+                                              children: [
+                                                TextSpan(
+                                                    text: bean.goodsName ?? '',
+                                                    style: textTheme.caption)
+                                              ])),
+                                          Text.rich(
+                                              TextSpan(text: '', children: [
+                                            WidgetSpan(
+                                                child: ValueListenableBuilder(
+                                                    valueListenable:
+                                                        hasCollected,
+                                                    builder:
+                                                        (BuildContext context,
+                                                            bool isLiked, _) {
+                                                      return IconButton(
+                                                          icon: Icon(
+                                                            ZYIcon.like,
+                                                            color: isLiked
+                                                                ? Colors.red
+                                                                : const Color(
+                                                                    0xFFCCCCCC),
+                                                          ),
+                                                          onPressed: () {
+                                                            collect(context);
+                                                          });
+                                                    })),
+
+                                            // WidgetSpan(
+                                            //     child: IconButton(
+                                            //         icon: Icon(ZYIcon.share),
+                                            //         onPressed: () {})),
+                                            WidgetSpan(
+                                                child: IconButton(
+                                                    icon: Icon(ZYIcon.cart),
+                                                    onPressed: () {
+                                                      RouteHandler.goCartPage(
+                                                        context,
+                                                        clientId: clientId,
+                                                      );
+                                                    }))
+                                          ]))
+                                        ],
+                                      ),
+                                      VSpacing(20),
                                       Text.rich(TextSpan(
-                                          text: bean.goodsName + '     ' ?? '',
+                                          text: '¥${bean?.price ?? 0.00}',
                                           children: [
+                                            TextSpan(text: ' '),
                                             TextSpan(
-                                                text: bean.goodsName ?? '',
+                                                text: '元/米起',
                                                 style: textTheme.caption)
                                           ])),
-                                      Text.rich(TextSpan(text: '', children: [
-                                        WidgetSpan(
-                                            child: IconButton(
-                                                icon: AnimatedSwitcher(
-                                                  key: ValueKey<bool>(
-                                                      hasCollect),
-                                                  duration: const Duration(
-                                                      milliseconds: 1000),
-                                                  child: hasCollect
-                                                      ? ZYIcon.like
-                                                      : ZYIcon.unlike,
-                                                ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    hasCollect = !hasCollect;
-                                                    collect(context);
-                                                  });
-                                                })),
-                                        WidgetSpan(
-                                            child: IconButton(
-                                                icon: ZYIcon.share,
-                                                onPressed: () {})),
-                                        WidgetSpan(
-                                            child: IconButton(
-                                                icon: ZYIcon.cart,
-                                                onPressed: () {
-                                                  RouteHandler.goCartPage(
-                                                      context);
-                                                }))
-                                      ]))
                                     ],
                                   ),
-                                  VSpacing(20),
-                                  Text.rich(TextSpan(
-                                      text: '¥${bean?.price ?? 0.00}',
-                                      children: [
-                                        TextSpan(text: ' '),
-                                        TextSpan(
-                                            text: '元/米起',
-                                            style: textTheme.caption)
-                                      ])),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                          SliverToBoxAdapter(
-                            child: VSpacing(20),
-                          ),
-                          SliverToBoxAdapter(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: UIKit.width(20),
-                                  vertical: UIKit.height(20)),
-                              color: themeData.primaryColor,
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: UIKit.height(10)),
-                                      alignment: Alignment.centerLeft,
-                                      child: MeasureDataTipBar()),
-                                  Divider(),
-                                  AttrOptionsBar(
-                                    title: '窗 纱',
-                                    trailingText: goodsProvider
-                                            ?.curWindowGauzeAttrBean?.name ??
-                                        '',
-                                    callback: () {
-                                      ZYDialog.checkAttr(
-                                          context,
-                                          '窗纱选择',
-                                          goodsProvider
-                                              ?.curWindowGauzeAttrBean);
-                                    },
-                                    isWindowGauze: goodsProvider?.isWindowGauze,
-                                  ),
-                                  AttrOptionsBar(
-                                    title: '工艺方式',
-                                    trailingText:
-                                        goodsProvider?.curCraftAttrBean?.name ??
-                                            '',
-                                    callback: () {
-                                      ZYDialog.checkAttr(context, '工艺方式',
-                                          goodsProvider?.curCraftAttrBean);
-                                    },
-                                  ),
-                                  AttrOptionsBar(
-                                    title: '型 材',
-                                    trailingText:
-                                        goodsProvider?.curPartAttrBean?.name ??
-                                            '',
-                                    callback: () {
-                                      ZYDialog.checkAttr(context, '型材更换',
-                                          goodsProvider?.curPartAttrBean);
-                                    },
-                                  ),
-                                  AttrOptionsBar(
-                                    title: '遮光里布',
-                                    isWindowGauze: goodsProvider?.isWindowGauze,
-                                    trailingText: goodsProvider
-                                            ?.curWindowShadeAttrBean?.name ??
-                                        '',
-                                    callback: () {
-                                      ZYDialog.checkAttr(
-                                          context,
-                                          '遮光里布选择',
-                                          goodsProvider
-                                              ?.curWindowShadeAttrBean);
-                                    },
-                                  ),
-                                  AttrOptionsBar(
-                                    title: '幔 头',
-                                    isWindowGauze: goodsProvider?.isWindowGauze,
-                                    trailingText: goodsProvider
-                                            ?.curCanopyAttrBean?.name ??
-                                        '',
-                                    callback: () {
-                                      ZYDialog.checkAttr(context, '幔头选择',
-                                          goodsProvider?.curCanopyAttrBean);
-                                    },
-                                  ),
-                                  AttrOptionsBar(
-                                    title: '配 饰',
-                                    // isRollUpWindow: goodsProvider?.isWindowGauze,
-                                    trailingText: goodsProvider?.accText ?? '',
-                                    callback: () {
-                                      ZYDialog.checkAttr(context, '配饰选择',
-                                          goodsProvider?.curAccessoryAttrBeans);
-                                    },
-                                  ),
-                                  Container(
-                                    color: themeData.scaffoldBackgroundColor,
-                                    height: UIKit.height(20),
-                                  ),
-                                ],
+                              SliverToBoxAdapter(
+                                child: VSpacing(20),
                               ),
-                            ),
-                          ),
-                          SliverToBoxAdapter(
-                            child: bean.description.isNotEmpty
-                                ? Html(data: bean?.description)
-                                : Container(),
-                          )
-                        ],
-                      )),
-                  bottomNavigationBar: BottomActionButtonBar());
+                              SliverToBoxAdapter(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: UIKit.width(20),
+                                      vertical: UIKit.height(20)),
+                                  color: themeData.primaryColor,
+                                  child: Column(
+                                    children: <Widget>[
+                                      Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: UIKit.height(10)),
+                                          alignment: Alignment.centerLeft,
+                                          child: MeasureDataTipBar()),
+                                      Divider(),
+                                      AttrOptionsBar(
+                                        title: '窗 纱',
+                                        trailingText: goodsProvider
+                                                ?.curWindowGauzeAttrBean
+                                                ?.name ??
+                                            '',
+                                        callback: () {
+                                          ZYDialog.checkAttr(
+                                              context,
+                                              '窗纱选择',
+                                              goodsProvider
+                                                  ?.curWindowGauzeAttrBean);
+                                        },
+                                        isWindowGauze:
+                                            goodsProvider?.isWindowGauze,
+                                      ),
+                                      AttrOptionsBar(
+                                        title: '工艺方式',
+                                        trailingText: goodsProvider
+                                                ?.curCraftAttrBean?.name ??
+                                            '',
+                                        callback: () {
+                                          ZYDialog.checkAttr(context, '工艺方式',
+                                              goodsProvider?.curCraftAttrBean);
+                                        },
+                                      ),
+                                      AttrOptionsBar(
+                                        title: '型 材',
+                                        trailingText: goodsProvider
+                                                ?.curPartAttrBean?.name ??
+                                            '',
+                                        callback: () {
+                                          ZYDialog.checkAttr(context, '型材更换',
+                                              goodsProvider?.curPartAttrBean);
+                                        },
+                                      ),
+                                      AttrOptionsBar(
+                                        title: '遮光里布',
+                                        isWindowGauze:
+                                            goodsProvider?.isWindowGauze,
+                                        trailingText: goodsProvider
+                                                ?.curWindowShadeAttrBean
+                                                ?.name ??
+                                            '',
+                                        callback: () {
+                                          ZYDialog.checkAttr(
+                                              context,
+                                              '遮光里布选择',
+                                              goodsProvider
+                                                  ?.curWindowShadeAttrBean);
+                                        },
+                                      ),
+                                      AttrOptionsBar(
+                                        title: '幔 头',
+                                        isWindowGauze:
+                                            goodsProvider?.isWindowGauze,
+                                        trailingText: goodsProvider
+                                                ?.curCanopyAttrBean?.name ??
+                                            '',
+                                        callback: () {
+                                          ZYDialog.checkAttr(context, '幔头选择',
+                                              goodsProvider?.curCanopyAttrBean);
+                                        },
+                                      ),
+                                      AttrOptionsBar(
+                                        title: '配 饰',
+                                        // isRollUpWindow: goodsProvider?.isWindowGauze,
+                                        trailingText:
+                                            goodsProvider?.accText ?? '',
+                                        callback: () {
+                                          ZYDialog.checkAttr(
+                                              context,
+                                              '配饰选择',
+                                              goodsProvider
+                                                  ?.curAccessoryAttrBeans);
+                                        },
+                                      ),
+                                      Container(
+                                        color:
+                                            themeData.scaffoldBackgroundColor,
+                                        height: UIKit.height(20),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                child: bean?.description?.isNotEmpty == true
+                                    ? Html(data: bean?.description)
+                                    : Container(),
+                              )
+                            ],
+                          )),
+                      bottomNavigationBar: BottomActionButtonBar()),
+                  onWillPop: () {
+                    goodsProvider?.clearGoodsInfo();
+                    Navigator.of(context).pop();
+                    return Future.value(false);
+                  });
             },
           );
         });
@@ -696,7 +748,7 @@ class MeasureDataTipBar extends StatelessWidget {
                         : '',
                     textAlign: TextAlign.end,
                   ),
-                  ZYIcon.next
+                  Icon(ZYIcon.next)
                 ],
               ))
           : InkWell(
@@ -725,7 +777,7 @@ class MeasureDataTipBar extends StatelessWidget {
                         : '',
                     textAlign: TextAlign.end,
                   ),
-                  ZYIcon.next
+                  Icon(ZYIcon.next)
                 ],
               ),
             );

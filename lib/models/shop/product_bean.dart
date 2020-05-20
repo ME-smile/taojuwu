@@ -279,9 +279,11 @@ class ProductBean {
   String memberPrice;
   List<ProductBeanGoodsImageBean> imgList;
   int skuPicture;
-
+  String picCoverMicro;
+  String categoryName;
+  String displayPrice;
   String get picCoverMid {
-    return this.imgList.first.picCoverMid;
+    return this?.imgList?.first?.picCoverMid;
   }
 
   List<ProductBeanSpecValueBean> getSpecListByName(String name) {
@@ -343,7 +345,9 @@ class ProductBean {
     tmpBean.isStockVisible = map['is_stock_visible'];
     tmpBean.isHot = map['is_hot'];
     tmpBean.goodsSpecialType = map['goods_special_type'];
+
     tmpBean.isCollect = map['is_collect'];
+
     tmpBean.isRecommend = map['is_recommend'];
     tmpBean.isNew = map['is_new'];
     tmpBean.isPreSale = map['is_pre_sale'];
@@ -421,6 +425,9 @@ class ProductBean {
       ..addAll((map['img_list'] as List ?? [])
           .map((o) => ProductBeanGoodsImageBean.fromMap(o)));
     tmpBean.skuPicture = map['sku_picture'];
+    tmpBean?.picCoverMicro = map['pic_cover_micro'];
+    tmpBean?.categoryName = map['category_name'];
+    tmpBean?.displayPrice = map['display_price'];
     return tmpBean;
   }
 
@@ -532,7 +539,7 @@ class ProductBean {
         "member_price": memberPrice,
         "img_list": imgList,
         "sku_picture": skuPicture,
-        "goods_special_type":goodsSpecialType
+        "goods_special_type": goodsSpecialType
       };
 }
 

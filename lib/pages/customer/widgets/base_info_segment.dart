@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
+
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/user/customer_detail_model.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -17,13 +17,27 @@ class BaseInfoSegment extends StatefulWidget {
 
 class _BaseInfoSegmentState extends State<BaseInfoSegment> {
   TextEditingController nameInput;
+  FocusNode nameFocusNode;
+
   TextEditingController telInput;
+  FocusNode telFocusNode;
   TextEditingController weChatInput;
+  FocusNode weChatFocusNode;
+
   CustomerDetailModel model;
   Map<String, String> params;
   FixedExtentScrollController genderController;
   FixedExtentScrollController ageController;
-  static const double ITEM_EXTENT = 50.0;
+
+  int gender = 0;
+  int age = 0;
+  String get genderStr => GENDER_OPTIONS[gender];
+  void unFocus() {
+    nameFocusNode?.unfocus();
+    telFocusNode?.unfocus();
+    weChatFocusNode?.unfocus();
+  }
+
   static const List<String> GENDER_OPTIONS = ['未知', '男', '女'];
   @override
   void initState() {
@@ -33,6 +47,12 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
     nameInput = TextEditingController(text: model?.clientName);
     telInput = TextEditingController(text: model?.clientMobile);
     weChatInput = TextEditingController(text: model?.clientWx);
+    gender = model?.clientSex ?? 0;
+    age = model?.clientAge ?? 0;
+    nameFocusNode = FocusNode();
+    telFocusNode = FocusNode();
+    weChatFocusNode = FocusNode();
+
     genderController =
         FixedExtentScrollController(initialItem: model?.clientSex ?? 0);
     ageController = FixedExtentScrollController();
@@ -42,8 +62,11 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
   void dispose() {
     super.dispose();
     nameInput?.dispose();
+    nameFocusNode?.dispose();
     telInput?.dispose();
+    telFocusNode?.dispose();
     weChatInput?.dispose();
+    weChatFocusNode?.dispose();
     genderController?.dispose();
     ageController?.dispose();
   }
@@ -79,7 +102,7 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
                     trailText ?? '',
                     style: Theme.of(context).textTheme.caption,
                   ),
-                  ZYIcon.next
+                  Icon(ZYIcon.next)
                 ],
               )
             ],
@@ -88,23 +111,28 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
   }
 
   // 0 woman 1 man
-  void checkGender(BuildContext context, {int gender = 0}) async {
+  void checkGender(
+    BuildContext context,
+  ) async {
+    int tmp = 0;
     await showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) {
           return BottomPicker(
             title: '选择性别',
             callback: () {
-              params['client_sex'] = '${model?.clientSex ?? 0}';
+              params['client_sex'] = '${gender ?? 0}';
+              setState(() {
+                gender = tmp;
+              });
               Navigator.of(context).pop();
             },
             child: CupertinoPicker(
+                backgroundColor: Theme.of(context).primaryColor,
                 scrollController: genderController,
-                itemExtent: ITEM_EXTENT,
+                itemExtent: UIKit.ITEM_EXTENT,
                 onSelectedItemChanged: (int index) {
-                  setState(() {
-                    model?.clientSex = index;
-                  });
+                  tmp = index;
                 },
                 children: List.generate(GENDER_OPTIONS.length, (int i) {
                   return Center(
@@ -116,23 +144,28 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
   }
 
   // 10-80
-  void checkAge(BuildContext context, {int age = 10}) async {
+  void checkAge(
+    BuildContext context,
+  ) async {
+    int tmp;
     await showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) {
           return BottomPicker(
             title: '选择年龄',
             callback: () {
-              params['client_age'] = '${model?.clientAge ?? 0}';
+              params['client_age'] = '${tmp ?? 0}';
+              setState(() {
+                age = tmp;
+              });
               Navigator.of(context).pop();
             },
             child: CupertinoPicker(
+                backgroundColor: Theme.of(context).primaryColor,
                 scrollController: ageController,
-                itemExtent: ITEM_EXTENT,
+                itemExtent: UIKit.ITEM_EXTENT,
                 onSelectedItemChanged: (int index) {
-                  setState(() {
-                    model?.clientAge = index + 10;
-                  });
+                  tmp = index + 10;
                 },
                 children: List.generate(70, (int i) {
                   return Center(
@@ -146,56 +179,70 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return StickyHeader(
-        header: _title(context, '基本信息'),
-        content: Container(
-          color: themeData.primaryColor,
-          padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-          child: Column(
-            children: <Widget>[
-              TextField(
-                controller: nameInput,
-                onChanged: (String text) {
-                  params['client_name'] = nameInput?.text;
-                },
-                decoration: InputDecoration(
-                  icon: Text('姓    名'),
-                  border: InputBorder.none,
-                  hintText: '2-12个字符（必填）',
-                ),
-              ),
-              Divider(),
-              _bar(context, '性    别', () {
-                checkGender(context, gender: model?.clientSex ?? 0);
-              }, trailText: GENDER_OPTIONS[model?.clientSex ?? 0]),
-              Divider(),
-              _bar(context, '年    龄', () {
-                checkAge(context, age: model?.clientAge ?? 0);
-              }, trailText: '${model?.clientAge ?? '0'}'),
-              Divider(),
-              TextField(
-                controller: telInput,
-                onChanged: (String text) {
-                  params['client_mobile'] = text;
-                },
-                decoration: InputDecoration(
-                    icon: Text('手机号'),
-                    // border: InputBorder.none,
-                    hintText: '（必填）'),
-              ),
-              Divider(),
-              TextField(
-                controller: weChatInput,
-                onChanged: (String text) {
-                  params['client_wx'] = text;
-                },
-                decoration: InputDecoration(
-                    icon: Text('微    信'),
+    return Container(
+      color: themeData.primaryColor,
+      child: Column(
+        children: <Widget>[
+          _title(context, '基本信息'),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  controller: nameInput,
+                  focusNode: nameFocusNode,
+                  onChanged: (String text) {
+                    params['client_name'] = nameInput?.text;
+                  },
+                  decoration: InputDecoration(
+                    icon: Text('姓    名'),
                     border: InputBorder.none,
-                    hintText: '（选填）'),
-              ),
-            ],
+                    hintText: '2-12个字符（必填）',
+                  ),
+                ),
+                Divider(),
+                _bar(context, '性    别', () {
+                  unFocus();
+                  checkGender(
+                    context,
+                  );
+                }, trailText: genderStr),
+                Divider(),
+                _bar(context, '年    龄', () {
+                  unFocus();
+                  checkAge(
+                    context,
+                  );
+                }, trailText: '${age ?? 0}'),
+                Divider(),
+                TextField(
+                  controller: telInput,
+                  focusNode: telFocusNode,
+                  onChanged: (String text) {
+                    params['client_mobile'] = text;
+                  },
+                  decoration: InputDecoration(
+                      icon: Text('手机号'),
+                      // border: InputBorder.none,
+                      hintText: '（必填）'),
+                ),
+                Divider(),
+                TextField(
+                  controller: weChatInput,
+                  focusNode: weChatFocusNode,
+                  onChanged: (String text) {
+                    params['client_wx'] = text;
+                  },
+                  decoration: InputDecoration(
+                      icon: Text('微    信'),
+                      border: InputBorder.none,
+                      hintText: '（选填）'),
+                ),
+              ],
+            ),
           ),
-        ));
+        ],
+      ),
+    );
   }
 }

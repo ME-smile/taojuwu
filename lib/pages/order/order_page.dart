@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/pages/order/widgets/measure_order_card.dart';
@@ -13,8 +14,8 @@ import 'package:taojuwu/widgets/zy_future_builder.dart';
 import 'widgets/order_card.dart';
 
 class OrderPage extends StatefulWidget {
-  final String clientId;
-  OrderPage({Key key, this.clientId: ''}) : super(key: key);
+  final int clientId;
+  OrderPage({Key key, this.clientId}) : super(key: key);
 
   @override
   _OrderPageState createState() => _OrderPageState();
@@ -26,40 +27,63 @@ class _OrderPageState extends State<OrderPage>
   TabController _tabController;
   List nums;
   List<OrderModelData> models;
+  static const PAGE_SIZE = 10;
   List<Map<String, dynamic>> params = [
-    {},
+    {
+      'page_size': PAGE_SIZE,
+      'page': 1,
+    },
     {
       'status': '1',
+      'page_size': PAGE_SIZE,
+      'page': 1,
     },
     {
       'status': '2',
+      'page_size': PAGE_SIZE,
+      'page': 1,
     },
     {
       'status': '14',
+      'page_size': PAGE_SIZE,
+      'page': 1,
     },
     {
       'status': '3',
+      'page_size': PAGE_SIZE,
+      'page': 1,
     },
     {
       'status': '5',
+      'page_size': PAGE_SIZE,
+      'page': 1,
     },
     {
       'status': '6,7',
+      'page_size': PAGE_SIZE,
+      'page': 1,
     },
     {
       'status': '8',
+      'page_size': PAGE_SIZE,
+      'page': 1,
     },
   ];
   @override
   void initState() {
     super.initState();
-    OTPService.orderList(context).then((OrderModelListResp response) {
+
+    _tabController = TabController(length: items.length, vsync: this);
+    //对全部数据进行特殊处理
+    params?.first['client_uid'] = widget?.clientId;
+
+    OTPService.orderList(context, params: params?.first)
+        .then((OrderModelListResp response) {
       setState(() {
         nums = response?.data?.statusNum?.values?.toList();
-        models = response?.data?.data ?? [];
+        models = response?.data?.data;
       });
     }).catchError((err) => err);
-    _tabController = TabController(length: items.length, vsync: this);
   }
 
   @override
@@ -70,6 +94,7 @@ class _OrderPageState extends State<OrderPage>
 
   @override
   Widget build(BuildContext context) {
+    print(Application.sp.getString('token'));
     return ZYFutureBuilder(
         futureFunc: OTPService.orderList,
         params: params[_tabController.index],
@@ -103,6 +128,7 @@ class _OrderPageState extends State<OrderPage>
                   children: List.generate(items?.length ?? 0, (int i) {
                     return OrderTabView(
                       params: params[i],
+                      clientId: widget.clientId,
                       models: i == 0 ? models : null,
                     );
                   })));
@@ -113,7 +139,9 @@ class _OrderPageState extends State<OrderPage>
 class OrderTabView extends StatefulWidget {
   final Map<String, dynamic> params;
   final List<OrderModelData> models;
-  const OrderTabView({Key key, this.params, this.models}) : super(key: key);
+  final int clientId;
+  const OrderTabView({Key key, this.params, this.models, this.clientId})
+      : super(key: key);
 
   @override
   _OrderTabViewState createState() => _OrderTabViewState();
@@ -122,6 +150,11 @@ class OrderTabView extends StatefulWidget {
 class _OrderTabViewState extends State<OrderTabView> {
   Map<String, dynamic> params;
   List<OrderModelData> models;
+  int totalPage = 0;
+
+  static const PAGE_SIZE = 10;
+
+  bool get hasMoreData => params['page'] <= totalPage;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   bool isRefresh = true;
@@ -130,15 +163,27 @@ class _OrderTabViewState extends State<OrderTabView> {
     super.initState();
     params = widget.params;
     params['page'] = 1;
-    models = widget.models ?? [];
+    params['client_uid'] = widget.clientId;
+    models = widget.models;
+    print(params);
   }
 
   OrderModelDataWrapper wrapper;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _refreshController?.dispose();
+  }
 
   void requestData() {
     OTPService.orderList(context, params: params)
         .then((OrderModelListResp response) {
       wrapper = response?.data;
+      int count = wrapper?.totalCount;
+      int pages = count % PAGE_SIZE;
+      int mod = count % pages;
+      totalPage = mod > 0 ? pages + 1 : pages;
       List<OrderModelData> tmp = wrapper?.data ?? [];
       if (isRefresh) {
         if (mounted) {
@@ -154,8 +199,8 @@ class _OrderTabViewState extends State<OrderTabView> {
               models.addAll(tmp);
             }
           });
-          _refreshController?.loadComplete();
         });
+        _refreshController?.loadComplete();
       }
     }).catchError((err) {
       if (isRefresh) {
@@ -185,19 +230,21 @@ class _OrderTabViewState extends State<OrderTabView> {
             enablePullDown: true,
             enablePullUp: true,
             onRefresh: () async {
-              params['page_index'] = 1;
+              params['page'] = 1;
               isRefresh = true;
               requestData();
             },
             onLoading: () async {
-              params['page_index']++;
+              params['page']++;
               isRefresh = false;
+              if (!hasMoreData) {
+                return _refreshController?.loadNoData();
+              }
               requestData();
             },
             child: ListView.separated(
                 itemBuilder: (BuildContext context, int i) {
                   OrderModelData item = models[i];
-
                   return buildOrderCard(item);
                 },
                 separatorBuilder: (BuildContext context, int i) {
@@ -218,6 +265,6 @@ class _OrderTabViewState extends State<OrderTabView> {
               List<OrderModelData> models = wrapper?.data;
               return buildOrderListView(models);
             })
-        : models?.isEmpty == true ? NoData() : buildOrderListView(models);
+        : models?.isNotEmpty != true ? NoData() : buildOrderListView(models);
   }
 }

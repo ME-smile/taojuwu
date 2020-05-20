@@ -1,16 +1,20 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/services/base/xhr.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/send_sms_button.dart';
+import 'package:taojuwu/widgets/zy_submit_button.dart';
 // import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -45,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void afterLogin(Map<String, dynamic> json) {
     _userProvider.userInfo.saveUserInfo(json);
+    Xhr.init(json['token']);
   }
 
   void showPrivacy(BuildContext context) {
@@ -54,13 +59,16 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('使用协议'),
+            title: Text(
+              '使用协议',
+              textAlign: TextAlign.center,
+            ),
             content: Container(
                 // decoration: ,
                 color: themeData.primaryColor,
-                margin: EdgeInsets.symmetric(
-                  horizontal: UIKit.width(50),
-                ),
+                // margin: EdgeInsets.symmetric(
+                //   horizontal: UIKit.width(50),
+                // ),
                 child: SingleChildScrollView(
                   child: Text(Constants.PRIVACY),
                 )),
@@ -118,21 +126,21 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context, width: 750, height: 1334);
     ThemeData theme = Theme.of(context);
-    TextTheme accentTextTheme = theme.accentTextTheme;
     TextTheme textTheme = theme.textTheme;
     final double w = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
-      ),
+      // appBar: AppBar(
+      //   elevation: 0,
+      //   backgroundColor: theme.scaffoldBackgroundColor,
+      // ),
       resizeToAvoidBottomPadding: false,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          VSpacing(120),
+          VSpacing(220),
           Text(
             '欢迎回家',
             textAlign: TextAlign.center,
@@ -196,6 +204,9 @@ class _LoginPageState extends State<LoginPage> {
                   controller: _phoneController,
                   decoration: InputDecoration(
                       hintText: '请输入手机号',
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0xFFC7C8CB), width: .1)),
                       icon: Container(
                         child: Text('+86'),
                         padding:
@@ -227,9 +238,9 @@ class _LoginPageState extends State<LoginPage> {
                                         context, {'mobile': tel})
                                     .then((ZYResponse response) {
                                   if (response.valid) {
-                                    CommonKit.showInfo('验证码发送成功,请注意查收');
+                                    CommonKit.showToast('验证码发送成功,请注意查收');
                                   } else {
-                                    CommonKit.showInfo('验证码发送失败,请稍后重试');
+                                    CommonKit.showToast('验证码发送失败,请稍后重试');
                                   }
                                 }).catchError((err) => err);
                               },
@@ -246,27 +257,18 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           VSpacing(50),
-          Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: UIKit.width(50), vertical: UIKit.height(20)),
-              child: RaisedButton(
-                onPressed: () {
-                  CommonKit.debounce(() {
-                    // if(_isPwdMode){
-                    //   loginBySms(context);
-                    // }else{
+          // ZYRaisedButton(text, callback)
+          ZYSubmitButton('登录', () {
+            CommonKit.debounce(() {
+              // if(_isPwdMode){
+              //   loginBySms(context);
+              // }else{
 
-                    // }
-                    loginByPwd(context);
-                  }, 500);
-                },
-                child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: UIKit.height(20)),
-                    child: Text(
-                      '登录',
-                      style: accentTextTheme.button,
-                    )),
-              )),
+              // }
+              loginByPwd(context);
+            }, 500);
+          }),
+
           Padding(
             padding: EdgeInsets.symmetric(horizontal: UIKit.width(50)),
             child: Text.rich(TextSpan(

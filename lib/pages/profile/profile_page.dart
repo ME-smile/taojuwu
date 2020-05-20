@@ -16,7 +16,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  bool _hasMessagePush = true;
+  // bool _hasMessagePush = true;
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -34,35 +34,38 @@ class _ProfilePageState extends State<ProfilePage> {
           children: <Widget>[
             ProfileHeader(),
             VSpacing(20),
+            // ZYListTile(
+            //   title: '消息推送',
+            //   trailing: CupertinoSwitch(
+            //     activeColor: themeData.toggleableActiveColor,
+            //     value: _hasMessagePush,
+            //     onChanged: (v) {
+            //       setState(() {
+            //         _hasMessagePush = v;
+            //       });
+            //     },
+            //   ),
+            // ),
+            // ZYListTile(
+            //   title: '字体设置',
+            // ),
+            // ZYListTile(
+            //   title: '清除缓存',
+            // ),
             ZYListTile(
-              title: '消息推送',
-              trailing: CupertinoSwitch(
-                activeColor: themeData.toggleableActiveColor,
-                value: _hasMessagePush,
-                onChanged: (v) {
-                  setState(() {
-                    _hasMessagePush = v;
-                  });
-                },
-              ),
-            ),
-            ZYListTile(
-              title: '字体设置',
-            ),
-            ZYListTile(
-              title: '清除缓存',
-            ),
-            ZYListTile(
-              title: '密码管理',
+              title: '重置密码',
               showDivider: false,
+              callback: () {
+                RouteHandler.goResetPwdPage(context);
+              },
             ),
             VSpacing(20),
-            ZYListTile(
-              title: '字体设置',
-            ),
-            ZYListTile(
-              title: '推荐给好友',
-            ),
+            // ZYListTile(
+            //   title: '字体设置',
+            // ),
+            // ZYListTile(
+            //   title: '推荐给好友',
+            // ),
             ZYListTile(
               title: '问题反馈',
               callback: () {
@@ -72,14 +75,17 @@ class _ProfilePageState extends State<ProfilePage> {
             ZYListTile(
               title: '关于陶居屋',
               showDivider: false,
-            ),
-            VSpacing(20),
-            _LoginButton(
-              title: '切换账号',
               callback: () {
-                RouteHandler.goSwitchAccountPage(context);
+                RouteHandler.goVersionPage(context);
               },
             ),
+            VSpacing(20),
+            // _LoginButton(
+            //   title: '切换账号',
+            //   callback: () {
+            //     RouteHandler.goSwitchAccountPage(context);
+            //   },
+            // ),
             VSpacing(20),
             _LoginButton(
               title: '退出登录',
@@ -157,7 +163,7 @@ class ProfileHeader extends StatelessWidget {
                             style: textTheme.body1)
                       ])),
                   Text(
-                    provider?.userInfo?.shopName,
+                    provider?.userInfo?.shopName ?? '',
                     style: textTheme.caption,
                   )
                 ],

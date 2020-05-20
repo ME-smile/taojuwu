@@ -66,4 +66,12 @@ class ApiPath {
   static const String uploadImg = '/api/upload/uploadImage';
 
   static const String afterSale = '/api/order/addOrderQuestion';
+
+  static const String collectList = '/api/member/collection';
+
+  static const String feedback = '/api/goods/addGoodsConsult';
+
+  static const String resetPwd = '/api/member/modifyPassword';
+
+  static const String windowStyle = '/api/order/wcCategory';
 }

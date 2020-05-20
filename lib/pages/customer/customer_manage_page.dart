@@ -79,9 +79,18 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
         list[i].headWord = "#";
         if (!hotBeans.contains(item)) {
           hotBeans.add(item);
+          // list.remove(item);
         }
       }
     }
+
+    List<CustomerModelBean> tmpList = [];
+    tmpList.addAll(beans);
+    tmpList?.forEach((item) {
+      if (hotBeans?.contains(item) == true) {
+        beans?.remove(item);
+      }
+    });
     beans.sort((CustomerModelBean a, CustomerModelBean b) {
       return a.headWord.codeUnitAt(0) - b.headWord.codeUnitAt(0);
     });
@@ -165,41 +174,46 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
           UserAddButton(),
         ],
       ),
-      body: ZYFutureBuilder(
-          futureFunc: OTPService.userList,
-          params: params,
-          builder: (BuildContext context, CustomerModelListResp response) {
-            customerModelWrapper = response?.data;
-            _handleData(customerModelWrapper);
-            beans = customerModelWrapper?.data;
-            _handleList(beans);
-            return Container(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.only(left: 15.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: List.generate(entrys.length, (int i) {
-                        final item = entrys[i];
-                        return MenuEntry(
-                          title: item['title'],
-                          iconPath: item['iconPath'],
-                          number: item['number'],
-                          callback: () {
-                            RouteHandler.goCustomerTablePage(
-                                context, item['type']);
-                          },
-                        );
-                      }),
-                    ),
-                  ),
-                  Expanded(
-                      flex: 1,
-                      child: AzListView(
+      body: SingleChildScrollView(
+        controller: controller,
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: ZYFutureBuilder(
+              futureFunc: OTPService.userList,
+              params: params,
+              builder: (BuildContext context, CustomerModelListResp response) {
+                customerModelWrapper = response?.data;
+                _handleData(customerModelWrapper);
+                beans = customerModelWrapper?.data;
+                _handleList(beans);
+                return Container(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.only(left: 15.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(entrys.length, (int i) {
+                            final item = entrys[i];
+                            return MenuEntry(
+                              title: item['title'],
+                              iconPath: item['iconPath'],
+                              number: item['number'],
+                              callback: () {
+                                RouteHandler.goCustomerTablePage(
+                                    context, item['type']);
+                              },
+                            );
+                          }),
+                        ),
+                      ),
+                      Flexible(
+                          child: AzListView(
                         data: beans,
                         topData: hotBeans,
+
                         itemBuilder: (context, model) => _buildListItem(model),
                         suspensionWidget: _buildSusWidget(_suspensionTag),
                         isUseRealIndex: true,
@@ -208,10 +222,12 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                         onSusTagChanged: _onSusTagChanged,
                         // showCenterTip: false,
                       )),
-                ],
-              ),
-            );
-          }),
+                    ],
+                  ),
+                );
+              }),
+        ),
+      ),
     );
   }
 }

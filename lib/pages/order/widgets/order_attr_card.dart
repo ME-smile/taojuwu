@@ -29,6 +29,7 @@ class OrderAttrCard extends StatelessWidget {
           '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
     });
     TextTheme textTheme = Theme.of(context).textTheme;
+    print(goods?.pictureInfo?.picCoverSmall);
     return Container(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.end,

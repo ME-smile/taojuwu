@@ -31,6 +31,45 @@ class _CartCardViewState extends State<CartCardView> {
     });
   }
 
+  void delCart() {
+    OTPService.delCart(context, params: {
+      'cart_id_array': '${['${cartModel?.cartId}' ?? '0']}'
+    }).then((ZYResponse response) {
+      print(response);
+      if (response.valid && response.message.contains('success')) {
+        CartProvider provider = Provider.of<CartProvider>(context);
+        provider?.removeGoods(cartModel?.cartId);
+        Navigator.of(context).pop();
+      }
+      CommonKit.showToast(response?.message ?? '');
+    }).catchError((err) => err);
+  }
+
+  void remove() {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text('删除'),
+            content: Text('您确定要从购物车中删除该商品吗?'),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                child: Text('取消'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              CupertinoDialogAction(
+                child: Text('确定'),
+                onPressed: () {
+                  delCart();
+                },
+              )
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -38,40 +77,7 @@ class _CartCardViewState extends State<CartCardView> {
     return Consumer<CartProvider>(
         builder: (BuildContext context, CartProvider provider, _) {
       return GestureDetector(
-        onLongPress: () {
-          showCupertinoDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CupertinoAlertDialog(
-                  title: Text('删除'),
-                  content: Text('您确定要从购物车中删除该商品吗?'),
-                  actions: <Widget>[
-                    CupertinoDialogAction(
-                      child: Text('取消'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    CupertinoDialogAction(
-                      child: Text('确定'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        OTPService.delCart(context, params: {
-                          'cart_id_array': '${['${cartModel?.cartId}' ?? '0']}'
-                        }).then((ZYResponse response) {
-                          print(response);
-                          if (response.valid &&
-                              response.message.contains('success')) {
-                            provider?.removeGoods(cartModel?.cartId);
-                          }
-                          CommonKit.showToast(response?.message ?? '');
-                        }).catchError((err) => err);
-                      },
-                    )
-                  ],
-                );
-              });
-        },
+        onLongPress: () {},
         child: Container(
           color: themeData.primaryColor,
           margin: EdgeInsets.only(top: UIKit.height(20)),

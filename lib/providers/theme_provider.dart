@@ -30,8 +30,7 @@ class ThemeProvider with ChangeNotifier {
     inputDecorationTheme: InputDecorationTheme(
       hintStyle: TextStyle(color: TaojuwuColors.HINT_TEXT_COLOR),
       labelStyle: TextStyle(color: TaojuwuColors.LABEL_TEXT_COLOR),
-      enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: TaojuwuColors.BORDER_COLOR, width: .1)),
+      enabledBorder: InputBorder.none,
       focusedBorder: UnderlineInputBorder(
         borderSide: BorderSide(color: TaojuwuColors.BORDER_COLOR, width: .1),
       ),

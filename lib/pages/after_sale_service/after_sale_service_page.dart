@@ -231,7 +231,7 @@ class _AfterSaleServicePageState extends State<AfterSaleServicePage> {
                           horizontal: UIKit.width(20),
                           vertical: UIKit.height(20)),
                       child: Icon(
-                        ZYIcons.plus,
+                        ZYIcon.plus,
                         size: UIKit.sp(200),
                       ),
                     ),

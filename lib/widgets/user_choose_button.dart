@@ -20,7 +20,9 @@ class UserChooseButton extends StatelessWidget {
           },
           child: Row(
             children: <Widget>[
-              ZYIcon.user,
+              Icon(
+                ZYIcon.user,
+              ),
               Padding(
                   padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
                   child: Text(provider?.name != null &&

@@ -53,7 +53,7 @@ class BuyerInfoBar extends StatelessWidget {
                     ],
                   ),
                 )),
-                ZYIcon.next
+                Icon(ZYIcon.next)
               ],
             ),
           ));

@@ -2,12 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/models/shop/product_tag_model.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
 
 import 'package:taojuwu/widgets/scan_button.dart';
@@ -31,13 +33,16 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     '成品定制',
   ];
 
-  CurtainProductListDataBean data;
+  CurtainProductListDataBean beanData;
   CurtainGoodsListWrapper wrapper;
   List<CurtainGoodItemBean> goodsList = [];
   bool isRefresh = false;
   int currentCategory = -1;
   int currentStyle = -1;
   bool isLoading = true;
+  int totalPage = 0;
+  static const int PAGE_SIZE = 10;
+
   Map<String, dynamic> params = {
     // 'keyword': '',
     // 'stock': '',
@@ -50,13 +55,15 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     // 'province_name': '',
     // 'attr': '',
     // 'spec': '',
-    // 'page_size': 10,
+    'page_size': PAGE_SIZE,
     'page_index': 1,
     'category_id': '',
+    'tag_id': ''
+
     // 'shippingFee': 0,
     // 'type': 0
   };
-
+  bool isFromSearch = false;
   @override
   void initState() {
     super.initState();
@@ -64,6 +71,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     tabController = TabController(length: tabs.length, vsync: this);
 
     params['keyword'] = widget.keyword;
+    isFromSearch = widget.keyword.isNotEmpty;
     fetchData();
   }
 
@@ -87,15 +95,15 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
   GZXDropdownMenuController menuController = GZXDropdownMenuController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController _refreshController = RefreshController(
+      initialRefresh: false, initialLoadStatus: LoadStatus.idle);
   int currentSortType = 0;
 
   TabController tabController;
   Animation<Offset> animation;
   bool isGridMode = true;
   double width;
-
+  bool get hasMoreData => params['page_index'] < totalPage;
   TagBeanWrapper tagWrapper;
   Widget _buildFilter1() {
     return ZYAssetImage(
@@ -103,6 +111,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       callback: () {
         if (isGridMode) return;
         setState(() {
+          params['page_index'] = 1;
           isGridMode = true;
         });
       },
@@ -115,6 +124,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       callback: () {
         if (!isGridMode) return;
         setState(() {
+          params['page_index'] = 1;
           isGridMode = false;
         });
       },
@@ -138,7 +148,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       },
       child: Text.rich(TextSpan(
           text: SORT_TYPES[currentSortType],
-          children: [WidgetSpan(child: ZYIcon.drop_down)])),
+          children: [WidgetSpan(child: Icon(ZYIcon.drop_down))])),
     );
   }
 
@@ -158,8 +168,13 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           // hideFilterView = !hideFilterView;
         });
       },
-      child: Text.rich(
-          TextSpan(text: '筛选', children: [WidgetSpan(child: ZYIcon.filter)])),
+      child: Text.rich(TextSpan(text: '筛选', children: [
+        WidgetSpan(
+            child: Icon(
+          ZYIcon.filter,
+          color: const Color(0xFF050505),
+        ))
+      ])),
     );
   }
 
@@ -203,7 +218,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                     children: <Widget>[
                       Text(item.name),
                       currentCategory == i
-                          ? ZYIcon.check
+                          ? Icon(
+                              ZYIcon.check,
+                              color: const Color(0xFF050505),
+                            )
                           : SizedBox(
                               width: 24,
                               height: 24,
@@ -226,20 +244,34 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           ListBody(
             children: List.generate(tagWrapper?.tag?.length ?? 0, (int i) {
               TagBean item = tagWrapper?.tag[i];
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                    horizontal: UIKit.width(20), vertical: UIKit.height(10)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(item.name),
-                    currentStyle == i
-                        ? ZYIcon.check
-                        : SizedBox(
-                            width: 24,
-                            height: 24,
-                          )
-                  ],
+              return InkWell(
+                onTap: () {
+                  setState(() {
+                    currentStyle = i;
+                    isRefresh = true;
+                    params['tag_id'] = item?.id;
+
+                    requestGoodsData();
+                  });
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: UIKit.width(20), vertical: UIKit.height(10)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(item.name),
+                      currentStyle == i
+                          ? Icon(
+                              ZYIcon.check,
+                              color: const Color(0xFF050505),
+                            )
+                          : SizedBox(
+                              width: 24,
+                              height: 24,
+                            )
+                    ],
+                  ),
                 ),
               );
             }),
@@ -255,27 +287,32 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       TagListResp tagListResp = data[1];
 
       setState(() {
-        data = curtainProductListResp.data;
-        wrapper = data.goodsList;
-        goodsList = wrapper.data;
-        tagWrapper = tagListResp.data;
+        beanData = curtainProductListResp?.data;
+        wrapper = beanData?.goodsList;
+        goodsList = wrapper?.data;
+        tagWrapper = tagListResp?.data;
         isLoading = false;
+        int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
+        int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
+        totalPage = mod > 0 ? pages + 1 : pages;
+        print(totalPage);
       });
     }).catchError((err) => err);
   }
 
   void requestGoodsData() {
+    print(params);
+
     OTPService.curtainGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
-      data = curtainProductListResp?.data;
-      wrapper = data?.goodsList;
+      beanData = curtainProductListResp?.data;
+      wrapper = beanData?.goodsList;
       if (isRefresh) {
         setState(() {
           goodsList = wrapper?.data;
         });
         _refreshController?.refreshCompleted();
       } else {
-        _refreshController?.loadComplete();
         setState(() {
           wrapper?.data?.forEach((item) {
             if (goodsList?.contains(item) == false) {
@@ -283,6 +320,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
             }
           });
         });
+        _refreshController?.loadComplete();
       }
     }).catchError((err) {
       if (isRefresh) {
@@ -301,10 +339,38 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     _refreshController?.dispose();
   }
 
+  GridView buildGridView() {
+    return GridView.builder(
+        // physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: .8,
+          crossAxisSpacing: 10,
+        ),
+        itemCount:
+            goodsList != null && goodsList.isNotEmpty ? goodsList.length : 0,
+        itemBuilder: (BuildContext context, int i) {
+          return GridCard(goodsList[i]);
+        });
+  }
+
+  ListView buildListView() {
+    return ListView.builder(
+        // physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount:
+            goodsList != null && goodsList.isNotEmpty ? goodsList?.length : 0,
+        itemBuilder: (BuildContext context, int i) {
+          return ListCard(goodsList[i]);
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
+    print(Application.sp.getString('token'));
     width = MediaQuery.of(context).size.width;
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -366,26 +432,26 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   },
                   onLoading: () async {
                     params['page_index']++;
+                    if (hasMoreData == false) {
+                      setState(() {
+                        _refreshController?.loadNoData();
+                      });
+                      return;
+                    }
+
                     isRefresh = false;
                     requestGoodsData();
                   },
                   controller: _refreshController,
                   child: isLoading
                       ? Center(
-                          child: CupertinoActivityIndicator(),
+                          child: LoadingCircle(),
                         )
                       : goodsList?.isEmpty == true
-                          ? NoData()
-                          : Container(
-                              margin: EdgeInsets.only(bottom: 50),
-                              child: isGridMode
-                                  ? GoodsGridView(
-                                      goodsList,
-                                    )
-                                  : GoodsListView(
-                                      goodsList,
-                                    ),
-                            ),
+                          ? NoData(
+                              isFromSearch: isFromSearch,
+                            )
+                          : isGridMode ? buildGridView() : buildListView(),
                 ),
                 GZXDropDownMenu(
                     controller: menuController,
@@ -426,7 +492,11 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                                                   child: SizedBox(width: 20)),
                                               WidgetSpan(
                                                   child: isCurrentOption
-                                                      ? ZYIcon.check
+                                                      ? Icon(
+                                                          ZYIcon.check,
+                                                          color: const Color(
+                                                              0xFF050505),
+                                                        )
                                                       : SizedBox(
                                                           width: 24,
                                                           height: 24,

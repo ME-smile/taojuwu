@@ -13,7 +13,9 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/time_period_picker.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 import 'client_provider.dart';
 
@@ -63,14 +65,25 @@ class OrderProvider with ChangeNotifier {
   List<String> get attr => orderGoods?.map((item) => item.attr)?.toList() ?? [];
   bool get hasConfirmMeasureData => _hasConfirmMeasureData;
   String get measureDataStr =>
-      '${_orderGoodsMeasure?.installRoom ?? ''}\n宽 ${_orderGoodsMeasure?.width ?? ''}米 高${_orderGoodsMeasure?.height ?? ''}米';
+      '${_orderGoodsMeasure?.installRoom ?? ''}\n宽 ${widthStr ?? ''}米 高${heightStr ?? ''}米';
   int get totalCount => orderGoods?.length ?? 0;
-  String _measureTime;
+
+  TimePeriod _measureTime;
   String _installTime;
   String _orderMark;
   String _deposit;
   String _windowNum;
-  String get measureTime => _measureTime;
+  String get widthStr =>
+      (double.parse(_orderGoodsMeasure?.width ?? '0.00') / 100)
+          .toStringAsFixed(2) ??
+      '0.00';
+  String get heightStr =>
+      (double.parse(_orderGoodsMeasure?.height ?? '0.00') / 100)
+          .toStringAsFixed(2) ??
+      '0.00';
+  String get measureTimeStr =>
+      '${DateUtil.formatDate(_measureTime?.dateTime, format: 'yyyy年MM月dd日')} ${_measureTime?.period}' ??
+      '';
   String get installTime => _installTime;
   String get orderMark => _orderMark ?? '';
   String get deposit => _deposit;
@@ -107,8 +120,12 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set measureTime(String date) {
-    _measureTime = date;
+  void initMeasureTime(TimePeriod timePeriod) {
+    _measureTime = timePeriod;
+  }
+
+  set measureTime(TimePeriod timePeriod) {
+    _measureTime = timePeriod;
     notifyListeners();
   }
 
@@ -148,7 +165,7 @@ class OrderProvider with ChangeNotifier {
       CommonKit.showInfo('请填写收货人');
       return false;
     }
-    if (measureTime == null || measureTime?.trim()?.isEmpty == true) {
+    if (measureTimeStr == null || measureTimeStr?.trim()?.isEmpty == true) {
       CommonKit.showInfo('请选择上门量尺意向时间');
       return false;
     }
@@ -170,7 +187,7 @@ class OrderProvider with ChangeNotifier {
       'shop_id': shopId,
       'measure_id':
           '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
-      'measure_time': measureTime,
+      'measure_time': measureTimeStr,
       'install_time': installTime,
       'order_remark': orderMark,
       'wc_attr': jsonEncode(attr),
@@ -194,7 +211,7 @@ class OrderProvider with ChangeNotifier {
         'shop_id': shopId,
         'measure_id':
             '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
-        'measure_time': measureTime,
+        'measure_time': measureTimeStr,
         'install_time': installTime,
         'order_remark': orderMark,
         'wc_attr': jsonEncode(attr),
@@ -210,7 +227,6 @@ class OrderProvider with ChangeNotifier {
         }'''
       },
     ).then((ZYResponse response) {
-     
       if (response.valid) {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid);
         GoodsProvider goodsProvider =
@@ -231,7 +247,7 @@ class OrderProvider with ChangeNotifier {
     if (!beforeCreateOrder(ctx)) return;
     OTPService.createMeasureOrder(ctx, params: {
       'client_uid': clientUid,
-      'measure_time': measureTime,
+      'measure_time': measureTimeStr,
       'order_earnest_money': deposit,
       'order_remark': orderMark,
       'shop_id': shopId,
@@ -283,18 +299,11 @@ class OrderProvider with ChangeNotifier {
                 ),
                 Text('选品成功'),
                 Text('记得提醒客户及时支付尾款哦～'),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: UIKit.height(20),
-                  ),
-                  child: RaisedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      RouteHandler.goOrderDetailPage(context, orderId);
-                    },
-                    child: Text('查看订单'),
-                  ),
-                )
+                ZYRaisedButton('查看订单', () {
+                  RouteHandler.goOrderDetailPage(context, orderId,
+                      isReplaceMode: true);
+                  Navigator.of(context).pop();
+                })
               ],
             ),
           );

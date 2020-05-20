@@ -17,6 +17,8 @@ import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
+import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
 
 class PreMeasureDataPage extends StatefulWidget {
@@ -30,9 +32,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   TextEditingController widthInputController;
   TextEditingController heightInputController;
   TextEditingController dyInputController;
-  String width = '';
-  String height = '';
-  String dy = '';
+
   Map<String, dynamic> data = {};
   Map<String, dynamic> params = {
     'dataId': '',
@@ -46,6 +46,8 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   };
 
   void setParams(GoodsProvider provider) {
+    String installModeName =
+        provider?.getInstallOptions()[provider?.curInstallOptionIndex];
     params['dataId'] = '${provider?.windowPatternId ?? ''}';
 
     params['width'] = '${provider?.widthM ?? ''}';
@@ -56,18 +58,12 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
     data['${provider?.windowPatternId ?? ''}'] = {
       'name': '${provider?.windowPatternStr ?? ''}',
       'selected': {
-        '安装选项': ['${provider?.curInstallModeName ?? ''}'],
-        '边距选项': ['满墙', '垂地'],
+        '安装选项': ['${installModeName ?? ''}'],
         '打开方式': ['${provider?.curOpenModeName ?? ''}']
       }
     };
     params['data'] = jsonEncode(data);
-    width = '${provider?.widthM ?? ''}';
-    height = '${provider?.heightM ?? ''}';
-    dy = '${provider?.dy ?? ''}';
   }
-
-  void initSize() {}
 
   String normalizeData(String n) {
     if (n == null || n?.isEmpty == true) return '';
@@ -79,9 +75,13 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   void initState() {
     super.initState();
     // goodsProvider = widget.goodsProvider;
-    widthInputController = TextEditingController();
-    heightInputController = TextEditingController();
-    dyInputController = TextEditingController();
+    GoodsProvider goodsProvider =
+        Provider?.of<GoodsProvider>(context, listen: false);
+    widthInputController =
+        TextEditingController(text: goodsProvider?.widthCMStr);
+    heightInputController =
+        TextEditingController(text: goodsProvider?.heightCMStr);
+    dyInputController = TextEditingController(text: goodsProvider?.dyCMStr);
   }
 
   @override
@@ -135,74 +135,83 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
         });
   }
 
-  Widget _modeBar(
+  Widget _buildInstallOptionBar(
     BuildContext context,
-    String title,
-    List<String> list,
   ) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
 
     return Consumer<GoodsProvider>(
       builder: (BuildContext context, GoodsProvider provider, _) {
+        List<String> list = provider?.getInstallOptions();
         return Container(
-          child: Row(children: [
-            Container(
-              margin: EdgeInsets.only(right: UIKit.width(30)),
-              child: Text(
-                title,
-                style: textTheme.caption,
+          child: Row(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(right: UIKit.width(30)),
+                child: Text(
+                  '安装选项',
+                  style: textTheme.caption,
+                ),
               ),
-            ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: List.generate(list.length, (int i) {
-                  return InkWell(
-                    onTap: () {
-                      if (title.contains('安装方式')) {
-                        provider?.curInstallMode = i;
-                      }
-                      if (title.contains('打开')) {
-                        provider?.curOpenMode = i;
-                      }
-                    },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: UIKit.height(20),
-                          vertical: UIKit.height(8)),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                              color: (title.contains('安装') &&
-                                          provider?.curInstallMode == i) ||
-                                      (title.contains('打开') &&
-                                          provider?.curOpenMode == i)
-                                  ? Colors.transparent
-                                  : Colors.grey),
-                          color: (title.contains('安装') &&
-                                      provider?.curInstallMode == i) ||
-                                  (title.contains('打开') &&
-                                      provider?.curOpenMode == i)
-                              ? themeData.accentColor
-                              : themeData.scaffoldBackgroundColor),
-                      child: Text(
-                        list[i],
-                        style: (title.contains('安装') &&
-                                    provider?.curInstallMode == i) ||
-                                (title.contains('打开') &&
-                                    provider?.curOpenMode == i)
-                            ? themeData.accentTextTheme.button
-                            : themeData.textTheme.body1,
-                      ),
-                    ),
+              Expanded(
+                  child: Row(
+                children: List.generate(list?.length ?? 0, (int i) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    child: provider?.curInstallOptionIndex == i
+                        ? ZYRaisedButton(list[i] ?? '', () {
+                            provider.curInstallOptionIndex = i;
+                          })
+                        : ZYOutlineButton(list[i] ?? '', () {
+                            provider.curInstallOptionIndex = i;
+                          }),
                   );
                 }),
+              ))
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildOpenOptionBar(
+    BuildContext context,
+  ) {
+    ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
+
+    return Consumer<GoodsProvider>(
+      builder: (BuildContext context, GoodsProvider provider, _) {
+        List<String> list = ['整体对开', '整体单开'];
+        return Container(
+          child: Row(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(right: UIKit.width(30)),
+                child: Text(
+                  '打开方式',
+                  style: textTheme.caption,
+                ),
               ),
-            )
-          ]),
+              Expanded(
+                  child: Row(
+                children: List.generate(list?.length ?? 0, (int i) {
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    child: provider?.curOpenMode == i
+                        ? ZYRaisedButton(list[i] ?? '', () {
+                            provider?.curOpenMode = i;
+                          })
+                        : ZYOutlineButton(list[i] ?? '', () {
+                            provider?.curOpenMode = i;
+                          }),
+                  );
+                }),
+              ))
+            ],
+          ),
         );
       },
     );
@@ -217,25 +226,33 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   }
 
   bool beforeSendData(GoodsProvider provider) {
-    if (width?.trim()?.isEmpty == true) {
-      CommonKit?.showInfo( '请填写宽度');
+    String w = widthInputController?.text;
+    String h = heightInputController?.text;
+    if (w?.trim()?.isEmpty == true) {
+      CommonKit?.showInfo('请填写宽度');
       return false;
     }
-    if (double.parse(width) == 0) {
+    if (double.parse(w) == 0) {
       CommonKit?.showInfo('宽度不能为0哦');
       return false;
     }
-    if (height?.trim()?.isEmpty == true) {
-      CommonKit?.showInfo( '请填写高度');
+    if (h?.trim()?.isEmpty == true) {
+      CommonKit?.showInfo('请填写高度');
       return false;
     }
-    if (double.parse(width) == 0) {
+    if (double.parse(h) == 0) {
       CommonKit?.showInfo('高度不能为0哦');
       return false;
     }
-    provider?.width = width;
-    provider?.height = height;
-    provider?.dy = dy;
+    if (double.parse(h) > 350) {
+      CommonKit.showInfo('暂不支持3.5m以上定制');
+      h = '350';
+      return false;
+    }
+
+    provider?.width = w;
+    provider?.height = h;
+    provider?.dy = dyInputController?.text;
     setParams(provider);
     return true;
   }
@@ -282,17 +299,19 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                       checkWindowPattern(context);
                     },
                   ),
-                  _modeBar(
-                    context,
-                    '安装方式:',
-                    WindowPatternAttr.installModes,
-                  ),
+                  _buildInstallOptionBar(context),
+                  // _modeBar(
+                  //   context,
+                  //   '安装方式:',
+                  //   WindowPatternAttr.installModes,
+                  // ),
                   Divider(),
-                  _modeBar(
-                    context,
-                    '打开方式:',
-                    WindowPatternAttr.openModes,
-                  ),
+                  // _modeBar(
+                  //   context,
+                  //   '打开方式:',
+                  //   WindowPatternAttr.openModes,
+                  // ),
+                  _buildOpenOptionBar(context),
                   Divider(),
                   Column(
                     children: <Widget>[
@@ -312,9 +331,6 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                               child: TextField(
                                 maxLines: 1,
                                 controller: widthInputController,
-                                onChanged: (String text) {
-                                  width = text;
-                                },
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   isDense: true,
@@ -348,9 +364,6 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                               child: TextField(
                                 maxLines: 1,
                                 controller: heightInputController,
-                                onChanged: (String text) {
-                                  height = text;
-                                },
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   isDense: true,
@@ -386,9 +399,6 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                           child: TextField(
                             maxLines: 1,
                             controller: dyInputController,
-                            onChanged: (String text) {
-                              dy = text;
-                            },
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               hintText: '单位(cm)',

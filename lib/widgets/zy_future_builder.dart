@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/widgets/loading.dart';
 
 import 'network_error.dart';
 
@@ -21,13 +22,7 @@ class ZYFutureBuilder<T> extends StatefulWidget {
     @required this.builder,
     this.params,
     Widget loadingWidget,
-  }) : loadingWidget = loadingWidget ??
-            Container(
-              color: Colors.white,
-              alignment: Alignment.center,
-              height: double.infinity,
-              child: CupertinoActivityIndicator(),
-            );
+  }) : loadingWidget = loadingWidget ?? LoadingCircle();
 
   @override
   _ZYFutureBuilderState<T> createState() => _ZYFutureBuilderState<T>();

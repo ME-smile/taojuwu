@@ -13,12 +13,9 @@ class SkuAttrPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          color: CupertinoColors.systemBackground.resolveFrom(context),
-          borderRadius: BorderRadius.only(
-              topRight: Radius.circular(UIKit.sp(20)),
-              topLeft: Radius.circular(UIKit.sp(20)))),
       child: Material(
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(10), topLeft: Radius.circular(10)),
         child: Container(
             height: UIKit.height(600),
             alignment: Alignment.bottomCenter,
@@ -34,13 +31,14 @@ class SkuAttrPicker extends StatelessWidget {
                       Text(
                         title,
                         textAlign: TextAlign.center,
+                        style: UIKit.TITLE_STYLE,
                       ),
                       Expanded(child: SizedBox()),
                       InkWell(
                         onTap: () {
                           Navigator.of(context).pop();
                         },
-                        child: ZYIcon.close,
+                        child: Icon(ZYIcon.close),
                       ),
                     ],
                   ),

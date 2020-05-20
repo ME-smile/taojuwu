@@ -39,6 +39,7 @@ class ClientProvider with ChangeNotifier {
 
   bool get hasChoosenCustomer => clientId != null;
   set name(String name) {
+    _clientName = name;
     clientModel?.clientName = name;
     notifyListeners();
   }

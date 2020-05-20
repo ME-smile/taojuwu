@@ -7,15 +7,17 @@ import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/pages/cart/widgets/cart_card_view.dart';
 
 import 'package:taojuwu/providers/cart_provider.dart';
-import 'package:taojuwu/providers/client_provider.dart';
+
 import 'package:taojuwu/router/handlers.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/zy_future_builder.dart';
+import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/no_data.dart';
 
 class CartPage extends StatefulWidget {
-  CartPage({Key key}) : super(key: key);
+  final int clientId;
+  CartPage({Key key, this.clientId}) : super(key: key);
 
   @override
   _CartPageState createState() => _CartPageState();
@@ -26,11 +28,23 @@ class _CartPageState extends State<CartPage>
   final List<String> tabs = ['窗帘'];
 
   TabController tabController;
-
+  CartListWrapper wrapper;
+  List<CartModel> models;
+  bool isLoading = true;
+  int get count => models?.length ?? 0;
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: 1, vsync: this);
+
+    OTPService.cartList(context, params: {}).then((CartListResp response) {
+      tabController = TabController(length: tabs?.length, vsync: this);
+      isLoading = false;
+      if (response?.valid == true) {
+        wrapper = response?.data;
+        models = wrapper?.data;
+      }
+      setState(() {});
+    }).catchError((err) => err);
   }
 
   @override
@@ -43,18 +57,9 @@ class _CartPageState extends State<CartPage>
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return ZYFutureBuilder(
-        futureFunc: OTPService.cartList,
-        params: {
-          'client_uid': Provider.of<ClientProvider>(context).clientId,
-        },
-        builder: (BuildContext context, CartListResp response) {
-          CartListWrapper wrapper = response?.data;
-          List<Category> categories = wrapper?.categories;
-          List<CartModel> models = wrapper?.data;
-          //  tabController = TabController(length:categories.isEmpty?tabs.length:categories.length, vsync: this);
-
-          return ChangeNotifierProvider(
+    return isLoading
+        ? LoadingCircle()
+        : ChangeNotifierProvider(
             create: (_) {
               cartProvider = CartProvider(models: models);
               return cartProvider;
@@ -66,31 +71,31 @@ class _CartPageState extends State<CartPage>
                   appBar: AppBar(
                     title: Text('购物车'),
                     centerTitle: true,
-                    bottom: TabBar(
-                        controller: tabController,
-                        indicatorSize: TabBarIndicatorSize.label,
-                        tabs: categories?.isEmpty == true
-                            ? List.generate(tabs.length, (int i) {
-                                return Text('${tabs[i]}(0)');
-                              })
-                            : List.generate(categories?.length ?? 0, (int i) {
-                                Category item = categories[i];
-                                return Text('${item.tag}(${item.count})');
-                              })),
+                    bottom: PreferredSize(
+                        child: TabBar(
+                            controller: tabController,
+                            indicatorSize: TabBarIndicatorSize.label,
+                            tabs: List.generate(tabs.length, (int i) {
+                              return Text('${tabs[i]}($count)');
+                            })),
+                        preferredSize: Size.fromHeight(20)),
                   ),
                   body: TabBarView(
                       controller: tabController,
                       children: List.generate(tabs.length, (int i) {
-                        return ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: models?.length ?? 0,
-                            itemBuilder: (BuildContext context, int i) {
-                              return CartCardView(
-                                cartModel: models[i],
-                              );
-                            });
+                        print(models);
+                        return models == null || models?.isNotEmpty != true
+                            ? NoData()
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: models?.length ?? 0,
+                                itemBuilder: (BuildContext context, int i) {
+                                  return CartCardView(
+                                    cartModel: models[i],
+                                  );
+                                });
                       })),
-                  bottomNavigationBar: provider?.models?.isEmpty == true
+                  bottomNavigationBar: provider?.models?.isNotEmpty != true
                       ? Container()
                       : Container(
                           padding:
@@ -138,6 +143,5 @@ class _CartPageState extends State<CartPage>
               },
             ),
           );
-        });
   }
 }

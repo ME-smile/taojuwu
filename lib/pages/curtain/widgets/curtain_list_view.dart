@@ -4,9 +4,9 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
-class _ListCard extends StatelessWidget {
+class ListCard extends StatelessWidget {
   final CurtainGoodItemBean bean;
-  const _ListCard(this.bean, {Key key}) : super(key: key);
+  const ListCard(this.bean, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +20,6 @@ class _ListCard extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
         child: Column(
           children: <Widget>[
-            // ExtendedImage.network(
-            //   UIKit.getNetworkImgPath(
-            //     bean?.picCoverMid,
-            //   ),
-            //   width: width - 2 * UIKit.width(20),
-            //   fit: BoxFit.fill,
-            // ),
             ZYNetImage(
               imgPath: UIKit.getNetworkImgPath(
                 bean?.picCoverMid,
@@ -34,7 +27,6 @@ class _ListCard extends StatelessWidget {
               fit: BoxFit.fill,
               width: width - 2 * UIKit.width(20),
             ),
-
             Text(bean?.goodsName ?? ''),
             Text('${bean?.displayPrice ?? "0.00"}')
           ],
@@ -56,9 +48,9 @@ class GoodsListView extends StatelessWidget {
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount:
-            goodsList != null && goodsList.isNotEmpty ? goodsList.length : 0,
+            goodsList != null && goodsList.isNotEmpty ? goodsList?.length : 0,
         itemBuilder: (BuildContext context, int i) {
-          return _ListCard(goodsList[i]);
+          return ListCard(goodsList[i]);
         });
   }
 }

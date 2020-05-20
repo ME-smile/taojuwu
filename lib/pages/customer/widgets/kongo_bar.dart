@@ -1,30 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:taojuwu/router/handlers.dart';
+
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/kongo.dart';
 
 class KongoBar extends StatelessWidget {
-  const KongoBar({Key key}) : super(key: key);
-  static const List kongos = [
-    {
-      'icon': 'collection@2x.png',
-      'title': '收藏夹',
-    },
-    {
-      'icon': 'shopping.png',
-      'title': '购物车',
-    },
-    {
-      'icon': 'order_black@2x.png',
-      'title': '订单',
-    },
-    {
-      'icon': 'refund@2x.png',
-      'title': '退款/售后',
-    }
-  ];
+  final int id;
+  final String name;
+  const KongoBar({Key key, this.id, this.name}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List kongos = [
+      {
+        'icon': 'collection@2x.png',
+        'title': '收藏夹',
+        'callback': () {
+          RouteHandler.goCollectPage(context, clientId: id, name: name);
+        }
+      },
+      {
+        'icon': 'shopping.png',
+        'title': '购物车',
+        'callback': () {
+          RouteHandler.goCartPage(context, clientId: id);
+        }
+      },
+      {
+        'icon': 'order_black@2x.png',
+        'title': '订单',
+        'callback': () {
+          RouteHandler.goOrderPage(context, clientId: id);
+        }
+      },
+      {
+        'icon': 'refund@2x.png',
+        'title': '退款/售后',
+        'callback': () {
+          RouteHandler.goRefundPage(context, id);
+        }
+      }
+    ];
+
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: UIKit.width(20), vertical: UIKit.height(20)),
@@ -45,7 +62,7 @@ class KongoBar extends StatelessWidget {
           return Kongo(
             iconPath: kongos[i]['icon'],
             text: kongos[i]['title'],
-            callback: () {},
+            callback: kongos[i]['callback'],
           );
         }),
       ),

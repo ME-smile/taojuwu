@@ -107,9 +107,9 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
         futureFunc: OTPService.userList,
         params: {'keyword': widget.keyword},
         builder: (BuildContext context, CustomerModelListResp response) {
-          customerModelWrapper = response.data;
+          customerModelWrapper = response?.data;
 
-          beans = customerModelWrapper.data;
+          beans = customerModelWrapper?.data;
           _handleList(beans);
           return Scaffold(
             appBar: AppBar(
@@ -117,7 +117,9 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
               centerTitle: true,
             ),
             body: beans == null || beans?.isEmpty == true
-                ? NoData()
+                ? NoData(
+                    isFromSearch: true,
+                  )
                 : AzListView(
                     data: beans,
                     topData: hotBeans,

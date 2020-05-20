@@ -36,6 +36,13 @@ class Routes {
   static const String afterSaleService = '/afterSaleService';
   static const String measureDataPreview = '/measureDataPreview';
   static const String editOpenMode = '/editOpenMode';
+  static const String collectList = '/collectList';
+
+  static const String resetPwd = '/resetPwd';
+
+  static const String version = '/version';
+
+  static const String refund = '/refund';
   static void configureRoutes(Router router) {
     router.notFoundHandler = new Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -76,5 +83,9 @@ class Routes {
     router.define(afterSaleService, handler: RouteHandler.afterSaleService);
     router.define(measureDataPreview, handler: RouteHandler.measureDataPreview);
     router.define(editOpenMode, handler: RouteHandler.editOpenMode);
+    router.define(collectList, handler: RouteHandler.collectList);
+    router.define(resetPwd, handler: RouteHandler.resetPwd);
+    router.define(version, handler: RouteHandler.version);
+    router.define(refund, handler: RouteHandler.refund);
   }
 }

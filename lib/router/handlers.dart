@@ -7,6 +7,7 @@ import 'package:taojuwu/export/export_pages.dart';
 import 'package:taojuwu/pages/after_sale_service/after_sale_service_page.dart';
 
 import 'package:taojuwu/pages/cart/cart_page.dart';
+import 'package:taojuwu/pages/collect/collect_page.dart';
 import 'package:taojuwu/pages/curtain/curtain_detail_page.dart';
 import 'package:taojuwu/pages/curtain/curtain_mall_page.dart';
 import 'package:taojuwu/pages/curtain/subPages/edit_open_mode_page.dart';
@@ -29,9 +30,12 @@ import 'package:taojuwu/pages/order/order_page.dart';
 import 'package:taojuwu/pages/order/subPages/order_commit_success_page.dart';
 import 'package:taojuwu/pages/order/subPages/order_search_page.dart';
 import 'package:taojuwu/pages/profile/profile_page.dart';
+import 'package:taojuwu/pages/profile/subPages/reset_pwd_page.dart';
 import 'package:taojuwu/pages/profile/subPages/submit_success_page.dart';
 import 'package:taojuwu/pages/profile/subPages/switch_account_page.dart';
 import 'package:taojuwu/pages/profile/subPages/feedback_page.dart';
+import 'package:taojuwu/pages/profile/subPages/version_page.dart';
+import 'package:taojuwu/pages/refund/refund_page.dart';
 import 'package:taojuwu/pages/search/search_page.dart';
 import 'package:taojuwu/pages/splash/splash_page.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -81,10 +85,17 @@ class RouteHandler {
 
   static Handler curtainDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    return CurtainDetailPage(int.parse(params['id']?.first));
+    int goodsId = int.parse(params['id']?.first);
+
+    return CurtainDetailPage(
+      goodsId,
+    );
   });
 
-  static goCurtainDetailPage(BuildContext context, int id) {
+  static goCurtainDetailPage(
+    BuildContext context,
+    int id,
+  ) {
     _jumpTo(context, '${Routes.curtainDetail}?id=$id');
   }
 
@@ -94,7 +105,11 @@ class RouteHandler {
 
   static Handler order = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    String clientId = params['clientId']?.first;
+    int clientId;
+    String arg = params['clientId']?.first;
+    if (arg != null && arg != 'null') {
+      clientId = int.parse(arg);
+    }
     return OrderPage(
       clientId: clientId,
     );
@@ -110,8 +125,9 @@ class RouteHandler {
     return OrderDetailPage(id: id);
   });
 
-  static goOrderDetailPage(BuildContext context, int id) {
-    _jumpTo(context, '${Routes.orderDetail}?id=$id');
+  static goOrderDetailPage(BuildContext context, int id,
+      {bool isReplaceMode: false}) {
+    _jumpTo(context, '${Routes.orderDetail}?id=$id', replace: isReplaceMode);
   }
 
   static Handler measureOrder = Handler(
@@ -127,8 +143,8 @@ class RouteHandler {
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     return CustomerManagePage();
   });
-  static goCustomerPage(BuildContext context) {
-    _jumpTo(context, Routes.customer);
+  static goCustomerPage(BuildContext context, {bool isReplaceMode: false}) {
+    _jumpTo(context, Routes.customer, replace: isReplaceMode);
   }
 
   static Handler customerDetail = Handler(
@@ -151,10 +167,15 @@ class RouteHandler {
       id: id,
     );
   });
-  static goCustomerEditPage(BuildContext context, {String title, int id}) {
+  static goCustomerEditPage(BuildContext context,
+      {String title, int id, bool isReplaceMode: true}) {
     title =
         title != null ? FluroConvertUtils.fluroCnParamsEncode(title) : title;
-    _jumpTo(context, '${Routes.customerEdit}?title=$title&id=$id');
+    _jumpTo(
+      context,
+      '${Routes.customerEdit}?title=$title&id=$id',
+      replace: isReplaceMode,
+    );
   }
 
   static Handler customerTable = Handler(
@@ -287,11 +308,14 @@ class RouteHandler {
 
   static Handler cart = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    return CartPage();
+    int id = int.parse(params['id']?.first);
+    return CartPage(
+      clientId: id,
+    );
   });
 
-  static goCartPage(BuildContext context) {
-    _jumpTo(context, Routes.cart);
+  static goCartPage(BuildContext context, {int clientId: -1}) {
+    _jumpTo(context, '${Routes.cart}?id=$clientId');
   }
 
   static Handler commitOrder = Handler(
@@ -375,5 +399,53 @@ class RouteHandler {
 
   static goEditOpenModePage(BuildContext context) {
     _jumpTo(context, Routes.editOpenMode);
+  }
+
+  static Handler collectList = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int id = int.parse(params['id']?.first);
+    String name = FluroConvertUtils.fluroCnParamsDecode(params['name']?.first);
+    return CollectPage(
+      id: id,
+      name: name,
+    );
+  });
+
+  static goCollectPage(BuildContext context,
+      {int clientId: -1, String name: ''}) {
+    name = FluroConvertUtils.fluroCnParamsEncode(name);
+    _jumpTo(context, '${Routes.collectList}?id=$clientId&name=$name');
+  }
+
+  static Handler resetPwd = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    return ResetPwdPage();
+  });
+
+  static goResetPwdPage(
+    BuildContext context,
+  ) {
+    _jumpTo(context, Routes.resetPwd);
+  }
+
+  static Handler version = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    return VersionPage();
+  });
+
+  static goVersionPage(
+    BuildContext context,
+  ) {
+    _jumpTo(context, Routes.version);
+  }
+
+  static Handler refund = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int id = int.parse(params['id']?.first);
+    return RefundPage(id: id);
+  });
+
+  static goRefundPage(BuildContext context, int id) {
+    _jumpTo(context, '${Routes.refund}?id=$id');
   }
 }

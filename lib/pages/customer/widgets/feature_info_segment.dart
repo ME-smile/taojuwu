@@ -5,7 +5,6 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/user/customer_detail_model.dart';
@@ -23,22 +22,40 @@ class FeatureInfoSegment extends StatefulWidget {
 class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
   TextEditingController addressInput;
   CustomerDetailModel model;
+  FocusNode addressFocusNode;
   String provinceId;
   String cityId;
   String districtId;
+
+  String enterTime;
+
+  String provinceName;
+  String cityName;
+  String districtName;
   Map<String, String> params;
+
   @override
   void initState() {
     super.initState();
     model = widget.model;
     params = widget.params;
+    if (model == null) {
+      enterTime = DateUtil.formatDateMs(DateTime.now().millisecondsSinceEpoch,
+          format: 'yyyy-MM-dd HH:mm:ss');
+    } else {
+      enterTime = DateUtil.formatDateMs(model?.enterTime ?? 0,
+          format: 'yyyy-MM-dd HH:mm:ss');
+    }
+
     addressInput = TextEditingController(text: model?.detailAddress);
+    addressFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     super.dispose();
     addressInput?.dispose();
+    addressFocusNode?.dispose();
   }
 
   Widget _title(BuildContext context, String title) {
@@ -72,7 +89,7 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
                     trailText ?? '',
                     style: Theme.of(context).textTheme.caption,
                   ),
-                  ZYIcon.next
+                  Icon(ZYIcon.next)
                 ],
               ),
             ],
@@ -131,68 +148,80 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return StickyHeader(
-        header: _title(context, '特征信息'),
-        content: Container(
-          color: themeData.primaryColor,
-          padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-          child: Column(
-            children: <Widget>[
-              _bar(context, '入店时间', () {
-                DatePicker.showDatePicker(context, showTitleActions: true,
-                    onChanged: (date) {
-                  setState(() {
-                    model?.enterTime = date?.millisecondsSinceEpoch;
-                  });
-                }, onConfirm: (date) {
-                  params['enter_time'] = '${model?.enterTime ?? 0}';
-                  params['enter_time'] = params['enter_time'] ==null || params['enter_time'].isEmpty?'0':'${int.parse(params['enter_time'])/1000}';
-                }, currentTime: DateTime.now(), locale: LocaleType.zh);
-              },
-                  trailText:
-                      '${DateUtil.formatDateMs(model?.enterTime ?? 0, format: 'yyyy-MM-dd HH:mm:ss')}' ??
-                          ''),
-              Divider(),
-              _bar(context, '区域地址', () {
-                CityPickers.showCityPicker(
-                    context: context,
-                    height: 300,
-                    cancelWidget: Text('取消',
-                        style: TextStyle(
-                            color: const Color(0xFF3C3C3C),
-                            fontSize: UIKit.sp(36))),
-                    confirmWidget: Text(
-                      '确定',
-                      style: TextStyle(
-                          color: const Color(0xFF2196f3),
-                          fontSize: UIKit.sp(32)),
-                    )).then((Result result) async {
-                  await getId('assets/data/province.json', result.provinceName);
-                  await getId('assets/data/city.json', result.cityName);
-                  await getId('assets/data/area.json', result.areaName);
-                  setState(() {
-                    model?.provinceName = result?.provinceName;
-                    model?.cityName = result?.cityName;
-                    model?.districtName = result?.areaName;
-                  });
-                }).catchError((err) => err);
-              },
-                  trailText:
-                      '${model?.provinceName ?? ''}${model?.cityName ?? ''}${model?.districtName ?? ''}' ??
-                          ''),
-              Divider(),
-              TextField(
-                controller: addressInput,
-                onChanged: (String text) {
-                  params['detail_address'] = text;
-                },
-                decoration: InputDecoration(
-                    icon: Text('详细地址'),
-                    border: InputBorder.none,
-                    hintText: '（选填）'),
+    return Container(
+        color: themeData.primaryColor,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            _title(context, '特征信息'),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+              child: Column(
+                children: <Widget>[
+                  _bar(context, '入店时间', () {
+                    int tmp = 0;
+                    DateTime now = DateTime.now();
+                    DatePicker.showDatePicker(context,
+                        showTitleActions: true,
+                        theme: DatePickerTheme(
+                            cancelStyle: UIKit.CANCEL_BUTTON_STYLE,
+                            itemHeight: UIKit.ITEM_EXTENT,
+                            doneStyle: UIKit.CONFIRM_BUTTON_STYLE,
+                            itemStyle: UIKit.OPTION_ITEM_STYLE,
+                            containerHeight: UIKit.BOTTOM_PICKER_HEIGHT),
+                        onChanged: (DateTime date) {
+                      tmp = date?.millisecondsSinceEpoch;
+                    }, onConfirm: (date) {
+                      params['enter_timer'] = '${tmp ~/ 1000}';
+                      setState(() {
+                        enterTime = DateUtil.formatDateMs(tmp,
+                            format: 'yyyy-MM-dd HH:mm:ss');
+                      });
+                    }, currentTime: now, locale: LocaleType.zh);
+                  }, trailText: '$enterTime' ?? ''),
+                  Divider(),
+                  _bar(context, '区域地址', () {
+                    CityPickers.showCityPicker(
+                        context: context,
+                        height: UIKit.BOTTOM_PICKER_HEIGHT,
+                        itemExtent: UIKit.ITEM_EXTENT,
+                        cancelWidget:
+                            Text('取消', style: UIKit.CANCEL_BUTTON_STYLE),
+                        confirmWidget: Text(
+                          '确定',
+                          style: UIKit.CONFIRM_BUTTON_STYLE,
+                        )).then((Result result) async {
+                      await getId(
+                          'assets/data/province.json', result.provinceName);
+                      await getId('assets/data/city.json', result.cityName);
+                      await getId('assets/data/area.json', result.areaName);
+                      setState(() {
+                        provinceName = result?.provinceName;
+                        cityName = result?.cityName;
+                        districtName = result?.areaName;
+                      });
+                    }).catchError((err) => err);
+                  },
+                      trailText:
+                          '${provinceName ?? ''}${cityName ?? ''}${districtName ?? ''}' ??
+                              ''),
+                  Divider(),
+                  TextField(
+                    controller: addressInput,
+                    focusNode: addressFocusNode,
+                    onChanged: (String text) {
+                      params['detail_address'] = text;
+                    },
+                    decoration: InputDecoration(
+                        icon: Text('详细地址'),
+                        border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        hintText: '（选填）'),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ));
   }
 }

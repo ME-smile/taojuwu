@@ -1,8 +1,10 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/models/user/customer_detail_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/pages/customer/widgets/feature_info_segment.dart';
+import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/widgets/zy_future_builder.dart';
@@ -53,61 +55,74 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
-        actions: <Widget>[
-          FlatButton(
-              onPressed: () {
-                if (params['client_name'].trim().isEmpty) {
-                  return CommonKit.showInfo( '用户名不能为空哦');
-                }
-                if (!RegexUtil.isMobileSimple(params['client_mobile'].trim())) {
-                  return CommonKit.showInfo('请输入正确的手机号');
-                }
-                OTPService.addUser(context, params).then((ZYResponse response) {
-                  if (response?.valid == true) {
-                    Navigator.of(context).pop();
-                  }
-                }).catchError((err) => err);
-              },
-              child: Text('完成'))
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: widget.id == null
-            ? Column(
-                children: <Widget>[
-                  BaseInfoSegment(
-                    params: params,
-                  ),
-                  FeatureInfoSegment(
-                    params: params,
-                  ),
-                ],
-              )
-            : ZYFutureBuilder(
-                futureFunc: OTPService.customerDetail,
-                params: {'id': widget.id},
-                builder:
-                    (BuildContext context, CustomerDetailModelResp response) {
-                  bean = response.data;
-                  initParams(bean);
-                  return Column(
+    return WillPopScope(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.title),
+            centerTitle: true,
+            actions: <Widget>[
+              FlatButton(
+                  onPressed: () {
+                    if (params['client_name'].trim().isEmpty) {
+                      return CommonKit.showInfo('用户名不能为空哦');
+                    }
+                    if (!RegexUtil.isMobileSimple(
+                        params['client_mobile'].trim())) {
+                      return CommonKit.showInfo('请输入正确的手机号');
+                    }
+
+                    OTPService.addUser(context, params)
+                        .then((ZYResponse response) {
+                      print(response.message);
+                      print(Application.sp.getString('tokem'));
+                      if (response?.valid == true) {
+                        RouteHandler.goCustomerPage(context,
+                            isReplaceMode: true);
+                      }
+                    }).catchError((err) => err);
+                  },
+                  child: Text('完成'))
+            ],
+          ),
+          body: SingleChildScrollView(
+            child: widget.id == null
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       BaseInfoSegment(
-                        model: bean,
                         params: params,
                       ),
                       FeatureInfoSegment(
-                        model: bean,
                         params: params,
                       ),
                     ],
-                  );
-                }),
-      ),
-    );
+                  )
+                : ZYFutureBuilder(
+                    futureFunc: OTPService.customerDetail,
+                    params: {'id': widget.id},
+                    builder: (BuildContext context,
+                        CustomerDetailModelResp response) {
+                      bean = response.data;
+                      initParams(bean);
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          BaseInfoSegment(
+                            model: bean,
+                            params: params,
+                          ),
+                          FeatureInfoSegment(
+                            model: bean,
+                            params: params,
+                          ),
+                        ],
+                      );
+                    }),
+          ),
+        ),
+        onWillPop: () {
+          RouteHandler.goCustomerPage(context, isReplaceMode: true);
+          return Future.value(false);
+        });
   }
 }

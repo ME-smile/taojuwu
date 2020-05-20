@@ -200,7 +200,7 @@ class _SearchPageState extends State<SearchPage> {
                     // textAlignVertical: TextAlignVertical(y: .5),
                     onSubmitted: (String text) {
                       if (text?.trim()?.isEmpty == true) {
-                        return CommonKit.showInfo( '请输入关键字');
+                        return CommonKit.showInfo('请输入关键字');
                       }
                       addHistory(text);
                       jumpTo(text);
@@ -211,11 +211,17 @@ class _SearchPageState extends State<SearchPage> {
                         filled: true,
                         fillColor: Color(0xFFEDEFF1),
                         prefixIcon: Container(
-                          child: ZYIcon.search,
+                          child: Icon(
+                            ZYIcon.search,
+                            color: const Color(0xFF979797),
+                          ),
                         ),
-                        suffixIcon: InkWell(
-                          child: ZYIcon.del,
-                          onTap: () {
+                        suffix: IconButton(
+                          icon: Icon(
+                            ZYIcon.clear,
+                            color: const Color(0xFF979797),
+                          ),
+                          onPressed: () {
                             inputController?.text = ' ';
                           },
                         ),
@@ -248,7 +254,9 @@ class _SearchPageState extends State<SearchPage> {
                 children: <Widget>[
                   Text('历史搜索'),
                   InkWell(
-                      child: ZYIcon.del,
+                      child: Icon(
+                        ZYIcon.del,
+                      ),
                       onTap: () {
                         showDelDialog();
                       })

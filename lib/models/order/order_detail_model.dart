@@ -153,7 +153,11 @@ class OrderDetailModel {
   bool get hasMeasured => orderStatus > 2;
   bool get hasInstalled => orderStatus >= 7;
   bool get hasProducted => orderStatus > 5;
-  bool get hasFinished => orderStatus >= 8 && orderStatus != 14;
+  bool get canEditPrice => orderStatus == 3;
+  bool get hasScheduled => orderStatus > 3;
+  // bool get hasCancel
+  bool get hasFinished =>
+      orderStatus >= 8 && [14, 9].contains(orderStatus) == false;
   bool get hasPaid => orderStatus > 4;
   OrderDetailModel.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
@@ -555,9 +559,9 @@ class OrderGoods {
     estimatedPrice = json['estimated_price'];
     expressInfo = json['express_info'];
     shippingStatusName = json['shipping_status_name'];
-    // pictureInfo = json['picture_info'] != null
-    //     ? new PictureInfo.fromJson(json['picture_info'])
-    //     : null;
+    pictureInfo = json['picture_info'] != null
+        ? new PictureInfo.fromJson(json['picture_info'])
+        : null;
     if (json['refund_operation'] != null) {
       // refundOperation = new List<Null>();
       // json['refund_operation'].forEach((v) { refundOperation.add(new Null.fromJson(v)); });

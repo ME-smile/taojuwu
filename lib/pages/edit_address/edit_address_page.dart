@@ -31,8 +31,9 @@ class _EditAddressPageState extends State<EditAddressPage> {
   TextEditingController nameInput;
   TextEditingController telInput;
   TextEditingController houseNumInput;
-  FocusNode focusNode = FocusNode();
-
+  FocusNode nameFocusNode = FocusNode();
+  FocusNode telFocusNode = FocusNode();
+  FocusNode houseNumFocusNode = FocusNode();
   String provinceName;
   String cityName;
   String districtName;
@@ -59,6 +60,12 @@ class _EditAddressPageState extends State<EditAddressPage> {
     nameInput = TextEditingController();
     telInput = TextEditingController();
     houseNumInput = TextEditingController();
+  }
+
+  void unFocus() {
+    nameFocusNode?.unfocus();
+    telFocusNode?.unfocus();
+    houseNumFocusNode?.unfocus();
   }
 
   void setParams(ClientProvider provider) {
@@ -95,8 +102,11 @@ class _EditAddressPageState extends State<EditAddressPage> {
   void dispose() {
     super.dispose();
     nameInput?.dispose();
+    nameFocusNode?.dispose();
     telInput?.dispose();
+    telFocusNode?.dispose();
     houseNumInput?.dispose();
+    houseNumFocusNode?.dispose();
   }
 
   Future getId(String filePath, String name, ClientProvider provider) async {
@@ -205,6 +215,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                             Expanded(
                               child: TextField(
                                 controller: nameInput,
+                                focusNode: nameFocusNode,
                                 onChanged: (String text) {
                                   name = text;
                                 },
@@ -227,9 +238,11 @@ class _EditAddressPageState extends State<EditAddressPage> {
                               provider?.gender == 1
                                   ? ZYRaisedButton('先生', () {
                                       if (provider?.gender == 1) return;
+                                      unFocus();
                                       provider?.gender = 1;
                                     })
                                   : ZYOutlineButton('先生', () {
+                                      unFocus();
                                       if (provider?.gender == 1) return;
                                       provider?.gender = 1;
                                     }),
@@ -238,10 +251,12 @@ class _EditAddressPageState extends State<EditAddressPage> {
                               ),
                               provider?.gender == 2
                                   ? ZYRaisedButton('女士', () {
+                                      unFocus();
                                       if (provider?.gender == 2) return;
                                       provider?.gender = 2;
                                     })
                                   : ZYOutlineButton('女士', () {
+                                      unFocus();
                                       if (provider?.gender == 2) return;
                                       provider?.gender = 2;
                                     }),
@@ -258,7 +273,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                                 onChanged: (String text) {
                                   tel = text;
                                 },
-                                focusNode: focusNode,
+                                focusNode: telFocusNode,
                                 keyboardType: TextInputType.phone,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.symmetric(
@@ -272,18 +287,15 @@ class _EditAddressPageState extends State<EditAddressPage> {
                         Divider(),
                         InkWell(
                           onTap: () {
-                            focusNode.unfocus();
+                            unFocus();
                             CityPickers.showCityPicker(
                               context: context,
-                              height: 300,
-                              cancelWidget: Text('取消',
-                                  style: TextStyle(
-                                      color: const Color(0xFF3C3C3C),
-                                      fontSize: UIKit.sp(36))),
-                              confirmWidget: Text('确定',
-                                  style: TextStyle(
-                                      color: const Color(0xFF2196f3),
-                                      fontSize: UIKit.sp(32))),
+                              height: UIKit.BOTTOM_PICKER_HEIGHT,
+                              itemExtent: UIKit.ITEM_EXTENT,
+                              cancelWidget:
+                                  Text('取消', style: UIKit.CANCEL_BUTTON_STYLE),
+                              confirmWidget:
+                                  Text('确定', style: UIKit.CONFIRM_BUTTON_STYLE),
                             ).then((Result result) async {
                               // provinceId = result.provinceId;
                               await getId('assets/data/province.json',
@@ -304,10 +316,20 @@ class _EditAddressPageState extends State<EditAddressPage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
+                                // Text.rich(
+                                //   TextSpan(
+                                //     text: '收货地址:',
+                                //     children: [
+                                //       TextSpan(
+                                //         text: '${provider?.address ?? ''}'
+                                //       )
+                                //     ]
+                                //   )
+                                // ),
                                 Text('收货地址:'),
                                 Spacer(),
                                 Text('${provider?.address ?? ''}'),
-                                ZYIcon.next
+                                Icon(ZYIcon.next)
                               ],
                             ),
                           ),
@@ -318,6 +340,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                             Text('门牌号:'),
                             Expanded(
                               child: TextField(
+                                focusNode: houseNumFocusNode,
                                 controller: houseNumInput,
                                 onChanged: (String text) {
                                   detailAddress = text;

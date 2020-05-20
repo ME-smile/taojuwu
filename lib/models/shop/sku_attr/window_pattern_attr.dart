@@ -4,6 +4,7 @@ class WindowPatternAttr {
   static const typesText = ['无盒', '有盒'];
 
   static const installModes = ['顶装', '侧装'];
+
   static const openModes = ['整体对开', '整体单开'];
 
   static const installModeMap = {

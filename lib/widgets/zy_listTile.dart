@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
+
 class ZYListTile extends StatelessWidget {
   final String title;
   final bool showDivider;
@@ -18,19 +19,21 @@ class ZYListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     return InkWell(
-      onTap: callback??(){},
+      onTap: callback ?? () {},
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: UIKit.width(15),vertical: UIKit.height(20)),
+        padding: EdgeInsets.symmetric(
+            horizontal: UIKit.width(15), vertical: UIKit.height(20)),
         decoration: BoxDecoration(
             color: themeData.primaryColor,
             border: Border(
-                bottom: BorderSide(color: showDivider?themeData.dividerColor:Colors.transparent, width: UIKit.height(1)))),
+                bottom: BorderSide(
+                    color: showDivider
+                        ? themeData.dividerColor
+                        : Colors.transparent,
+                    width: UIKit.height(1)))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(title ?? ''),
-            trailing ??ZYIcon.next
-          ],
+          children: <Widget>[Text(title ?? ''), trailing ?? Icon(ZYIcon.next)],
         ),
       ),
     );

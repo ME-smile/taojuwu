@@ -33,7 +33,9 @@ class CommitOrderCard extends StatelessWidget {
             ),
           ),
           Container(
+            width: MediaQuery.of(context).size.width,
             child: Row(
+              mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 Image.network(
                   UIKit.getNetworkImgPath(goods?.img),
@@ -43,7 +45,7 @@ class CommitOrderCard extends StatelessWidget {
                     child: Container(
                   margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
                   child: Column(
-                    mainAxisSize: MainAxisSize.max,
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,8 +64,7 @@ class CommitOrderCard extends StatelessWidget {
                               children: [TextSpan(text: '/米')]))
                         ],
                       ),
-                      Flexible(
-                          child: Container(
+                      Container(
                         color: const Color(0xFFFAFAFA),
                         padding: EdgeInsets.symmetric(
                             vertical: UIKit.height(10),
@@ -72,7 +73,18 @@ class CommitOrderCard extends StatelessWidget {
                           attrsText ?? '',
                           style: textTheme.caption,
                         ),
-                      ))
+                      ),
+                      // Flexible(
+                      //     child: Container(
+                      //   color: const Color(0xFFFAFAFA),
+                      //   padding: EdgeInsets.symmetric(
+                      //       vertical: UIKit.height(10),
+                      //       horizontal: UIKit.width(10)),
+                      //   child: Text(
+                      //     attrsText ?? '',
+                      //     style: textTheme.caption,
+                      //   ),
+                      // ))
                     ],
                   ),
                 )),

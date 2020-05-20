@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-// import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:taojuwu/pages/splash/splash_page.dart';
+import 'package:taojuwu/pages/home/home_page.dart';
+import 'package:taojuwu/pages/login/login_page.dart';
 import 'package:taojuwu/providers/theme_provider.dart';
-// import 'package:taojuwu/utils/translations.dart';
+import 'package:taojuwu/providers/user_provider.dart';
+import 'package:taojuwu/services/base/xhr.dart';
 
 import 'application.dart';
 
@@ -15,21 +16,29 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
-        builder: (BuildContext context, ThemeProvider provider, _) {
+    return Consumer2<ThemeProvider, UserProvider>(builder:
+        (BuildContext context, ThemeProvider provider,
+            UserProvider userProvider, _) {
+      Xhr.init(userProvider?.token);
+      if (userProvider?.isLogin == true) {
+        userProvider?.initUserInfo();
+      }
       return RefreshConfiguration(
           headerBuilder: () => WaterDropHeader(
-                refresh: Text('正在刷新'),
-                complete: Text('刷新成功'),
-                failed: Text('刷新失败'),
+                refresh: Text(
+                  '正在刷新',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                complete: Text('刷新成功', style: TextStyle(color: Colors.grey)),
+                failed: Text('刷新失败', style: TextStyle(color: Colors.grey)),
               ), // Configure the default header indicator. If you have the same header indicator for each page, you need to set this
           footerBuilder: () => ClassicFooter(
                 loadingText: '正在加载',
                 noDataText: '我也是有底线的哦',
                 failedText: '加载失败',
-                canLoadingText: '下拉加载更多',
-                idleText: '加载更多数据',
-                idleIcon: Text(''),
+                canLoadingText: '上拉加载更多',
+                idleText: '上拉加载更多',
+                height: 50,
               ), // Configure default bottom indicator
           headerTriggerDistance:
               80.0, // header trigger refresh trigger distance
@@ -46,7 +55,7 @@ class App extends StatelessWidget {
           enableLoadingWhenFailed:
               true, //In the case of load failure, users can still trigger more loads by gesture pull-up.
           hideFooterWhenNotFull:
-              false, // Disable pull-up to load more functionality when Viewport is less than one screen
+              true, // Disable pull-up to load more functionality when Viewport is less than one screen
           enableBallisticLoad: true,
           child: FlutterEasyLoading(
               child: MaterialApp(
@@ -56,7 +65,7 @@ class App extends StatelessWidget {
             darkTheme:
                 provider.isDarkMode ? ThemeData.dark() : ThemeData.light(),
             theme: ThemeProvider.lightTheme,
-            home: SplashPage(),
+            home: userProvider?.isLogin == true ? HomePage() : LoginPage(),
             // localizationsDelegates: [
             //   const TranslationsDelegate(),
             //   GlobalMaterialLocalizations.delegate,

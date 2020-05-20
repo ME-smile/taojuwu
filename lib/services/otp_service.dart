@@ -5,6 +5,7 @@ import 'package:taojuwu/models/order/measure_data_model.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
+import 'package:taojuwu/models/shop/collect_list_model.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 import 'package:taojuwu/models/shop/product_tag_model.dart';
@@ -16,11 +17,13 @@ import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
+import 'package:taojuwu/models/shop/sku_attr/window_style_option.dart';
 import 'package:taojuwu/models/user/category_customer_model.dart';
 import 'package:taojuwu/models/user/customer_detail_model.dart';
 import 'package:taojuwu/models/user/customer_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/services/api_path.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 import 'base/xhr.dart';
 
@@ -178,10 +181,17 @@ class OTPService {
 
   static Future<ZYResponse> loginByPwd(
       BuildContext context, Map<String, String> params) async {
-    Response response =
-        await xhr.post(ApiPath.loginByPwd, data: params ?? {});
-
-    return ZYResponse.fromJsonWithData(response.data);
+    Response response = await xhr.post(
+      ApiPath.loginByPwd,
+      data: params ?? {},
+    );
+    ZYResponse resp = ZYResponse.fromJsonWithData(response.data);
+    if (resp?.valid == true) {
+      CommonKit.showSuccessDIYInfo('登录成功');
+    } else {
+      CommonKit.showErrorInfo('账号或密码错误');
+    }
+    return resp;
   }
 
   static Future fetchCurtainDetailData(BuildContext context,
@@ -208,8 +218,7 @@ class OTPService {
 
   static Future<ZYResponse> addUser(
       BuildContext context, Map<String, dynamic> params) async {
-    Response response =
-        await xhr.post(ApiPath.userAdd, data: params ?? {});
+    Response response = await xhr.post(ApiPath.userAdd, data: params ?? {});
     return ZYResponse.fromJsonWithData(response.data);
   }
 
@@ -257,18 +266,33 @@ class OTPService {
     return ZYResponse.fromJson(response.data);
   }
 
-  static Future<ZYResponse> cancelCollect(BuildContext context,
+  static Future<CollectListResp> collectList(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(ApiPath.cancelCollect, data: params);
-    return ZYResponse.fromJson(response.data);
+        await xhr.get(context, ApiPath.collectList, params: params);
+    return CollectListResp.fromJson(response.data);
+  }
+
+  static Future<ZYResponse> cancelCollect(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response = await xhr.post(ApiPath.cancelCollect, data: params);
+    ZYResponse resp = ZYResponse.fromJson(response.data);
+    return resp;
   }
 
   static Future<ZYResponse> addCart(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response = await xhr.post(ApiPath.addCart, data: params);
-
-    return ZYResponse.fromJson(response.data);
+    Response response = await xhr.post(
+      ApiPath.addCart,
+      data: params,
+    );
+    ZYResponse resp = ZYResponse.fromJson(response.data);
+    if (resp?.valid == true) {
+      CommonKit.showSuccessDIYInfo('加入购物车成功');
+    } else {
+      CommonKit.showErrorInfo(resp?.message);
+    }
+    return resp;
   }
 
   static Future<CartListResp> cartList(BuildContext context,
@@ -281,7 +305,10 @@ class OTPService {
 
   static Future<ZYResponse> delCart(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response = await xhr.get(context, ApiPath.delCart, params: params);
+    Response response = await xhr.post(
+      ApiPath.delCart,
+      data: params,
+    );
 
     return ZYResponse.fromJson(response.data);
   }
@@ -300,46 +327,66 @@ class OTPService {
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.saveMesure, params: params);
-
-    return ZYResponse<dynamic>.fromJsonWithData(response.data);
+    ZYResponse<dynamic> resp =
+        ZYResponse<dynamic>.fromJsonWithData(response.data);
+    if (resp?.valid == false) {
+      CommonKit.showErrorInfo(resp?.message ?? '');
+    }
+    return resp;
   }
 
   static Future<ZYResponse<dynamic>> createOrder(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response =
-        await xhr.post(ApiPath.createOrder, formdata: params);
+    Response response = await xhr.post(ApiPath.createOrder, formdata: params);
 
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
   static Future<ZYResponse<dynamic>> orderRemind(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response =
-        await xhr.post(ApiPath.orderRemind, formdata: params);
-
+    Response response = await xhr.post(
+      ApiPath.orderRemind,
+      formdata: params,
+    );
+    ZYResponse resp = ZYResponse<dynamic>.fromJsonWithData(response.data);
+    if (resp?.valid == true) {
+      CommonKit.showSuccessDIYInfo('提交成功');
+    } else {
+      CommonKit.showErrorInfo(resp?.message);
+    }
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
   static Future<ZYResponse<dynamic>> orderCancel(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response =
-        await xhr.post(ApiPath.orderCancel, formdata: params);
+    Response response = await xhr.post(
+      ApiPath.orderCancel,
+      formdata: params,
+    );
 
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
   static Future<ZYResponse<dynamic>> orderGoodsCancel(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response =
-        await xhr.post(ApiPath.orderGoodsCancel, data: params);
-
-    return ZYResponse<dynamic>.fromJsonWithData(response.data);
+    Response response = await xhr.post(
+      ApiPath.orderGoodsCancel,
+      data: params,
+    );
+    ZYResponse<dynamic> resp =
+        ZYResponse<dynamic>.fromJsonWithData(response.data);
+    if (resp?.valid == true) {
+      CommonKit.showSuccessDIYInfo('取消成功');
+    } else {
+      CommonKit.showErrorInfo(resp?.message);
+    }
+    return resp;
   }
 
   static Future<ZYResponse<dynamic>> createMeasureOrder(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post( ApiPath.createMeasureOrder, formdata: params);
+        await xhr.post(ApiPath.createMeasureOrder, formdata: params);
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
@@ -352,22 +399,19 @@ class OTPService {
 
   static Future<ZYResponse<dynamic>> selectProduct(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response =
-        await xhr.post(ApiPath.selectProduct, formdata: params);
+    Response response = await xhr.post(ApiPath.selectProduct, formdata: params);
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
   static Future<ZYResponse<dynamic>> confirmToSelect(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response =
-        await xhr.post(ApiPath.confirmToSelect, data: params);
+    Response response = await xhr.post(ApiPath.confirmToSelect, data: params);
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
   static Future<ZYResponse<dynamic>> editPrice(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response =
-        await xhr.post( ApiPath.editPrice, data: params);
+    Response response = await xhr.post(ApiPath.editPrice, data: params);
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
@@ -379,7 +423,7 @@ class OTPService {
 
   static Future<ZYResponse<dynamic>> uploadImg(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response = await xhr.post( ApiPath.uploadImg,
+    Response response = await xhr.post(ApiPath.uploadImg,
         data: params,
         options: Options(
             headers: {'Content-Type': 'application/x-www-form-urlencoded'}));
@@ -389,7 +433,6 @@ class OTPService {
   static Future<ZYResponse<dynamic>> afterSale(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response = await xhr.post(
-      
       ApiPath.afterSale,
       data: params,
     );
@@ -408,5 +451,24 @@ class OTPService {
     });
     List result = await Future.wait(list);
     return result;
+  }
+
+  static Future<ZYResponse<dynamic>> feedback(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response = await xhr.post(ApiPath.feedback, data: params);
+    return ZYResponse<dynamic>.fromJsonWithData(response.data);
+  }
+
+  static Future<ZYResponse<dynamic>> resetPwd(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response = await xhr.post(ApiPath.resetPwd, data: params);
+    return ZYResponse<dynamic>.fromJsonWithData(response.data);
+  }
+
+  static Future<ZYResponse<WindowStyleOptionResp>> windowStyle(
+      BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response = await xhr.post(ApiPath.windowStyle, data: params);
+    return ZYResponse<WindowStyleOptionResp>.fromJson(response.data);
   }
 }

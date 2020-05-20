@@ -6,9 +6,9 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
-class _GridCard extends StatelessWidget {
+class GridCard extends StatelessWidget {
   final CurtainGoodItemBean bean;
-  const _GridCard(this.bean, {Key key}) : super(key: key);
+  const GridCard(this.bean, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,7 @@ class GoodsGridView extends StatelessWidget {
         itemCount:
             goodsList != null && goodsList.isNotEmpty ? goodsList.length : 0,
         itemBuilder: (BuildContext context, int i) {
-          return _GridCard(goodsList[i]);
+          return GridCard(goodsList[i]);
         });
   }
 }

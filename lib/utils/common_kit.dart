@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:taojuwu/icon/ZYIcon.dart';
 
 class CommonKit {
   static Function debounce(Function callback, [int delay = 300]) {
@@ -27,11 +29,25 @@ class CommonKit {
     EasyLoading.showError('网络错误');
   }
 
+  static void showErrorInfo(String msg) {
+    EasyLoading.showError(msg);
+  }
+
   static void showToast(String msg) {
     EasyLoading.showToast(msg);
   }
 
+  static void showSuccessDIYInfo(String msg) {
+    EasyLoading.showSuccess(msg);
+  }
+
   static void showInfo(String msg) {
+    EasyLoading.instance
+      ..infoWidget = Icon(
+        ZYIcon.exclamation_point,
+        color: Colors.white,
+        size: 30,
+      );
     EasyLoading.showInfo(msg);
   }
 }

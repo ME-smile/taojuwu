@@ -1,7 +1,29 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:taojuwu/constants/constants.dart';
 
 class UIKit {
+  //底部弹宽统一设置
+  static const double BOTTOM_PICKER_HEIGHT = 300;
+
+  //取消按钮字体
+  static const TextStyle CANCEL_BUTTON_STYLE =
+      TextStyle(color: Colors.grey, fontSize: 18);
+
+  //确认按钮字体
+  static const TextStyle CONFIRM_BUTTON_STYLE =
+      TextStyle(color: const Color(0xFF2196f3), fontSize: 18);
+
+  //标题字体
+  static const TextStyle TITLE_STYLE =
+      TextStyle(color: const Color(0xFF333333), fontSize: 18);
+  // 选项按钮字体
+  static const TextStyle OPTION_ITEM_STYLE =
+      TextStyle(color: Colors.black, fontSize: 20);
+
+  //选项高度
+  static const double ITEM_EXTENT = 48;
+
   static double sp(double fontSize) {
     return ScreenUtil().setSp(fontSize);
   }

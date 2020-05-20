@@ -8,7 +8,7 @@ class UserInfo {
   String userTel;
   String address;
 
-  UserInfo._singleton() : _token = Application.sp.getString('token') ?? '';
+  UserInfo._singleton();
 
   static final UserInfo _instance = UserInfo._singleton();
   static UserInfo get instance {
@@ -16,7 +16,7 @@ class UserInfo {
   }
 
   String get token {
-    return _token == null ? "" : _token;
+    return Application.sp.getString('token') ?? '';
   }
 
   void saveUserInfo(Map<String, dynamic> json) {
@@ -32,11 +32,5 @@ class UserInfo {
     Application.sp.setString('userTel', userTel);
     Application.sp.setString('address', address);
     Application.sp.setString('nickName', nickName);
-  }
-
-  bool get isLogin => _token != null && _token.isNotEmpty;
-
-  set token(String token) {
-    _token = token;
   }
 }

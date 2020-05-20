@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
+import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -19,11 +22,26 @@ class MeasureDataPreviewPage extends StatelessWidget {
     );
   }
 
+  bool hasChangedDy(OrderProvider orderProvider, GoodsProvider goodsProvider) {
+    return orderProvider?.orderGoodsMeasure?.verticalGroundHeight !=
+            goodsProvider?.dy ??
+        false;
+  }
+
+  bool hasChangedOpenMode(
+      OrderProvider orderProvider, GoodsProvider goodsProvider) {
+    return orderProvider?.orderGoodsMeasure?.openType !=
+            goodsProvider?.curOpenModeName ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
-    return Consumer<OrderProvider>(
-      builder: (BuildContext context, OrderProvider provider, _) {
+    print(Application.sp.getString('token'));
+    return Consumer2<OrderProvider, GoodsProvider>(
+      builder: (BuildContext context, OrderProvider provider,
+          GoodsProvider goodsProvider, _) {
         OrderGoodsMeasure measureData = provider?.orderGoodsMeasure;
         return Scaffold(
             appBar: AppBar(
@@ -124,17 +142,69 @@ class MeasureDataPreviewPage extends StatelessWidget {
                           Row(
                             children: <Widget>[
                               buildText(
-                                  '离地距离:${measureData?.verticalGroundHeight ?? '0'}cm'),
-                              ZYIcon.edit
+                                  '离地距离:${goodsProvider?.dyCMStr ?? '0'}cm'),
+                              Text(hasChangedDy(provider, goodsProvider)
+                                  ? '(原${measureData?.verticalGroundHeight}cm)'
+                                  : ''),
+                              InkWell(
+                                child: Icon(
+                                  ZYIcon.edit,
+                                  size: 14,
+                                ),
+                                onTap: () async {
+                                  String tmp;
+                                  await showCupertinoDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return CupertinoAlertDialog(
+                                          title: Text('离地距离(cm)'),
+                                          content: Column(
+                                            children: <Widget>[
+                                              CupertinoTextField(
+                                                placeholder: '请输入离地距离(cm)',
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                onChanged: (String text) {
+                                                  tmp = text;
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                          actions: <Widget>[
+                                            CupertinoDialogAction(
+                                              child: Text('取消'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            CupertinoDialogAction(
+                                              child: Text('确定'),
+                                              onPressed: () {
+                                                // closeSizeDialog();
+                                                goodsProvider?.dy = tmp;
+                                                Navigator.of(context).pop();
+                                              },
+                                            )
+                                          ],
+                                        );
+                                      });
+                                },
+                              ),
                             ],
                           ),
                           Row(
                             children: <Widget>[
-                              buildText('打开方式:${measureData?.openType ?? ''}'),
+                              buildText(
+                                  '打开方式:${goodsProvider?.curOpenModeName ?? ''}'),
+                              Text(hasChangedOpenMode(provider, goodsProvider)
+                                  ? '(原${measureData?.openType})'
+                                  : ''),
                               InkWell(
-                                child: ZYIcon.edit,
+                                child: Icon(
+                                  ZYIcon.edit,
+                                  size: 14,
+                                ),
                                 onTap: () {
-                                  print('待奶');
                                   RouteHandler.goEditOpenModePage(context);
                                 },
                               )

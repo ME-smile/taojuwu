@@ -48,15 +48,13 @@ class ScanButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
-          child: IconButton(
-            icon: ZYIcon.scan,
-            onPressed: () {
-              scan(context);
-            },
-          )),
-    );
+    return Padding(
+        padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
+        child: IconButton(
+          icon: Icon(ZYIcon.scan),
+          onPressed: () {
+            scan(context);
+          },
+        ));
   }
 }

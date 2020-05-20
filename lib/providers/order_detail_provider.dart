@@ -19,13 +19,17 @@ class OrderDetailProvider with ChangeNotifier {
   bool get hasMeasured => model?.hasMeasured ?? false;
   bool get hasInstalled => model?.hasInstalled ?? false;
   bool get hasProducted => model?.hasProducted ?? false;
-  bool get showSelectedProductButton => hasMeasured && isMeasureOrder;
+  bool get hasScheduled => model?.hasScheduled ?? false;
+  bool get showSelectedProductButton =>
+      hasMeasured &&
+      isMeasureOrder &&
+      haNotsSelectedProduct == true &&
+      hasScheduled;
   double get deltaPrice => _deltaPrice;
   bool get canEditPrice => model?.orderStatus == 4;
   bool get hasFinished => model?.hasFinished ?? false;
 
-  bool get showButton =>
-      [1, 2, 3, 6, 7, 8, 14, 15].contains(model?.orderStatus);
+  bool get showButton => [1, 2, 3, 6, 7, 8, 14].contains(model?.orderStatus);
   set deltaPrice(double price) {
     _deltaPrice = price;
     notifyListeners();
@@ -38,12 +42,12 @@ class OrderDetailProvider with ChangeNotifier {
   bool get canCancelOrder {
     int len =
         orderGoods?.where((item) => item?.canCancel == false)?.toList()?.length;
-    return len == 0 && model?.orderStatus != 15;
+    return len == 0 && model?.orderStatus != 0;
   }
 
   cancelOrder(BuildContext ctx, int orderId) {
     OrderKit.cancelOrder(ctx, orderId, callback: () {
-      model?.orderStatus = 15;
+      model?.orderStatus = 0;
       notifyListeners();
     });
   }

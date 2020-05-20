@@ -8,6 +8,7 @@ import 'package:taojuwu/models/shop/sku_attr/part_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
+import 'package:taojuwu/utils/ui_kit.dart';
 
 import 'option_view.dart';
 import 'sku_attr_picker.dart';
@@ -113,6 +114,7 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
     super.initState();
   }
 
+  bool get isLessOption => dict[title]['list'].length < 4 ?? false;
   @override
   Widget build(BuildContext context) {
     return Consumer<GoodsProvider>(
@@ -124,25 +126,32 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
               Navigator.of(context).pop();
             },
             child: SingleChildScrollView(
-                child: Wrap(
-              runAlignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.start,
-              direction: Axis.horizontal,
-              spacing: 8,
-              runSpacing: 20,
-              children: List.generate(dict[title]['list'].length, (int i) {
-                var item = dict[title]['list'][i];
-                return OptionView(
-                  img: item.picture,
-                  text: item.name,
-                  price: '${item.price ?? ''}',
-                  showBorder:
-                      title != '配饰选择' ? tmp.id == item.id : item.isChecked,
-                  callback: () {
-                    dict[title]['tap'](item);
-                  },
-                );
-              }),
+                child: Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(
+                  horizontal: isLessOption ? UIKit.width(40) : 0),
+              alignment: isLessOption ? Alignment.centerLeft : Alignment.center,
+              child: Wrap(
+                alignment: WrapAlignment.start,
+                runAlignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.start,
+                direction: Axis.horizontal,
+                spacing: 8,
+                runSpacing: 20,
+                children: List.generate(dict[title]['list'].length, (int i) {
+                  var item = dict[title]['list'][i];
+                  return OptionView(
+                    img: item.picture,
+                    text: item.name,
+                    price: '${item.price ?? ''}',
+                    showBorder:
+                        title != '配饰选择' ? tmp.id == item.id : item.isChecked,
+                    callback: () {
+                      dict[title]['tap'](item);
+                    },
+                  );
+                }),
+              ),
             )));
       },
     );

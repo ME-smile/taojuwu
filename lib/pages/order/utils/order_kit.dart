@@ -295,6 +295,8 @@ class OrderKit {
           String deltaMoney = '';
           String remark = '';
           return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
               title: Text(
                 '修改价格',
                 textAlign: TextAlign.center,

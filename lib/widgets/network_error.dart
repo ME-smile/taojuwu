@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 import 'v_spacing.dart';
 
@@ -13,15 +14,17 @@ class NetworkErrorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: callback,
-      child: Container(
+      child: Material(
+          child: Container(
         alignment: Alignment.center,
         height: UIKit.height(200),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Icon(
-              Icons.error_outline,
-              size: UIKit.sp(80),
+            ZYAssetImage(
+              'net_error@2x.png',
+              width: UIKit.width(250),
+              height: UIKit.width(250),
             ),
             VSpacing(10),
             Text(
@@ -30,7 +33,7 @@ class NetworkErrorWidget extends StatelessWidget {
             )
           ],
         ),
-      ),
+      )),
     );
   }
 }

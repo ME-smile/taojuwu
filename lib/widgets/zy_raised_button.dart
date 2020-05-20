@@ -15,7 +15,7 @@ class ZYRaisedButton extends StatelessWidget {
     return InkWell(
       onTap: callback,
       child: Container(
-        child: Text(text, style: accentTextTheme.button),
+        child: Text(text, style: accentTextTheme.button.copyWith(fontSize: 16)),
         decoration: BoxDecoration(
             color: themeData.accentColor,
             borderRadius: BorderRadius.all(Radius.circular(4)),

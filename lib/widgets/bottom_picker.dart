@@ -20,15 +20,13 @@ class BottomPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: CupertinoColors.systemBackground.resolveFrom(context),
+          color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.only(
-              topRight: Radius.circular(UIKit.sp(20)),
-              topLeft: Radius.circular(UIKit.sp(20)))),
-      height: UIKit.height(500),
+              topRight: Radius.circular(10), topLeft: Radius.circular(10))),
+      height: UIKit.BOTTOM_PICKER_HEIGHT,
       // padding: const EdgeInsets.only(top: 6.0),
       child: DefaultTextStyle(
         style: TextStyle(
-          color: CupertinoColors.label.resolveFrom(context),
           fontSize: 22.0,
         ),
         child: GestureDetector(
@@ -52,17 +50,13 @@ class BottomPicker extends StatelessWidget {
                           padding: EdgeInsets.only(left: UIKit.height(30)),
                           child: Text(
                             '取消',
-                            style: TextStyle(
-                                color: const Color(0xFF6E7486),
-                                fontSize: UIKit.sp(32)),
+                            style: UIKit.CANCEL_BUTTON_STYLE,
                           ),
                         ),
                       ),
                       Text(
                         title,
-                        style: TextStyle(
-                            color: const Color(0xFF3C3C3C),
-                            fontSize: UIKit.sp(36)),
+                        style: UIKit.TITLE_STYLE,
                       ),
                       GestureDetector(
                         onTap: () {
@@ -72,9 +66,7 @@ class BottomPicker extends StatelessWidget {
                           padding: EdgeInsets.only(right: UIKit.width(30)),
                           child: Text(
                             '确定',
-                            style: TextStyle(
-                                color: const Color(0xFF2196f3),
-                                fontSize: UIKit.sp(32)),
+                            style: UIKit.CONFIRM_BUTTON_STYLE,
                           ),
                         ),
                       )

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
@@ -68,7 +69,8 @@ class _HomePageState extends State<HomePage> {
         'subtitle': '销售统计，清晰明了',
         'icon': 'data@2x.png',
         'callback': () {
-          RouteHandler.goDataCenterPage(context);
+          CommonKit.showInfo('暂未开放');
+          // RouteHandler.goDataCenterPage(context);
         },
         'color': const Color(0xff0D0B14)
       },
@@ -98,6 +100,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    ScreenUtil.init(context, width: 750, height: 1334);
     ThemeData themeData = Theme.of(context);
     TextTheme accentTextTheme = themeData.accentTextTheme;
     TextTheme textTheme = themeData.textTheme;
@@ -106,9 +109,6 @@ class _HomePageState extends State<HomePage> {
       child: SafeArea(
         child: Scaffold(
           body: SingleChildScrollView(
-              // controller: controller,
-              // physics: NeverScrollableScrollPhysics(),
-
               child: Container(
             padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
             margin: EdgeInsets.only(bottom: UIKit.height(50)),

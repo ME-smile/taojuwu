@@ -11,6 +11,7 @@ import 'widgets/kongo_bar.dart';
 
 class CustomerDetailPage extends StatelessWidget {
   final int id;
+
   const CustomerDetailPage(this.id, {Key key}) : super(key: key);
 
   @override
@@ -42,7 +43,10 @@ class CustomerDetailPage extends StatelessWidget {
                   address: bean?.detailAddress,
                   gender: bean?.clientSex,
                 ),
-                KongoBar(),
+                KongoBar(
+                  id: bean?.id,
+                  name: bean?.clientName,
+                ),
                 CustomerInfoFrame(
                   model: bean,
                 )

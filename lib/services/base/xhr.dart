@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 
-import 'package:taojuwu/models/user/user_info_model.dart';
-
 // import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/services/api_path.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -13,24 +11,44 @@ class Xhr {
   static Xhr xhr = Xhr._internal();
   static const int TIMER = 5000;
 
-  static Dio dio = Dio(BaseOptions(
-      headers: {
-        "ACCEPT": 'application/json',
-      },
-      queryParameters: {
-        'token': UserInfo.instance.token,
-      },
-      sendTimeout: TIMER,
-      receiveTimeout: TIMER,
-      connectTimeout: TIMER,
-      baseUrl: ApiPath.HOST))
-    ..interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options) {
-      // Do something before request is sent
+  static Dio dio;
 
-      return options; //continue
-    }, onResponse: (Response response) {
-      response.data = jsonDecode(response.toString());
-    }));
+  static init(String token) {
+    if (dio == null) {
+      dio = Dio(BaseOptions(
+          headers: {
+            "ACCEPT": 'application/json',
+          },
+          queryParameters: {
+            'token': token,
+          },
+          sendTimeout: TIMER,
+          receiveTimeout: TIMER,
+          connectTimeout: TIMER,
+          baseUrl: ApiPath.HOST))
+        ..interceptors
+            .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
+          // Do something before request is sent
+
+          return options; //continue
+        }, onResponse: (Response response) {
+          response.data = jsonDecode(response.toString());
+        }));
+    } else {
+      dio.options = BaseOptions(
+          headers: {
+            "ACCEPT": 'application/json',
+          },
+          queryParameters: {
+            'token': token,
+          },
+          sendTimeout: TIMER,
+          receiveTimeout: TIMER,
+          connectTimeout: TIMER,
+          baseUrl: ApiPath.HOST);
+    }
+  }
+
   Xhr._internal();
   static Xhr get instance {
     return xhr;
@@ -79,7 +97,6 @@ class Xhr {
           data: formdata,
           options: options,
           cancelToken: cancelToken);
-      CommonKit.showSuccess();
     } on DioError catch (e) {
       CommonKit.showError();
       formatError(e);

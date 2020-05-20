@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/pages/order/widgets/order_card.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/ui_kit.dart';
+
+import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
-import 'package:taojuwu/widgets/zy_assetImage.dart';
+
 import 'package:taojuwu/widgets/zy_future_builder.dart';
 
 class OrderSearchPage extends StatelessWidget {
@@ -24,14 +25,8 @@ class OrderSearchPage extends StatelessWidget {
               centerTitle: true,
             ),
             body: wrapper == null || wrapper?.data?.isEmpty == true
-                ? Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    child: ZYAssetImage(
-                      'empty@2x.png',
-                      width: UIKit.width(240),
-                      height: UIKit.height(240),
-                    ),
+                ? NoData(
+                    isFromSearch: true,
                   )
                 : ListView.separated(
                     itemBuilder: (BuildContext context, int i) {

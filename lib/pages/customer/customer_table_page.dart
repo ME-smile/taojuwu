@@ -8,6 +8,7 @@ import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/zy_future_builder.dart';
 
 class CustomerTablePage extends StatelessWidget {
@@ -120,32 +121,39 @@ class CustomerTablePage extends StatelessWidget {
               //     },
               //     itemCount: beans?.length ?? 0);
               return Container(
-                child: Table(
-                  children: List.generate(beans.length, (int i) {
-                    CategoryCustomerModelBean bean = beans[i];
-                    return TableRow(
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom:
-                                    BorderSide(color: themeData.dividerColor))),
-                        children: [
-                          _tableCell(bean?.clientName ?? '-', context, bean?.id,
-                              bean: bean),
-                          _tableCell(
-                              Constants.GENDER_MAP[bean?.clientSex] ?? '未知',
-                              context,
-                              bean?.id,
-                              bean: bean),
-                          _tableCell(bean?.clientAge ?? '-', context, bean?.id,
-                              bean: bean),
-                          _tableCell(
-                              bean?.goodCategory ?? '-', context, bean?.id,
-                              bean: bean),
-                          _tableCell(bean?.enterTime ?? '-', context, bean?.id,
-                              bean: bean),
-                        ]);
-                  }),
-                ),
+                child: beans?.isEmpty == true
+                    ? NoData()
+                    : Table(
+                        children: List.generate(beans?.length ?? 0, (int i) {
+                          CategoryCustomerModelBean bean = beans[i];
+
+                          return TableRow(
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: themeData.dividerColor))),
+                              children: [
+                                _tableCell(
+                                    bean?.clientName ?? '-', context, bean?.id,
+                                    bean: bean),
+                                _tableCell(
+                                    Constants.GENDER_MAP[bean?.clientSex] ??
+                                        '未知',
+                                    context,
+                                    bean?.id,
+                                    bean: bean),
+                                _tableCell(
+                                    bean?.clientAge ?? '-', context, bean?.id,
+                                    bean: bean),
+                                _tableCell(bean?.goodCategory ?? '-', context,
+                                    bean?.id,
+                                    bean: bean),
+                                _tableCell(
+                                    bean?.enterTime ?? '-', context, bean?.id,
+                                    bean: bean),
+                              ]);
+                        }),
+                      ),
               );
             }),
       ),

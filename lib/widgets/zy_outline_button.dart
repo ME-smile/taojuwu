@@ -21,8 +21,9 @@ class ZYOutlineButton extends StatelessWidget {
       child: Container(
         child: Text(text,
             style: isActive
-                ? TextStyle()
-                : textTheme.button.copyWith(color: themeData.disabledColor)),
+                ? TextStyle(fontSize: 16)
+                : textTheme.button
+                    .copyWith(color: themeData.disabledColor, fontSize: 16)),
         decoration: BoxDecoration(
             color: themeData.primaryColor,
             borderRadius: BorderRadius.all(Radius.circular(4)),

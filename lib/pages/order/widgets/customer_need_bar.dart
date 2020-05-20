@@ -7,6 +7,7 @@ import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/bottom_picker.dart';
+import 'package:taojuwu/widgets/time_period_picker.dart';
 
 class CustomerNeedBar extends StatefulWidget {
   final bool isHideMeasureWindowNum;
@@ -21,13 +22,15 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
   FixedExtentScrollController ageController;
   TextEditingController depositInput;
   TextEditingController markInput;
-
+  ValueNotifier<TimePeriod> measureTimePeriod;
   @override
   void initState() {
     super.initState();
     ageController = FixedExtentScrollController();
     depositInput = TextEditingController();
     markInput = TextEditingController();
+    measureTimePeriod = ValueNotifier<TimePeriod>(
+        TimePeriod(dateTime: DateTime.now(), period: '09:00-10:00'));
   }
 
   @override
@@ -36,6 +39,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
     ageController?.dispose();
     depositInput?.dispose();
     markInput?.dispose();
+    measureTimePeriod?.dispose();
   }
 
   @override
@@ -44,26 +48,48 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
 
     return Consumer<OrderProvider>(
       builder: (BuildContext context, OrderProvider provider, _) {
+        provider?.initMeasureTime(measureTimePeriod?.value);
         return Container(
           color: themeData.primaryColor,
           child: Column(
             children: <Widget>[
               OptBar(
                 title: '上门量尺意向时间:',
-                text: '${provider?.measureTime ?? '时间'}',
+                text: '${provider?.measureTimeStr ?? '时间'}',
                 callback: () async {
-                  DatePicker.showDateTimePicker(context, locale: LocaleType.zh)
-                      .then((DateTime date) {
-                    provider?.measureTime =
-                        DateUtil.formatDate(date, format: "yyyy年MM月dd日 HH:mm");
-                  }).catchError((err) => err);
+                  await showCupertinoModalPopup<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        // String tmpOption;
+                        // DateTime now = DateTime.now();
+                        return TimePeriodPicker(
+                          title: '上门量尺意向时间',
+                          curOption: measureTimePeriod,
+                          callback: () {
+                            provider?.measureTime = measureTimePeriod?.value;
+                          },
+                        );
+                      });
+                  // DatePicker.showDateTimePicker(context, locale: LocaleType.zh)
+                  //     .then((DateTime date) {
+                  //   provider?.measureTime =
+                  //       DateUtil.formatDate(date, format: "yyyy年MM月dd日 HH:mm");
+                  // }).catchError((err) => err);
                 },
               ),
               OptBar(
                 title: '客户意向安装时间:',
                 text: '${provider?.installTime ?? '时间'}',
                 callback: () async {
-                  DatePicker.showDatePicker(context, locale: LocaleType.zh)
+                  DatePicker.showDatePicker(context,
+                          locale: LocaleType.zh,
+                          minTime: DateTime.now(),
+                          theme: DatePickerTheme(
+                              cancelStyle: UIKit.CANCEL_BUTTON_STYLE,
+                              itemHeight: UIKit.ITEM_EXTENT,
+                              doneStyle: UIKit.CONFIRM_BUTTON_STYLE,
+                              itemStyle: UIKit.OPTION_ITEM_STYLE,
+                              containerHeight: UIKit.BOTTOM_PICKER_HEIGHT))
                       .then((DateTime date) {
                     provider?.installTime =
                         DateUtil.formatDate(date, format: "yyyy年MM月dd日");
@@ -87,8 +113,9 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                               Navigator.of(context).pop();
                             },
                             child: CupertinoPicker(
+                                backgroundColor: themeData.primaryColor,
                                 scrollController: ageController,
-                                itemExtent: 70,
+                                itemExtent: UIKit.ITEM_EXTENT,
                                 onSelectedItemChanged: (int index) {
                                   if (index > 0 && index < 9) {
                                     tmpOption = '${index + 1}';
@@ -98,8 +125,10 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                                 },
                                 children: List.generate(11, (int i) {
                                   return Center(
-                                    child:
-                                        Text('${i + 1 > 10 ? "10+" : i + 1}'),
+                                    child: Text(
+                                      '${i + 1 > 10 ? "10+" : i + 1}',
+                                      style: UIKit.OPTION_ITEM_STYLE,
+                                    ),
                                   );
                                 })),
                           );
@@ -215,7 +244,7 @@ class OptBar extends StatelessWidget {
               text,
               style: textTheme.caption,
             )),
-            ZYIcon.next
+            Icon(ZYIcon.next)
           ],
         ),
       ),

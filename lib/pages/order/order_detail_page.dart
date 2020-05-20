@@ -372,13 +372,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       Text(
                           '合计:   ¥${double.parse(model?.orderEstimatedPrice ?? '0') + provider?.deltaPrice}'),
                       Offstage(
-                        offstage: provider?.canEditPrice == true,
+                        offstage: model?.canEditPrice == false,
                         child: InkWell(
                           onTap: () {
                             provider?.editPrict(context);
                           },
                           child: Row(
-                            children: <Widget>[Text('修改'), ZYIcon.edit],
+                            children: <Widget>[
+                              Text('修改'),
+                              Icon(
+                                ZYIcon.edit,
+                                size: 14,
+                              )
+                            ],
                           ),
                         ),
                       ),
@@ -472,7 +478,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           vertical: UIKit.height(20)),
                       child: Row(
                         children: <Widget>[
-                          ZYIcon.add,
+                          Icon(
+                            ZYIcon.add,
+                            color: const Color(0xFF171717),
+                          ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -546,6 +555,7 @@ class BottomActionButtonBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<OrderDetailProvider>(
       builder: (BuildContext context, OrderDetailProvider provider, _) {
+        print(orderStatus);
         return Offstage(
           offstage: provider?.showButton == false ?? false,
           child: Container(
@@ -583,6 +593,8 @@ class _SignSymbolState extends State<SignSymbol> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+    Color accentColor = themeData.accentColor;
     return Container(
       child: Row(
         children: <Widget>[
@@ -595,8 +607,13 @@ class _SignSymbolState extends State<SignSymbol> {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: UIKit.width(10)),
               child: provider?.isMinus == true
-                  ? ZYIcon.sub_full
-                  : ZYIcon.sub_blank,
+                  ? Icon(
+                      ZYIcon.sub_full,
+                      color: accentColor,
+                    )
+                  : Icon(
+                      ZYIcon.sub_blank,
+                    ),
             ),
           ),
           InkWell(
@@ -608,8 +625,11 @@ class _SignSymbolState extends State<SignSymbol> {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: UIKit.width(10)),
               child: provider?.isMinus == true
-                  ? ZYIcon.plus_blank
-                  : ZYIcon.plus_full,
+                  ? Icon(ZYIcon.plus_blank)
+                  : Icon(
+                      ZYIcon.plus_full,
+                      color: accentColor,
+                    ),
             ),
           )
         ],

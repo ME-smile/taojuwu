@@ -10,7 +10,11 @@ class AttrOptionsBar extends StatelessWidget {
   final Function callback; //1 BottomSheet 2 dialog 3 jump
   final bool isWindowGauze;
   const AttrOptionsBar(
-      {Key key, this.title: '', this.trailingText: '', this.callback,this.isWindowGauze:false})
+      {Key key,
+      this.title: '',
+      this.trailingText: '',
+      this.callback,
+      this.isWindowGauze: false})
       : super(key: key);
 
   @override
@@ -19,34 +23,34 @@ class AttrOptionsBar extends StatelessWidget {
     return Offstage(
       offstage: isWindowGauze,
       child: InkWell(
-      onTap: callback,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          // mainAxisSize,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              title,
-              style: textTheme.caption,
-            ),
-            Text.rich(
-              TextSpan(
-                text: trailingText,
-                children: [
-                  WidgetSpan(
-                    child: ZYIcon.next,
-                    alignment: ui.PlaceholderAlignment.middle,
-                  )
-                ],
+        onTap: callback,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisSize,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                title,
+                style: textTheme.caption,
               ),
-              textAlign: TextAlign.center,
-            )
-          ],
+              Text.rich(
+                TextSpan(
+                  text: trailingText,
+                  children: [
+                    WidgetSpan(
+                      child: Icon(ZYIcon.next),
+                      alignment: ui.PlaceholderAlignment.middle,
+                    )
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              )
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 }
