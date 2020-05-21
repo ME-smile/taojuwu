@@ -7,7 +7,6 @@ import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
-import 'package:taojuwu/services/base/xhr.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
@@ -49,7 +48,6 @@ class _LoginPageState extends State<LoginPage> {
 
   void afterLogin(Map<String, dynamic> json) {
     _userProvider.userInfo.saveUserInfo(json);
-    Xhr.init(json['token']);
   }
 
   void showPrivacy(BuildContext context) {

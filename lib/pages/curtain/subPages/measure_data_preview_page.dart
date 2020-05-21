@@ -31,7 +31,7 @@ class MeasureDataPreviewPage extends StatelessWidget {
   bool hasChangedOpenMode(
       OrderProvider orderProvider, GoodsProvider goodsProvider) {
     return orderProvider?.orderGoodsMeasure?.openType !=
-            goodsProvider?.curOpenModeName ??
+            goodsProvider?.curOpenMode ??
         false;
   }
 
@@ -195,7 +195,7 @@ class MeasureDataPreviewPage extends StatelessWidget {
                           Row(
                             children: <Widget>[
                               buildText(
-                                  '打开方式:${goodsProvider?.curOpenModeName ?? ''}'),
+                                  '打开方式:${goodsProvider?.curOpenMode ?? ''}'),
                               Text(hasChangedOpenMode(provider, goodsProvider)
                                   ? '(原${measureData?.openType})'
                                   : ''),

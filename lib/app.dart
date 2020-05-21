@@ -7,7 +7,6 @@ import 'package:taojuwu/pages/home/home_page.dart';
 import 'package:taojuwu/pages/login/login_page.dart';
 import 'package:taojuwu/providers/theme_provider.dart';
 import 'package:taojuwu/providers/user_provider.dart';
-import 'package:taojuwu/services/base/xhr.dart';
 
 import 'application.dart';
 
@@ -19,7 +18,6 @@ class App extends StatelessWidget {
     return Consumer2<ThemeProvider, UserProvider>(builder:
         (BuildContext context, ThemeProvider provider,
             UserProvider userProvider, _) {
-      Xhr.init(userProvider?.token);
       if (userProvider?.isLogin == true) {
         userProvider?.initUserInfo();
       }

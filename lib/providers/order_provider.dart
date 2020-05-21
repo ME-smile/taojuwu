@@ -204,7 +204,6 @@ class OrderProvider with ChangeNotifier {
     });
     if (!beforeCreateOrder(ctx)) return;
     OTPService.createOrder(
-      ctx,
       params: {
         'order_earnest_money': deposit,
         'client_uid': clientUid,
@@ -245,7 +244,7 @@ class OrderProvider with ChangeNotifier {
         Provider.of<ClientProvider>(ctx, listen: false);
 
     if (!beforeCreateOrder(ctx)) return;
-    OTPService.createMeasureOrder(ctx, params: {
+    OTPService.createMeasureOrder(params: {
       'client_uid': clientUid,
       'measure_time': measureTimeStr,
       'order_earnest_money': deposit,
@@ -311,15 +310,23 @@ class OrderProvider with ChangeNotifier {
   }
 
   void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
-    OTPService.selectProduct(context, params: params)
-        .then((ZYResponse response) {
+    OTPService.selectProduct(params: params).then((ZYResponse response) {
       if (response.valid) {
-        // RouteHandler.goOrderCommitSuccessPage(context);
-        showSelectProductDialog(context).then((_) {
+        ClientProvider provider =
+            Provider.of<ClientProvider>(context, listen: false);
+        Future.delayed(const Duration(milliseconds: 300), () {
+          RouteHandler.goOrderCommitSuccessPage(
+              context, '${provider?.clientId}');
           clearOrderData();
           _curOrderGoods?.isSelectedGoods = 1;
           notifyListeners();
-        }).catchError((err) => err);
+        });
+
+        // showSelectProductDialog(context).then((_) {
+        //   clearOrderData();
+        //   _curOrderGoods?.isSelectedGoods = 1;
+        //   notifyListeners();
+        // }).catchError((err) => err);
       }
     }).catchError((err) => err);
   }

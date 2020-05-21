@@ -56,7 +56,7 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
 
   void resetPwd() {
     if (beforeSendData() == false) return;
-    OTPService.resetPwd(context,
+    OTPService.resetPwd(
             params: {'old_password': oldPwd, 'new_password': newPwd})
         .then((ZYResponse response) {
       if (response?.valid == true) {

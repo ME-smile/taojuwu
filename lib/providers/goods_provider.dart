@@ -40,8 +40,20 @@ class GoodsProvider with ChangeNotifier {
   String _height = '0.0';
   String _dy = '0.0';
 
-  int _curInstallMode = 0;
-  int _curOpenMode = 0;
+  String get curInstallMode {
+    List list = WindowPatternAttr.installOptionMap[windowPatternStr];
+    Map<String, dynamic> map =
+        list.firstWhere((item) => item['is_checked'] == true);
+    return _curInstallMode ?? map['text'];
+  }
+
+  String get curOpenMode {
+    List list = WindowPatternAttr
+        .openOptionMap[WindowPatternAttr.patternsText[curWindowPattern]];
+    Map<String, dynamic> map =
+        list.firstWhere((item) => item['is_checked'] == true);
+    return _curOpenMode ?? map['text'];
+  }
 
   int _curWindowPattern = 0;
   int _curWindowStyle = 0;
@@ -68,7 +80,8 @@ class GoodsProvider with ChangeNotifier {
     if (_curWindowType == 1) {
       for (int i = 0; i < list?.length; i++) {
         CraftAttrBean bean = list[i];
-        if (bean?.name?.contains(screenWord1) == false) {
+        if (bean?.name?.contains(screenWord1) == false &&
+            tmp1?.contains(bean) == false) {
           tmp1.add(bean);
         }
       }
@@ -87,7 +100,8 @@ class GoodsProvider with ChangeNotifier {
       for (int i = 0; i < tmp1?.length; i++) {
         CraftAttrBean bean = tmp1[i];
 
-        if (bean?.name?.contains(screenWord3) == true) {
+        if (bean?.name?.contains(screenWord3) == true &&
+            tmp2?.contains(bean) == false) {
           //留下单配件工艺
           tmp2.add(bean);
         }
@@ -96,9 +110,9 @@ class GoodsProvider with ChangeNotifier {
       //要窗纱的情况；
       for (int i = 0; i < tmp1?.length; i++) {
         CraftAttrBean bean = tmp1[i];
-        if (bean?.name?.contains(screenWord4) == true) {
+        if (bean?.name?.contains(screenWord4) == true &&
+            tmp2?.contains(bean) == false) {
           //留下单配件工艺
-
           tmp2.add(bean);
         }
       }
@@ -107,18 +121,6 @@ class GoodsProvider with ChangeNotifier {
     _craftAttr?.data = tmp2;
     _curCraftAttrBean =
         _craftAttr?.data?.isNotEmpty == true ? _craftAttr?.data?.first : null;
-  }
-
-  List<String> getInstallOptions() {
-    String keyword1 = '非飘窗';
-    String keyword2 = '有盒';
-    if (windowPatternStr?.contains(keyword1) == true &&
-        windowPatternStr?.contains(keyword2) == false) {
-      return ['顶装', '测装'];
-    } else if (windowPatternStr?.contains(keyword2) == true) {
-      return ['盒内装'];
-    }
-    return ['顶墙满装'];
   }
 
   void filterParts() {
@@ -130,7 +132,8 @@ class GoodsProvider with ChangeNotifier {
     if (_curWindowType == 1) {
       for (int i = 0; i < list?.length; i++) {
         PartAttrBean bean = list[i];
-        if (bean?.name?.contains(screenWord1) == true) {
+        if (bean?.name?.contains(screenWord1) == true &&
+            tmp1?.contains(bean) == false) {
           tmp1.add(bean);
         }
       }
@@ -143,36 +146,39 @@ class GoodsProvider with ChangeNotifier {
         _partAttr?.data?.isNotEmpty == true ? _partAttr?.data?.first : null;
   }
 
-  void initDataWithFilter(
-      {ProductBean bean,
-      WindowGauzeAttr windowGauzeAttr,
-      CraftAttr craftAttr,
-      PartAttr partAttr,
-      WindowShadeAttr windowShadeAttr,
-      CanopyAttr canopyAttr,
-      AccessoryAttr accessoryAttr,
-      RoomAttr roomAttr}) {
+  void initDataWithFilter({
+    ProductBean bean,
+    WindowGauzeAttr windowGauzeAttr,
+    CraftAttr craftAttr,
+    PartAttr partAttr,
+    WindowShadeAttr windowShadeAttr,
+    CanopyAttr canopyAttr,
+    AccessoryAttr accessoryAttr,
+    RoomAttr roomAttr,
+  }) {
     initData(
-        bean: bean,
-        windowGauzeAttr: windowGauzeAttr,
-        craftAttr: craftAttr,
-        partAttr: partAttr,
-        windowShadeAttr: windowShadeAttr,
-        canopyAttr: canopyAttr,
-        accessoryAttr: accessoryAttr,
-        roomAttr: roomAttr);
+      bean: bean,
+      windowGauzeAttr: windowGauzeAttr,
+      craftAttr: craftAttr,
+      partAttr: partAttr,
+      windowShadeAttr: windowShadeAttr,
+      canopyAttr: canopyAttr,
+      accessoryAttr: accessoryAttr,
+      roomAttr: roomAttr,
+    );
     filterCraft();
   }
 
-  void initData(
-      {ProductBean bean,
-      WindowGauzeAttr windowGauzeAttr,
-      CraftAttr craftAttr,
-      PartAttr partAttr,
-      WindowShadeAttr windowShadeAttr,
-      CanopyAttr canopyAttr,
-      AccessoryAttr accessoryAttr,
-      RoomAttr roomAttr}) {
+  void initData({
+    ProductBean bean,
+    WindowGauzeAttr windowGauzeAttr,
+    CraftAttr craftAttr,
+    PartAttr partAttr,
+    WindowShadeAttr windowShadeAttr,
+    CanopyAttr canopyAttr,
+    AccessoryAttr accessoryAttr,
+    RoomAttr roomAttr,
+  }) {
     _goods = bean;
     _windowGauzeAttr = windowGauzeAttr;
     _craftAttr = craftAttr;
@@ -193,7 +199,6 @@ class GoodsProvider with ChangeNotifier {
     _roomAttr = roomAttr;
     _accessoryAttr = accessoryAttr;
     _windowShadeAttr = windowShadeAttr;
-
     _curwindowGauzeAttrBean = _windowGauzeAttr?.data?.isNotEmpty == true
         ? _windowGauzeAttr?.data?.first
         : null;
@@ -208,6 +213,7 @@ class GoodsProvider with ChangeNotifier {
         _canopyAttr?.data?.isNotEmpty == true ? _canopyAttr?.data?.first : null;
     _curRoomAttrBean =
         _roomAttr?.data?.isNotEmpty == true ? _roomAttr?.data?.first : null;
+
     _hasInit = true;
   }
 
@@ -226,13 +232,22 @@ class GoodsProvider with ChangeNotifier {
               []
           : null;
   RoomAttrBean get curRoomAttrBean => _curRoomAttrBean;
-  int get curInstallMode => _curInstallMode;
+
+  String get curWindowPatternName =>
+      WindowPatternAttr.patternsText[curWindowPattern ?? 0];
+  List<Map<String, dynamic>> get installOptions =>
+      WindowPatternAttr.installOptionMap[windowPatternStr];
+
+  List<Map<String, dynamic>> get openOptions =>
+      WindowPatternAttr.openOptionMap[curWindowPatternName];
+  List get openSubOptions =>
+      WindowPatternAttr.openSubOptionMap['$curWindowPatternName/$curOpenMode'];
   int get curWindowPattern => _curWindowPattern;
   int get curWindowStyle => _curWindowStyle;
   int get curWindowType => _curWindowType;
-  int get curOpenMode => _curOpenMode;
   bool get hasInit => _hasInit;
   bool get isShade => _curwindowGauzeAttrBean?.name?.contains('无');
+
   double get widthCM => double.parse(_width);
   double get heightCM => double.parse(_height);
   double get dyCM => double.parse(_dy);
@@ -253,17 +268,47 @@ class GoodsProvider with ChangeNotifier {
   WindowShadeAttr get windowShadeAttr => _windowShadeAttr;
   CanopyAttr get canopyAttr => _canopyAttr;
   AccessoryAttr get accessoryAttr => _accessoryAttr;
-  String get curOpenModeName => WindowPatternAttr.openModes[curOpenMode ?? 0];
-  String get curInstallModeName =>
-      WindowPatternAttr.installModes[curInstallMode ?? 0];
+  String _curInstallMode;
+  String _curOpenMode;
   String get windowPatternStr =>
       '${WindowPatternAttr.patternsText[curWindowPattern ?? 0]}/${WindowPatternAttr.stylesText[curWindowStyle ?? 0]}/${WindowPatternAttr.typesText[curWindowType ?? 0]}';
-  int get windowPatternId => WindowPatternAttr.patternMap[windowPatternStr];
+  int get windowPatternId => WindowPatternAttr.patternIdMap[windowPatternStr];
   String get measureDataStr =>
       '${curRoomAttrBean?.name ?? ''}\n宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米';
 
   int get curInstallOptionIndex => _curInstallOptionIndex;
+
+  int get curOpenOptionIndex => WindowPatternAttr.openModeMap[curOpenMode];
   String get dy => _dy;
+
+  void checkInstallMode(int i) {
+    for (int j = 0; j < installOptions?.length; j++) {
+      Map<String, dynamic> item = installOptions[j];
+
+      item['is_checked'] = i == j ? true : false;
+    }
+    notifyListeners();
+  }
+
+  void checkOpenMode(int i) {
+    for (int j = 0; j < openOptions?.length; j++) {
+      Map<String, dynamic> item = openOptions[j];
+
+      item['is_checked'] = i == j ? true : false;
+    }
+
+    notifyListeners();
+  }
+
+  void checkOpenSubOption(int i, int j) {
+    Map<String, dynamic> item = openSubOptions[i];
+
+    for (int k = 0; k < item['options']?.length; k++) {
+      Map<String, dynamic> tmp = item['options'][k];
+      tmp['is_checked'] = j == k ? true : false;
+    }
+    notifyListeners();
+  }
 
   String get accText {
     String tmp = curAccessoryAttrBeans
@@ -272,6 +317,27 @@ class GoodsProvider with ChangeNotifier {
         ?.join(',');
     if (tmp == null || tmp?.isEmpty == true) {
       return '无';
+    }
+    return tmp;
+  }
+
+  get openModeParams {
+    if (curOpenOptionIndex == 2) {
+      return {curOpenMode: checkedSubOption};
+    }
+    return [curOpenMode];
+  }
+
+  Map get checkedSubOption {
+    Map tmp = {};
+    for (int i = 0; i < openSubOptions?.length; i++) {
+      Map item = openSubOptions[i];
+      for (int j = 0; j < item['options']?.length; j++) {
+        Map dict = item['options'][j];
+        if (dict['is_checked'] == true) {
+          tmp[item['name']] = dict['text'];
+        }
+      }
     }
     return tmp;
   }
@@ -307,8 +373,8 @@ class GoodsProvider with ChangeNotifier {
     _width = width; //厘米为单位
     _height = height; //厘米为单位
     _dy = dy; //厘米为单位
-    _curInstallMode = WindowPatternAttr.installModeMap[installMode];
-    _curOpenMode = WindowPatternAttr.openModeMap[openMode];
+    _curInstallMode = installMode;
+    _curOpenMode = openMode;
     notifyListeners();
   }
 
@@ -335,16 +401,6 @@ class GoodsProvider with ChangeNotifier {
 
   set curRoomAttrBean(RoomAttrBean bean) {
     _curRoomAttrBean = bean;
-    notifyListeners();
-  }
-
-  set curInstallMode(int mode) {
-    _curInstallMode = mode;
-    notifyListeners();
-  }
-
-  set curOpenMode(int mode) {
-    _curOpenMode = mode;
     notifyListeners();
   }
 
@@ -482,6 +538,7 @@ class GoodsProvider with ChangeNotifier {
     _height = '0.0';
     _dy = '0.0';
     _goods = null;
+    WindowPatternAttr.reset();
     notifyListeners();
   }
 }

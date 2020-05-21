@@ -5,7 +5,14 @@ class ZYRaisedButton extends StatelessWidget {
   final String text;
   final Function callback;
   final bool isActive;
-  const ZYRaisedButton(this.text, this.callback, {Key key, this.isActive: true})
+
+  final double horizontalPadding;
+  final double verticalPadding;
+  const ZYRaisedButton(this.text, this.callback,
+      {Key key,
+      this.isActive: true,
+      this.horizontalPadding,
+      this.verticalPadding})
       : super(key: key);
 
   @override
@@ -15,7 +22,12 @@ class ZYRaisedButton extends StatelessWidget {
     return InkWell(
       onTap: callback,
       child: Container(
-        child: Text(text, style: accentTextTheme.button.copyWith(fontSize: 16)),
+        alignment: Alignment.center,
+        child: Text(
+          text,
+          style: accentTextTheme.button.copyWith(fontSize: 16),
+          textAlign: TextAlign.start,
+        ),
         decoration: BoxDecoration(
             color: themeData.accentColor,
             borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -25,7 +37,8 @@ class ZYRaisedButton extends StatelessWidget {
             )),
         margin: EdgeInsets.symmetric(vertical: UIKit.height(20)),
         padding: EdgeInsets.symmetric(
-            horizontal: UIKit.width(36), vertical: UIKit.height(8)),
+            horizontal: horizontalPadding ?? UIKit.width(36),
+            vertical: verticalPadding ?? UIKit.height(8)),
       ),
     );
   }

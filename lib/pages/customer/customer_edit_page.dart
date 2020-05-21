@@ -71,8 +71,7 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
                       return CommonKit.showInfo('请输入正确的手机号');
                     }
 
-                    OTPService.addUser(context, params)
-                        .then((ZYResponse response) {
+                    OTPService.addUser(params).then((ZYResponse response) {
                       print(response.message);
                       print(Application.sp.getString('tokem'));
                       if (response?.valid == true) {

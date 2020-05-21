@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
+
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/pages/curtain/widgets/attr_options_bar.dart';
 import 'package:taojuwu/pages/curtain/widgets/sku_attr_picker.dart';
@@ -15,7 +16,6 @@ import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
@@ -46,22 +46,21 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   };
 
   void setParams(GoodsProvider provider) {
-    String installModeName =
-        provider?.getInstallOptions()[provider?.curInstallOptionIndex];
     params['dataId'] = '${provider?.windowPatternId ?? ''}';
 
     params['width'] = '${provider?.widthM ?? ''}';
     params['height'] = '${provider?.heightM ?? ''}';
     params['vertical_ground_height'] = '${provider?.dy ?? ''}';
-    params['goods_id'] = '${provider?.goods?.goodsId ?? ''}';
+    params['goods_id'] = '${provider?.goodsId ?? ''}';
     params['install_room'] = '${provider?.curRoomAttrBean?.id ?? ''}';
     data['${provider?.windowPatternId ?? ''}'] = {
       'name': '${provider?.windowPatternStr ?? ''}',
       'selected': {
-        '安装选项': ['${installModeName ?? ''}'],
-        '打开方式': ['${provider?.curOpenModeName ?? ''}']
+        '安装选项': ['${provider?.curInstallMode ?? ''}'],
+        '打开方式': provider?.openModeParams
       }
     };
+
     params['data'] = jsonEncode(data);
   }
 
@@ -92,41 +91,6 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
     dyInputController?.dispose();
   }
 
-  void setSize(BuildContext context) {
-    showCupertinoDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text('请输入尺寸(cm)'),
-            content: Column(
-              children: <Widget>[
-                CupertinoTextField(
-                  placeholder: '请输入宽(cm)',
-                ),
-                VSpacing(10),
-                CupertinoTextField(
-                  placeholder: '请输入高(cm)',
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              CupertinoDialogAction(
-                child: Text('取消'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              CupertinoDialogAction(
-                child: Text('确定'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        });
-  }
-
   void checkWindowPattern(BuildContext context) async {
     await showCupertinoModalPopup<void>(
         context: context,
@@ -135,38 +99,43 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
         });
   }
 
-  Widget _buildInstallOptionBar(
-    BuildContext context,
-  ) {
+  Widget buildInstallOptionPicker() {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
 
     return Consumer<GoodsProvider>(
       builder: (BuildContext context, GoodsProvider provider, _) {
-        List<String> list = provider?.getInstallOptions();
         return Container(
           child: Row(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(right: UIKit.width(30)),
-                child: Text(
-                  '安装选项',
-                  style: textTheme.caption,
-                ),
-              ),
+                  margin: EdgeInsets.only(right: UIKit.width(30)),
+                  child: Text(
+                    '安装选项',
+                    style: textTheme.caption,
+                  )),
               Expanded(
                   child: Row(
-                children: List.generate(list?.length ?? 0, (int i) {
+                children: List.generate(provider?.installOptions?.length ?? 0,
+                    (int i) {
+                  Map<String, dynamic> item = provider?.installOptions[i];
                   return Container(
-                    margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                    child: provider?.curInstallOptionIndex == i
-                        ? ZYRaisedButton(list[i] ?? '', () {
-                            provider.curInstallOptionIndex = i;
-                          })
-                        : ZYOutlineButton(list[i] ?? '', () {
-                            provider.curInstallOptionIndex = i;
-                          }),
-                  );
+                      margin: EdgeInsets.symmetric(horizontal: UIKit.width(10)),
+                      child: item['is_checked'] == true
+                          ? ZYRaisedButton(
+                              item['text'],
+                              () {
+                                provider?.checkOpenMode(i);
+                              },
+                              horizontalPadding: UIKit.width(15),
+                            )
+                          : ZYOutlineButton(
+                              item['text'],
+                              () {
+                                provider?.checkInstallMode(i);
+                              },
+                              horizontalPadding: UIKit.width(15),
+                            ));
                 }),
               ))
             ],
@@ -176,42 +145,94 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
     );
   }
 
-  Widget _buildOpenOptionBar(
-    BuildContext context,
-  ) {
+  Widget buildOpenOptionPicker() {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
 
     return Consumer<GoodsProvider>(
       builder: (BuildContext context, GoodsProvider provider, _) {
-        List<String> list = ['整体对开', '整体单开'];
         return Container(
           child: Row(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(right: UIKit.width(30)),
-                child: Text(
-                  '打开方式',
-                  style: textTheme.caption,
-                ),
-              ),
+                  margin: EdgeInsets.only(right: UIKit.width(30)),
+                  child: Text(
+                    '打开方式',
+                    style: textTheme.caption,
+                  )),
               Expanded(
                   child: Row(
-                children: List.generate(list?.length ?? 0, (int i) {
+                children:
+                    List.generate(provider?.openOptions?.length ?? 0, (int i) {
+                  Map<String, dynamic> item = provider?.openOptions[i];
                   return Container(
-                    margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                    child: provider?.curOpenMode == i
-                        ? ZYRaisedButton(list[i] ?? '', () {
-                            provider?.curOpenMode = i;
-                          })
-                        : ZYOutlineButton(list[i] ?? '', () {
-                            provider?.curOpenMode = i;
-                          }),
-                  );
+                      margin: EdgeInsets.symmetric(horizontal: UIKit.width(10)),
+                      child: item['is_checked'] == true
+                          ? ZYRaisedButton(
+                              item['text'],
+                              () {
+                                provider?.checkOpenMode(i);
+                              },
+                              horizontalPadding: UIKit.width(15),
+                            )
+                          : ZYOutlineButton(
+                              item['text'],
+                              () {
+                                provider?.checkOpenMode(i);
+                              },
+                              horizontalPadding: UIKit.width(15),
+                            ));
                 }),
               ))
             ],
           ),
+        );
+      },
+    );
+  }
+
+  Widget buildOpenSubOptionPicker() {
+    ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
+
+    return Consumer<GoodsProvider>(
+      builder: (BuildContext context, GoodsProvider provider, _) {
+        return Column(
+          children:
+              List.generate(provider?.openSubOptions?.length ?? 0, (int i) {
+            Map<String, dynamic> tmp = provider?.openSubOptions[i];
+            return Row(
+                children: <Widget>[
+                      Container(
+                          margin: EdgeInsets.only(right: UIKit.width(30)),
+                          child: Text(
+                            tmp['name'],
+                            style: textTheme.caption,
+                          )),
+                    ] +
+                    List.generate(tmp['options']?.length, (int j) {
+                      Map<String, dynamic> item = tmp['options'][j];
+                      return Container(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: UIKit.width(10)),
+                        child: item['is_checked']
+                            ? ZYRaisedButton(
+                                item['text'],
+                                () {
+                                  provider?.checkOpenSubOption(i, j);
+                                },
+                                horizontalPadding: UIKit.width(20),
+                              )
+                            : ZYOutlineButton(
+                                item['text'],
+                                () {
+                                  provider?.checkOpenSubOption(i, j);
+                                },
+                                horizontalPadding: UIKit.width(20),
+                              ),
+                      );
+                    }));
+          }),
         );
       },
     );
@@ -264,6 +285,9 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
     return Consumer<GoodsProvider>(
       builder: (BuildContext context, GoodsProvider provider, _) {
         setParams(provider);
+        print('${provider?.windowPatternStr}/${provider?.curInstallMode}');
+        print(WindowPatternAttr.pictureMap[
+            '${provider?.windowPatternStr}/${provider?.curInstallMode}']);
         return Scaffold(
           // resizeToAvoidBottomInset: false,
           appBar: AppBar(
@@ -278,8 +302,8 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                 children: <Widget>[
                   Container(
                     child: ZYAssetImage(
-                      WindowPatternAttr.installModesPic[WindowPatternAttr
-                          .installModes[provider?.curInstallMode ?? 0]],
+                      WindowPatternAttr.pictureMap[
+                          '${provider?.windowPatternStr}/${provider?.curInstallMode}'],
                       width: UIKit.width(480),
                       height: UIKit.height(480),
                     ),
@@ -299,19 +323,25 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                       checkWindowPattern(context);
                     },
                   ),
-                  _buildInstallOptionBar(context),
+                  // _buildInstallOptionBar(context),
                   // _modeBar(
                   //   context,
                   //   '安装方式:',
                   //   WindowPatternAttr.installModes,
                   // ),
                   Divider(),
+                  buildInstallOptionPicker(),
+                  Divider(),
+                  buildOpenOptionPicker(),
+
+                  Divider(),
+                  buildOpenSubOptionPicker(),
                   // _modeBar(
                   //   context,
                   //   '打开方式:',
                   //   WindowPatternAttr.openModes,
                   // ),
-                  _buildOpenOptionBar(context),
+                  // _buildOpenOptionBar(),
                   Divider(),
                   Column(
                     children: <Widget>[
@@ -422,11 +452,14 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
             ),
           ),
           bottomNavigationBar: ZYSubmitButton('确认', () {
+            print(params);
             if (!beforeSendData(provider)) return;
             OTPService.saveMeasure(context, params: params)
                 .then((ZYResponse response) {
-              provider?.measureId = response?.data;
-              Navigator.of(context).pop();
+              if (response?.valid == true) {
+                provider?.measureId = response?.data;
+                Navigator.of(context).pop();
+              }
             }).catchError((err) => err);
           }),
         );

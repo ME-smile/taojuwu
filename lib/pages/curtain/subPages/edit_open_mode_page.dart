@@ -58,7 +58,7 @@ class EditOpenModePage extends StatelessWidget {
                         Text('打开方式:'),
                         InkWell(
                           onTap: () {
-                            goodsProvider?.curOpenMode = 0;
+                            // goodsProvider?.curOpenMode = 0;
                           },
                           child: Container(
                             margin: EdgeInsets.symmetric(
@@ -67,36 +67,30 @@ class EditOpenModePage extends StatelessWidget {
                                 horizontal: UIKit.width(30),
                                 vertical: UIKit.height(10)),
                             decoration: BoxDecoration(
-                                color: getBgColor(
-                                    context, goodsProvider?.curOpenMode == 0),
+                                color: getBgColor(context, false),
                                 border: Border.all(
-                                    color: getBorderColor(context,
-                                        goodsProvider?.curOpenMode == 0))),
+                                    color: getBorderColor(context, false))),
                             child: Text(
                               '整体对开',
-                              style: getTextStyle(
-                                  context, goodsProvider?.curOpenMode == 0),
+                              style: getTextStyle(context, false),
                             ),
                           ),
                         ),
                         InkWell(
                           onTap: () {
-                            goodsProvider?.curOpenMode = 1;
+                            // goodsProvider?.curOpenMode = 1;
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 horizontal: UIKit.width(30),
                                 vertical: UIKit.height(10)),
                             decoration: BoxDecoration(
-                                color: getBgColor(
-                                    context, goodsProvider?.curOpenMode == 1),
+                                color: getBgColor(context, false),
                                 border: Border.all(
-                                    color: getBorderColor(context,
-                                        goodsProvider?.curOpenMode == 1))),
+                                    color: getBorderColor(context, false))),
                             child: Text(
                               '整体单开',
-                              style: getTextStyle(
-                                  context, goodsProvider?.curOpenMode == 1),
+                              style: getTextStyle(context, false),
                             ),
                           ),
                         ),

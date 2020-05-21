@@ -79,7 +79,6 @@ flutter:
     - assets/images/
     - assets/images/curtain/
     # - locale/i18n_en.json
-    - assets/data/china.json
     - assets/data/province.json
     - assets/data/city.json
     - assets/data/area.json

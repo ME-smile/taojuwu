@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:taojuwu/application.dart';
 
 // import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/services/api_path.dart';
@@ -11,43 +12,24 @@ class Xhr {
   static Xhr xhr = Xhr._internal();
   static const int TIMER = 5000;
 
-  static Dio dio;
+  static Dio dio = dio = Dio(BaseOptions(
+      headers: {
+        "ACCEPT": 'application/json',
+      },
+      queryParameters: {
+        'token': Application.sp.getString('token'),
+      },
+      sendTimeout: TIMER,
+      receiveTimeout: TIMER,
+      connectTimeout: TIMER,
+      baseUrl: ApiPath.HOST))
+    ..interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options) {
+      // Do something before request is sent
 
-  static init(String token) {
-    if (dio == null) {
-      dio = Dio(BaseOptions(
-          headers: {
-            "ACCEPT": 'application/json',
-          },
-          queryParameters: {
-            'token': token,
-          },
-          sendTimeout: TIMER,
-          receiveTimeout: TIMER,
-          connectTimeout: TIMER,
-          baseUrl: ApiPath.HOST))
-        ..interceptors
-            .add(InterceptorsWrapper(onRequest: (RequestOptions options) {
-          // Do something before request is sent
-
-          return options; //continue
-        }, onResponse: (Response response) {
-          response.data = jsonDecode(response.toString());
-        }));
-    } else {
-      dio.options = BaseOptions(
-          headers: {
-            "ACCEPT": 'application/json',
-          },
-          queryParameters: {
-            'token': token,
-          },
-          sendTimeout: TIMER,
-          receiveTimeout: TIMER,
-          connectTimeout: TIMER,
-          baseUrl: ApiPath.HOST);
-    }
-  }
+      return options; //continue
+    }, onResponse: (Response response) {
+      response.data = jsonDecode(response.toString());
+    }));
 
   Xhr._internal();
   static Xhr get instance {
@@ -63,6 +45,7 @@ class Xhr {
     bool isShowLoading = true,
   }) async {
     try {
+      dio.options.queryParameters['token'] = Application.sp.getString('token');
       return await dio.get(url,
           queryParameters: params, options: options, cancelToken: cancelToken);
     } on DioError catch (e) {
@@ -91,12 +74,13 @@ class Xhr {
     Response response;
 
     try {
-      CommonKit.showLoading();
+      // CommonKit.showLoading();
       response = await dio.post(url,
           queryParameters: data,
           data: formdata,
           options: options,
           cancelToken: cancelToken);
+      // Navigator.of(context).pop(1)
     } on DioError catch (e) {
       CommonKit.showError();
       formatError(e);
@@ -110,6 +94,7 @@ class Xhr {
   downloadFile(urlPath, savePath) async {
     Response response;
     try {
+      dio.options.queryParameters['token'] = Application.sp.getString('token');
       response = await dio.download(urlPath, savePath,
           onReceiveProgress: (int count, int total) {
         //进度

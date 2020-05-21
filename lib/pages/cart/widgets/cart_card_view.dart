@@ -32,7 +32,7 @@ class _CartCardViewState extends State<CartCardView> {
   }
 
   void delCart() {
-    OTPService.delCart(context, params: {
+    OTPService.delCart(params: {
       'cart_id_array': '${['${cartModel?.cartId}' ?? '0']}'
     }).then((ZYResponse response) {
       print(response);

@@ -53,7 +53,7 @@ class _CollectPageState extends State<CollectPage>
   bool isLoading = true;
 
   cancelCollect(BuildContext context, ProductBean bean) {
-    OTPService.cancelCollect(context, params: {
+    OTPService.cancelCollect(params: {
       'fav_id': bean?.goodsId ?? -1,
       'client_uid': widget.id ?? -1,
     }).then((ZYResponse response) {

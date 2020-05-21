@@ -5,10 +5,15 @@ class ZYOutlineButton extends StatelessWidget {
   final String text;
   final Function callback;
   final bool isActive;
+
+  final double horizontalPadding;
+  final double verticalPadding;
   const ZYOutlineButton(
     this.text,
     this.callback, {
     this.isActive: true,
+    this.horizontalPadding,
+    this.verticalPadding,
     Key key,
   }) : super(key: key);
 
@@ -34,7 +39,8 @@ class ZYOutlineButton extends StatelessWidget {
                     : themeData.disabledColor)),
         margin: EdgeInsets.symmetric(vertical: UIKit.height(20)),
         padding: EdgeInsets.symmetric(
-            horizontal: UIKit.width(36), vertical: UIKit.height(8)),
+            horizontal: horizontalPadding ?? UIKit.width(36),
+            vertical: verticalPadding ?? UIKit.height(8)),
       ),
     );
   }

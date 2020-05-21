@@ -19,6 +19,10 @@ class UserInfo {
     return Application.sp.getString('token') ?? '';
   }
 
+  set token(String token) {
+    _token = token;
+  }
+
   void saveUserInfo(Map<String, dynamic> json) {
     _token = json['token'];
     shopName = json['shop_name'];

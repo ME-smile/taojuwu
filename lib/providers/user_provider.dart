@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:taojuwu/application.dart';
 
 import 'package:taojuwu/models/user/user_info_model.dart';
-import 'package:taojuwu/services/base/xhr.dart';
 
 class UserProvider with ChangeNotifier {
   final UserInfo userInfo = UserInfo.instance;
@@ -14,7 +13,7 @@ class UserProvider with ChangeNotifier {
   String _token;
 
   String get token => _token;
-  bool get isLogin => _token != null && _token?.isNotEmpty == true;
+  bool get isLogin => Application.sp.getString('token')?.isNotEmpty == true;
   List<String> get productHistory => _productHistory;
   List<String> get orderHistory => _orderHistory;
   List<String> get clientHistory => _clientHistory;
@@ -36,6 +35,7 @@ class UserProvider with ChangeNotifier {
   }
 
   initUserInfo() {
+    userInfo.token = Application.sp.getString('token');
     userInfo.shopId = Application.sp.getInt('shopId');
     userInfo.shopName = Application.sp.getString('shopName');
     userInfo.userTel = Application.sp.getString('userTel');
@@ -102,7 +102,6 @@ class UserProvider with ChangeNotifier {
 
   void clearOrderHistory() {
     Application.sp.remove('orderHistory');
-    Xhr.init('');
     _orderHistory.clear();
     notifyListeners();
   }

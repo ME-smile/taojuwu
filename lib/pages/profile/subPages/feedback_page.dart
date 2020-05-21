@@ -48,7 +48,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   void feedback() {
     if (beforeSendData() == false) return;
-    OTPService.feedback(context, params: {
+    OTPService.feedback(params: {
       'consult_content': content,
       'consult_contact': tel,
     }).then((ZYResponse response) {

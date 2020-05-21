@@ -146,8 +146,7 @@ class OrderKit {
 
   static Future sendCancelOrderRequest(
       BuildContext context, Map<String, dynamic> params) {
-    return OTPService.orderCancel(context, params: params)
-        .then((ZYResponse response) {
+    return OTPService.orderCancel(params: params).then((ZYResponse response) {
       // CommonKit.toast(context, response?.message ?? '');
       if (response?.valid == true) {
         // Navigator.of(context).pop();
@@ -463,7 +462,7 @@ class OrderKit {
   static void sendOrderRemindRequest(
       BuildContext context, Map<String, dynamic> params,
       {Function callback}) {
-    OTPService.orderRemind(context, params: params).then((ZYResponse response) {
+    OTPService.orderRemind(params: params).then((ZYResponse response) {
       if (callback != null) {
         callback();
       }
@@ -477,7 +476,7 @@ class OrderKit {
 
   static Future sendOrderGoodsCancelRequest(
       BuildContext context, Function callback, Map<String, dynamic> params) {
-    return OTPService.orderGoodsCancel(context, params: params)
+    return OTPService.orderGoodsCancel(params: params)
         .then((ZYResponse response) {
       callback();
     }).catchError((err) => err);
@@ -486,7 +485,7 @@ class OrderKit {
   static Future confirmToSelect(
       BuildContext context, Map<String, dynamic> params,
       {Function callback}) {
-    return OTPService.confirmToSelect(context, params: params)
+    return OTPService.confirmToSelect(params: params)
         .then((ZYResponse response) {
       if (response.valid) {
         Navigator.of(context).pop();
@@ -496,7 +495,7 @@ class OrderKit {
 
   static Future sendEditPriceRequest(
       BuildContext context, Map<String, dynamic> params) async {
-    OTPService.editPrice(context, params: params).then((ZYResponse response) {
+    OTPService.editPrice(params: params).then((ZYResponse response) {
       if (response.valid) {
         Navigator.of(context).pop();
       }
