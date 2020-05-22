@@ -245,6 +245,7 @@ class _LoginPageState extends State<LoginPage> {
                             )),
                       )
                     : TextField(
+                        obscureText: true,
                         controller: _pwdController,
                         decoration: InputDecoration(
                             hintText: '请输入密码',
