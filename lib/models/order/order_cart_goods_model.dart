@@ -17,6 +17,7 @@ class OrderCartGoods {
   String attr;
   String count;
   String cartId;
+  String dy;
   OrderCartGoods.fromJson(Map<String, dynamic> json) {
     tag = json['tag'];
     img = json['img'];
@@ -27,25 +28,24 @@ class OrderCartGoods {
               OrderProductAttrWrapper.fromJson(Map.castFrom(jsonDecode(item))))
           .toList();
     }
-    cartId = '${json['cart_id'??'']}';
+    cartId = '${json['cart_id' ?? '']}';
     price = '${json['price']}';
     goodsName = json['goods_name'];
     measureId = '${json['measure_id'] ?? ''}';
     goodsId = '${json['goods_id'] ?? ''}';
-    skuId = '${json['sku_id']??''}';
-    isShade = '${json['is_shade']??'0'}';
+    skuId = '${json['sku_id'] ?? ''}';
+    isShade = '${json['is_shade'] ?? '0'}';
     totalPrice = json['total_price'];
     attr = json['attr'];
-    count = '${json['count']??1}';
+    count = '${json['count'] ?? 1}';
+    dy = '${json['dy']}';
   }
 
   Map toJson() {
     Map tmp = {};
     wcAttr.forEach((item) {
       tmp[Constants.ATTR2NUM_MAP[item.attrName]] =
-          
           item.attrs.map((i) => i.toJson()).toList();
-
     });
     return tmp;
   }

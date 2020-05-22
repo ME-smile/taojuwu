@@ -14,8 +14,9 @@ class CommitOrderCard extends StatelessWidget {
     List<OrderProductAttrWrapper> attrs = goods.wcAttr;
     attrs.forEach((OrderProductAttrWrapper item) {
       attrsText +=
-          '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
+          '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')} ';
     });
+
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     return Container(
@@ -70,7 +71,7 @@ class CommitOrderCard extends StatelessWidget {
                             vertical: UIKit.height(10),
                             horizontal: UIKit.width(10)),
                         child: Text(
-                          attrsText ?? '',
+                          '$attrsText  离地距离:${goods.dy}cm' ?? '',
                           style: textTheme.caption,
                         ),
                       ),

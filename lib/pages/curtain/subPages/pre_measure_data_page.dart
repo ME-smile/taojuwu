@@ -95,7 +95,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
     await showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) {
-          return _WindowStyleCheckWrapper();
+          return WindowStyleCheckWrapper();
         });
   }
 
@@ -242,7 +242,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
     await showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) {
-          return _RoomAttrCheckWrapper();
+          return RoomAttrCheckWrapper();
         });
   }
 
@@ -468,8 +468,8 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   }
 }
 
-class _RoomAttrCheckWrapper extends StatefulWidget {
-  _RoomAttrCheckWrapper({
+class RoomAttrCheckWrapper extends StatefulWidget {
+  RoomAttrCheckWrapper({
     Key key,
   }) : super(key: key);
 
@@ -477,7 +477,7 @@ class _RoomAttrCheckWrapper extends StatefulWidget {
   __RoomAttrCheckWrapperState createState() => __RoomAttrCheckWrapperState();
 }
 
-class __RoomAttrCheckWrapperState extends State<_RoomAttrCheckWrapper> {
+class __RoomAttrCheckWrapperState extends State<RoomAttrCheckWrapper> {
   RoomAttr roomAttr;
   List<RoomAttrBean> beans;
 
@@ -546,8 +546,8 @@ class __RoomAttrCheckWrapperState extends State<_RoomAttrCheckWrapper> {
   }
 }
 
-class _WindowStyleCheckWrapper extends StatelessWidget {
-  const _WindowStyleCheckWrapper({Key key}) : super(key: key);
+class WindowStyleCheckWrapper extends StatelessWidget {
+  const WindowStyleCheckWrapper({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

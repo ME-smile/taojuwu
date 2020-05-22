@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:taojuwu/application.dart';
+
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/models/shop/product_tag_model.dart';
@@ -37,8 +37,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   CurtainGoodsListWrapper wrapper;
   List<CurtainGoodItemBean> goodsList = [];
   bool isRefresh = false;
-  int currentCategory = -1;
-  int currentStyle = -1;
+
   bool isLoading = true;
   int totalPage = 0;
   static const int PAGE_SIZE = 10;
@@ -141,6 +140,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   Widget _buildFilter3() {
     return InkWell(
       onTap: () {
+        params['page_index'] = 1;
         setState(() {
           menuController?.show(0);
           closeEndDrawer();
@@ -172,10 +172,45 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         WidgetSpan(
             child: Icon(
           ZYIcon.filter,
-          color: const Color(0xFF050505),
         ))
       ])),
     );
+  }
+
+// type参数代表系列
+  void checkTag(List<TagBean> tags, int type, int i) {
+    isRefresh = true;
+    TagBean bean = tags[i];
+    params['page_index'] = 1;
+    if (bean?.isChecked == true) {
+      bean?.isChecked = false;
+
+      if (type == 1) {
+        params['category_id'] = '';
+        Navigator.of(context).pop();
+        return;
+      }
+      if (type == 2) {
+        params['tag_id'] = '';
+        Navigator.of(context).pop();
+        return;
+      }
+    }
+    for (int m = 0; m < tags?.length; m++) {
+      TagBean tag = tags[m];
+      if (i == m) {
+        tag.isChecked = true;
+        if (type == 1) {
+          params['category_id'] = tag?.id;
+        }
+        if (type == 2) {
+          params['tag_id'] = tag?.id;
+        }
+      }
+      tag.isChecked = i == m ? true : false;
+    }
+
+    Navigator.of(context).pop();
   }
 
   Widget endDrawer(BuildContext context) {
@@ -203,10 +238,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
               return InkWell(
                 onTap: () {
                   setState(() {
-                    currentCategory = i;
-                    isRefresh = true;
-                    params['category_id'] = item?.id;
-
+                    checkTag(tagWrapper?.category, 1, i);
                     requestGoodsData();
                   });
                 },
@@ -216,8 +248,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(item.name),
-                      currentCategory == i
+                      Text(item?.name ?? ''),
+                      item?.isChecked == true
                           ? Icon(
                               ZYIcon.check,
                               color: const Color(0xFF050505),
@@ -247,8 +279,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
               return InkWell(
                 onTap: () {
                   setState(() {
-                    currentStyle = i;
-                    isRefresh = true;
+                    checkTag(tagWrapper?.tag, 2, i);
+
                     params['tag_id'] = item?.id;
 
                     requestGoodsData();
@@ -260,8 +292,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      Text(item.name),
-                      currentStyle == i
+                      Text(item?.name),
+                      item?.isChecked == true
                           ? Icon(
                               ZYIcon.check,
                               color: const Color(0xFF050505),
@@ -370,7 +402,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    print(Application.sp.getString('token'));
     width = MediaQuery.of(context).size.width;
     return Scaffold(
       floatingActionButton: FloatingActionButton(

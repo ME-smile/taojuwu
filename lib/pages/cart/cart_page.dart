@@ -7,6 +7,7 @@ import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/pages/cart/widgets/cart_card_view.dart';
 
 import 'package:taojuwu/providers/cart_provider.dart';
+import 'package:taojuwu/providers/client_provider.dart';
 
 import 'package:taojuwu/router/handlers.dart';
 
@@ -35,10 +36,14 @@ class _CartPageState extends State<CartPage>
   @override
   void initState() {
     super.initState();
-
-    OTPService.cartList(context, params: {}).then((CartListResp response) {
+    ClientProvider clientProvider =
+        Provider.of<ClientProvider>(context, listen: false);
+    OTPService.cartList(context,
+            params: {'client_uid': clientProvider?.clientId})
+        .then((CartListResp response) {
       tabController = TabController(length: tabs?.length, vsync: this);
       isLoading = false;
+      print(response);
       if (response?.valid == true) {
         wrapper = response?.data;
         models = wrapper?.data;

@@ -121,7 +121,6 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
           bottomNavigationBar: Consumer(
               builder: (BuildContext context, OrderProvider provider, _) {
             return Container(
-              height: 80,
               padding: EdgeInsets.symmetric(
                   vertical: UIKit.height(15), horizontal: UIKit.width(20)),
               decoration: BoxDecoration(

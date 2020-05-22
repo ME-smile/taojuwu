@@ -22,11 +22,9 @@ class ZYRaisedButton extends StatelessWidget {
     return InkWell(
       onTap: callback,
       child: Container(
-        alignment: Alignment.center,
         child: Text(
           text,
           style: accentTextTheme.button.copyWith(fontSize: 16),
-          textAlign: TextAlign.start,
         ),
         decoration: BoxDecoration(
             color: themeData.accentColor,

@@ -49,7 +49,7 @@ class _OrderPageState extends State<OrderPage>
       'page': 1,
     },
     {
-      'status': '3',
+      'status': '3,4',
       'page_size': PAGE_SIZE,
       'page': 1,
     },

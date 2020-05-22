@@ -260,15 +260,19 @@ class OrderProvider with ChangeNotifier {
     }).catchError((err) => err);
   }
 
-  void initMeasureOrder(OrderDetailProvider provider, BuildContext context,
-      {OrderGoods orderGoods}) {
+  // i标示orderGoods中的第i个商品
+  void initMeasureOrder(
+    OrderDetailProvider provider,
+    BuildContext context, {
+    OrderGoods orderGoods,
+  }) {
     GoodsProvider goodsProvider =
         Provider.of<GoodsProvider>(context, listen: false);
     _orderId = provider?.model?.orderId;
     _curOrderGoods = orderGoods;
     _orderGoodsId = provider?.model?.orderGoods?.first?.orderGoodsId;
     _orderType = 2;
-    _orderGoodsMeasure = provider?.orderGoods?.first?.orderGoodsMeasure;
+    _orderGoodsMeasure = orderGoods?.orderGoodsMeasure;
 
     goodsProvider?.initSize(
         _orderGoodsMeasure?.width ?? '0.00',
@@ -311,9 +315,12 @@ class OrderProvider with ChangeNotifier {
 
   void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
     OTPService.selectProduct(params: params).then((ZYResponse response) {
+      print(response);
       if (response.valid) {
         ClientProvider provider =
             Provider.of<ClientProvider>(context, listen: false);
+        print('lalalalalal');
+        print(provider?.clientId);
         Future.delayed(const Duration(milliseconds: 300), () {
           RouteHandler.goOrderCommitSuccessPage(
               context, '${provider?.clientId}');

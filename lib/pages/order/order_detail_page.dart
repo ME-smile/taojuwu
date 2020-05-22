@@ -364,6 +364,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
                   child: Text(
                       '${model?.isMeasureOrder == true ? '已付定金' : '定金'}:   ¥${model?.orderEarnestMoney}')),
+              Offstage(
+                offstage: model?.canEditPrice == false,
+                child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
+                    child: Text('原价: ¥${provider?.afterChangeOriginPrice}')),
+              ),
               Padding(
                   padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
                   child: Row(
@@ -393,7 +399,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               provider.showDeltaPrice
                   ? Padding(
                       padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
-                      child: Text('修改: ¥${provider?.deltaPrice}'))
+                      child: Text(
+                          '修改: ¥${provider?.deltaPrice} ${provider?.hasRemark == true ? "(${provider?.changePriceRemark})" : ''}'))
                   : Container(),
               Padding(
                   padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
@@ -402,29 +409,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       style: textTheme.title.copyWith(fontSize: UIKit.sp(28)),
                       children: [
                         TextSpan(
-                            text:
-                                '  ¥${double.parse(model?.tailMoney ?? '0') + provider?.deltaPrice}',
+                            text: '  ¥${provider?.afterChangeTailMoney}',
                             style: TextStyle(color: const Color(0xFFE02020)))
                       ]))),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
-                child: model?.isMeasureOrder == true
-                    ? Text('共${model?.windowNum}窗，已选${model?.goodsNum}件商品',
-                        style: textTheme.caption)
-                    : Text.rich(
-                        TextSpan(text: '', style: textTheme.caption, children: [
-                          WidgetSpan(
-                            child: Icon(
-                              Icons.warning,
-                              size: UIKit.sp(24),
-                            ),
-                          ),
-                          TextSpan(text: '预估价格', style: textTheme.caption)
-                        ]),
-                        textAlign: TextAlign.center,
-                      ),
-                // Text('定金: ￥${wrapper?}')
-              )
             ],
           ),
         );

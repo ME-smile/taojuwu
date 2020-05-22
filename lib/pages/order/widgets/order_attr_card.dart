@@ -14,6 +14,7 @@ import 'package:taojuwu/widgets/zy_outline_button.dart';
 class OrderAttrCard extends StatelessWidget {
   final OrderGoods goods;
   final OrderDetailModel model;
+
   const OrderAttrCard({Key key, this.goods, this.model}) : super(key: key);
 
   bool get canCancelGoods => goods?.refundStatus == 0;
@@ -29,7 +30,6 @@ class OrderAttrCard extends StatelessWidget {
           '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
     });
     TextTheme textTheme = Theme.of(context).textTheme;
-    print(goods?.pictureInfo?.picCoverSmall);
     return Container(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.end,

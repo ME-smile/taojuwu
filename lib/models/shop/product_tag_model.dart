@@ -28,8 +28,10 @@ class TagBeanWrapper {
 class TagBean {
   int id;
   String name;
+  bool isChecked;
   TagBean.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
+    isChecked = false;
   }
 }

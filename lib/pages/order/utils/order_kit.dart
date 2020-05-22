@@ -13,6 +13,7 @@ import 'package:taojuwu/pages/order/widgets/cancel_order_button.dart';
 import 'package:taojuwu/pages/order/widgets/cancel_order_goods_button.dart';
 import 'package:taojuwu/pages/order/widgets/remind_button.dart';
 import 'package:taojuwu/pages/order/widgets/select_product_button.dart';
+import 'package:taojuwu/providers/client_provider.dart';
 
 import 'package:taojuwu/providers/order_detail_provider.dart';
 import 'package:taojuwu/providers/order_provider.dart';
@@ -369,59 +370,6 @@ class OrderKit {
                       )
                     ],
                   ),
-                  // Row(
-                  //    mainAxisSize: MainAxisSize.min,
-                  //   children: <Widget>[
-                  //     Container(
-                  //       width: UIKit.width(140),
-                  //       child: Text('金额调整:'),
-                  //     ),
-                  //     SignSymbol(ctx),
-                  // Container(
-                  //   margin:
-                  //       EdgeInsets.symmetric(horizontal: UIKit.width(10)),
-                  //   color: const Color(0xFFF2F2F2),
-                  //   width: UIKit.width(160),
-                  //   height: UIKit.height(60),
-                  //   child: TextField(
-                  //     onChanged: (String text) {
-                  //       deltaMoney = text;
-                  //     },
-                  //     keyboardType: TextInputType.number,
-                  //     decoration: InputDecoration(
-                  //       isDense: true,
-                  //       contentPadding: EdgeInsets.symmetric(vertical: 8),
-                  //     ),
-                  //   ),
-                  //     ),
-                  //     Text('元'),
-                  //   ],
-                  // ),
-                  // VSpacing(20),
-                  // Row(
-                  //   children: <Widget>[
-                  //     Container(
-                  //       width: UIKit.width(140),
-                  //       child: Text('说明:'),
-                  //     ),
-                  // Container(
-                  //   margin:
-                  //       EdgeInsets.symmetric(horizontal: UIKit.width(10)),
-                  //   color: const Color(0xFFF2F2F2),
-                  //   width: UIKit.width(330),
-                  //   height: UIKit.height(60),
-                  //   child: TextField(
-                  //     onChanged: (String text) {
-                  //       remark = text;
-                  //     },
-                  //     decoration: InputDecoration(
-                  //       isDense: true,
-                  //       contentPadding: EdgeInsets.symmetric(vertical: 8),
-                  //     ),
-                  //   ),
-                  //     ),
-                  //   ],
-                  // ),
                   VSpacing(40),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -448,9 +396,10 @@ class OrderKit {
                           'adjust_money': deltaPrice,
                           'adjust_money_remark': remark,
                           'order_id': orderId ?? -1
-                        }).then((_) {
+                        }, callback: () {
                           provider?.deltaPrice = deltaPrice;
-                        }).catchError((err) => err);
+                          provider?.changePriceRemark = remark;
+                        }).then((_) {}).catchError((err) => err);
                       }),
                     ],
                   )
@@ -494,9 +443,11 @@ class OrderKit {
   }
 
   static Future sendEditPriceRequest(
-      BuildContext context, Map<String, dynamic> params) async {
+      BuildContext context, Map<String, dynamic> params,
+      {Function callback}) async {
     OTPService.editPrice(params: params).then((ZYResponse response) {
       if (response.valid) {
+        if (callback != null) callback();
         Navigator.of(context).pop();
       }
     }).catchError((err) => err);
@@ -634,6 +585,9 @@ class OrderKit {
                 callback: () {
                   OrderProvider orderProvider =
                       Provider.of<OrderProvider>(context, listen: false);
+                  ClientProvider clientProvider =
+                      Provider.of<ClientProvider>(context, listen: false);
+                  clientProvider.clientId = provider?.clientId;
                   orderProvider.initMeasureOrder(provider, context,
                       orderGoods: goods);
                 },

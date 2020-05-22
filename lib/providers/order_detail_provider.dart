@@ -4,7 +4,7 @@ import 'package:taojuwu/pages/order/utils/order_kit.dart';
 
 class OrderDetailProvider with ChangeNotifier {
   final OrderDetailModel model;
-  double _deltaPrice = 0.00;
+
   bool _isMinus = true;
 
   bool get isMinus => _isMinus;
@@ -13,6 +13,38 @@ class OrderDetailProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  int get clientId => model?.clientId;
+
+  double _deltaPrice;
+  double get tailPrice =>
+      model?.tailMoney != null ? double.parse(model?.tailMoney) : 0.0;
+
+  bool get hasRemark => changePriceRemark?.isNotEmpty == true;
+
+  double get afterChangeTailMoney {
+    if (_deltaPrice == null) {
+      return tailPrice;
+    }
+    return tailPrice + deltaPrice;
+  }
+
+  double get afterChangeOriginPrice {
+    if (_deltaPrice == null) {
+      return originPrice;
+    }
+    return originPrice + deltaPrice;
+  }
+
+  String get changePriceRemark => model?.adjustMoneyRemark;
+  double get originPrice => model?.orderEstimatedPrice != null
+      ? double.parse(model?.orderEstimatedPrice)
+      : 0.0;
+  double get depositPrice => model?.orderEarnestMoney != null
+      ? double.parse(model?.orderEarnestMoney)
+      : 0.0;
+  double get deltaPrice => _deltaPrice ?? adjustMoney;
+  double get adjustMoney =>
+      model?.adjustMoney != null ? double.parse(model?.adjustMoney) : 0.0;
   bool get isMeasureOrder => model?.isMeasureOrder ?? false;
   bool get haNotsSelectedProduct => model?.haNotsSelectedProduct ?? false;
   bool get hasAudited => model?.hasAudited ?? false;
@@ -25,13 +57,18 @@ class OrderDetailProvider with ChangeNotifier {
       isMeasureOrder &&
       haNotsSelectedProduct == true &&
       hasScheduled;
-  double get deltaPrice => _deltaPrice;
+
   bool get canEditPrice => model?.orderStatus == 4;
   bool get hasFinished => model?.hasFinished ?? false;
 
   bool get showButton => [1, 2, 3, 6, 7, 8, 14].contains(model?.orderStatus);
   set deltaPrice(double price) {
     _deltaPrice = price;
+    notifyListeners();
+  }
+
+  set changePriceRemark(String remark) {
+    model?.adjustMoneyRemark = remark;
     notifyListeners();
   }
 

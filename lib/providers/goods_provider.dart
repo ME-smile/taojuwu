@@ -43,7 +43,7 @@ class GoodsProvider with ChangeNotifier {
   String get curInstallMode {
     List list = WindowPatternAttr.installOptionMap[windowPatternStr];
     Map<String, dynamic> map =
-        list.firstWhere((item) => item['is_checked'] == true);
+        list?.firstWhere((item) => item['is_checked'] == true);
     return _curInstallMode ?? map['text'];
   }
 
@@ -55,6 +55,8 @@ class GoodsProvider with ChangeNotifier {
     return _curOpenMode ?? map['text'];
   }
 
+  bool get isWindowGauze => goods?.goodsSpecialType == 3;
+  bool get isWindowRoller => goods?.goodsSpecialType == 2;
   int _curWindowPattern = 0;
   int _curWindowStyle = 0;
   int _curWindowType = 0;
@@ -270,11 +272,14 @@ class GoodsProvider with ChangeNotifier {
   AccessoryAttr get accessoryAttr => _accessoryAttr;
   String _curInstallMode;
   String _curOpenMode;
+
+  String get sizeText => '宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米';
+  String get dyText => '${_dy}cm';
   String get windowPatternStr =>
       '${WindowPatternAttr.patternsText[curWindowPattern ?? 0]}/${WindowPatternAttr.stylesText[curWindowStyle ?? 0]}/${WindowPatternAttr.typesText[curWindowType ?? 0]}';
   int get windowPatternId => WindowPatternAttr.patternIdMap[windowPatternStr];
   String get measureDataStr =>
-      '${curRoomAttrBean?.name ?? ''}\n宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米';
+      '${curRoomAttrBean?.name ?? ''}\n宽 ${_width ?? ''}米 高${_height ?? ''}米';
 
   int get curInstallOptionIndex => _curInstallOptionIndex;
 
@@ -458,13 +463,9 @@ class GoodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool get isWindowGauze {
-    return goods?.goodsSpecialType == 3 ?? false;
-  }
-
   double get area {
     double area = widthM * heightM;
-    return area > 1 ? area : 1;
+    return area > 0 ? area < 1 ? 1 : area : 0;
   }
 
   double get unitPrice {
@@ -498,12 +499,13 @@ class GoodsProvider with ChangeNotifier {
     return curCanopyAttrBean?.price ?? 0.0;
   }
 
-  double get totalPrice {
+  String get totalPrice {
     double tmp = unitPrice;
-    if (goods?.goodsSpecialType == 2) {
-      return unitPrice * area;
-    } else if (goods?.goodsSpecialType == 4) {
-      return widthM * unitPrice;
+
+    if (isWindowRoller) {
+      return '${unitPrice * area}';
+    } else if (isWindowGauze) {
+      return '${widthM * unitPrice}';
     } else {
       // 配饰价格计算 acc-->accesspry
 
@@ -530,7 +532,7 @@ class GoodsProvider with ChangeNotifier {
             accPrice;
       }
     }
-    return double.parse(tmp.toStringAsFixed(3));
+    return tmp.toStringAsFixed(2);
   }
 
   void clearGoodsInfo() {
@@ -538,6 +540,8 @@ class GoodsProvider with ChangeNotifier {
     _height = '0.0';
     _dy = '0.0';
     _goods = null;
+    _initCraftAttrBeanList?.clear();
+    _initPartAttrBeanList?.clear();
     WindowPatternAttr.reset();
     notifyListeners();
   }
