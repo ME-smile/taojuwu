@@ -39,11 +39,14 @@ import 'widgets/zy_dialog.dart';
 class CurtainDetailPage extends StatefulWidget {
   CurtainDetailPage(
     this.id, {
+    this.orderGoodsId,
+    this.type: 1,
     Key key,
   }) : super(key: key);
 
-  final int id;
-
+  final int id; //商品id
+  final int orderGoodsId;
+  final int type; //订单类型
   @override
   _CurtainDetailPageState createState() => _CurtainDetailPageState();
 }

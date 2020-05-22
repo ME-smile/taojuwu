@@ -146,7 +146,7 @@ class OrderProvider with ChangeNotifier {
 
   set orderType(int type) {
     _orderType = type;
-    print('');
+    // notifyListeners();
   }
 
   set orderGoodsMeasure(OrderGoodsMeasure data) {

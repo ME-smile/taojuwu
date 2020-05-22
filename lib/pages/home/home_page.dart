@@ -26,11 +26,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    GoodsProvider goodsProvider =
-        Provider.of<GoodsProvider>(context, listen: false);
-    goodsProvider?.clearGoodsInfo();
-    OrderProvider provider = Provider.of<OrderProvider>(context, listen: false);
-    provider?.orderType = 1;
+
     items = [
       {
         'title': '套餐搭配',
@@ -105,11 +101,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    GoodsProvider goodsProvider =
+        Provider.of<GoodsProvider>(context, listen: false);
+    goodsProvider?.clearGoodsInfo();
+    OrderProvider provider = Provider.of<OrderProvider>(context, listen: false);
+    provider?.orderType = 1;
+  }
+
+  @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
     ThemeData themeData = Theme.of(context);
     TextTheme accentTextTheme = themeData.accentTextTheme;
     TextTheme textTheme = themeData.textTheme;
+
     return Container(
       color: themeData.primaryColor,
       child: SafeArea(

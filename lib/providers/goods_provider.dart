@@ -568,6 +568,5 @@ class GoodsProvider with ChangeNotifier {
     _curWindowStyle = 0;
     _curWindowType = 0;
     WindowPatternAttr.reset();
-    notifyListeners();
   }
 }

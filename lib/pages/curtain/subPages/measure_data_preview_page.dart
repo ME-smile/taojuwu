@@ -45,7 +45,7 @@ class MeasureDataPreviewPage extends StatelessWidget {
         OrderGoodsMeasure measureData = provider?.orderGoodsMeasure;
         return Scaffold(
             appBar: AppBar(
-              title: Text('侧装数据'),
+              title: Text('测装数据'),
               centerTitle: true,
             ),
             body: SingleChildScrollView(

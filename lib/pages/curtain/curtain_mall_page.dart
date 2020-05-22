@@ -21,7 +21,10 @@ import 'widgets/curtain_grid_view.dart';
 
 class CurtainMallPage extends StatefulWidget {
   final String keyword;
-  CurtainMallPage({Key key, this.keyword: ''}) : super(key: key);
+  final int orderGoodsId; //订单id-->goodsId
+  final int type; //订单类型
+  CurtainMallPage({Key key, this.keyword: '', this.type: 1, this.orderGoodsId})
+      : super(key: key);
 
   @override
   _CurtainMallPageState createState() => _CurtainMallPageState();

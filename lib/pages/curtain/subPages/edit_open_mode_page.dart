@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
+import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
 
 class EditOpenModePage extends StatelessWidget {
@@ -47,56 +49,84 @@ class EditOpenModePage extends StatelessWidget {
                 ),
               ),
               Consumer<GoodsProvider>(
-                builder:
-                    (BuildContext context, GoodsProvider goodsProvider, _) {
+                builder: (BuildContext context, GoodsProvider provider, _) {
                   return Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: UIKit.width(40),
-                        vertical: UIKit.height(20)),
-                    child: Row(
-                      children: <Widget>[
-                        Text('打开方式:'),
-                        InkWell(
-                          onTap: () {
-                            // goodsProvider?.curOpenMode = 0;
-                          },
-                          child: Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: UIKit.width(40)),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: UIKit.width(30),
-                                vertical: UIKit.height(10)),
-                            decoration: BoxDecoration(
-                                color: getBgColor(context, false),
-                                border: Border.all(
-                                    color: getBorderColor(context, false))),
-                            child: Text(
-                              '整体对开',
-                              style: getTextStyle(context, false),
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            // goodsProvider?.curOpenMode = 1;
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: UIKit.width(30),
-                                vertical: UIKit.height(10)),
-                            decoration: BoxDecoration(
-                                color: getBgColor(context, false),
-                                border: Border.all(
-                                    color: getBorderColor(context, false))),
-                            child: Text(
-                              '整体单开',
-                              style: getTextStyle(context, false),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                      margin: EdgeInsets.symmetric(
+                          horizontal: UIKit.width(40),
+                          vertical: UIKit.height(20)),
+                      child: Row(
+                          children: <Widget>[
+                                Text('打开方式:'),
+                              ] +
+                              List.generate(provider?.openOptions?.length ?? 0,
+                                  (int i) {
+                                Map<String, dynamic> item =
+                                    provider?.openOptions[i];
+                                return Container(
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal: UIKit.width(10)),
+                                    child: item['is_checked'] == true
+                                        ? ZYRaisedButton(
+                                            item['text'],
+                                            () {
+                                              provider?.checkOpenMode(i);
+                                            },
+                                            horizontalPadding: UIKit.width(15),
+                                          )
+                                        : ZYOutlineButton(
+                                            item['text'],
+                                            () {
+                                              provider?.checkOpenMode(i);
+                                            },
+                                            horizontalPadding: UIKit.width(15),
+                                          ));
+                              })));
+
+                  //      <Widget>[
+                  //       Text('打开方式:'),
+
+                  //       InkWell(
+                  //         onTap: () {
+                  //           // goodsProvider?.curOpenMode = 0;
+                  //         },
+
+                  //         child: Container(
+                  //           margin: EdgeInsets.symmetric(
+                  //               horizontal: UIKit.width(40)),
+                  //           padding: EdgeInsets.symmetric(
+                  //               horizontal: UIKit.width(30),
+                  //               vertical: UIKit.height(10)),
+                  //           decoration: BoxDecoration(
+                  //               color: getBgColor(context, false),
+                  //               border: Border.all(
+                  //                   color: getBorderColor(context, false))),
+                  //           child: Text(
+                  //             '整体对开',
+                  //             style: getTextStyle(context, false),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       InkWell(
+                  //         onTap: () {
+                  //           // goodsProvider?.curOpenMode = 1;
+                  //         },
+                  //         child: Container(
+                  //           padding: EdgeInsets.symmetric(
+                  //               horizontal: UIKit.width(30),
+                  //               vertical: UIKit.height(10)),
+                  //           decoration: BoxDecoration(
+                  //               color: getBgColor(context, false),
+                  //               border: Border.all(
+                  //                   color: getBorderColor(context, false))),
+                  //           child: Text(
+                  //             '整体单开',
+                  //             style: getTextStyle(context, false),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // );
                 },
               ),
               ZYSubmitButton('确认', () {
