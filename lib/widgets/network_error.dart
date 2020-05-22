@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taojuwu/application.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
@@ -12,6 +13,7 @@ class NetworkErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(Application.sp.getString('token'));
     return GestureDetector(
       onTap: callback,
       child: Material(

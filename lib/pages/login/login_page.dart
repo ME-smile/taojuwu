@@ -7,6 +7,7 @@ import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
+
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
@@ -27,6 +28,10 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _pwdController = TextEditingController();
   final TextEditingController _smsController = TextEditingController();
+
+  FocusNode _phoneNode;
+  FocusNode _pwdNode;
+  FocusNode _smsNode;
   UserProvider _userProvider;
   bool _isPwdMode = false;
 
@@ -34,16 +39,27 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _userProvider = Provider.of<UserProvider>(context, listen: false);
+    _phoneNode = FocusNode();
+    _pwdNode = FocusNode();
+    _smsNode = FocusNode();
+  }
+
+  void unfocus() {
+    _phoneNode?.unfocus();
+    _pwdNode?.unfocus();
+    _smsNode?.unfocus();
   }
 
   @override
   void dispose() {
+    super.dispose();
     _phoneController?.dispose();
     _pwdController?.dispose();
     _smsController?.dispose();
-
+    _phoneNode?.dispose();
+    _pwdNode?.dispose();
+    _smsNode?.dispose();
     // _isPwdMode?.dispose();
-    super.dispose();
   }
 
   void afterLogin(Map<String, dynamic> json) {
@@ -75,6 +91,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void loginBySms(BuildContext context) {
+    unfocus();
     String tel = _phoneController.text;
     String code = _smsController.text;
     if (tel.trim().isEmpty) {
@@ -200,6 +217,7 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 TextField(
                   controller: _phoneController,
+                  focusNode: _phoneNode,
                   decoration: InputDecoration(
                       hintText: '请输入手机号',
                       enabledBorder: UnderlineInputBorder(
@@ -221,6 +239,7 @@ class _LoginPageState extends State<LoginPage> {
                 _isPwdMode
                     ? TextField(
                         controller: _smsController,
+                        focusNode: _smsNode,
                         decoration: InputDecoration(
                             hintText: '请输入验证码',
                             suffixIcon: SendSmsButton(
@@ -247,6 +266,7 @@ class _LoginPageState extends State<LoginPage> {
                     : TextField(
                         obscureText: true,
                         controller: _pwdController,
+                        focusNode: _pwdNode,
                         decoration: InputDecoration(
                             hintText: '请输入密码',
                             suffixIcon: FlatButton(

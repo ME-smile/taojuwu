@@ -14,7 +14,8 @@ class OrderDetailProvider with ChangeNotifier {
   }
 
   int get clientId => model?.clientId;
-
+  bool get hasUnselectedGoods => unselectedGoodsNum > 0;
+  int get unselectedGoodsNum => model?.unselectedGoodsNum;
   double _deltaPrice;
   double get tailPrice =>
       model?.tailMoney != null ? double.parse(model?.tailMoney) : 0.0;

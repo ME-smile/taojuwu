@@ -60,7 +60,8 @@ class WindowPatternAttr {
   };
 
   static const pictureMap = {
-    '单窗/非飘窗/无盒/顶装满墙': 'curtain/size_000011.png',
+    '单窗/非飘窗/无盒/顶装': 'curtain/size_000011.png',
+    '单窗/非飘窗/无盒/侧装': 'size_000001.png',
     '单窗/非飘窗/有盒/盒内装': 'curtain/size_0010-1-1.png',
     '单窗/飘窗/无盒/顶装满墙': 'curtain/size_0100-1-1-SPW-H.png',
     '单窗/飘窗/有盒/盒内装': 'curtain/size_0110-1-1-SPY-H.png',
@@ -79,8 +80,12 @@ class WindowPatternAttr {
   static Map installOptionMap = {
     '单窗/非飘窗/无盒': [
       {
-        'text': '顶装满墙',
+        'text': '顶装',
         'is_checked': true,
+      },
+      {
+        'text': '侧装',
+        'is_checked': false,
       }
     ],
     '单窗/非飘窗/有盒': [
@@ -136,7 +141,7 @@ class WindowPatternAttr {
       },
       {
         'text': '侧装',
-        'is_checked': true,
+        'is_checked': false,
       }
     ],
     'U型窗/非飘窗/有盒': [

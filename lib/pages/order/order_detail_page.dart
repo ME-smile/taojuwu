@@ -542,7 +542,6 @@ class BottomActionButtonBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<OrderDetailProvider>(
       builder: (BuildContext context, OrderDetailProvider provider, _) {
-        print(orderStatus);
         return Offstage(
           offstage: provider?.showButton == false ?? false,
           child: Container(

@@ -490,6 +490,39 @@ class OrderKit {
     return VSpacing(20);
   }
 
+  static void selectProduct(
+      OrderDetailProvider provider, BuildContext context) {
+    if (provider?.hasUnselectedGoods == true) {
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text('您还有${provider?.unselectedGoodsNum}窗未完成选品,是否确认提交?'),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('确定'),
+                  onPressed: () {
+                    confirmToSelect(
+                        context, {'order_id': provider?.model?.orderId ?? -1},
+                        callback: () {
+                      Navigator.of(context).pop();
+                    });
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text('继续选品'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    } else {
+      confirmToSelect(context, {'order_id': provider?.model?.orderId ?? -1});
+    }
+  }
+
   static List<Widget> buildBottomActionButton(
       BuildContext context, OrderDetailProvider provider) {
     if (provider?.hasFinished == true) {
@@ -515,8 +548,7 @@ class OrderKit {
           ),
           SizedBox(width: 20),
           ZYOutlineButton('确定', () {
-            confirmToSelect(
-                context, {'order_id': provider?.model?.orderId ?? -1});
+            selectProduct(provider, context);
           })
         ];
       }

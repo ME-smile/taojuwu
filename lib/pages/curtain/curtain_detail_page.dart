@@ -744,7 +744,12 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                           bottomNavigationBar: BottomActionButtonBar()),
                       onWillPop: () {
                         Navigator.of(context).pop();
-                        goodsProvider?.clearGoodsInfo();
+                        OrderProvider orderProvider =
+                            Provider.of(context, listen: false);
+                        if (orderProvider?.isMeasureOrder == false) {
+                          goodsProvider?.clearGoodsInfo();
+                        }
+
                         return Future.value(false);
                       });
                 },

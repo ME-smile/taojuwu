@@ -35,7 +35,8 @@ class OrderCartGoods {
     goodsId = '${json['goods_id'] ?? ''}';
     skuId = '${json['sku_id'] ?? ''}';
     isShade = '${json['is_shade'] ?? '0'}';
-    totalPrice = json['total_price'];
+    totalPrice =
+        json['total_price'] != null ? double.parse(json['total_price']) : 0;
     attr = json['attr'];
     count = '${json['count'] ?? 1}';
     dy = '${json['dy']}';

@@ -235,6 +235,8 @@ class OrderProvider with ChangeNotifier {
         clientProvider?.clearClientInfo();
         goodsProvider?.clearGoodsInfo();
         clearOrderData();
+      } else {
+        CommonKit.showErrorInfo(response?.message ?? '');
       }
     }).catchError((err) => err);
   }
@@ -247,6 +249,7 @@ class OrderProvider with ChangeNotifier {
     OTPService.createMeasureOrder(params: {
       'client_uid': clientUid,
       'measure_time': measureTimeStr,
+      'install_time': installTime,
       'order_earnest_money': deposit,
       'order_remark': orderMark,
       'shop_id': shopId,
@@ -256,6 +259,8 @@ class OrderProvider with ChangeNotifier {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid);
         clientProvider?.clearClientInfo();
         clearOrderData();
+      } else {
+        CommonKit.showErrorInfo(response?.message ?? '');
       }
     }).catchError((err) => err);
   }
@@ -317,23 +322,13 @@ class OrderProvider with ChangeNotifier {
     OTPService.selectProduct(params: params).then((ZYResponse response) {
       print(response);
       if (response.valid) {
-        ClientProvider provider =
-            Provider.of<ClientProvider>(context, listen: false);
-        print('lalalalalal');
-        print(provider?.clientId);
+        OrderProvider orderProvider = Provider.of<OrderProvider>(context);
         Future.delayed(const Duration(milliseconds: 300), () {
-          RouteHandler.goOrderCommitSuccessPage(
-              context, '${provider?.clientId}');
+          RouteHandler.goOrderDetailPage(context, orderProvider?.orderId);
           clearOrderData();
           _curOrderGoods?.isSelectedGoods = 1;
           notifyListeners();
         });
-
-        // showSelectProductDialog(context).then((_) {
-        //   clearOrderData();
-        //   _curOrderGoods?.isSelectedGoods = 1;
-        //   notifyListeners();
-        // }).catchError((err) => err);
       }
     }).catchError((err) => err);
   }

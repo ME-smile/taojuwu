@@ -169,6 +169,7 @@ class GoodsProvider with ChangeNotifier {
       roomAttr: roomAttr,
     );
     filterCraft();
+    filterParts();
   }
 
   void initData({
@@ -273,13 +274,34 @@ class GoodsProvider with ChangeNotifier {
   String _curInstallMode;
   String _curOpenMode;
 
-  String get sizeText => '宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米';
-  String get dyText => '${_dy}cm';
+  bool get hasSetSizeForWindowRoller {
+    if (_width == '0.0' ||
+        _height == '0.0' ||
+        _width == null ||
+        _height == null ||
+        _width?.isNotEmpty != true ||
+        _height?.isNotEmpty != true) {
+      return false;
+    }
+    return true;
+  }
+
+  bool get hasSetDy {
+    if (_dy == '0.0' || _dy?.isNotEmpty != true || _dy == null) {
+      return false;
+    }
+    return true;
+  }
+
+  String get sizeText => hasSetSizeForWindowRoller
+      ? '宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米'
+      : '尺寸';
+  String get dyText => hasSetDy ? '${_dy}cm' : '离地距离(cm)';
   String get windowPatternStr =>
       '${WindowPatternAttr.patternsText[curWindowPattern ?? 0]}/${WindowPatternAttr.stylesText[curWindowStyle ?? 0]}/${WindowPatternAttr.typesText[curWindowType ?? 0]}';
   int get windowPatternId => WindowPatternAttr.patternIdMap[windowPatternStr];
   String get measureDataStr =>
-      '${curRoomAttrBean?.name ?? ''}\n宽 ${_width ?? ''}米 高${_height ?? ''}米';
+      '${curRoomAttrBean?.name ?? ''}\n宽 ${widthMStr ?? ''}米 高${widthMStr ?? ''}米';
 
   int get curInstallOptionIndex => _curInstallOptionIndex;
 
@@ -542,6 +564,9 @@ class GoodsProvider with ChangeNotifier {
     _goods = null;
     _initCraftAttrBeanList?.clear();
     _initPartAttrBeanList?.clear();
+    _curWindowPattern = 0;
+    _curWindowStyle = 0;
+    _curWindowType = 0;
     WindowPatternAttr.reset();
     notifyListeners();
   }

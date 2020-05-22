@@ -18,6 +18,7 @@ class App extends StatelessWidget {
     return Consumer2<ThemeProvider, UserProvider>(builder:
         (BuildContext context, ThemeProvider provider,
             UserProvider userProvider, _) {
+      print(Application.sp.getString('token'));
       if (userProvider?.isLogin == true) {
         userProvider?.initUserInfo();
       }

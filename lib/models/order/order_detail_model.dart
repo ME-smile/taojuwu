@@ -143,6 +143,14 @@ class OrderDetailModel {
           ?.toList()
           ?.length ??
       0;
+
+  int get unselectedGoodsNum =>
+      orderGoods
+          ?.where((item) => item?.isSelectedGoods == 0)
+          ?.toList()
+          ?.length ??
+      0;
+
   String get windowNum => '${orderWindowNum ?? '1'}';
   bool get canCancel => orderStatus != 15 ?? true;
   bool get isMeasureOrder => orderType == 2 ?? false;
@@ -489,7 +497,7 @@ class OrderGoods {
       this.isShade,
       this.wcAttr,
       this.estimatedPrice,
-      this.expressInfo,
+      // this.expressInfo,
       this.shippingStatusName,
       this.pictureInfo,
       this.refundOperation,
@@ -557,9 +565,10 @@ class OrderGoods {
     wcAttr =
         wrapper.map((item) => OrderProductAttrWrapper.fromJson(item)).toList();
     estimatedPrice = json['estimated_price'];
-    expressInfo = json['express_info'];
+    // expressInfo = json['express_info'];
     shippingStatusName = json['shipping_status_name'];
-    pictureInfo = json['picture_info'] != null
+
+    pictureInfo = json['picture_info'] != null && json['picture_info'] is Map
         ? new PictureInfo.fromJson(json['picture_info'])
         : null;
     if (json['refund_operation'] != null) {
