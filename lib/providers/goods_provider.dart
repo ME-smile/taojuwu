@@ -11,6 +11,11 @@ import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
 import 'package:taojuwu/models/user/customer_model.dart';
 
 class GoodsProvider with ChangeNotifier {
+  static final GoodsProvider _goodsProvider = GoodsProvider._internal();
+  factory GoodsProvider() {
+    return _goodsProvider;
+  }
+  GoodsProvider._internal();
   ProductBean _goods;
   WindowGauzeAttr _windowGauzeAttr;
   CraftAttr _craftAttr;
