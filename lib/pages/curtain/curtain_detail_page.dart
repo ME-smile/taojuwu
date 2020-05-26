@@ -749,6 +749,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                         Navigator.of(context).pop();
                         OrderProvider orderProvider =
                             Provider.of(context, listen: false);
+                        // orderProvider.hasConfirmMeasureData = false;
                         if (orderProvider?.isMeasureOrder == false) {
                           goodsProvider?.clearGoodsInfo();
                         }
@@ -955,18 +956,30 @@ class BottomActionButtonBar extends StatelessWidget {
                       TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
                     ])),
                     ZYRaisedButton('确认选品', () {
+                      if (orderProvider?.hasConfirmMeasureData == false) {
+                        return CommonKit.showInfo('请先确认测装数据');
+                      }
                       Map<String, dynamic> data = {
                         'num': 1,
-                        '打开方式': jsonEncode([goodsProvider?.curOpenMode]),
                         'wc_attr': jsonEncode(getAttrArgs(goodsProvider)),
-                        'goods_id': goodsProvider?.goodsId
+                        'goods_id': goodsProvider?.goodsId,
+                        '安装选项': ['${goodsProvider?.curInstallMode ?? ''}'],
+                        '打开方式': goodsProvider?.openModeParams
                       };
 
+                      // data['${goodsProvider?.windowPatternId ?? ''}'] = {
+                      //   'name': '${goodsProvider?.windowPatternStr ?? ''}',
+                      //   'selected': {
+                      //     '安装选项': ['${goodsProvider?.curInstallMode ?? ''}'],
+                      //     '打开方式': goodsProvider?.openModeParams
+                      //   }
+                      // };
                       Map<String, dynamic> params = {
-                        'vertical_ground_height': 2,
+                        'vertical_ground_height': goodsProvider?.dyCMStr,
                         'data': jsonEncode(data),
                         'order_goods_id': orderProvider?.orderGoodsId
                       };
+
                       orderProvider?.selectProduct(context, params: params);
                     })
                   ],
@@ -1007,7 +1020,6 @@ class BottomActionButtonBar extends StatelessWidget {
                             List wrapper = [];
                             map.forEach((key, val) {
                               Map<String, dynamic> tmp = {};
-
                               tmp['attr_name'] =
                                   Constants.ATTR_MAP[int.parse('$key')];
                               tmp['attr'] = val is List ? val ?? [] : [val];

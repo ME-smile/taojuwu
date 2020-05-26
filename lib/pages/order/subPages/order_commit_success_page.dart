@@ -6,7 +6,9 @@ import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 class OrderCommitSuccessPage extends StatelessWidget {
   final int clientId;
-  const OrderCommitSuccessPage({Key key, this.clientId}) : super(key: key);
+  final int orderType; //1表示普通订单 2表示 测量单
+  const OrderCommitSuccessPage({Key key, this.clientId, this.orderType: 1})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +76,13 @@ class OrderCommitSuccessPage extends StatelessWidget {
             ),
           ),
         ),
-        onWillPop: () {
-          RouteHandler.goHomePage(context);
+        onWillPop: () async {
+          if (orderType == 1) {
+            Navigator.of(context)..pop()..pop()..pop()..pop();
+          } else {
+            Navigator.of(context)..pop()..pop();
+          }
+
           return Future.value(false);
         });
   }

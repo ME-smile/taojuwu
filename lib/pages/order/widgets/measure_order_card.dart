@@ -8,7 +8,9 @@ import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class MeasureOrderHasNotSelectedProductedCard extends StatelessWidget {
   final OrderModelData orderModelData;
-  const MeasureOrderHasNotSelectedProductedCard({Key key, this.orderModelData})
+  final int tab;
+  const MeasureOrderHasNotSelectedProductedCard(
+      {Key key, this.orderModelData, this.tab})
       : super(key: key);
   String get orderEarnestMoneyStr {
     var createTime = orderModelData?.createTime;
@@ -64,7 +66,9 @@ class MeasureOrderHasNotSelectedProductedCard extends StatelessWidget {
 
 class MeasureOrderHasSelectedProductCard extends StatelessWidget {
   final OrderModelData orderModelData;
-  const MeasureOrderHasSelectedProductCard({Key key, this.orderModelData})
+  final int tab;
+  const MeasureOrderHasSelectedProductCard(
+      {Key key, this.orderModelData, this.tab})
       : super(key: key);
 
   @override
@@ -113,7 +117,9 @@ class MeasureOrderHasSelectedProductCard extends StatelessWidget {
 class MeasureOrderHasSelectedProductItemView extends StatelessWidget {
   final OrderModel model;
   final int id;
-  const MeasureOrderHasSelectedProductItemView({Key key, this.model, this.id})
+  final int tab;
+  const MeasureOrderHasSelectedProductItemView(
+      {Key key, this.model, this.id, this.tab})
       : super(key: key);
 
   String get sizeText => '宽: ${model.width / 100}米 高: ${model.height / 100}米';
@@ -171,8 +177,9 @@ class MeasureOrderHasNotSelectedProductItemView extends StatelessWidget {
   final OrderModelData orderModelData;
   final OrderModel model;
   final int id;
+  final int tab;
   const MeasureOrderHasNotSelectedProductItemView(
-      {Key key, this.orderModelData, this.model, this.id})
+      {Key key, this.orderModelData, this.model, this.id, this.tab})
       : super(key: key);
   @override
   Widget build(BuildContext context) {

@@ -14,6 +14,7 @@ class OrderDetailProvider with ChangeNotifier {
   }
 
   int get clientId => model?.clientId;
+  String get clientName => model?.clientName;
   bool get hasUnselectedGoods => unselectedGoodsNum > 0;
   int get unselectedGoodsNum => model?.unselectedGoodsNum;
   double _deltaPrice;
@@ -47,7 +48,7 @@ class OrderDetailProvider with ChangeNotifier {
   double get adjustMoney =>
       model?.adjustMoney != null ? double.parse(model?.adjustMoney) : 0.0;
   bool get isMeasureOrder => model?.isMeasureOrder ?? false;
-  bool get haNotsSelectedProduct => model?.haNotsSelectedProduct ?? false;
+  bool get hasNotsSelectedProduct => model?.haNotsSelectedProduct ?? false;
   bool get hasAudited => model?.hasAudited ?? false;
   bool get hasMeasured => model?.hasMeasured ?? false;
   bool get hasInstalled => model?.hasInstalled ?? false;
@@ -56,7 +57,7 @@ class OrderDetailProvider with ChangeNotifier {
   bool get showSelectedProductButton =>
       hasMeasured &&
       isMeasureOrder &&
-      haNotsSelectedProduct == true &&
+      hasNotsSelectedProduct == true &&
       hasScheduled;
 
   bool get canEditPrice => model?.orderStatus == 4;

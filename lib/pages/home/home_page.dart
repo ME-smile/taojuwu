@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-import 'package:taojuwu/providers/goods_provider.dart';
-import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -98,16 +96,6 @@ class _HomePageState extends State<HomePage> {
     _streamController?.close();
     timer?.cancel();
     super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    GoodsProvider goodsProvider =
-        Provider.of<GoodsProvider>(context, listen: false);
-    goodsProvider?.clearGoodsInfo();
-    OrderProvider provider = Provider.of<OrderProvider>(context, listen: false);
-    provider?.orderType = 1;
   }
 
   @override

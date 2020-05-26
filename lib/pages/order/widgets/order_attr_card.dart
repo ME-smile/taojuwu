@@ -66,14 +66,26 @@ class OrderAttrCard extends StatelessWidget {
             )),
           ],
         ),
-        Text.rich(TextSpan(
-            text: '小计 ',
-            style: textTheme.caption.copyWith(fontSize: UIKit.sp(20)),
-            children: [
-              TextSpan(
-                  text: '¥${goods?.estimatedPrice ?? 0.00}',
-                  style: textTheme.body1.copyWith(fontSize: UIKit.sp(24))),
-            ])),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Offstage(
+              offstage: goods?.showExpressInfo == false,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+                child: Text('物流编号:${goods?.expressInfo?.expressNo}'),
+              ),
+            ),
+            Text.rich(TextSpan(
+                text: '小计 ',
+                style: textTheme.caption.copyWith(fontSize: UIKit.sp(20)),
+                children: [
+                  TextSpan(
+                      text: '¥${goods?.estimatedPrice ?? 0.00}',
+                      style: textTheme.body1.copyWith(fontSize: UIKit.sp(24))),
+                ]))
+          ],
+        ),
         showCancelButton
             ? Consumer<OrderDetailProvider>(
                 builder:

@@ -92,7 +92,7 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
         onWillPop: () {
           OrderProvider orderProvider =
               Provider.of<OrderProvider>(context, listen: false);
-          orderProvider?.orderType = 1;
+          orderProvider?.clearOrderData();
           Navigator.of(context).pop();
           return Future.value(false);
         });

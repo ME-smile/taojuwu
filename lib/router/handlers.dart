@@ -86,7 +86,6 @@ class RouteHandler {
   static Handler curtainDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int goodsId = int.parse(params['id']?.first);
-
     return CurtainDetailPage(
       goodsId,
     );
@@ -96,6 +95,7 @@ class RouteHandler {
     BuildContext context,
     int id,
   ) {
+    print(id);
     _jumpTo(context, '${Routes.curtainDetail}?id=$id');
   }
 
@@ -107,27 +107,31 @@ class RouteHandler {
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int clientId;
     String arg = params['clientId']?.first;
+    int tab = int.parse(params['tab']?.first);
     if (arg != null && arg != 'null') {
       clientId = int.parse(arg);
     }
     return OrderPage(
       clientId: clientId,
+      tab: tab,
     );
   });
 
-  static goOrderPage(BuildContext context, {int clientId}) {
-    _jumpTo(context, '${Routes.order}?clientId=$clientId');
+  static goOrderPage(BuildContext context, {int clientId, int tab: 0}) {
+    _jumpTo(context, '${Routes.order}?clientId=$clientId&tab=$tab');
   }
 
   static Handler orderDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int id = int.parse(params['id']?.first);
-    return OrderDetailPage(id: id);
+    int tab = int.parse(params['tab']?.first);
+    return OrderDetailPage(id: id, tab: tab);
   });
 
   static goOrderDetailPage(BuildContext context, int id,
-      {bool isReplaceMode: false}) {
-    _jumpTo(context, '${Routes.orderDetail}?id=$id', replace: isReplaceMode);
+      {int tab: 0, bool isReplaceMode: false}) {
+    _jumpTo(context, '${Routes.orderDetail}?id=$id&tab=$tab',
+        replace: isReplaceMode);
   }
 
   static Handler measureOrder = Handler(
@@ -143,8 +147,13 @@ class RouteHandler {
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     return CustomerManagePage();
   });
-  static goCustomerPage(BuildContext context, {bool isReplaceMode: false}) {
-    _jumpTo(context, Routes.customer, replace: isReplaceMode);
+  static goCustomerPage(
+    BuildContext context,
+  ) {
+    _jumpTo(
+      context,
+      Routes.customer,
+    );
   }
 
   static Handler customerDetail = Handler(
@@ -167,14 +176,16 @@ class RouteHandler {
       id: id,
     );
   });
-  static goCustomerEditPage(BuildContext context,
-      {String title, int id, bool isReplaceMode: true}) {
+  static goCustomerEditPage(
+    BuildContext context, {
+    String title,
+    int id,
+  }) {
     title =
         title != null ? FluroConvertUtils.fluroCnParamsEncode(title) : title;
     _jumpTo(
       context,
       '${Routes.customerEdit}?title=$title&id=$id',
-      replace: isReplaceMode,
     );
   }
 
@@ -337,13 +348,17 @@ class RouteHandler {
   static Handler orderCommitSuccess = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int clientId = int.parse(params['clientId']?.first) ?? -1;
+    int orderType = int.parse(params['orderType']?.first) ?? -1;
     return OrderCommitSuccessPage(
       clientId: clientId,
+      orderType: orderType,
     );
   });
 
-  static goOrderCommitSuccessPage(BuildContext context, String clientId) {
-    _jumpTo(context, '${Routes.orderCommitSuccess}?clientId=$clientId');
+  static goOrderCommitSuccessPage(BuildContext context, String clientId,
+      {int orderType: 1}) {
+    _jumpTo(context,
+        '${Routes.orderCommitSuccess}?clientId=$clientId&orderType=$orderType');
   }
 
   static Handler orderSearch = Handler(
@@ -397,7 +412,9 @@ class RouteHandler {
     return EditOpenModePage();
   });
 
-  static goEditOpenModePage(BuildContext context) {
+  static goEditOpenModePage(
+    BuildContext context,
+  ) {
     _jumpTo(context, Routes.editOpenMode);
   }
 

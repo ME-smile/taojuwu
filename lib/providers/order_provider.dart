@@ -30,10 +30,15 @@ class OrderProvider with ChangeNotifier {
   BuildContext context;
   OrderGoodsMeasure _orderGoodsMeasure;
   bool _hasConfirmMeasureData = false;
+
+  String _oldOpenMode;
+
   OrderProvider(
     this.context, {
     this.orderGoods,
   });
+  String get oldOpenMode => _oldOpenMode;
+  bool get hasChangedOpenMode => _oldOpenMode != null;
   double get totalPrice {
     double sum = 0.00;
     orderGoods?.forEach((item) {
@@ -90,8 +95,28 @@ class OrderProvider with ChangeNotifier {
   String get windowNum => _windowNum;
   int get orderType => _orderType;
   OrderGoods get curOrderGoods => _curOrderGoods;
+
   set orderMark(String orderMark) {
     _orderMark = orderMark;
+    notifyListeners();
+  }
+
+  set oldOpenMode(String mode) {
+    _oldOpenMode = mode;
+    notifyListeners();
+  }
+
+  set dy(String h) {
+    _orderGoodsMeasure?.verticalGroundHeight = h;
+    notifyListeners();
+  }
+
+  set openMode(String mode) {
+    if (_orderGoodsMeasure?.openType == mode) return;
+    if (_oldOpenMode == null) {
+      _oldOpenMode = _orderGoodsMeasure?.openType;
+    }
+    _orderGoodsMeasure?.openType = mode;
     notifyListeners();
   }
 
@@ -147,6 +172,7 @@ class OrderProvider with ChangeNotifier {
   set orderType(int type) {
     _orderType = type;
     // notifyListeners();
+    print('object');
   }
 
   set orderGoodsMeasure(OrderGoodsMeasure data) {
@@ -275,18 +301,18 @@ class OrderProvider with ChangeNotifier {
         Provider.of<GoodsProvider>(context, listen: false);
     _orderId = provider?.model?.orderId;
     _curOrderGoods = orderGoods;
-    _orderGoodsId = provider?.model?.orderGoods?.first?.orderGoodsId;
+    _orderGoodsId = orderGoods?.orderGoodsId;
     _orderType = 2;
     _orderGoodsMeasure = orderGoods?.orderGoodsMeasure;
-
-    goodsProvider?.initSize(
-        _orderGoodsMeasure?.width ?? '0.00',
-        _orderGoodsMeasure?.height ?? '0.00',
-        _orderGoodsMeasure?.verticalGroundHeight ?? '0.00',
-        installMode: _orderGoodsMeasure?.installType ?? '顶装满墙',
-        openMode: _orderGoodsMeasure?.openType ?? '整体对开'
-        // _orderGoodsMeasure?.
-        );
+    goodsProvider?.measureData = _orderGoodsMeasure;
+    // goodsProvider?.initSize(_orderGoodsMeasure
+    //     // _orderGoodsMeasure?.width ?? '0.00',
+    //     // _orderGoodsMeasure?.height ?? '0.00',
+    //     // _orderGoodsMeasure?.verticalGroundHeight ?? '0.00',
+    //     // installMode: _orderGoodsMeasure?.installType ?? '顶装满墙',
+    //     // openMode: _orderGoodsMeasure?.openType ?? '整体对开'
+    //     // _orderGoodsMeasure?.
+    //     );
     notifyListeners();
     RouteHandler.goCurtainMallPage(context);
   }
@@ -320,15 +346,18 @@ class OrderProvider with ChangeNotifier {
 
   void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
     OTPService.selectProduct(params: params).then((ZYResponse response) {
-      print(response);
       if (response.valid) {
-        OrderProvider orderProvider = Provider.of<OrderProvider>(context);
-        Future.delayed(const Duration(milliseconds: 300), () {
-          RouteHandler.goOrderDetailPage(context, orderProvider?.orderId);
-          clearOrderData();
-          _curOrderGoods?.isSelectedGoods = 1;
-          notifyListeners();
-        });
+        OrderProvider orderProvider =
+            Provider.of<OrderProvider>(context, listen: false);
+        GoodsProvider goodsProvider =
+            Provider.of<GoodsProvider>(context, listen: false);
+        goodsProvider?.clearGoodsInfo();
+        orderProvider?.hasConfirmMeasureData = false;
+        Navigator.of(context)..pop()..pop();
+
+        clearOrderData();
+        _curOrderGoods?.isSelectedGoods = 1;
+        notifyListeners();
       }
     }).catchError((err) => err);
   }

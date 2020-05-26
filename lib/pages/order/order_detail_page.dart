@@ -18,7 +18,8 @@ import 'package:taojuwu/widgets/zy_outline_button.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final int id;
-  OrderDetailPage({Key key, this.id}) : super(key: key);
+  final int tab;
+  OrderDetailPage({Key key, this.id, this.tab: 0}) : super(key: key);
 
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
@@ -150,14 +151,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     };
   }
 
-  String getcreateTimeStr(OrderDetailModel model) {
-    var createTime = model?.createTime;
-    if (createTime is num) {
-      createTime = createTime * 1000;
+  String getTimeStr(var milliSeconds) {
+    var time = milliSeconds;
+    if (time is num) {
+      time = time * 1000;
     } else {
-      createTime = 0;
+      time = 0;
     }
-    return DateUtil.formatDateMs(createTime ?? 0,
+    return DateUtil.formatDateMs(time ?? 0,
             isUtc: false, format: 'yyyy-MM-dd HH:mm:ss') ??
         '';
   }
@@ -265,7 +266,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     if (model?.isMeasureOrder == false) {
       return Column(
         children: <Widget>[
-          _customerRequirementBar('上门量尺意向时间', model?.measureTime ?? ''),
+          Offstage(
+            offstage: model?.hasMeasured == true,
+            child:
+                _customerRequirementBar('上门量尺意向时间', model?.measureTime ?? ''),
+          ),
           _customerRequirementBar('客户意向安装时间', model?.installTime ?? ''),
           _customerRequirementBar(
               '备注',
@@ -278,7 +283,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       if (model?.isShowAllInfo == true) {
         return Column(
           children: <Widget>[
-            _customerRequirementBar('上门量尺意向时间', model?.measureTime ?? ''),
+            Offstage(
+              offstage: model?.hasMeasured == true,
+              child:
+                  _customerRequirementBar('上门量尺意向时间', model?.measureTime ?? ''),
+            ),
             _customerRequirementBar('客户意向安装时间', model?.installTime ?? ''),
             _customerRequirementBar('需测量窗数', '${model?.windowNum ?? 0}扇'),
             _customerRequirementBar('定金', '￥${model?.orderEarnestMoney ?? 0}'),
@@ -424,110 +433,129 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     ThemeData themeData = Theme.of(context);
     TextTheme accentTextTheme = themeData.accentTextTheme;
 
-    return ZYFutureBuilder(
-        futureFunc: OTPService.orderDetail,
-        params: {'order_id': id},
-        builder: (BuildContext ctx, OrderDerailModelResp response) {
-          OrderDetailModelWrppaer wrppaer = response?.data;
-          OrderDetailModel model = wrppaer.orderDetailModel;
-          return ChangeNotifierProvider<OrderDetailProvider>(
-            create: (_) => OrderDetailProvider(model: model),
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text('订单详情'),
-                centerTitle: true,
-              ),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                      height: UIKit.height(220),
-                      color: themeData.accentColor,
-                      child: Text.rich(TextSpan(
-                          text:
-                              '${Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['title']}\n\n',
-                          style: accentTextTheme.title
-                              .copyWith(fontSize: UIKit.sp(24)),
-                          children: [
-                            TextSpan(
-                                text: Constants.ORDER_STATUS_TIP_MAP[
-                                    model?.orderStatus ?? 0]['subtitle'],
-                                style: accentTextTheme.body1)
-                          ])),
-                    ),
-                    Container(
-                      color: themeData.primaryColor,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: UIKit.width(20),
-                          vertical: UIKit.height(20)),
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            ZYIcon.add,
-                            color: const Color(0xFF171717),
+    return WillPopScope(
+        child: ZYFutureBuilder(
+            futureFunc: OTPService.orderDetail,
+            params: {'order_id': id},
+            builder: (BuildContext ctx, OrderDerailModelResp response) {
+              OrderDetailModelWrppaer wrppaer = response?.data;
+              OrderDetailModel model = wrppaer.orderDetailModel;
+              return ChangeNotifierProvider<OrderDetailProvider>(
+                create: (_) => OrderDetailProvider(model: model),
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: Text('订单详情'),
+                    centerTitle: true,
+                  ),
+                  body: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          padding:
+                              EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                          height: UIKit.height(220),
+                          color: themeData.accentColor,
+                          child: Text.rich(TextSpan(
+                              text:
+                                  '${Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['title']}\n\n',
+                              style: accentTextTheme.title
+                                  .copyWith(fontSize: UIKit.sp(24)),
+                              children: [
+                                TextSpan(
+                                    text: Constants.ORDER_STATUS_TIP_MAP[
+                                        model?.orderStatus ?? 0]['subtitle'],
+                                    style: accentTextTheme.body1)
+                              ])),
+                        ),
+                        Container(
+                          color: themeData.primaryColor,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: UIKit.width(20),
+                              vertical: UIKit.height(20)),
+                          child: Row(
+                            children: <Widget>[
+                              Icon(
+                                ZYIcon.add,
+                                color: const Color(0xFF171717),
+                              ),
+                              Expanded(
+                                  child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                      '收货人: ${model?.clientName ?? ''}  ${model?.receiverMobile ?? ''}'),
+                                  Text(model?.receiverAddress ?? '')
+                                ],
+                              )),
+                            ],
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                        ),
+                        VSpacing(20),
+                        Container(
+                          color: themeData.primaryColor,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: UIKit.width(20),
+                              vertical: UIKit.height(20)),
+                          child: buildinstallInfoTip(model),
+                        ),
+                        VSpacing(20),
+                        _orderGoodsDetail(context, model),
+                        VSpacing(20),
+                        model?.isShowManuscript == true
+                            ? _measureManuscript(context, model)
+                            : Container(),
+                        VSpacing(20),
+                        Container(
+                          color: themeData.primaryColor,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: UIKit.width(20),
+                              vertical: UIKit.height(20)),
+                          alignment: Alignment.centerLeft,
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                  '收货人: ${model?.clientName ?? ''}  ${model?.receiverMobile ?? ''}'),
-                              Text(model?.receiverAddress ?? '')
+                                '订单信息',
+                              ),
+                              _orderInfoBar(
+                                  context, '订单编号', model?.orderNo ?? ''),
+                              _orderInfoBar(context, '创建时间',
+                                  getTimeStr(model?.createTime)),
+                              Offstage(
+                                offstage: model?.hasMeasured == false,
+                                child: _orderInfoBar(context, '测量时间',
+                                    getTimeStr(model?.realityMeasureTime)),
+                              ),
+                              Offstage(
+                                offstage: model?.hasInstalled == false,
+                                child: _orderInfoBar(context, '安装时间',
+                                    getTimeStr(model?.realityInstallTime)),
+                              ),
+                              _orderInfoBar(
+                                  context, '下单人', model?.userName ?? ''),
+                              _orderInfoBar(
+                                  context, '客户名', model?.clientName ?? ''),
+                              _orderInfoBar(
+                                  context, '下单门店', model?.shopName ?? ''),
                             ],
                           ),
-                        ],
-                      ),
+                        ),
+                        VSpacing(50)
+                      ],
                     ),
-                    VSpacing(20),
-                    Container(
-                      color: themeData.primaryColor,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: UIKit.width(20),
-                          vertical: UIKit.height(20)),
-                      child: buildinstallInfoTip(model),
-                    ),
-                    VSpacing(20),
-                    _orderGoodsDetail(context, model),
-                    VSpacing(20),
-                    model?.isShowManuscript == true
-                        ? _measureManuscript(context, model)
-                        : Container(),
-                    VSpacing(20),
-                    Container(
-                      color: themeData.primaryColor,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: UIKit.width(20),
-                          vertical: UIKit.height(20)),
-                      alignment: Alignment.centerLeft,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            '订单信息',
-                          ),
-                          _orderInfoBar(context, '订单编号', model?.orderNo ?? ''),
-                          _orderInfoBar(
-                              context, '创建时间', getcreateTimeStr(model)),
-                          _orderInfoBar(context, '下单人', model?.userName ?? ''),
-                          _orderInfoBar(
-                              context, '客户名', model?.clientName ?? ''),
-                          _orderInfoBar(context, '下单门店', model?.shopName ?? ''),
-                        ],
-                      ),
-                    ),
-                    VSpacing(50)
-                  ],
+                  ),
+                  bottomNavigationBar: BottomActionButtonBar(
+                    orderId: id,
+                    orderStatus: model?.orderStatus ?? 0,
+                  ),
                 ),
-              ),
-              bottomNavigationBar: BottomActionButtonBar(
-                orderId: id,
-                orderStatus: model?.orderStatus ?? 0,
-              ),
-            ),
-          );
+              );
+            }),
+        onWillPop: () {
+          Navigator.pop(context, widget.tab);
+          return Future.value(false);
         });
   }
 }

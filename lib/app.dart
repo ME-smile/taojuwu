@@ -59,6 +59,7 @@ class App extends StatelessWidget {
           child: FlutterEasyLoading(
               child: MaterialApp(
             title: '淘居屋',
+
             debugShowCheckedModeBanner: false,
             onGenerateRoute: Application.router.generator,
             darkTheme:

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
+import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
@@ -29,30 +31,31 @@ class EditOpenModePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ThemeData themeData = Theme.of(context);
-    // TextTheme textTheme = themeData.textTheme;
+    ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
     return Scaffold(
       appBar: AppBar(
         title: Text('打开方式'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
-        child: Container(
-          child: Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: UIKit.width(80)),
-                child: ZYAssetImage(
-                  'curtain/size_000011.png',
-                  width: 320,
-                  height: 280,
-                ),
-              ),
-              Consumer<GoodsProvider>(
-                builder: (BuildContext context, GoodsProvider provider, _) {
-                  return Container(
+        child: Consumer<GoodsProvider>(
+          builder: (BuildContext context, GoodsProvider provider, _) {
+            return Container(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(80)),
+                    child: ZYAssetImage(
+                      WindowPatternAttr.pictureMap[
+                          '${provider?.windowPatternStr}/${provider?.curInstallMode}'],
+                      width: 320,
+                      height: 280,
+                    ),
+                  ),
+                  Container(
                       margin: EdgeInsets.symmetric(
-                          horizontal: UIKit.width(40),
+                          horizontal: UIKit.width(20),
                           vertical: UIKit.height(20)),
                       child: Row(
                           children: <Widget>[
@@ -80,60 +83,55 @@ class EditOpenModePage extends StatelessWidget {
                                             },
                                             horizontalPadding: UIKit.width(15),
                                           ));
-                              })));
-
-                  //      <Widget>[
-                  //       Text('打开方式:'),
-
-                  //       InkWell(
-                  //         onTap: () {
-                  //           // goodsProvider?.curOpenMode = 0;
-                  //         },
-
-                  //         child: Container(
-                  //           margin: EdgeInsets.symmetric(
-                  //               horizontal: UIKit.width(40)),
-                  //           padding: EdgeInsets.symmetric(
-                  //               horizontal: UIKit.width(30),
-                  //               vertical: UIKit.height(10)),
-                  //           decoration: BoxDecoration(
-                  //               color: getBgColor(context, false),
-                  //               border: Border.all(
-                  //                   color: getBorderColor(context, false))),
-                  //           child: Text(
-                  //             '整体对开',
-                  //             style: getTextStyle(context, false),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       InkWell(
-                  //         onTap: () {
-                  //           // goodsProvider?.curOpenMode = 1;
-                  //         },
-                  //         child: Container(
-                  //           padding: EdgeInsets.symmetric(
-                  //               horizontal: UIKit.width(30),
-                  //               vertical: UIKit.height(10)),
-                  //           decoration: BoxDecoration(
-                  //               color: getBgColor(context, false),
-                  //               border: Border.all(
-                  //                   color: getBorderColor(context, false))),
-                  //           child: Text(
-                  //             '整体单开',
-                  //             style: getTextStyle(context, false),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // );
-                },
+                              }))),
+                  Column(
+                    children: List.generate(
+                        provider?.openSubOptions?.length ?? 0, (int i) {
+                      Map<String, dynamic> tmp = provider?.openSubOptions[i];
+                      return Row(
+                          children: <Widget>[
+                                Container(
+                                    margin:
+                                        EdgeInsets.only(right: UIKit.width(30)),
+                                    child: Text(
+                                      tmp['name'],
+                                      style: textTheme.caption,
+                                    )),
+                              ] +
+                              List.generate(tmp['options']?.length, (int j) {
+                                Map<String, dynamic> item = tmp['options'][j];
+                                return Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: UIKit.width(10)),
+                                  child: item['is_checked']
+                                      ? ZYRaisedButton(
+                                          item['text'],
+                                          () {
+                                            provider?.checkOpenSubOption(i, j);
+                                          },
+                                          horizontalPadding: UIKit.width(20),
+                                        )
+                                      : ZYOutlineButton(
+                                          item['text'],
+                                          () {
+                                            provider?.checkOpenSubOption(i, j);
+                                          },
+                                          horizontalPadding: UIKit.width(20),
+                                        ),
+                                );
+                              }));
+                    }),
+                  ),
+                  ZYSubmitButton('确认', () {
+                    OrderProvider orderProvider =
+                        Provider.of<OrderProvider>(context, listen: false);
+                    orderProvider?.openMode = provider?.curOpenMode;
+                    Navigator.of(context).pop();
+                  })
+                ],
               ),
-              ZYSubmitButton('确认', () {
-                Navigator.of(context).pop();
-              })
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

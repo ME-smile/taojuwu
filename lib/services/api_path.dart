@@ -74,4 +74,6 @@ class ApiPath {
   static const String resetPwd = '/api/member/modifyPassword';
 
   static const String windowStyle = '/api/order/wcCategory';
+
+  static const String measureData = '/api/order/orderGoodsMeasureData';
 }

@@ -60,6 +60,7 @@ class WindowPatternAttr {
   };
 
   static const pictureMap = {
+    '单窗/非飘窗/无盒/顶装满墙': 'curtain/size_000011.png',
     '单窗/非飘窗/无盒/顶装': 'curtain/size_000011.png',
     '单窗/非飘窗/无盒/侧装': 'curtain/size_000001.png',
     '单窗/非飘窗/有盒/盒内装': 'curtain/size_0010-1-1.png',

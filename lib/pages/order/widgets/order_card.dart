@@ -9,7 +9,8 @@ import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderModelData orderModelData;
-  const OrderCard(this.orderModelData, {Key key}) : super(key: key);
+  final int tab;
+  const OrderCard(this.orderModelData, {Key key, this.tab}) : super(key: key);
 
   String get createTimeStr {
     var createTime = orderModelData?.createTime;

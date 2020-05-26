@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 import 'package:taojuwu/models/shop/sku_attr/accessory_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/canopy_attr.dart';
@@ -8,14 +11,8 @@ import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
-import 'package:taojuwu/models/user/customer_model.dart';
 
 class GoodsProvider with ChangeNotifier {
-  static final GoodsProvider _goodsProvider = GoodsProvider._internal();
-  factory GoodsProvider() {
-    return _goodsProvider;
-  }
-  GoodsProvider._internal();
   ProductBean _goods;
   WindowGauzeAttr _windowGauzeAttr;
   CraftAttr _craftAttr;
@@ -37,8 +34,8 @@ class GoodsProvider with ChangeNotifier {
   List<CraftAttrBean> _initCraftAttrBeanList = [];
   List<PartAttrBean> _initPartAttrBeanList = [];
   RoomAttrBean _curRoomAttrBean;
+  OrderGoodsMeasure _measureData;
 
-  CustomerModelBean targetCustomer;
   Map<String, dynamic> attrParams;
 
   String _width = '0.0';
@@ -49,15 +46,20 @@ class GoodsProvider with ChangeNotifier {
     List list = WindowPatternAttr.installOptionMap[windowPatternStr];
     Map<String, dynamic> map =
         list?.firstWhere((item) => item['is_checked'] == true);
-    return _curInstallMode ?? map['text'];
+    return map['text'];
   }
 
+  String get curWindowPatternName =>
+      WindowPatternAttr.patternsText[curWindowPattern];
+
   String get curOpenMode {
-    List list = WindowPatternAttr
-        .openOptionMap[WindowPatternAttr.patternsText[curWindowPattern]];
+    List list = WindowPatternAttr.openOptionMap[curWindowPatternName] ?? [];
+    print(curWindowPattern);
+    print(WindowPatternAttr.openOptionMap);
     Map<String, dynamic> map =
-        list.firstWhere((item) => item['is_checked'] == true);
-    return _curOpenMode ?? map['text'];
+        list?.firstWhere((item) => item['is_checked'] == true);
+    print(WindowPatternAttr.openOptionMap);
+    return map['text'];
   }
 
   bool get isWindowGauze => goods?.goodsSpecialType == 3;
@@ -65,7 +67,7 @@ class GoodsProvider with ChangeNotifier {
   int _curWindowPattern = 0;
   int _curWindowStyle = 0;
   int _curWindowType = 0;
-
+  OrderGoodsMeasure get measureData => _measureData;
   int tmpWindowPattern = 0;
   int tmpWindowStyle = 0;
   int tmpWindowType = 0;
@@ -147,7 +149,6 @@ class GoodsProvider with ChangeNotifier {
     } else {
       tmp1 = list;
     }
-
     _partAttr?.data = tmp1;
     _curPartAttrBean =
         _partAttr?.data?.isNotEmpty == true ? _partAttr?.data?.first : null;
@@ -241,8 +242,6 @@ class GoodsProvider with ChangeNotifier {
           : null;
   RoomAttrBean get curRoomAttrBean => _curRoomAttrBean;
 
-  String get curWindowPatternName =>
-      WindowPatternAttr.patternsText[curWindowPattern ?? 0];
   List<Map<String, dynamic>> get installOptions =>
       WindowPatternAttr.installOptionMap[windowPatternStr];
 
@@ -276,9 +275,6 @@ class GoodsProvider with ChangeNotifier {
   WindowShadeAttr get windowShadeAttr => _windowShadeAttr;
   CanopyAttr get canopyAttr => _canopyAttr;
   AccessoryAttr get accessoryAttr => _accessoryAttr;
-  String _curInstallMode;
-  String _curOpenMode;
-
   bool get hasSetSizeForWindowRoller {
     if (_width == '0.0' ||
         _height == '0.0' ||
@@ -316,7 +312,6 @@ class GoodsProvider with ChangeNotifier {
   void checkInstallMode(int i) {
     for (int j = 0; j < installOptions?.length; j++) {
       Map<String, dynamic> item = installOptions[j];
-
       item['is_checked'] = i == j ? true : false;
     }
     notifyListeners();
@@ -355,9 +350,9 @@ class GoodsProvider with ChangeNotifier {
 
   get openModeParams {
     if (curOpenOptionIndex == 2) {
-      return {curOpenMode: checkedSubOption};
+      return jsonEncode({curOpenMode: checkedSubOption});
     }
-    return [curOpenMode];
+    return jsonEncode([curOpenMode]);
   }
 
   Map get checkedSubOption {
@@ -374,9 +369,35 @@ class GoodsProvider with ChangeNotifier {
     return tmp;
   }
 
+  setWindowPatternByName(String pattern) {
+    List<String> list = pattern?.split('/');
+    for (int i = 0; i < WindowPatternAttr.patternsText.length; i++) {
+      String item = WindowPatternAttr.patternsText[i];
+      if (item == list[0]) {
+        _curWindowPattern = i;
+        break;
+      }
+    }
+    for (int i = 0; i < WindowPatternAttr.stylesText.length; i++) {
+      String item = WindowPatternAttr.stylesText[i];
+      if (item == list[1]) {
+        _curWindowStyle = i;
+        break;
+      }
+    }
+    for (int i = 0; i < WindowPatternAttr.typesText.length; i++) {
+      String item = WindowPatternAttr.typesText[i];
+      if (item == list[2]) {
+        _curWindowType = i;
+        break;
+      }
+    }
+  }
+
   bool get isMeasureOrder => createType == 2;
   bool get hasSetSize => measureId != null;
   bool get hasLike => goods?.isCollect == 1;
+
   bool get hasWindowGauze =>
       curWindowGauzeAttrBean?.name?.contains('不要窗纱') == false;
   set curWindowGauzeAttrBean(WindowGauzeAttrBean bean) {
@@ -395,18 +416,49 @@ class GoodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  set measureData(OrderGoodsMeasure data) {
+    _measureData = data;
+    notifyListeners();
+  }
+
   set curCraftAttrBean(CraftAttrBean bean) {
     _curCraftAttrBean = bean;
     notifyListeners();
   }
 
-  void initSize(String width, String height, String dy,
-      {String installMode: '顶装', String openMode: '整体对开'}) {
-    _width = width; //厘米为单位
-    _height = height; //厘米为单位
-    _dy = dy; //厘米为单位
-    _curInstallMode = installMode;
-    _curOpenMode = openMode;
+  void initInstallMode(String mode) {
+    installOptions?.forEach((item) {
+      item['is_checked'] = item['text'] == mode ? true : false;
+    });
+  }
+
+  void initOpenMode(String mode) {
+    openOptions?.forEach((item) {
+      item['is_checked'] = item['text'] == mode ? true : false;
+    });
+  }
+
+  void initWindowPattern() {
+    initInstallMode(measureData?.installType);
+    initOpenMode(measureData?.openType);
+    setWindowPatternByName(measureData?.windowType);
+  }
+
+  void initSize() {
+    _width = measureData?.width;
+    _height = measureData?.height;
+    _dy = measureData?.verticalGroundHeight;
+    measureData?.installType = measureData?.installType?.contains('顶装') == true
+        ? '顶装'
+        : measureData?.installType;
+    initInstallMode(measureData?.installType);
+    initOpenMode(measureData?.openType);
+    setWindowPatternByName(measureData?.windowType);
+    // _width = width; //厘米为单位
+    // _height = height; //厘米为单位
+    // _dy = dy; //厘米为单位
+    // _curInstallMode = installMode;
+    // _curOpenMode = openMode;
     notifyListeners();
   }
 
@@ -465,10 +517,6 @@ class GoodsProvider with ChangeNotifier {
   set dy(String dy) {
     _dy = dy;
     notifyListeners();
-  }
-
-  setTargetCustomer(BuildContext context, CustomerModelBean bean) {
-    targetCustomer = bean;
   }
 
   set isCollect(int flag) {
@@ -530,12 +578,9 @@ class GoodsProvider with ChangeNotifier {
     double tmp = unitPrice;
 
     if (isWindowRoller) {
-      return '${unitPrice * area}';
-    } else if (isWindowGauze) {
-      return '${widthM * unitPrice}';
+      return (unitPrice * area).toStringAsFixed(2);
     } else {
       // 配饰价格计算 acc-->accesspry
-
       double heightFactor = 1.0;
       if (heightCM > 270) {
         heightFactor = 1.5;

@@ -19,7 +19,8 @@ class GridCard extends StatelessWidget {
         return InkWell(
           onTap: () {
             goodsProvider?.hasInit = false;
-            RouteHandler.goCurtainDetailPage(context, bean.goodsId);
+
+            RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
           },
           child: Container(
             alignment: Alignment.center,
@@ -28,14 +29,6 @@ class GridCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                // ExtendedImage.network(
-                //   UIKit.getNetworkImgPath(bean.picCoverMid),
-                //   cache: true,
-                //   width: (width - 20) / 2,
-                //   height: (width - 20) / 2,
-                //   fit: BoxFit.cover,
-                // ),
-
                 ZYNetImage(
                   imgPath: bean?.picCoverMid ?? '',
                   width: (width - 20) / 2,

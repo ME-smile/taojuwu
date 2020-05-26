@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/models/shop/product_tag_model.dart';
+import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -21,10 +23,11 @@ import 'widgets/curtain_grid_view.dart';
 
 class CurtainMallPage extends StatefulWidget {
   final String keyword;
-  final int orderGoodsId; //订单id-->goodsId
-  final int type; //订单类型
-  CurtainMallPage({Key key, this.keyword: '', this.type: 1, this.orderGoodsId})
-      : super(key: key);
+
+  CurtainMallPage({
+    Key key,
+    this.keyword: '',
+  }) : super(key: key);
 
   @override
   _CurtainMallPageState createState() => _CurtainMallPageState();
@@ -406,148 +409,160 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     width = MediaQuery.of(context).size.width;
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: themeData.primaryColor,
-        onPressed: () {
-          RouteHandler.goMeasureOrderPage(context);
-        },
-        child: ZYAssetImage(
-          'create_measure_order@2x.png',
-          width: UIKit.width(60),
-          height: UIKit.height(60),
-          callback: () {
-            RouteHandler.goMeasureOrderPage(context);
-          },
-        ),
-      ),
-      appBar: AppBar(
-        centerTitle: true,
-        actions: <Widget>[
-          SearchButton(
-            type: 1,
+    return WillPopScope(
+        child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: themeData.primaryColor,
+            onPressed: () {
+              RouteHandler.goMeasureOrderPage(context);
+            },
+            child: ZYAssetImage(
+              'create_measure_order@2x.png',
+              width: UIKit.width(60),
+              height: UIKit.height(60),
+              callback: () {
+                RouteHandler.goMeasureOrderPage(context);
+              },
+            ),
           ),
-          ScanButton()
-        ],
-        title: Center(
-          child: TabBar(
-              controller: tabController,
-              indicatorSize: TabBarIndicatorSize.label,
-              labelPadding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-              tabs: List.generate(tabs.length, (int i) {
-                return Text(tabs[i]);
-              })),
-        ),
-        bottom: PreferredSize(
-            child: GoodsFilterHeader(
-              filter1: _buildFilter1(),
-              filter2: _buildFilter2(),
-              filter3: _buildFilter3(),
-              filter4: _buildFilter4(),
+          appBar: AppBar(
+            centerTitle: true,
+            actions: <Widget>[
+              SearchButton(
+                type: 1,
+              ),
+              ScanButton()
+            ],
+            title: Center(
+              child: TabBar(
+                  controller: tabController,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  labelPadding:
+                      EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                  tabs: List.generate(tabs.length, (int i) {
+                    return Text(tabs[i]);
+                  })),
             ),
-            preferredSize: Size.fromHeight(48)),
-      ),
-      body: Scaffold(
-        key: _scaffoldKey,
-        endDrawer: endDrawer(context),
-        body: TabBarView(controller: tabController, children: [
-          Container(
-            alignment: Alignment.center,
-            // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-            child: Stack(
-              children: <Widget>[
-                SmartRefresher(
-                  enablePullDown: true,
-                  enablePullUp: true,
-                  onRefresh: () async {
-                    params['page_index'] = 1;
-                    isRefresh = true;
-                    requestGoodsData();
-                  },
-                  onLoading: () async {
-                    params['page_index']++;
-                    if (hasMoreData == false) {
-                      setState(() {
-                        _refreshController?.loadNoData();
-                      });
-                      return;
-                    }
-
-                    isRefresh = false;
-                    requestGoodsData();
-                  },
-                  controller: _refreshController,
-                  child: isLoading
-                      ? Center(
-                          child: LoadingCircle(),
-                        )
-                      : goodsList?.isEmpty == true
-                          ? NoData(
-                              isFromSearch: isFromSearch,
-                            )
-                          : isGridMode ? buildGridView() : buildListView(),
+            bottom: PreferredSize(
+                child: GoodsFilterHeader(
+                  filter1: _buildFilter1(),
+                  filter2: _buildFilter2(),
+                  filter3: _buildFilter3(),
+                  filter4: _buildFilter4(),
                 ),
-                GZXDropDownMenu(
-                    controller: menuController,
-                    animationMilliseconds: 400,
-                    menus: [
-                      GZXDropdownMenuBuilder(
-                          dropDownHeight: 40.0 * SORT_TYPES.length,
-                          dropDownWidget: Column(
-                            children: List.generate(SORT_TYPES.length, (int i) {
-                              bool isCurrentOption = currentSortType == i;
-                              return Flexible(
-                                  child: InkWell(
-                                onTap: () {
-                                  if (isCurrentOption) return;
-                                  setState(() {
-                                    currentSortType = i;
-                                    isRefresh = true;
-                                    params['order'] = sortParams[i]['order'];
-                                    params['sort'] = sortParams[i]['sort'];
-                                    menuController?.hide();
-                                    requestGoodsData();
-                                  });
-                                },
-                                child: Container(
-                                    height: 30,
-                                    child: Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 50),
-                                      child: Text.rich(
-                                        TextSpan(
-                                            text: SORT_TYPES[i],
-                                            style: TextStyle(
-                                                color: isCurrentOption
-                                                    ? textTheme.body1.color
-                                                    : Colors.grey),
-                                            children: [
-                                              WidgetSpan(
-                                                  child: SizedBox(width: 20)),
-                                              WidgetSpan(
-                                                  child: isCurrentOption
-                                                      ? Icon(
-                                                          ZYIcon.check,
-                                                          color: const Color(
-                                                              0xFF050505),
-                                                        )
-                                                      : SizedBox(
-                                                          width: 24,
-                                                          height: 24,
-                                                        ))
-                                            ]),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    )),
-                              ));
-                            }),
-                          ))
-                    ])
-              ],
-            ),
-          )
-        ]),
-      ),
-    );
+                preferredSize: Size.fromHeight(48)),
+          ),
+          body: Scaffold(
+            key: _scaffoldKey,
+            endDrawer: endDrawer(context),
+            body: TabBarView(controller: tabController, children: [
+              Container(
+                alignment: Alignment.center,
+                // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                child: Stack(
+                  children: <Widget>[
+                    SmartRefresher(
+                      enablePullDown: true,
+                      enablePullUp: true,
+                      onRefresh: () async {
+                        params['page_index'] = 1;
+                        isRefresh = true;
+                        requestGoodsData();
+                      },
+                      onLoading: () async {
+                        params['page_index']++;
+                        if (hasMoreData == false) {
+                          setState(() {
+                            _refreshController?.loadNoData();
+                          });
+                          return;
+                        }
+
+                        isRefresh = false;
+                        requestGoodsData();
+                      },
+                      controller: _refreshController,
+                      child: isLoading
+                          ? Center(
+                              child: LoadingCircle(),
+                            )
+                          : goodsList?.isEmpty == true
+                              ? NoData(
+                                  isFromSearch: isFromSearch,
+                                )
+                              : isGridMode ? buildGridView() : buildListView(),
+                    ),
+                    GZXDropDownMenu(
+                        controller: menuController,
+                        animationMilliseconds: 400,
+                        menus: [
+                          GZXDropdownMenuBuilder(
+                              dropDownHeight: 40.0 * SORT_TYPES.length,
+                              dropDownWidget: Column(
+                                children:
+                                    List.generate(SORT_TYPES.length, (int i) {
+                                  bool isCurrentOption = currentSortType == i;
+                                  return Flexible(
+                                      child: InkWell(
+                                    onTap: () {
+                                      if (isCurrentOption) return;
+                                      setState(() {
+                                        currentSortType = i;
+                                        isRefresh = true;
+                                        params['order'] =
+                                            sortParams[i]['order'];
+                                        params['sort'] = sortParams[i]['sort'];
+                                        menuController?.hide();
+                                        requestGoodsData();
+                                      });
+                                    },
+                                    child: Container(
+                                        height: 30,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 50),
+                                          child: Text.rich(
+                                            TextSpan(
+                                                text: SORT_TYPES[i],
+                                                style: TextStyle(
+                                                    color: isCurrentOption
+                                                        ? textTheme.body1.color
+                                                        : Colors.grey),
+                                                children: [
+                                                  WidgetSpan(
+                                                      child:
+                                                          SizedBox(width: 20)),
+                                                  WidgetSpan(
+                                                      child: isCurrentOption
+                                                          ? Icon(
+                                                              ZYIcon.check,
+                                                              color: const Color(
+                                                                  0xFF050505),
+                                                            )
+                                                          : SizedBox(
+                                                              width: 24,
+                                                              height: 24,
+                                                            ))
+                                                ]),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        )),
+                                  ));
+                                }),
+                              ))
+                        ])
+                  ],
+                ),
+              )
+            ]),
+          ),
+        ),
+        onWillPop: () {
+          Navigator.of(context).pop();
+          OrderProvider orderProvider =
+              Provider.of<OrderProvider>(context, listen: false);
+          orderProvider?.orderType = 1;
+          return Future.value(false);
+        });
   }
 }

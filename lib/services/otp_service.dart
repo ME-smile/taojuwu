@@ -458,4 +458,13 @@ class OTPService {
     Response response = await xhr.post(ApiPath.resetPwd, data: params);
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
+
+  static Future<OrderGoodsMeasure> measureData(context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.measureData, params: params);
+    return OrderGoodsMeasure.fromJson(response.data);
+  }
+
+  // static
 }

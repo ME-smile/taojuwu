@@ -537,20 +537,32 @@ class OrderKit {
         })
       ];
     }
+
     if (provider?.hasMeasured == true) {
       if (provider?.isMeasureOrder == true) {
-        return [
-          CancelOrderButton(
-            callback: () {
-              provider?.cancelOrder(context, provider?.model?.orderId ?? -1);
-            },
-            isActive: provider?.canCancelOrder,
-          ),
-          SizedBox(width: 20),
-          ZYOutlineButton('确定', () {
-            selectProduct(provider, context);
-          })
-        ];
+        if (provider?.hasNotsSelectedProduct == true) {
+          return [
+            CancelOrderButton(
+              callback: () {
+                provider?.cancelOrder(context, provider?.model?.orderId ?? -1);
+              },
+              isActive: provider?.canCancelOrder,
+            ),
+            SizedBox(width: 20),
+            ZYOutlineButton('确定', () {
+              selectProduct(provider, context);
+            })
+          ];
+        } else {
+          return [
+            CancelOrderButton(
+              callback: () {
+                provider?.cancelOrder(context, provider?.model?.orderId ?? -1);
+              },
+              isActive: provider?.canCancelOrder,
+            ),
+          ];
+        }
       }
       return [
         CancelOrderButton(
@@ -620,6 +632,7 @@ class OrderKit {
                   ClientProvider clientProvider =
                       Provider.of<ClientProvider>(context, listen: false);
                   clientProvider.clientId = provider?.clientId;
+                  clientProvider?.name = provider?.clientName;
                   orderProvider.initMeasureOrder(provider, context,
                       orderGoods: goods);
                 },

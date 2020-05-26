@@ -15,7 +15,8 @@ import 'widgets/order_card.dart';
 
 class OrderPage extends StatefulWidget {
   final int clientId;
-  OrderPage({Key key, this.clientId}) : super(key: key);
+  final int tab;
+  OrderPage({Key key, this.clientId, this.tab: 0}) : super(key: key);
 
   @override
   _OrderPageState createState() => _OrderPageState();
@@ -74,6 +75,7 @@ class _OrderPageState extends State<OrderPage>
     super.initState();
 
     _tabController = TabController(length: items.length, vsync: this);
+    _tabController?.index = widget.tab;
     //对全部数据进行特殊处理
     params?.first['client_uid'] = widget?.clientId;
 
@@ -127,6 +129,7 @@ class _OrderPageState extends State<OrderPage>
                   controller: _tabController,
                   children: List.generate(items?.length ?? 0, (int i) {
                     return OrderTabView(
+                      tab: i,
                       params: params[i],
                       clientId: widget.clientId,
                       models: i == 0 ? models : null,
@@ -140,7 +143,9 @@ class OrderTabView extends StatefulWidget {
   final Map<String, dynamic> params;
   final List<OrderModelData> models;
   final int clientId;
-  const OrderTabView({Key key, this.params, this.models, this.clientId})
+  final int tab;
+  const OrderTabView(
+      {Key key, this.params, this.models, this.clientId, this.tab})
       : super(key: key);
 
   @override
@@ -165,7 +170,6 @@ class _OrderTabViewState extends State<OrderTabView> {
     params['page'] = 1;
     params['client_uid'] = widget.clientId;
     models = widget.models;
-    print(params);
   }
 
   OrderModelDataWrapper wrapper;
@@ -213,13 +217,17 @@ class _OrderTabViewState extends State<OrderTabView> {
 
   Widget buildOrderCard(OrderModelData model) {
     if (model?.isMeasureOrder == true) {
-      if (model?.hasNotsSelectedProduct == false) {
+      if (model?.hasNotsSelectedProduct == true) {
         return MeasureOrderHasNotSelectedProductedCard(
           orderModelData: model,
+          tab: widget.tab,
         );
       }
+      // return MeasureOrderHasSelectedProductCard(
+      //   orderModelData: model,
+      // );
     }
-    return OrderCard(model);
+    return OrderCard(model, tab: widget.tab);
   }
 
   Widget buildOrderListView(List<OrderModelData> models) {

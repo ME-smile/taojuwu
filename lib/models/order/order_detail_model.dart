@@ -96,9 +96,9 @@ class OrderDetailModel {
   String orderRemark;
   int measureInstallStatus;
   String measureTime;
-  String realityMeasureTime;
+  int realityMeasureTime;
   String installTime;
-  String realityInstallTime;
+  int realityInstallTime;
   List measureManuscriptsPicture;
   String orderWindowNum;
   String orderEarnestMoney;
@@ -151,6 +151,7 @@ class OrderDetailModel {
           ?.length ??
       0;
 
+  bool get showExpressInfo => orderStatus == 7 ?? false;
   String get windowNum => '${orderWindowNum ?? '1'}';
   bool get canCancel => orderStatus != 15 ?? true;
   bool get isMeasureOrder => orderType == 2 ?? false;
@@ -238,9 +239,9 @@ class OrderDetailModel {
     orderRemark = json['order_remark'];
     measureInstallStatus = json['measure_install_status'];
     measureTime = json['measure_time'];
-    realityMeasureTime = '${json['reality_measure_time']}';
+    realityMeasureTime = json['reality_measure_time'];
     installTime = json['install_time'];
-    realityInstallTime = '${json['reality_install_time']}';
+    realityInstallTime = json['reality_install_time'];
     measureManuscriptsPicture = json['measure_manuscripts_picture'];
     orderWindowNum = '${json['order_window_num'] ?? ''}';
     orderEarnestMoney = json['order_earnest_money'];
@@ -436,7 +437,7 @@ class OrderGoods {
   int isShade;
   List<OrderProductAttrWrapper> wcAttr;
   String estimatedPrice;
-  String expressInfo;
+  ExpressInfo expressInfo;
   String shippingStatusName;
   PictureInfo pictureInfo;
   List<String> refundOperation;
@@ -446,10 +447,11 @@ class OrderGoods {
   int parentOrderStatus;
   String earnestMoney;
   bool get hasSelectedProduct => isSelectedGoods == 1;
-  bool get canCancel => orderStatus != 15 && refundStatus == 0;
+  bool get canCancel =>
+      (orderStatus != 15 && refundStatus == 0) || refundStatus == -4;
   bool get subOrderHasSameStatusWithParent =>
       (orderStatus == parentOrderStatus) ?? false;
-
+  bool get showExpressInfo => orderStatus == 7;
   OrderGoods(
       {this.orderGoodsId,
       this.orderId,
@@ -497,7 +499,7 @@ class OrderGoods {
       this.isShade,
       this.wcAttr,
       this.estimatedPrice,
-      // this.expressInfo,
+      this.expressInfo,
       this.shippingStatusName,
       this.pictureInfo,
       this.refundOperation,
@@ -565,7 +567,9 @@ class OrderGoods {
     wcAttr =
         wrapper.map((item) => OrderProductAttrWrapper.fromJson(item)).toList();
     estimatedPrice = json['estimated_price'];
-    // expressInfo = json['express_info'];
+    expressInfo = json['express_info'] != null && json['express_info'] is Map
+        ? new ExpressInfo.fromJson(json['express_info'])
+        : null;
     shippingStatusName = json['shipping_status_name'];
 
     pictureInfo = json['picture_info'] != null && json['picture_info'] is Map
@@ -895,6 +899,50 @@ class OrderAction {
     data['order_status_text'] = this.orderStatusText;
     data['action_time'] = this.actionTime;
     return data;
+  }
+}
+
+class ExpressInfo {
+  int id;
+  int orderId;
+  String orderGoodsIdArray;
+  String expressName;
+  int shippingType;
+  int expressCompanyId;
+  String expressCompany;
+  String expressNo;
+  int uid;
+  String userName;
+  String memo;
+  int shippingTime;
+
+  ExpressInfo(
+      {this.id,
+      this.orderId,
+      this.orderGoodsIdArray,
+      this.expressName,
+      this.shippingType,
+      this.expressCompanyId,
+      this.expressCompany,
+      this.expressNo,
+      this.uid,
+      this.userName,
+      this.memo,
+      this.shippingTime});
+
+  ExpressInfo.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    orderId = json['order_id'];
+    orderGoodsIdArray = json['order_goods_id_array'];
+    expressName = json['express_name'];
+    shippingType = json['shipping_type'];
+    expressCompanyId = json['express_company_id'];
+    expressCompany = json['express_company'];
+    expressNo = json['express_no'];
+    uid = json['uid'];
+    userName = json['user_name'];
+    memo = json['memo'];
+    shippingTime = json['shipping_time'];
   }
 }
 

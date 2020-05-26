@@ -75,8 +75,9 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
                       print(response.message);
                       print(Application.sp.getString('tokem'));
                       if (response?.valid == true) {
-                        RouteHandler.goCustomerPage(context,
-                            isReplaceMode: true);
+                        Navigator.of(context).pop();
+                        // RouteHandler.goCustomerPage(context,
+                        //     isReplaceMode: true);
                       }
                     }).catchError((err) => err);
                   },
@@ -120,7 +121,9 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
           ),
         ),
         onWillPop: () {
-          RouteHandler.goCustomerPage(context, isReplaceMode: true);
+          RouteHandler.goCustomerPage(
+            context,
+          );
           return Future.value(false);
         });
   }
