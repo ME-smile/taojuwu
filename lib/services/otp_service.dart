@@ -463,8 +463,10 @@ class OTPService {
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.measureData, params: params);
+
+    if (response?.data != null && response?.data['data'] != null) {
+      response?.data = response?.data['data']['order_goods_measure'];
+    }
     return OrderGoodsMeasure.fromJson(response.data);
   }
-
-  // static
 }

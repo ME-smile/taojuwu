@@ -27,6 +27,8 @@ class GoodsProvider with ChangeNotifier {
   PartAttrBean _curPartAttrBean;
   WindowShadeAttrBean _curWindowShadeAttrBean;
   CanopyAttrBean _curCanopyAttrBean;
+
+  String partName;
   // List<AccessoryAttrBean> _allAccessoryAttrBeans;
   // List<AccessoryAttrBean> _curAccessoryAttrBeans;
 
@@ -54,11 +56,9 @@ class GoodsProvider with ChangeNotifier {
 
   String get curOpenMode {
     List list = WindowPatternAttr.openOptionMap[curWindowPatternName] ?? [];
-    print(curWindowPattern);
-    print(WindowPatternAttr.openOptionMap);
     Map<String, dynamic> map =
         list?.firstWhere((item) => item['is_checked'] == true);
-    print(WindowPatternAttr.openOptionMap);
+
     return map['text'];
   }
 
@@ -86,6 +86,8 @@ class GoodsProvider with ChangeNotifier {
 
     String screenWord1 = '打孔';
     List<CraftAttrBean> tmp1 = [];
+
+    // 有盒
     if (_curWindowType == 1) {
       for (int i = 0; i < list?.length; i++) {
         CraftAttrBean bean = list[i];
@@ -103,8 +105,8 @@ class GoodsProvider with ChangeNotifier {
     String screenWord3 = '单';
     String screenWord4 = '双';
 
-    //不要窗纱的情况；
     List<CraftAttrBean> tmp2 = [];
+    //不要窗纱的情况；
     if (_curwindowGauzeAttrBean?.name?.contains(screenWord2) == true) {
       for (int i = 0; i < tmp1?.length; i++) {
         CraftAttrBean bean = tmp1[i];
@@ -134,10 +136,11 @@ class GoodsProvider with ChangeNotifier {
 
   void filterParts() {
     List<PartAttrBean> list = _initPartAttrBeanList;
+
     if (list?.isNotEmpty != true) return;
     String screenWord1 = 'GD';
     List<PartAttrBean> tmp1 = [];
-
+    // 有盒
     if (_curWindowType == 1) {
       for (int i = 0; i < list?.length; i++) {
         PartAttrBean bean = list[i];
@@ -149,7 +152,18 @@ class GoodsProvider with ChangeNotifier {
     } else {
       tmp1 = list;
     }
-    _partAttr?.data = tmp1;
+    List<PartAttrBean> tmp2 = [];
+    if (curCraftAttrBean?.name?.contains('打孔') == true) {
+      for (int i = 0; i < tmp1?.length; i++) {
+        PartAttrBean bean = list[i];
+        if (bean?.name?.contains('LMG') == true) {
+          tmp2.add(bean);
+        }
+      }
+    } else {
+      tmp2 = tmp1;
+    }
+    _partAttr?.data = tmp2;
     _curPartAttrBean =
         _partAttr?.data?.isNotEmpty == true ? _partAttr?.data?.first : null;
   }
@@ -255,9 +269,9 @@ class GoodsProvider with ChangeNotifier {
   bool get hasInit => _hasInit;
   bool get isShade => _curwindowGauzeAttrBean?.name?.contains('无');
 
-  double get widthCM => double.parse(_width);
-  double get heightCM => double.parse(_height);
-  double get dyCM => double.parse(_dy);
+  double get widthCM => double.parse(_width ?? '0.0');
+  double get heightCM => double.parse(_height ?? '0.0');
+  double get dyCM => double.parse(_dy ?? '0.0');
   double get widthM => (widthCM / 100);
   String get widthCMStr => _width == '0.0' ? null : _width;
   String get heightCMStr => _height == '0.0' ? null : _height;
@@ -275,6 +289,8 @@ class GoodsProvider with ChangeNotifier {
   WindowShadeAttr get windowShadeAttr => _windowShadeAttr;
   CanopyAttr get canopyAttr => _canopyAttr;
   AccessoryAttr get accessoryAttr => _accessoryAttr;
+  bool get hasInitOpenMode => _hasInitOpenMode;
+  bool _hasInitOpenMode = false;
   bool get hasSetSizeForWindowRoller {
     if (_width == '0.0' ||
         _height == '0.0' ||
@@ -323,7 +339,7 @@ class GoodsProvider with ChangeNotifier {
 
       item['is_checked'] = i == j ? true : false;
     }
-
+    _hasInitOpenMode = true;
     notifyListeners();
   }
 
@@ -371,21 +387,21 @@ class GoodsProvider with ChangeNotifier {
 
   setWindowPatternByName(String pattern) {
     List<String> list = pattern?.split('/');
-    for (int i = 0; i < WindowPatternAttr.patternsText.length; i++) {
+    for (int i = 0; i < WindowPatternAttr.patternsText?.length; i++) {
       String item = WindowPatternAttr.patternsText[i];
       if (item == list[0]) {
         _curWindowPattern = i;
         break;
       }
     }
-    for (int i = 0; i < WindowPatternAttr.stylesText.length; i++) {
+    for (int i = 0; i < WindowPatternAttr.stylesText?.length; i++) {
       String item = WindowPatternAttr.stylesText[i];
       if (item == list[1]) {
         _curWindowStyle = i;
         break;
       }
     }
-    for (int i = 0; i < WindowPatternAttr.typesText.length; i++) {
+    for (int i = 0; i < WindowPatternAttr.typesText?.length; i++) {
       String item = WindowPatternAttr.typesText[i];
       if (item == list[2]) {
         _curWindowType = i;
@@ -428,37 +444,51 @@ class GoodsProvider with ChangeNotifier {
 
   void initInstallMode(String mode) {
     installOptions?.forEach((item) {
-      item['is_checked'] = item['text'] == mode ? true : false;
+      String tmp = item['text'];
+
+      item['is_checked'] =
+          mode.contains(tmp) == true || tmp?.contains(mode) == true
+              ? true
+              : false;
     });
   }
 
   void initOpenMode(String mode) {
     openOptions?.forEach((item) {
-      item['is_checked'] = item['text'] == mode ? true : false;
+      String tmp = item['text'];
+      item['is_checked'] =
+          mode.contains(tmp) == true || tmp?.contains(mode) == true
+              ? true
+              : false;
     });
   }
 
-  void initWindowPattern() {
-    initInstallMode(measureData?.installType);
-    initOpenMode(measureData?.openType);
-    setWindowPatternByName(measureData?.windowType);
+  void initWindowPattern(
+      String windowPattern, String installMode, String openMode) {
+    initInstallMode(installMode);
+    const String WAIT_TO_CONFIRM = '待确认';
+    if (openMode != null &&
+        openMode?.isNotEmpty == true &&
+        openMode?.contains(WAIT_TO_CONFIRM) == false) {
+      initOpenMode(openMode);
+      _hasInitOpenMode = true;
+    } else {
+      _hasInitOpenMode = false;
+    }
+    setWindowPatternByName(windowPattern);
   }
 
-  void initSize() {
+  void initSize(OrderGoodsMeasure measureData) {
     _width = measureData?.width;
     _height = measureData?.height;
     _dy = measureData?.verticalGroundHeight;
-    measureData?.installType = measureData?.installType?.contains('顶装') == true
-        ? '顶装'
-        : measureData?.installType;
-    initInstallMode(measureData?.installType);
-    initOpenMode(measureData?.openType);
-    setWindowPatternByName(measureData?.windowType);
-    // _width = width; //厘米为单位
-    // _height = height; //厘米为单位
-    // _dy = dy; //厘米为单位
-    // _curInstallMode = installMode;
-    // _curOpenMode = openMode;
+    notifyListeners();
+  }
+
+  void resetSize() {
+    _width = '0.0';
+    _height = '0.0';
+    _dy = '0.0';
     notifyListeners();
   }
 

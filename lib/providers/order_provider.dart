@@ -23,22 +23,19 @@ import 'user_provider.dart';
 
 class OrderProvider with ChangeNotifier {
   List<OrderCartGoods> orderGoods;
-  int _orderGoodsId;
+
   OrderGoods _curOrderGoods;
   int _orderId;
   int _orderType = 1;
   BuildContext context;
-  OrderGoodsMeasure _orderGoodsMeasure;
-  bool _hasConfirmMeasureData = false;
 
-  String _oldOpenMode;
+  bool _hasConfirmMeasureData = false;
 
   OrderProvider(
     this.context, {
     this.orderGoods,
   });
-  String get oldOpenMode => _oldOpenMode;
-  bool get hasChangedOpenMode => _oldOpenMode != null;
+
   double get totalPrice {
     double sum = 0.00;
     orderGoods?.forEach((item) {
@@ -47,8 +44,7 @@ class OrderProvider with ChangeNotifier {
     return sum;
   }
 
-  OrderGoodsMeasure get orderGoodsMeasure => _orderGoodsMeasure;
-  int get orderGoodsId => _orderGoodsId;
+  int get orderGoodsId => _curOrderGoods?.orderGoodsId;
   int get orderId => _orderId;
   bool get isMeasureOrder => _orderType == 2;
 
@@ -69,8 +65,7 @@ class OrderProvider with ChangeNotifier {
       orderGoods?.map((item) => item.cartId)?.toList()?.join(',');
   List<String> get attr => orderGoods?.map((item) => item.attr)?.toList() ?? [];
   bool get hasConfirmMeasureData => _hasConfirmMeasureData;
-  String get measureDataStr =>
-      '${_orderGoodsMeasure?.installRoom ?? ''}\n宽 ${widthStr ?? ''}米 高${heightStr ?? ''}米';
+
   int get totalCount => orderGoods?.length ?? 0;
 
   TimePeriod _measureTime;
@@ -78,14 +73,7 @@ class OrderProvider with ChangeNotifier {
   String _orderMark;
   String _deposit;
   String _windowNum;
-  String get widthStr =>
-      (double.parse(_orderGoodsMeasure?.width ?? '0.00') / 100)
-          .toStringAsFixed(2) ??
-      '0.00';
-  String get heightStr =>
-      (double.parse(_orderGoodsMeasure?.height ?? '0.00') / 100)
-          .toStringAsFixed(2) ??
-      '0.00';
+
   String get measureTimeStr =>
       '${DateUtil.formatDate(_measureTime?.dateTime, format: 'yyyy年MM月dd日')} ${_measureTime?.period}' ??
       '';
@@ -101,24 +89,19 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set oldOpenMode(String mode) {
-    _oldOpenMode = mode;
-    notifyListeners();
-  }
+  // set dy(String h) {
+  //   _orderGoodsMeasure?.verticalGroundHeight = h;
+  //   notifyListeners();
+  // }
 
-  set dy(String h) {
-    _orderGoodsMeasure?.verticalGroundHeight = h;
-    notifyListeners();
-  }
-
-  set openMode(String mode) {
-    if (_orderGoodsMeasure?.openType == mode) return;
-    if (_oldOpenMode == null) {
-      _oldOpenMode = _orderGoodsMeasure?.openType;
-    }
-    _orderGoodsMeasure?.openType = mode;
-    notifyListeners();
-  }
+  // set openMode(String mode) {
+  //   if (_orderGoodsMeasure?.openType == mode) return;
+  //   if (_oldOpenMode == null) {
+  //     _oldOpenMode = _orderGoodsMeasure?.openType;
+  //   }
+  //   _orderGoodsMeasure?.openType = mode;
+  //   notifyListeners();
+  // }
 
   set curOrderGoods(OrderGoods orderGoods) {
     _curOrderGoods = orderGoods;
@@ -154,11 +137,6 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set orderGoodsId(int id) {
-    _orderGoodsId = id;
-    notifyListeners();
-  }
-
   set installTime(String date) {
     _installTime = date;
     notifyListeners();
@@ -175,10 +153,10 @@ class OrderProvider with ChangeNotifier {
     print('object');
   }
 
-  set orderGoodsMeasure(OrderGoodsMeasure data) {
-    _orderGoodsMeasure = data;
-    notifyListeners();
-  }
+  // set orderGoodsMeasure(OrderGoodsMeasure data) {
+  //   _orderGoodsMeasure = data;
+  //   notifyListeners();
+  // }
 
   bool beforeCreateOrder(BuildContext context) {
     ClientProvider clientProvider =
@@ -297,14 +275,11 @@ class OrderProvider with ChangeNotifier {
     BuildContext context, {
     OrderGoods orderGoods,
   }) {
-    GoodsProvider goodsProvider =
-        Provider.of<GoodsProvider>(context, listen: false);
     _orderId = provider?.model?.orderId;
     _curOrderGoods = orderGoods;
-    _orderGoodsId = orderGoods?.orderGoodsId;
     _orderType = 2;
-    _orderGoodsMeasure = orderGoods?.orderGoodsMeasure;
-    goodsProvider?.measureData = _orderGoodsMeasure;
+    // _orderGoodsMeasure = orderGoods?.orderGoodsMeasure;
+    // goodsProvider?.measureData = _orderGoodsMeasure;
     // goodsProvider?.initSize(_orderGoodsMeasure
     //     // _orderGoodsMeasure?.width ?? '0.00',
     //     // _orderGoodsMeasure?.height ?? '0.00',
@@ -363,9 +338,7 @@ class OrderProvider with ChangeNotifier {
   }
 
   clearOrderData() {
-    _orderGoodsId = null;
     _orderType = 1;
-    _orderGoodsMeasure = null;
     _measureTime = null;
     _installTime = null;
     _orderMark = null;

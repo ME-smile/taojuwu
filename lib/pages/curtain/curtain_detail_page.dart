@@ -39,14 +39,11 @@ import 'widgets/zy_dialog.dart';
 class CurtainDetailPage extends StatefulWidget {
   CurtainDetailPage(
     this.id, {
-    this.orderGoodsId,
-    this.type: 1,
     Key key,
   }) : super(key: key);
 
   final int id; //商品id
-  final int orderGoodsId;
-  final int type; //订单类型
+
   @override
   _CurtainDetailPageState createState() => _CurtainDetailPageState();
 }
@@ -137,6 +134,12 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
         'name': provider?.curPartAttrBean?.name ?? '',
         'id': provider?.curPartAttrBean?.id ?? ''
       },
+      '9': [
+        // {'name': '宽', 'value': provider?.width},
+        // {'name': '高', 'value': provider?.height},
+        {'name': '宽', 'value': '${provider?.widthCM ?? ''}'},
+        {'name': '高', 'value': '${provider?.heightCM ?? ''}'}
+      ],
       // 配饰
       '13': (provider?.curAccessoryAttrBeans?.isEmpty == true
               ? [provider?.accessoryAttr?.data?.first]
@@ -534,13 +537,15 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return Consumer<ClientProvider>(
-      builder: (BuildContext context, ClientProvider clientProvider, __) {
+    return Consumer2<ClientProvider, GoodsProvider>(
+      builder: (BuildContext context, ClientProvider clientProvider,
+          GoodsProvider goodsProvider, __) {
         return ZYFutureBuilder(
             futureFunc: OTPService.fetchCurtainDetailData,
             params: {
               'goods_id': widget.id,
-              'client_uid': clientProvider?.clientId
+              'client_uid': clientProvider?.clientId,
+              'parts_type': goodsProvider?.partName
             },
             builder: (BuildContext context, data) {
               return Consumer<GoodsProvider>(
@@ -804,6 +809,13 @@ class BottomActionButtonBar extends StatelessWidget {
         'name': provider?.curPartAttrBean?.name ?? '',
         'id': provider?.curPartAttrBean?.id ?? ''
       },
+      //尺寸
+      '9': [
+        // {'name': '宽', 'value': provider?.width},
+        // {'name': '高', 'value': provider?.height},
+        {'name': '宽', 'value': '${provider?.widthCM ?? ''}'},
+        {'name': '高', 'value': '${provider?.heightCM ?? ''}'}
+      ],
       // 配饰
       '13': (provider?.curAccessoryAttrBeans?.isEmpty == true
               ? [provider?.accessoryAttr?.data?.first]
@@ -1109,7 +1121,7 @@ class MeasureDataTipBar extends StatelessWidget {
                   Spacer(),
                   Text(
                     orderProvider?.hasConfirmMeasureData == true
-                        ? orderProvider?.measureDataStr ?? ''
+                        ? goodsProvider?.measureDataStr ?? ''
                         : '',
                     textAlign: TextAlign.end,
                   ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
-import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
@@ -123,9 +122,9 @@ class EditOpenModePage extends StatelessWidget {
                     }),
                   ),
                   ZYSubmitButton('确认', () {
-                    OrderProvider orderProvider =
-                        Provider.of<OrderProvider>(context, listen: false);
-                    orderProvider?.openMode = provider?.curOpenMode;
+                    // OrderProvider orderProvider =
+                    //     Provider.of<OrderProvider>(context, listen: false);
+                    // orderProvider?.openMode = provider?.curOpenMode;
                     Navigator.of(context).pop();
                   })
                 ],
