@@ -30,6 +30,7 @@ import 'package:taojuwu/pages/order/order_page.dart';
 import 'package:taojuwu/pages/order/subPages/order_commit_success_page.dart';
 import 'package:taojuwu/pages/order/subPages/order_search_page.dart';
 import 'package:taojuwu/pages/profile/profile_page.dart';
+import 'package:taojuwu/pages/profile/subPages/forget_pwd_page.dart';
 import 'package:taojuwu/pages/profile/subPages/reset_pwd_page.dart';
 import 'package:taojuwu/pages/profile/subPages/submit_success_page.dart';
 import 'package:taojuwu/pages/profile/subPages/switch_account_page.dart';
@@ -124,8 +125,10 @@ class RouteHandler {
   static Handler orderDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int id = int.parse(params['id']?.first);
-    int tab = int.parse(params['tab']?.first);
-    return OrderDetailPage(id: id, tab: tab);
+    // int tab = int.parse(params['tab']?.first);
+    return OrderDetailPage(
+      id: id,
+    );
   });
 
   static goOrderDetailPage(BuildContext context, int id,
@@ -464,5 +467,16 @@ class RouteHandler {
 
   static goRefundPage(BuildContext context, int id) {
     _jumpTo(context, '${Routes.refund}?id=$id');
+  }
+
+  static Handler forgetPwd = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    return ForgetPwdPage();
+  });
+
+  static goForgetPwdPage(
+    BuildContext context,
+  ) {
+    _jumpTo(context, Routes.forgetPwd);
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class SendSmsButton extends StatefulWidget {
@@ -9,43 +11,60 @@ class SendSmsButton extends StatefulWidget {
 }
 
 class _SendSmsButtonState extends State<SendSmsButton> {
-  static bool _hasSend = false;
-  Stream _stream = Stream.periodic(Duration(seconds: 1), (int curNum) {
-    if (curNum == 120) {
-      _hasSend = false;
-      return 0;
-    }
-    return 120 - curNum--;
-  });
+  ValueNotifier<int> countDown;
+  ValueNotifier<bool> hasSend;
+  @override
+  void initState() {
+    super.initState();
+    hasSend = ValueNotifier<bool>(false);
+    countDown = ValueNotifier<int>(120);
+  }
+
+  Timer timer;
+
   @override
   void dispose() {
     super.dispose();
+    hasSend?.dispose();
+    countDown?.dispose();
+    timer?.cancel();
     //force to close stream
-    _stream = null;
   }
 
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme accentTextTheme = themeData.accentTextTheme;
-    return !_hasSend
-        ? RaisedButton(
-            padding: EdgeInsets.all(0),
-            child: Text(
-              '获取验证码',
-              style: accentTextTheme.button,
-            ),
-            onPressed: () {
-              _hasSend = true;
-              widget.callback();
-            },
-          )
-        : StreamBuilder(
-            stream: _stream,
-            initialData: 120,
-            builder: (BuildContext context, AsyncSnapshot stream) {
-              return FlatButton(
-                  onPressed: null, child: Text('${stream.data}s后重新发送'));
-            });
+    return ValueListenableBuilder(
+        valueListenable: hasSend,
+        builder: (BuildContext context, bool _hasSend, _) {
+          return _hasSend == false
+              ? RaisedButton(
+                  padding: EdgeInsets.all(0),
+                  child: Text(
+                    '获取验证码',
+                    style: accentTextTheme.button,
+                  ),
+                  onPressed: () {
+                    hasSend?.value = true;
+                    timer = Timer.periodic(const Duration(seconds: 1),
+                        (Timer timer) {
+                      if (countDown.value <= 0) {
+                        hasSend?.value = false;
+                        countDown.value = 120;
+                      } else {
+                        countDown.value--;
+                      }
+                    });
+                    widget.callback();
+                  },
+                )
+              : ValueListenableBuilder(
+                  valueListenable: countDown,
+                  builder: (BuildContext context, int secs, _) {
+                    return FlatButton(
+                        onPressed: null, child: Text('${secs}s后重新发送'));
+                  });
+        });
   }
 }

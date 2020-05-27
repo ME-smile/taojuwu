@@ -438,6 +438,8 @@ class OrderKit {
         .then((ZYResponse response) {
       if (response.valid) {
         Navigator.of(context).pop();
+      } else {
+        CommonKit.showInfo(response?.message ?? '');
       }
     }).catchError((err) => err);
   }
@@ -490,23 +492,25 @@ class OrderKit {
     return VSpacing(20);
   }
 
-  static void selectProduct(
-      OrderDetailProvider provider, BuildContext context) {
+  static void selectProduct(OrderDetailProvider provider, BuildContext ctx) {
     if (provider?.hasUnselectedGoods == true) {
       showCupertinoDialog(
-          context: context,
+          context: ctx,
           builder: (BuildContext context) {
             return CupertinoAlertDialog(
               title: Text('您还有${provider?.unselectedGoodsNum}窗未完成选品,是否确认提交?'),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: Text('确定'),
-                  onPressed: () {
-                    confirmToSelect(
+                  onPressed: () async {
+                    // print();
+                    await confirmToSelect(
                         context, {'order_id': provider?.model?.orderId ?? -1},
                         callback: () {
-                      Navigator.of(context).pop();
+                      // provider?.refresh();
+                      // provider?.globalKey?.currentState?.initState();
                     });
+                    Navigator.of(context).pop();
                   },
                 ),
                 CupertinoDialogAction(
@@ -519,7 +523,7 @@ class OrderKit {
             );
           });
     } else {
-      confirmToSelect(context, {'order_id': provider?.model?.orderId ?? -1});
+      confirmToSelect(ctx, {'order_id': provider?.model?.orderId ?? -1});
     }
   }
 

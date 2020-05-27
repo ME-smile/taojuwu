@@ -53,6 +53,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
     params['vertical_ground_height'] = '${provider?.dy ?? ''}';
     params['goods_id'] = '${provider?.goodsId ?? ''}';
     params['install_room'] = '${provider?.curRoomAttrBean?.id ?? ''}';
+    data.clear();
     data['${provider?.windowPatternId ?? ''}'] = {
       'name': '${provider?.windowPatternStr ?? ''}',
       'selected': {
@@ -285,9 +286,6 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
     return Consumer<GoodsProvider>(
       builder: (BuildContext context, GoodsProvider provider, _) {
         setParams(provider);
-        print('${provider?.windowPatternStr}/${provider?.curInstallMode}');
-        print(WindowPatternAttr.pictureMap[
-            '${provider?.windowPatternStr}/${provider?.curInstallMode}']);
         return Scaffold(
           // resizeToAvoidBottomInset: false,
           appBar: AppBar(

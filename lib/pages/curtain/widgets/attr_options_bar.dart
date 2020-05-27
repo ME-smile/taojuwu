@@ -8,47 +8,46 @@ class AttrOptionsBar extends StatelessWidget {
   final String title;
   final String trailingText;
   final Function callback; //1 BottomSheet 2 dialog 3 jump
-  final bool isWindowGauze;
+  final bool showNext;
   const AttrOptionsBar(
       {Key key,
       this.title: '',
       this.trailingText: '',
       this.callback,
-      this.isWindowGauze: false})
+      this.showNext: true})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
-    return Offstage(
-      offstage: isWindowGauze,
-      child: InkWell(
-        onTap: callback,
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            // mainAxisSize,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                title,
-                style: textTheme.caption,
+    return InkWell(
+      onTap: callback,
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // mainAxisSize,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              title,
+              style: textTheme.caption,
+            ),
+            Text.rich(
+              TextSpan(
+                text: trailingText,
+                children: [
+                  showNext
+                      ? WidgetSpan(
+                          child: Icon(ZYIcon.next),
+                          alignment: ui.PlaceholderAlignment.middle,
+                        )
+                      : TextSpan()
+                ],
               ),
-              Text.rich(
-                TextSpan(
-                  text: trailingText,
-                  children: [
-                    WidgetSpan(
-                      child: Icon(ZYIcon.next),
-                      alignment: ui.PlaceholderAlignment.middle,
-                    )
-                  ],
-                ),
-                textAlign: TextAlign.center,
-              )
-            ],
-          ),
+              textAlign: TextAlign.center,
+            )
+          ],
         ),
       ),
     );

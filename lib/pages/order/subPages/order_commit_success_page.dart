@@ -82,7 +82,6 @@ class OrderCommitSuccessPage extends StatelessWidget {
           } else {
             Navigator.of(context)..pop()..pop();
           }
-
           return Future.value(false);
         });
   }

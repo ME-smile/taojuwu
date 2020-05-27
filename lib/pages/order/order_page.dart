@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/pages/order/widgets/measure_order_card.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/search_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
@@ -74,18 +74,30 @@ class _OrderPageState extends State<OrderPage>
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: items.length, vsync: this);
-    _tabController?.index = widget.tab;
     //对全部数据进行特殊处理
-    params?.first['client_uid'] = widget?.clientId;
+    if (mounted) {
+      params?.first['client_uid'] = widget?.clientId;
+      _tabController = TabController(length: items.length, vsync: this)
+        ..addListener(() {
+          params?.forEach((item) {
+            item['page'] = 1;
+          });
+        });
+      _tabController?.index = widget.tab;
+    }
 
     OTPService.orderList(context, params: params?.first)
         .then((OrderModelListResp response) {
-      setState(() {
-        nums = response?.data?.statusNum?.values?.toList();
-        models = response?.data?.data;
-      });
-    }).catchError((err) => err);
+      if (mounted) {
+        setState(() {
+          nums = response?.data?.statusNum?.values?.toList();
+          models = response?.data?.data;
+        });
+      }
+    }).catchError((err) {
+      print('--------');
+      return err;
+    });
   }
 
   @override
@@ -96,7 +108,6 @@ class _OrderPageState extends State<OrderPage>
 
   @override
   Widget build(BuildContext context) {
-    print(Application.sp.getString('token'));
     return ZYFutureBuilder(
         futureFunc: OTPService.orderList,
         params: params[_tabController.index],
@@ -154,15 +165,17 @@ class OrderTabView extends StatefulWidget {
 
 class _OrderTabViewState extends State<OrderTabView> {
   Map<String, dynamic> params;
-  List<OrderModelData> models;
+  List<OrderModelData> models = [];
   int totalPage = 0;
 
   static const PAGE_SIZE = 10;
 
-  bool get hasMoreData => params['page'] <= totalPage;
+  bool hasMoreData = true;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   bool isRefresh = true;
+
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -170,6 +183,22 @@ class _OrderTabViewState extends State<OrderTabView> {
     params['page'] = 1;
     params['client_uid'] = widget.clientId;
     models = widget.models;
+    OTPService.orderList(context, params: params)
+        .then((OrderModelListResp response) {
+      if (mounted) {
+        setState(() {
+          wrapper = response?.data;
+          models = wrapper?.data;
+          isLoading = false;
+        });
+      }
+    }).catchError((err) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
   }
 
   OrderModelDataWrapper wrapper;
@@ -185,9 +214,10 @@ class _OrderTabViewState extends State<OrderTabView> {
         .then((OrderModelListResp response) {
       wrapper = response?.data;
       int count = wrapper?.totalCount;
-      int pages = count % PAGE_SIZE;
-      int mod = count % pages;
+      int pages = count ~/ PAGE_SIZE;
+      int mod = count % PAGE_SIZE;
       totalPage = mod > 0 ? pages + 1 : pages;
+
       List<OrderModelData> tmp = wrapper?.data ?? [];
       if (isRefresh) {
         if (mounted) {
@@ -197,6 +227,7 @@ class _OrderTabViewState extends State<OrderTabView> {
         }
         _refreshController?.refreshCompleted();
       } else {
+        if (tmp?.isEmpty == true) return _refreshController?.loadNoData();
         setState(() {
           tmp.forEach((item) {
             if (models?.contains(item) == false) {
@@ -204,6 +235,7 @@ class _OrderTabViewState extends State<OrderTabView> {
             }
           });
         });
+
         _refreshController?.loadComplete();
       }
     }).catchError((err) {
@@ -223,9 +255,9 @@ class _OrderTabViewState extends State<OrderTabView> {
           tab: widget.tab,
         );
       }
-      // return MeasureOrderHasSelectedProductCard(
-      //   orderModelData: model,
-      // );
+      return MeasureOrderHasSelectedProductCard(
+        orderModelData: model,
+      );
     }
     return OrderCard(model, tab: widget.tab);
   }
@@ -245,9 +277,6 @@ class _OrderTabViewState extends State<OrderTabView> {
             onLoading: () async {
               params['page']++;
               isRefresh = false;
-              if (!hasMoreData) {
-                return _refreshController?.loadNoData();
-              }
               requestData();
             },
             child: ListView.separated(
@@ -264,15 +293,12 @@ class _OrderTabViewState extends State<OrderTabView> {
 
   @override
   Widget build(BuildContext context) {
-    return models == null
-        ? ZYFutureBuilder(
-            futureFunc: OTPService.orderList,
-            params: params,
-            builder: (BuildContext context, OrderModelListResp response) {
-              OrderModelDataWrapper wrapper = response?.data;
-              List<OrderModelData> models = wrapper?.data;
-              return buildOrderListView(models);
-            })
-        : models?.isNotEmpty != true ? NoData() : buildOrderListView(models);
+    return isLoading
+        ? LoadingCircle()
+        : models == null
+            ? buildOrderListView(models ?? [])
+            : models?.isNotEmpty != true
+                ? NoData()
+                : buildOrderListView(models);
   }
 }

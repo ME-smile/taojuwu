@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -7,15 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
-import 'package:taojuwu/models/shop/sku_attr/accessory_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/canopy_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/craft_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/part_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 
-import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/pages/curtain/subPages/pre_measure_data_page.dart';
 import 'package:taojuwu/providers/client_provider.dart';
@@ -26,11 +19,11 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/loading.dart';
 
 import 'package:taojuwu/widgets/user_choose_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 
-import 'package:taojuwu/widgets/zy_future_builder.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 import 'widgets/attr_options_bar.dart';
@@ -57,7 +50,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   TextEditingController dyInputController;
 
   int id;
-
+  String partName;
   ValueNotifier<bool> hasCollected = ValueNotifier<bool>(false);
 
   @override
@@ -69,6 +62,8 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     dyInputController?.dispose();
   }
 
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -76,7 +71,9 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
 
     ClientProvider clientProvider =
         Provider.of<ClientProvider>(context, listen: false);
-
+    GoodsProvider goodsProvider =
+        Provider.of<GoodsProvider>(context, listen: false);
+    partName = goodsProvider?.partName;
     widthInputController = TextEditingController();
     heightInputController = TextEditingController();
     dyInputController = TextEditingController();
@@ -88,18 +85,50 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
       'fav_id': widget.id,
       'client_uid': clientProvider?.clientId
     };
+    OTPService.fetchCurtainDetailData(context, params: {
+      'goods_id': widget.id,
+      'client_uid': clientProvider?.clientId,
+      'parts_type': partName
+    }).then((data) {
+      ProductBeanRes productBeanRes = data[0];
+      ProductBeanDataWrapper wrapper = productBeanRes.data;
+      ProductBean bean = wrapper.goodsDetail;
 
-    OTPService.fetchCurtainDetailData(
-      context,
-      params: {'goods_id': widget.id},
-    ).then((data) {}).catchError((err) => err);
+      if (mounted) {
+        if (goodsProvider?.hasInit == false) {
+          goodsProvider?.initDataWithFilter(
+            bean: bean,
+            windowGauzeAttr: data[1],
+            craftAttr: data[2],
+            partAttr: data[3],
+            windowShadeAttr: data[4],
+            canopyAttr: data[5],
+            accessoryAttr: data[6],
+            roomAttr: data[7],
+          );
+        }
+        setCartParams(goodsProvider);
+        hasCollected?.value = goodsProvider?.hasLike;
+
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }).catchError((err) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+      return err;
+    });
   }
 
   void setCartParams(GoodsProvider goodsProvider) {
     cartParams['is_shade'] = goodsProvider?.isShade == true ? 1 : 0;
     cartParams['estimated_price'] = goodsProvider?.totalPrice;
     cartParams['measure_id'] = goodsProvider?.measureId;
-    cartParams['wc_attr'] = '${getAttrArgs(goodsProvider)}';
+    cartParams['wc_attr'] = '${goodsProvider.getAttrArgs()}';
   }
 
   collect(
@@ -120,132 +149,6 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
         }
       }).catchError((err) => err);
     }
-  }
-
-  Map<String, dynamic> getWindowGauzeAttrArgs(GoodsProvider provider) {
-    return {
-      //工艺方式
-      '4': {
-        'name': provider?.curCraftAttrBean?.name ?? '',
-        'id': provider?.curCraftAttrBean?.id ?? ''
-      },
-      //型材
-      '5': {
-        'name': provider?.curPartAttrBean?.name ?? '',
-        'id': provider?.curPartAttrBean?.id ?? ''
-      },
-      '9': [
-        // {'name': '宽', 'value': provider?.width},
-        // {'name': '高', 'value': provider?.height},
-        {'name': '宽', 'value': '${provider?.widthCM ?? ''}'},
-        {'name': '高', 'value': '${provider?.heightCM ?? ''}'}
-      ],
-      // 配饰
-      '13': (provider?.curAccessoryAttrBeans?.isEmpty == true
-              ? [provider?.accessoryAttr?.data?.first]
-              : provider?.curAccessoryAttrBeans)
-          ?.map((item) => {'name': item.name, 'id': item.id})
-          ?.toList()
-    };
-  }
-
-  Map<String, dynamic> getWindowRollerAttrArgs(GoodsProvider provider) {
-    print({
-      //空间
-      '1': {
-        'name': provider?.curRoomAttrBean?.name ?? '',
-        'id': provider?.curRoomAttrBean?.id ?? ''
-      },
-      //窗型
-      '2': {
-        'name': provider?.windowPatternStr,
-        'id': WindowPatternAttr.patternIdMap[provider?.windowPatternStr]
-      },
-      //尺寸
-      '9': [
-        // {'name': '宽', 'value': provider?.width},
-        // {'name': '高', 'value': provider?.height},
-        {'name': '宽', 'value': '${provider?.widthCM ?? ''}'},
-        {'name': '高', 'value': '${provider?.heightCM ?? ''}'}
-      ],
-    });
-    return {
-      //空间
-      '1': {
-        'name': provider?.curRoomAttrBean?.name ?? '',
-        'id': provider?.curRoomAttrBean?.id ?? ''
-      },
-      //窗型
-      '2': {
-        'name': provider?.windowPatternStr,
-        'id': WindowPatternAttr.patternIdMap[provider?.windowPatternStr]
-      },
-      //尺寸
-      '9': [
-        // {'name': '宽', 'value': provider?.width},
-        // {'name': '高', 'value': provider?.height},
-        {'name': '宽', 'value': '${provider?.widthCM ?? ''}'},
-        {'name': '高', 'value': '${provider?.heightCM ?? ''}'}
-      ],
-    };
-  }
-
-  Map<String, dynamic> getAttrArgs(GoodsProvider provider) {
-    return provider?.isWindowGauze == true
-        ? getWindowGauzeAttrArgs(provider)
-        : provider?.isWindowRoller == true
-            ? getWindowRollerAttrArgs(provider)
-            : {
-                //空间
-                '1': {
-                  'name': provider?.curRoomAttrBean?.name ?? '',
-                  'id': provider?.curRoomAttrBean?.id ?? ''
-                },
-                //窗型
-                '2': {
-                  'name': provider?.windowPatternStr,
-                  'id':
-                      WindowPatternAttr.patternIdMap[provider?.windowPatternStr]
-                },
-                //窗纱
-                '3': {
-                  'name': provider?.curWindowGauzeAttrBean?.name ?? '',
-                  'id': provider?.curWindowGauzeAttrBean?.id ?? ''
-                },
-                //工艺方式
-                '4': {
-                  'name': provider?.curCraftAttrBean?.name ?? '',
-                  'id': provider?.curCraftAttrBean?.id ?? ''
-                },
-                //型材
-                '5': {
-                  'name': provider?.curPartAttrBean?.name ?? '',
-                  'id': provider?.curPartAttrBean?.id ?? ''
-                },
-                //帘身款式
-                // '6': {},
-                // // 帘身面料
-                // '7': {},
-                //幔头
-                // '8': {'name': '', 'id': ''},
-                '9': [
-                  // {'name': '宽', 'value': provider?.width},
-                  // {'name': '高', 'value': provider?.height},
-                  {'name': '宽', 'value': '${provider?.widthCM ?? ''}'},
-                  {'name': '高', 'value': '${provider?.heightCM ?? ''}'}
-                ],
-                //遮光里布
-                '12': {
-                  'name': provider?.curWindowShadeAttrBean?.name ?? '',
-                  'id': provider?.curWindowShadeAttrBean?.id ?? ''
-                },
-                // 配饰
-                '13': (provider?.curAccessoryAttrBeans?.isEmpty == true
-                        ? [provider?.accessoryAttr?.data?.first]
-                        : provider?.curAccessoryAttrBeans)
-                    ?.map((item) => {'name': item.name, 'id': item.id})
-                    ?.toList()
-              };
   }
 
   Map<String, dynamic> getCartDetail(ProductBean bean) {
@@ -411,44 +314,88 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   }
 
   Widget buildWindowRollerOption() {
-    return Consumer<GoodsProvider>(
-      builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-        return Column(
-          children: <Widget>[
-            AttrOptionsBar(
-              title: '空间',
-              trailingText: goodsProvider?.curRoomAttrBean?.name ?? '',
-              callback: () {
-                checkRoomAttr(context);
-              },
-            ),
-            AttrOptionsBar(
-              title: '窗型',
-              trailingText: goodsProvider?.windowPatternStr ?? '',
-              callback: () {
-                checkWindowPattern(context);
-              },
-            ),
-            AttrOptionsBar(
-              title: '尺寸',
-              // isRollUpWindow: goodsProvider?.isWindowGauze,
-              trailingText: goodsProvider?.sizeText ?? '',
-              callback: () {
-                setSize();
-              },
-            ),
-            AttrOptionsBar(
-              title: '离地距离',
-              // isRollUpWindow: goodsProvider?.isWindowGauze,
-              trailingText: goodsProvider?.dyText ?? '',
-              callback: () {
-                setDy();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    OrderProvider orderProvider =
+        Provider.of<OrderProvider>(context, listen: false);
+    return orderProvider?.hasOrderGoodsId == true
+        ? Consumer<GoodsProvider>(
+            builder: (BuildContext context, GoodsProvider goodsProvider, _) {
+              goodsProvider?.initMeasureDataForWindowRoller();
+              return Column(
+                children: <Widget>[
+                  AttrOptionsBar(
+                    title: '空间',
+                    trailingText: goodsProvider
+                            ?.forWindowRollerMeasureData?.installRoom ??
+                        '',
+                    callback: null,
+                    showNext: false,
+                  ),
+                  AttrOptionsBar(
+                    title: '窗型',
+                    trailingText:
+                        goodsProvider?.forWindowRollerMeasureData?.windowType ??
+                            '',
+                    callback: null,
+                    showNext: false,
+                  ),
+                  AttrOptionsBar(
+                    title: '尺寸',
+                    // isRollUpWindow: goodsProvider?.isWindowGauze,
+                    trailingText:
+                        '${goodsProvider?.forWindowRollerWidthMstr ?? ''}米,${goodsProvider?.forWindowRollerHeightMstr ?? ''}米',
+                    callback: null,
+                    showNext: false,
+                  ),
+                  AttrOptionsBar(
+                    title: '离地距离',
+                    // isRollUpWindow: goodsProvider?.isWindowGauze,
+                    trailingText: '${goodsProvider?.dyCMStr ?? ''}cm',
+                    callback: () {
+                      setDy();
+                    },
+                  ),
+                ],
+              );
+            },
+          )
+        : Consumer<GoodsProvider>(
+            builder: (BuildContext context, GoodsProvider goodsProvider, _) {
+              return Column(
+                children: <Widget>[
+                  AttrOptionsBar(
+                    title: '空间',
+                    trailingText: goodsProvider?.curRoomAttrBean?.name ?? '',
+                    callback: () {
+                      checkRoomAttr(context);
+                    },
+                  ),
+                  AttrOptionsBar(
+                    title: '窗型',
+                    trailingText: goodsProvider?.windowPatternStr ?? '',
+                    callback: () {
+                      checkWindowPattern(context);
+                    },
+                  ),
+                  AttrOptionsBar(
+                    title: '尺寸',
+                    // isRollUpWindow: goodsProvider?.isWindowGauze,
+                    trailingText: goodsProvider?.sizeText,
+                    callback: () {
+                      setSize();
+                    },
+                  ),
+                  AttrOptionsBar(
+                    title: '离地距离',
+                    // isRollUpWindow: goodsProvider?.isWindowGauze,
+                    trailingText: '${goodsProvider?.dyCMStr ?? ''}cm',
+                    callback: () {
+                      setDy();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
   }
 
   Widget buildCurtainOption() {
@@ -512,7 +459,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   }
 
   void addCart(BuildContext ctx, GoodsProvider provider) {
-    cartParams.addAll({'wc_attr': jsonEncode(getAttrArgs(provider))});
+    cartParams.addAll({'wc_attr': jsonEncode(provider.getAttrArgs())});
     cartParams
         .addAll({'cart_detail': jsonEncode(getCartDetail(provider?.goods))});
     OTPService.addCart(params: cartParams)
@@ -537,235 +484,190 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return Consumer2<ClientProvider, GoodsProvider>(
-      builder: (BuildContext context, ClientProvider clientProvider,
-          GoodsProvider goodsProvider, __) {
-        return ZYFutureBuilder(
-            futureFunc: OTPService.fetchCurtainDetailData,
-            params: {
-              'goods_id': widget.id,
-              'client_uid': clientProvider?.clientId,
-              'parts_type': goodsProvider?.partName
-            },
-            builder: (BuildContext context, data) {
-              return Consumer<GoodsProvider>(
-                builder:
-                    (BuildContext context, GoodsProvider goodsProvider, _) {
-                  ProductBeanRes productBeanRes = data[0];
-                  ProductBeanDataWrapper wrapper = productBeanRes.data;
-                  ProductBean bean = wrapper.goodsDetail;
-                  WindowGauzeAttr windowGauzeAttr = data[1];
-                  CraftAttr craftAttr = data[2];
-                  PartAttr partAttr = data[3];
-                  WindowShadeAttr windowShadeAttr = data[4];
-                  CanopyAttr canopyAttr = data[5];
-                  AccessoryAttr accessoryAttr = data[6];
-                  RoomAttr roomAttr = data[7];
 
-                  if (goodsProvider?.hasInit == false) {
-                    goodsProvider?.initDataWithFilter(
-                      bean: bean,
-                      windowGauzeAttr: windowGauzeAttr,
-                      craftAttr: craftAttr,
-                      partAttr: partAttr,
-                      windowShadeAttr: windowShadeAttr,
-                      canopyAttr: canopyAttr,
-                      accessoryAttr: accessoryAttr,
-                      roomAttr: roomAttr,
-                    );
-                  }
-                  setCartParams(goodsProvider);
-                  hasCollected?.value = goodsProvider?.hasLike;
-                  return WillPopScope(
-                      child: Scaffold(
-                          body: NestedScrollView(
-                              headerSliverBuilder: (BuildContext context,
-                                  bool innerBoxIsScrolled) {
-                                return <Widget>[
-                                  SliverAppBar(
-                                    actions: <Widget>[
-                                      UserChooseButton(
-                                        id: widget.id,
-                                      )
-                                    ],
-                                    expandedHeight: 400,
-                                    floating: false,
-                                    pinned: true,
-                                    flexibleSpace: FlexibleSpaceBar(
-                                      background: Container(
-                                        margin: EdgeInsets.only(top: 80),
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                              image: NetworkImage(
-                                                  UIKit.getNetworkImgPath(
-                                                      bean?.picCoverMid))),
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                ];
-                              },
-                              body: CustomScrollView(
-                                slivers: <Widget>[
-                                  SliverToBoxAdapter(
-                                    child: Container(
-                                      color: themeData.primaryColor,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: UIKit.width(20),
-                                          vertical: UIKit.height(20)),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Text.rich(TextSpan(
-                                                  text:
-                                                      '${bean?.goodsName}      ' ??
-                                                          '',
-                                                  children: [
-                                                    TextSpan(
-                                                        text: bean.goodsName ??
-                                                            '',
-                                                        style:
-                                                            textTheme.caption)
-                                                  ])),
-                                              Text.rich(
-                                                  TextSpan(text: '', children: [
-                                                WidgetSpan(
-                                                    child:
-                                                        ValueListenableBuilder(
-                                                            valueListenable:
-                                                                hasCollected,
-                                                            builder:
-                                                                (BuildContext
-                                                                        context,
-                                                                    bool
-                                                                        isLiked,
-                                                                    _) {
-                                                              return IconButton(
-                                                                  icon: Icon(
-                                                                    ZYIcon.like,
-                                                                    color: isLiked
-                                                                        ? Colors
-                                                                            .red
-                                                                        : const Color(
-                                                                            0xFFCCCCCC),
-                                                                  ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    collect(
-                                                                        context);
-                                                                  });
-                                                            })),
-
-                                                // WidgetSpan(
-                                                //     child: IconButton(
-                                                //         icon: Icon(ZYIcon.share),
-                                                //         onPressed: () {})),
-                                                WidgetSpan(
-                                                    child: IconButton(
-                                                        icon: Icon(ZYIcon.cart),
-                                                        onPressed: () {
-                                                          if (clientProvider
-                                                                  ?.clientId ==
-                                                              null) {
-                                                            return CommonKit
-                                                                .showInfo(
-                                                                    '请选择客户');
-                                                          }
-                                                          RouteHandler
-                                                              .goCartPage(
-                                                            context,
-                                                            clientId:
-                                                                clientProvider
-                                                                    ?.clientId,
-                                                          );
-                                                        }))
-                                              ]))
-                                            ],
-                                          ),
-                                          VSpacing(20),
-                                          Text.rich(TextSpan(
-                                              text: '¥${bean?.price ?? 0.00}',
-                                              children: [
-                                                TextSpan(text: ' '),
-                                                TextSpan(
-                                                    text: '元/米起',
-                                                    style: textTheme.caption)
-                                              ])),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  SliverToBoxAdapter(
-                                    child: VSpacing(20),
-                                  ),
-                                  SliverToBoxAdapter(
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: UIKit.width(20),
-                                          vertical: UIKit.height(10)),
-                                      color: themeData.primaryColor,
-                                      child: Column(
-                                        children: <Widget>[
-                                          Offstage(
-                                            offstage:
-                                                goodsProvider?.isWindowRoller ==
-                                                    true,
-                                            child: Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: UIKit.height(10)),
-                                                alignment: Alignment.centerLeft,
-                                                child: MeasureDataTipBar()),
-                                          ),
-                                          Offstage(
-                                            offstage:
-                                                goodsProvider?.isWindowRoller ==
-                                                    true,
-                                            child: Divider(),
-                                          ),
-                                          goodsProvider?.isWindowGauze == true
-                                              ? buildWindowGauzeOption()
-                                              : goodsProvider?.isWindowRoller ==
-                                                      true
-                                                  ? buildWindowRollerOption()
-                                                  : buildCurtainOption(),
-                                          Container(
-                                            color: themeData
-                                                .scaffoldBackgroundColor,
-                                            height: UIKit.height(20),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  SliverToBoxAdapter(
-                                    child: bean?.description?.isNotEmpty == true
-                                        ? Html(data: bean?.description)
-                                        : Container(),
+    return isLoading
+        ? LoadingCircle()
+        : Consumer2<GoodsProvider, ClientProvider>(
+            builder: (BuildContext context, GoodsProvider goodsProvider,
+                ClientProvider clientProvider, _) {
+              ProductBean bean = goodsProvider?.goods;
+              return WillPopScope(
+                  child: Scaffold(
+                      body: NestedScrollView(
+                          headerSliverBuilder:
+                              (BuildContext context, bool innerBoxIsScrolled) {
+                            return <Widget>[
+                              SliverAppBar(
+                                actions: <Widget>[
+                                  UserChooseButton(
+                                    id: widget.id,
                                   )
                                 ],
-                              )),
-                          bottomNavigationBar: BottomActionButtonBar()),
-                      onWillPop: () {
-                        Navigator.of(context).pop();
-                        OrderProvider orderProvider =
-                            Provider.of(context, listen: false);
-                        // orderProvider.hasConfirmMeasureData = false;
-                        if (orderProvider?.isMeasureOrder == false) {
-                          goodsProvider?.clearGoodsInfo();
-                        }
+                                expandedHeight: 400,
+                                floating: false,
+                                pinned: true,
+                                flexibleSpace: FlexibleSpaceBar(
+                                  background: Container(
+                                    margin: EdgeInsets.only(top: 80),
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                              UIKit.getNetworkImgPath(
+                                                  bean?.picCoverMid))),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ];
+                          },
+                          body: CustomScrollView(
+                            slivers: <Widget>[
+                              SliverToBoxAdapter(
+                                child: Container(
+                                  color: themeData.primaryColor,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: UIKit.width(20),
+                                      vertical: UIKit.height(20)),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text.rich(TextSpan(
+                                              text:
+                                                  '${bean?.goodsName}      ' ??
+                                                      '',
+                                              children: [
+                                                TextSpan(
+                                                    text: bean?.goodsName ?? '',
+                                                    style: textTheme.caption)
+                                              ])),
+                                          Text.rich(
+                                              TextSpan(text: '', children: [
+                                            WidgetSpan(
+                                                child: ValueListenableBuilder(
+                                                    valueListenable:
+                                                        hasCollected,
+                                                    builder:
+                                                        (BuildContext context,
+                                                            bool isLiked, _) {
+                                                      return IconButton(
+                                                          icon: Icon(
+                                                            ZYIcon.like,
+                                                            color: isLiked
+                                                                ? Colors.red
+                                                                : const Color(
+                                                                    0xFFCCCCCC),
+                                                          ),
+                                                          onPressed: () {
+                                                            collect(context);
+                                                          });
+                                                    })),
 
-                        return Future.value(false);
-                      });
-                },
-              );
-            });
-      },
-    );
+                                            // WidgetSpan(
+                                            //     child: IconButton(
+                                            //         icon: Icon(ZYIcon.share),
+                                            //         onPressed: () {})),
+                                            WidgetSpan(
+                                                child: IconButton(
+                                                    icon: Icon(ZYIcon.cart),
+                                                    onPressed: () {
+                                                      if (clientProvider
+                                                              ?.clientId ==
+                                                          null) {
+                                                        return CommonKit
+                                                            .showInfo('请选择客户');
+                                                      }
+                                                      RouteHandler.goCartPage(
+                                                        context,
+                                                        clientId: clientProvider
+                                                            ?.clientId,
+                                                      );
+                                                    }))
+                                          ]))
+                                        ],
+                                      ),
+                                      VSpacing(20),
+                                      Text.rich(TextSpan(
+                                          text: '¥${bean?.price ?? 0.00}',
+                                          children: [
+                                            TextSpan(text: ' '),
+                                            TextSpan(
+                                                text: '元/米起',
+                                                style: textTheme.caption)
+                                          ])),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                child: VSpacing(20),
+                              ),
+                              SliverToBoxAdapter(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: UIKit.width(20),
+                                      vertical: UIKit.height(10)),
+                                  color: themeData.primaryColor,
+                                  child: Column(
+                                    children: <Widget>[
+                                      Offstage(
+                                        offstage:
+                                            goodsProvider?.isWindowRoller ==
+                                                true,
+                                        child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: UIKit.height(10)),
+                                            alignment: Alignment.centerLeft,
+                                            child: MeasureDataTipBar()),
+                                      ),
+                                      Offstage(
+                                        offstage:
+                                            goodsProvider?.isWindowRoller ==
+                                                true,
+                                        child: Divider(),
+                                      ),
+                                      goodsProvider?.isWindowGauze == true
+                                          ? buildWindowGauzeOption()
+                                          : goodsProvider?.isWindowRoller ==
+                                                  true
+                                              ? buildWindowRollerOption()
+                                              : buildCurtainOption(),
+                                      Container(
+                                        color:
+                                            themeData.scaffoldBackgroundColor,
+                                        height: UIKit.height(20),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SliverToBoxAdapter(
+                                child: bean?.description?.isNotEmpty == true
+                                    ? Html(data: bean?.description)
+                                    : Container(),
+                              )
+                            ],
+                          )),
+                      bottomNavigationBar: BottomActionButtonBar()),
+                  onWillPop: () {
+                    Navigator.of(context).pop();
+                    OrderProvider orderProvider =
+                        Provider.of(context, listen: false);
+                    orderProvider.hasConfirmMeasureData = false;
+                    if (orderProvider?.isMeasureOrder == false &&
+                        goodsProvider?.isWindowRoller == false) {
+                      goodsProvider?.clearGoodsInfo();
+                    }
+                    goodsProvider?.partName = '';
+                    goodsProvider?.hasInitOpenMode = false;
+                    return Future.value(false);
+                  });
+            },
+          );
   }
 }
 
@@ -797,138 +699,11 @@ class BottomActionButtonBar extends StatelessWidget {
     };
   }
 
-  Map<String, dynamic> getWindowGauzeAttrArgs(GoodsProvider provider) {
-    return {
-      //工艺方式
-      '4': {
-        'name': provider?.curCraftAttrBean?.name ?? '',
-        'id': provider?.curCraftAttrBean?.id ?? ''
-      },
-      //型材
-      '5': {
-        'name': provider?.curPartAttrBean?.name ?? '',
-        'id': provider?.curPartAttrBean?.id ?? ''
-      },
-      //尺寸
-      '9': [
-        // {'name': '宽', 'value': provider?.width},
-        // {'name': '高', 'value': provider?.height},
-        {'name': '宽', 'value': '${provider?.widthCM ?? ''}'},
-        {'name': '高', 'value': '${provider?.heightCM ?? ''}'}
-      ],
-      // 配饰
-      '13': (provider?.curAccessoryAttrBeans?.isEmpty == true
-              ? [provider?.accessoryAttr?.data?.first]
-              : provider?.curAccessoryAttrBeans)
-          ?.map((item) => {'name': item.name, 'id': item.id})
-          ?.toList()
-    };
-  }
-
-  Map<String, dynamic> getWindowRollerAttrArgs(GoodsProvider provider) {
-    print({
-      //空间
-      '1': {
-        'name': provider?.curRoomAttrBean?.name ?? '',
-        'id': provider?.curRoomAttrBean?.id ?? ''
-      },
-      //窗型
-      '2': {
-        'name': provider?.windowPatternStr,
-        'id': WindowPatternAttr.patternIdMap[provider?.windowPatternStr]
-      },
-      //尺寸
-      '9': [
-        // {'name': '宽', 'value': provider?.width},
-        // {'name': '高', 'value': provider?.height},
-        {'name': '宽', 'value': '${provider?.widthCM ?? ''}'},
-        {'name': '高', 'value': '${provider?.heightCM ?? ''}'}
-      ],
-    });
-    return {
-      //空间
-      '1': {
-        'name': provider?.curRoomAttrBean?.name ?? '',
-        'id': provider?.curRoomAttrBean?.id ?? ''
-      },
-      //窗型
-      '2': {
-        'name': provider?.windowPatternStr,
-        'id': WindowPatternAttr.patternIdMap[provider?.windowPatternStr]
-      },
-      //尺寸
-      '9': [
-        // {'name': '宽', 'value': provider?.width},
-        // {'name': '高', 'value': provider?.height},
-        {'name': '宽', 'value': '${provider?.widthCM ?? ''}'},
-        {'name': '高', 'value': '${provider?.heightCM ?? ''}'}
-      ],
-    };
-  }
-
-  Map<String, dynamic> getAttrArgs(GoodsProvider provider) {
-    return provider?.isWindowGauze == true
-        ? getWindowGauzeAttrArgs(provider)
-        : provider?.isWindowRoller == true
-            ? getWindowRollerAttrArgs(provider)
-            : {
-                //空间
-                '1': {
-                  'name': provider?.curRoomAttrBean?.name ?? '',
-                  'id': provider?.curRoomAttrBean?.id ?? ''
-                },
-                //窗型
-                '2': {
-                  'name': provider?.windowPatternStr,
-                  'id':
-                      WindowPatternAttr.patternIdMap[provider?.windowPatternStr]
-                },
-                //窗纱
-                '3': {
-                  'name': provider?.curWindowGauzeAttrBean?.name ?? '',
-                  'id': provider?.curWindowGauzeAttrBean?.id ?? ''
-                },
-                //工艺方式
-                '4': {
-                  'name': provider?.curCraftAttrBean?.name ?? '',
-                  'id': provider?.curCraftAttrBean?.id ?? ''
-                },
-                //型材
-                '5': {
-                  'name': provider?.curPartAttrBean?.name ?? '',
-                  'id': provider?.curPartAttrBean?.id ?? ''
-                },
-                //帘身款式
-                // '6': {},
-                // // 帘身面料
-                // '7': {},
-                //幔头
-                // '8': {'name': '', 'id': ''},
-                '9': [
-                  // {'name': '宽', 'value': provider?.width},
-                  // {'name': '高', 'value': provider?.height},
-                  {'name': '宽', 'value': '${provider?.widthCM ?? ''}'},
-                  {'name': '高', 'value': '${provider?.heightCM ?? ''}'}
-                ],
-                //遮光里布
-                '12': {
-                  'name': provider?.curWindowShadeAttrBean?.name ?? '',
-                  'id': provider?.curWindowShadeAttrBean?.id ?? ''
-                },
-                // 配饰
-                '13': (provider?.curAccessoryAttrBeans?.isEmpty == true
-                        ? [provider?.accessoryAttr?.data?.first]
-                        : provider?.curAccessoryAttrBeans)
-                    ?.map((item) => {'name': item.name, 'id': item.id})
-                    ?.toList()
-              };
-  }
-
   void setCartParams(GoodsProvider goodsProvider) {
     cartParams['is_shade'] = goodsProvider?.isShade == true ? 1 : 0;
     cartParams['estimated_price'] = goodsProvider?.totalPrice;
     cartParams['measure_id'] = goodsProvider?.measureId;
-    cartParams['wc_attr'] = '${getAttrArgs(goodsProvider)}';
+    cartParams['wc_attr'] = '${goodsProvider.getAttrArgs()}';
   }
 
   static Map<String, dynamic> cartParams = {
@@ -940,7 +715,7 @@ class BottomActionButtonBar extends StatelessWidget {
     BuildContext context,
     GoodsProvider provider,
   ) {
-    cartParams.addAll({'wc_attr': jsonEncode(getAttrArgs(provider))});
+    cartParams.addAll({'wc_attr': jsonEncode(provider.getAttrArgs())});
     cartParams
         .addAll({'cart_detail': jsonEncode(getCartDetail(provider?.goods))});
     OTPService.addCart(params: cartParams).then((ZYResponse response) {
@@ -968,15 +743,15 @@ class BottomActionButtonBar extends StatelessWidget {
                       TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
                     ])),
                     ZYRaisedButton('确认选品', () {
-                      if (orderProvider?.hasConfirmMeasureData == false) {
+                      if (orderProvider?.hasConfirmMeasureData == false &&
+                          goodsProvider?.isWindowRoller == false) {
                         return CommonKit.showInfo('请先确认测装数据');
                       }
                       Map<String, dynamic> data = {
                         'num': 1,
-                        'wc_attr': jsonEncode(getAttrArgs(goodsProvider)),
                         'goods_id': goodsProvider?.goodsId,
                         '安装选项': ['${goodsProvider?.curInstallMode ?? ''}'],
-                        '打开方式': goodsProvider?.openModeParams
+                        '打开方式': jsonEncode(goodsProvider?.openModeParams)
                       };
 
                       // data['${goodsProvider?.windowPatternId ?? ''}'] = {
@@ -989,9 +764,10 @@ class BottomActionButtonBar extends StatelessWidget {
                       Map<String, dynamic> params = {
                         'vertical_ground_height': goodsProvider?.dyCMStr,
                         'data': jsonEncode(data),
-                        'order_goods_id': orderProvider?.orderGoodsId
+                        'wc_attr': jsonEncode(goodsProvider.getAttrArgs()),
+                        'order_goods_id': orderProvider?.orderGoodsId,
                       };
-
+                      LogUtil.e(params);
                       orderProvider?.selectProduct(context, params: params);
                     })
                   ],
@@ -1028,7 +804,7 @@ class BottomActionButtonBar extends StatelessWidget {
                           onTap: () {
                             if (!beforePurchase(
                                 goodsProvider, clientProvider, context)) return;
-                            Map map = getAttrArgs(goodsProvider);
+                            Map map = goodsProvider.getAttrArgs();
                             List wrapper = [];
                             map.forEach((key, val) {
                               Map<String, dynamic> tmp = {};

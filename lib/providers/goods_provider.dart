@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
@@ -37,6 +35,7 @@ class GoodsProvider with ChangeNotifier {
   List<PartAttrBean> _initPartAttrBeanList = [];
   RoomAttrBean _curRoomAttrBean;
   OrderGoodsMeasure _measureData;
+  OrderGoodsMeasure _forWindowRollerMeasureData;
 
   Map<String, dynamic> attrParams;
 
@@ -62,6 +61,8 @@ class GoodsProvider with ChangeNotifier {
     return map['text'];
   }
 
+  OrderGoodsMeasure get forWindowRollerMeasureData =>
+      _forWindowRollerMeasureData;
   bool get isWindowGauze => goods?.goodsSpecialType == 3;
   bool get isWindowRoller => goods?.goodsSpecialType == 2;
   int _curWindowPattern = 0;
@@ -77,6 +78,11 @@ class GoodsProvider with ChangeNotifier {
   int _createType = 1;
 
   GoodsProvider();
+
+  set forWindowRollerMeasureData(OrderGoodsMeasure data) {
+    _forWindowRollerMeasureData = data;
+    notifyListeners();
+  }
 
   void filterCraft() {
     List<CraftAttrBean> list = _initCraftAttrBeanList;
@@ -205,6 +211,8 @@ class GoodsProvider with ChangeNotifier {
     _goods = bean;
     _windowGauzeAttr = windowGauzeAttr;
     _craftAttr = craftAttr;
+    _initCraftAttrBeanList?.clear();
+    _initPartAttrBeanList?.clear();
     craftAttr?.data?.forEach((item) {
       if (_initCraftAttrBeanList?.contains(item) == false) {
         _initCraftAttrBeanList?.add(item);
@@ -318,7 +326,7 @@ class GoodsProvider with ChangeNotifier {
       '${WindowPatternAttr.patternsText[curWindowPattern ?? 0]}/${WindowPatternAttr.stylesText[curWindowStyle ?? 0]}/${WindowPatternAttr.typesText[curWindowType ?? 0]}';
   int get windowPatternId => WindowPatternAttr.patternIdMap[windowPatternStr];
   String get measureDataStr =>
-      '${curRoomAttrBean?.name ?? ''}\n宽 ${widthMStr ?? ''}米 高${widthMStr ?? ''}米';
+      '${curRoomAttrBean?.name ?? ''}\n宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米';
 
   int get curInstallOptionIndex => _curInstallOptionIndex;
 
@@ -353,6 +361,22 @@ class GoodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  String get forWindowRollerWidthMstr {
+    String w = forWindowRollerMeasureData?.width ?? '';
+    if (w == null && w?.isNotEmpty != true) return '0.00';
+    double width = double.parse(w ?? '0.00');
+    width = width / 100;
+    return width.toStringAsFixed(2);
+  }
+
+  String get forWindowRollerHeightMstr {
+    String h = forWindowRollerMeasureData?.height ?? '';
+    if (h == null && h?.isNotEmpty != true) return '0.00';
+    double height = double.parse(h ?? '0.00 ');
+    height = height / 100;
+    return height.toStringAsFixed(2);
+  }
+
   String get accText {
     String tmp = curAccessoryAttrBeans
         ?.map((item) => item?.name ?? '')
@@ -366,9 +390,9 @@ class GoodsProvider with ChangeNotifier {
 
   get openModeParams {
     if (curOpenOptionIndex == 2) {
-      return jsonEncode({curOpenMode: checkedSubOption});
+      return {curOpenMode: checkedSubOption};
     }
-    return jsonEncode([curOpenMode]);
+    return [curOpenMode];
   }
 
   Map get checkedSubOption {
@@ -439,6 +463,7 @@ class GoodsProvider with ChangeNotifier {
 
   set curCraftAttrBean(CraftAttrBean bean) {
     _curCraftAttrBean = bean;
+    filterParts();
     notifyListeners();
   }
 
@@ -471,7 +496,6 @@ class GoodsProvider with ChangeNotifier {
         openMode?.isNotEmpty == true &&
         openMode?.contains(WAIT_TO_CONFIRM) == false) {
       initOpenMode(openMode);
-      _hasInitOpenMode = true;
     } else {
       _hasInitOpenMode = false;
     }
@@ -494,6 +518,11 @@ class GoodsProvider with ChangeNotifier {
 
   set curPartAttrBean(PartAttrBean bean) {
     _curPartAttrBean = bean;
+    notifyListeners();
+  }
+
+  set hasInitOpenMode(bool flag) {
+    _hasInitOpenMode = flag;
     notifyListeners();
   }
 
@@ -648,5 +677,103 @@ class GoodsProvider with ChangeNotifier {
     _curWindowStyle = 0;
     _curWindowType = 0;
     WindowPatternAttr.reset();
+  }
+
+  Map<String, dynamic> getWindowGauzeAttrArgs() {
+    return {
+      //工艺方式
+      '1': {
+        'name': curRoomAttrBean?.name ?? '',
+        'id': curRoomAttrBean?.id ?? ''
+      },
+      '4': {
+        'name': curCraftAttrBean?.name ?? '',
+        'id': curCraftAttrBean?.id ?? ''
+      },
+      //型材
+      '5': {
+        'name': curPartAttrBean?.name ?? '',
+        'id': curPartAttrBean?.id ?? ''
+      },
+      '9': [
+        // {'name': '宽', 'value': provider?.width},
+        // {'name': '高', 'value': provider?.height},
+        {'name': '宽', 'value': '${widthCM ?? ''}'},
+        {'name': '高', 'value': '${heightCM ?? ''}'}
+      ],
+      // 配饰
+      '13': (curAccessoryAttrBeans?.isEmpty == true
+              ? [accessoryAttr?.data?.first]
+              : curAccessoryAttrBeans)
+          ?.map((item) => {'name': item.name, 'id': item.id})
+          ?.toList()
+    };
+  }
+
+  Map<String, dynamic> getWindowRollerAttrArgs() {
+    return {};
+  }
+
+  Map<String, dynamic> getAttrArgs() {
+    return isWindowGauze == true
+        ? getWindowGauzeAttrArgs()
+        : isWindowRoller == true
+            ? getWindowRollerAttrArgs()
+            : {
+                //空间
+                '1': {
+                  'name': curRoomAttrBean?.name ?? '',
+                  'id': curRoomAttrBean?.id ?? ''
+                },
+                //窗型
+                '2': {
+                  'name': windowPatternStr,
+                  'id': WindowPatternAttr.patternIdMap[windowPatternStr]
+                },
+                //窗纱
+                '3': {
+                  'name': curWindowGauzeAttrBean?.name ?? '',
+                  'id': curWindowGauzeAttrBean?.id ?? ''
+                },
+                //工艺方式
+                '4': {
+                  'name': curCraftAttrBean?.name ?? '',
+                  'id': curCraftAttrBean?.id ?? ''
+                },
+                //型材
+                '5': {
+                  'name': curPartAttrBean?.name ?? '',
+                  'id': curPartAttrBean?.id ?? ''
+                },
+                //帘身款式
+                // '6': {},
+                // // 帘身面料
+                // '7': {},
+                //幔头
+                // '8': {'name': '', 'id': ''},
+                '9': [
+                  // {'name': '宽', 'value': provider?.width},
+                  // {'name': '高', 'value': provider?.height},
+                  {'name': '宽', 'value': '${widthCM ?? ''}'},
+                  {'name': '高', 'value': '${heightCM ?? ''}'}
+                ],
+                //遮光里布
+                '12': {
+                  'name': curWindowShadeAttrBean?.name ?? '',
+                  'id': curWindowShadeAttrBean?.id ?? ''
+                },
+                // 配饰
+                '13': (curAccessoryAttrBeans?.isEmpty == true
+                        ? [accessoryAttr?.data?.first]
+                        : curAccessoryAttrBeans)
+                    ?.map((item) => {'name': item.name, 'id': item.id})
+                    ?.toList()
+              };
+  }
+
+  void initMeasureDataForWindowRoller() {
+    _width = forWindowRollerMeasureData?.width;
+    _height = forWindowRollerMeasureData?.height;
+    _dy = forWindowRollerMeasureData?.verticalGroundHeight;
   }
 }

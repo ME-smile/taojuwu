@@ -1,9 +1,11 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/send_sms_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 
 class ForgetPwdPage extends StatefulWidget {
@@ -14,61 +16,28 @@ class ForgetPwdPage extends StatefulWidget {
 }
 
 class _ForgetPwdPageState extends State<ForgetPwdPage> {
-  TextEditingController oldPwdInput;
-  TextEditingController newPwdInput;
-  FocusNode oldPwdFocusNode;
-  FocusNode newPwdFocusNode;
+  TextEditingController telInput;
+  TextEditingController smsInput;
+  FocusNode telInputFocusNode;
+  FocusNode smsInputFocusNode;
   @override
   void initState() {
     super.initState();
-    oldPwdInput = TextEditingController();
-    newPwdInput = TextEditingController();
-    oldPwdFocusNode = FocusNode();
-    newPwdFocusNode = FocusNode();
+    smsInput = TextEditingController();
+    smsInput = TextEditingController();
+    telInputFocusNode = FocusNode();
+    smsInputFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     super.dispose();
-    oldPwdInput?.dispose();
-    oldPwdFocusNode?.dispose();
-    newPwdInput?.dispose();
-    newPwdFocusNode?.dispose();
+    telInput?.dispose();
+    smsInput?.dispose();
+    telInputFocusNode?.dispose();
+    smsInputFocusNode?.dispose();
   }
 
-  String oldPwd;
-  String newPwd;
-
-  bool beforeSendData() {
-    oldPwd = oldPwdInput?.text?.trim();
-    newPwd = newPwdInput?.text?.trim();
-
-    if (oldPwd?.isNotEmpty != true || newPwd?.isNotEmpty != true) {
-      CommonKit.showInfo('密码不能为空哦');
-      return false;
-    }
-    if (oldPwd == newPwd) {
-      CommonKit.showInfo('新旧密码不能一样哦');
-      return false;
-    }
-    return true;
-  }
-
-  void resetPwd() {
-    if (beforeSendData() == false) return;
-    OTPService.resetPwd(
-            params: {'old_password': oldPwd, 'new_password': newPwd})
-        .then((ZYResponse response) {
-      if (response?.valid == true) {
-        Navigator.of(context).pop();
-      } else {
-        CommonKit.showInfo(response?.message ?? '');
-      }
-    }).catchError((err) => err);
-  }
-
-  bool _isOldPwdCypher = true;
-  bool _isNewPwdCypher = true;
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -79,9 +48,9 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
         actions: <Widget>[
           FlatButton(
               onPressed: () {
-                resetPwd();
+                // resetPwd();
               },
-              child: Text('完成'))
+              child: Text('下一步'))
         ],
       ),
       body: SingleChildScrollView(
@@ -92,52 +61,55 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
             children: <Widget>[
               VSpacing(80),
               Text(
-                '重置密码',
+                '找回密码',
                 style: textTheme.title.copyWith(fontWeight: FontWeight.w700),
               ),
               VSpacing(30),
               TextField(
-                controller: oldPwdInput,
-                obscureText: _isOldPwdCypher,
-                focusNode: oldPwdFocusNode,
+                controller: telInput,
+                focusNode: telInputFocusNode,
                 decoration: InputDecoration(
-                  hintText: '请输入旧密码',
-                  suffixIcon: IconButton(
-                      icon: Icon(
-                        _isOldPwdCypher
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: const Color(0xFFCCCCCC),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isOldPwdCypher = !_isOldPwdCypher;
-                        });
-                      }),
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(0xFFC7C8CB), width: .8)),
-                ),
+                    hintText: '请输入手机号',
+                    enabledBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Color(0xFFC7C8CB), width: .1)),
+                    icon: Container(
+                      child: Text('+86'),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(
+                                  color: themeData.dividerColor, width: .5))
+                          // border: Border.fromBorderSide(BorderSide(color: ))
+                          ),
+                    )),
               ),
               VSpacing(10),
               TextField(
-                controller: newPwdInput,
-                obscureText: _isNewPwdCypher,
-                focusNode: newPwdFocusNode,
+                controller: smsInput,
+                focusNode: smsInputFocusNode,
                 decoration: InputDecoration(
-                  hintText: '请输入旧密码',
-                  suffixIcon: IconButton(
-                      icon: Icon(
-                        _isNewPwdCypher
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: const Color(0xFFCCCCCC),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _isNewPwdCypher = !_isNewPwdCypher;
-                        });
-                      }),
+                  hintText: '请输入验证码',
+                  suffixIcon: SendSmsButton(
+                    callback: () async {
+                      String tel = telInput.text;
+                      if (tel.trim().isEmpty) {
+                        return CommonKit.showInfo('手机号不能为空哦');
+                      }
+                      if (!RegexUtil.isMobileExact(tel)) {
+                        return CommonKit.showInfo('请输入正确的手机号');
+                      }
+                      return OTPService.getSms(context, {'mobile': tel})
+                          .then((ZYResponse response) {
+                        if (response.valid) {
+                          CommonKit.showToast('验证码发送成功,请注意查收');
+                        } else {
+                          CommonKit.showToast('验证码发送失败,请稍后重试');
+                        }
+                      }).catchError((err) => err);
+                    },
+                  ),
                   enabledBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Color(0xFFC7C8CB), width: .8)),

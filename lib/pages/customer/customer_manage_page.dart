@@ -7,9 +7,9 @@ import 'package:taojuwu/pages/customer/widgets/menu_entry.dart';
 import 'package:taojuwu/providers/client_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/search_button.dart';
 import 'package:taojuwu/widgets/user_add_button.dart';
-import 'package:taojuwu/widgets/zy_future_builder.dart';
 
 class CustomerManagePage extends StatefulWidget {
   CustomerManagePage({Key key}) : super(key: key);
@@ -22,12 +22,28 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
   Map<String, dynamic> params = {
     'page_size': 20,
     'page_index': 1,
-    'keyword': 0
+    'keyword': ''
   };
+
+  bool isLoading = true;
   ScrollController controller;
   @override
   void initState() {
     super.initState();
+    OTPService.userList(context, params: params)
+        .then((CustomerModelListResp response) {
+      customerModelWrapper = response?.data;
+      _handleData(customerModelWrapper);
+      beans = customerModelWrapper?.data;
+      _handleList(beans);
+      setState(() {
+        isLoading = false;
+      });
+    }).catchError((err) {
+      setState(() {
+        isLoading = false;
+      });
+    });
     controller = ScrollController();
   }
 
@@ -174,19 +190,13 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
           UserAddButton(),
         ],
       ),
-      body: SingleChildScrollView(
-        controller: controller,
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          child: ZYFutureBuilder(
-              futureFunc: OTPService.userList,
-              params: params,
-              builder: (BuildContext context, CustomerModelListResp response) {
-                customerModelWrapper = response?.data;
-                _handleData(customerModelWrapper);
-                beans = customerModelWrapper?.data;
-                _handleList(beans);
-                return Container(
+      body: isLoading
+          ? LoadingCircle()
+          : SingleChildScrollView(
+              controller: controller,
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: Container(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -224,10 +234,9 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                       )),
                     ],
                   ),
-                );
-              }),
-        ),
-      ),
+                ),
+              ),
+            ),
     );
   }
 }

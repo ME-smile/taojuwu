@@ -8,7 +8,6 @@ import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/pages/order/utils/order_kit.dart';
 import 'package:taojuwu/pages/order/widgets/order_attr_card.dart';
 import 'package:taojuwu/providers/order_detail_provider.dart';
-import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
@@ -18,8 +17,7 @@ import 'package:taojuwu/widgets/zy_outline_button.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final int id;
-  final int tab;
-  OrderDetailPage({Key key, this.id, this.tab: 0}) : super(key: key);
+  OrderDetailPage({Key key, this.id}) : super(key: key);
 
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
@@ -41,114 +39,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
   bool isShowDialog(String title) {
     return !['售后维权'].contains(title);
-  }
-
-  Map<String, Function> createFuncMap(BuildContext context) {
-    return {
-      '售后维权': () {
-        RouteHandler.goAfterSaleServicePage(context);
-      },
-      '提醒审核': () {
-        OrderKit.remindOrder(context, '是否提醒审核', id, 1);
-      },
-      '提醒测量': () {
-        OrderKit.remindOrder(context, '是否提醒测量', id, 2);
-      },
-      '提醒安装': () {},
-      '去选品': () {},
-      '': () {}
-    };
-  }
-
-  Map<int, Widget> createBottomActionMap(
-      BuildContext context, OrderDetailProvider provider) {
-    return {
-      0: Container(),
-      15: Container(),
-      1: Container(
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            buildCancelOrderButton(context)
-            // buildRemindButton(context, '提醒审核', '是否提醒审核', 1),
-          ],
-        ),
-      ),
-      2: Container(
-        color: Theme.of(context).primaryColor,
-        child: Consumer<OrderDetailProvider>(
-          builder: (BuildContext context,
-              OrderDetailProvider orderDetailProvider, _) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                ZYOutlineButton(
-                  '取消订单0000',
-                  () {
-                    OrderKit.cancelOrder(
-                      context,
-                      id,
-                    );
-                  },
-                  isActive: orderDetailProvider?.canCancelOrder,
-                ),
-
-                // buildRemindButton(context, '提醒测量', '是否提醒测量', 2),
-              ],
-            );
-          },
-        ),
-      ),
-      3: Container(
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            buildCancelOrderButton(context)
-            // buildRemindButton(context, '提醒测量', '是否提醒测量', 2),
-          ],
-        ),
-      ),
-      6: Container(
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            buildRemindButton(context, '提醒安装', '是否提醒安装', -1),
-            // buildCommonButton(context, '提醒安装', createFuncMap(context)['提醒安装']())
-            // buildRemindButton(context, '提醒测量', '是否提醒测量', 2),
-          ],
-        ),
-      ),
-      8: Container(
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            buildRemindButton(context, '提醒安装', '是否提醒安装', -1),
-            // buildRemindButton(context, '提醒测量', '是否提醒测量', 2),
-          ],
-        ),
-      ),
-      14: Container(
-        color: Theme.of(context).primaryColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            buildCancelOrderButton(context),
-            buildButton(
-              context,
-              '确定',
-              () {
-                OrderKit.confirmToSelect(context, {'order_id': id});
-              },
-            ),
-            // buildRemindButton(context, '提醒测量', '是否提醒测量', 2),
-          ],
-        ),
-      ),
-    };
   }
 
   String getTimeStr(var milliSeconds) {
@@ -178,25 +68,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           isActive: orderDetailProvider?.canCancelOrder,
         );
       },
-    );
-  }
-
-  Widget buildCommonButton(
-    BuildContext context,
-    String buttonText,
-    Function callback,
-  ) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-      child: OutlineButton(
-        onPressed: () {
-          // OrderKit.remindOrder(context, title, id, status);
-          createFuncMap(context)[buttonText ?? '']();
-        },
-        child: Text(
-          buttonText,
-        ),
-      ),
     );
   }
 
@@ -432,131 +303,263 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme accentTextTheme = themeData.accentTextTheme;
-
-    return WillPopScope(
-        child: ZYFutureBuilder(
-            futureFunc: OTPService.orderDetail,
-            params: {'order_id': id},
-            builder: (BuildContext ctx, OrderDerailModelResp response) {
-              OrderDetailModelWrppaer wrppaer = response?.data;
-              OrderDetailModel model = wrppaer.orderDetailModel;
-              return ChangeNotifierProvider<OrderDetailProvider>(
-                create: (_) => OrderDetailProvider(model: model),
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: Text('订单详情'),
-                    centerTitle: true,
-                  ),
-                  body: SingleChildScrollView(
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding:
-                              EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                          height: UIKit.height(220),
-                          color: themeData.accentColor,
-                          child: Text.rich(TextSpan(
-                              text:
-                                  '${Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['title']}\n\n',
-                              style: accentTextTheme.title
-                                  .copyWith(fontSize: UIKit.sp(24)),
-                              children: [
-                                TextSpan(
-                                    text: Constants.ORDER_STATUS_TIP_MAP[
-                                        model?.orderStatus ?? 0]['subtitle'],
-                                    style: accentTextTheme.body1)
-                              ])),
-                        ),
-                        Container(
-                          color: themeData.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: UIKit.width(20),
-                              vertical: UIKit.height(20)),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
-                                ZYIcon.add,
-                                color: const Color(0xFF171717),
-                              ),
-                              Expanded(
-                                  child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                      '收货人: ${model?.clientName ?? ''}  ${model?.receiverMobile ?? ''}'),
-                                  Text(model?.receiverAddress ?? '')
-                                ],
-                              )),
-                            ],
+    return ZYFutureBuilder(
+        futureFunc: OTPService.orderDetail,
+        params: {'order_id': id},
+        builder: (BuildContext ctx, OrderDerailModelResp response) {
+          OrderDetailModelWrppaer wrppaer = response?.data;
+          OrderDetailModel model = wrppaer.orderDetailModel;
+          return ChangeNotifierProvider<OrderDetailProvider>(
+            create: (_) => OrderDetailProvider(
+              model: model,
+            ),
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text('订单详情'),
+                centerTitle: true,
+              ),
+              body: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                      height: UIKit.height(220),
+                      color: themeData.accentColor,
+                      child: Text.rich(TextSpan(
+                          text:
+                              '${Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['title']}\n\n',
+                          style: accentTextTheme.title
+                              .copyWith(fontSize: UIKit.sp(24)),
+                          children: [
+                            TextSpan(
+                                text: Constants.ORDER_STATUS_TIP_MAP[
+                                    model?.orderStatus ?? 0]['subtitle'],
+                                style: accentTextTheme.body1)
+                          ])),
+                    ),
+                    Container(
+                      color: themeData.primaryColor,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: UIKit.width(20),
+                          vertical: UIKit.height(20)),
+                      child: Row(
+                        children: <Widget>[
+                          Icon(
+                            ZYIcon.add,
+                            color: const Color(0xFF171717),
                           ),
-                        ),
-                        VSpacing(20),
-                        Container(
-                          color: themeData.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: UIKit.width(20),
-                              vertical: UIKit.height(20)),
-                          child: buildinstallInfoTip(model),
-                        ),
-                        VSpacing(20),
-                        _orderGoodsDetail(context, model),
-                        VSpacing(20),
-                        model?.isShowManuscript == true
-                            ? _measureManuscript(context, model)
-                            : Container(),
-                        VSpacing(20),
-                        Container(
-                          color: themeData.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: UIKit.width(20),
-                              vertical: UIKit.height(20)),
-                          alignment: Alignment.centerLeft,
-                          child: Column(
+                          Expanded(
+                              child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                '订单信息',
-                              ),
-                              _orderInfoBar(
-                                  context, '订单编号', model?.orderNo ?? ''),
-                              _orderInfoBar(context, '创建时间',
-                                  getTimeStr(model?.createTime)),
-                              Offstage(
-                                offstage: model?.hasMeasured == false,
-                                child: _orderInfoBar(context, '测量时间',
-                                    getTimeStr(model?.realityMeasureTime)),
-                              ),
-                              Offstage(
-                                offstage: model?.hasInstalled == false,
-                                child: _orderInfoBar(context, '安装时间',
-                                    getTimeStr(model?.realityInstallTime)),
-                              ),
-                              _orderInfoBar(
-                                  context, '下单人', model?.userName ?? ''),
-                              _orderInfoBar(
-                                  context, '客户名', model?.clientName ?? ''),
-                              _orderInfoBar(
-                                  context, '下单门店', model?.shopName ?? ''),
+                                  '收货人: ${model?.clientName ?? ''}  ${model?.receiverMobile ?? ''}'),
+                              Text(model?.address ?? '')
                             ],
-                          ),
-                        ),
-                        VSpacing(50)
-                      ],
+                          )),
+                        ],
+                      ),
                     ),
-                  ),
-                  bottomNavigationBar: BottomActionButtonBar(
-                    orderId: id,
-                    orderStatus: model?.orderStatus ?? 0,
-                  ),
+                    VSpacing(20),
+                    Container(
+                      color: themeData.primaryColor,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: UIKit.width(20),
+                          vertical: UIKit.height(20)),
+                      child: buildinstallInfoTip(model),
+                    ),
+                    VSpacing(20),
+                    _orderGoodsDetail(context, model),
+                    VSpacing(20),
+                    model?.isShowManuscript == true
+                        ? _measureManuscript(context, model)
+                        : Container(),
+                    VSpacing(20),
+                    Container(
+                      color: themeData.primaryColor,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: UIKit.width(20),
+                          vertical: UIKit.height(20)),
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            '订单信息',
+                          ),
+                          _orderInfoBar(context, '订单编号', model?.orderNo ?? ''),
+                          _orderInfoBar(
+                              context, '创建时间', getTimeStr(model?.createTime)),
+                          Offstage(
+                            offstage: model?.hasMeasured == false,
+                            child: _orderInfoBar(context, '测量时间',
+                                getTimeStr(model?.realityMeasureTime)),
+                          ),
+                          Offstage(
+                            offstage: model?.hasInstalled == false,
+                            child: _orderInfoBar(context, '安装时间',
+                                getTimeStr(model?.realityInstallTime)),
+                          ),
+                          _orderInfoBar(context, '下单人', model?.userName ?? ''),
+                          _orderInfoBar(
+                              context, '客户名', model?.clientName ?? ''),
+                          _orderInfoBar(context, '下单门店', model?.shopName ?? ''),
+                        ],
+                      ),
+                    ),
+                    VSpacing(50)
+                  ],
                 ),
-              );
-            }),
-        onWillPop: () {
-          Navigator.pop(context, widget.tab);
-          return Future.value(false);
+              ),
+              bottomNavigationBar: BottomActionButtonBar(
+                orderId: id,
+                orderStatus: model?.orderStatus ?? 0,
+              ),
+            ),
+          );
         });
+    // return ChangeNotifierProvider<OrderDetailProvider>(
+    //   create: (_) => OrderDetailProvider(),
+    //   child: Consumer<OrderDetailProvider>(
+    //     builder: (BuildContext context, OrderDetailProvider provider, _) {
+    //       provider?.isRefresh = isRefresh;
+    //       print('lalalalalal');
+    //       return ValueListenableBuilder(
+    //           valueListenable: isRefresh,
+    //           builder: (BuildContext context, bool _isRefresh, _) {
+    //             return ZYFutureBuilder(
+    //                 futureFunc: OTPService.orderDetail,
+    //                 params: {'order_id': id},
+    //                 builder: (BuildContext ctx, OrderDerailModelResp response) {
+    //                   OrderDetailModelWrppaer wrppaer = response?.data;
+    //                   OrderDetailModel model = wrppaer.orderDetailModel;
+    //                   provider?.model = model;
+    //                   return Scaffold(
+    //                     appBar: AppBar(
+    //                       title: Text('订单详情'),
+    //                       centerTitle: true,
+    //                     ),
+    //                     body: SingleChildScrollView(
+    //                       child: Column(
+    //                         children: <Widget>[
+    //                           Container(
+    //                             alignment: Alignment.centerLeft,
+    //                             padding: EdgeInsets.symmetric(
+    //                                 horizontal: UIKit.width(20)),
+    //                             height: UIKit.height(220),
+    //                             color: themeData.accentColor,
+    //                             child: Text.rich(TextSpan(
+    //                                 text:
+    //                                     '${Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['title']}\n\n',
+    //                                 style: accentTextTheme.title
+    //                                     .copyWith(fontSize: UIKit.sp(24)),
+    //                                 children: [
+    //                                   TextSpan(
+    //                                       text: Constants.ORDER_STATUS_TIP_MAP[
+    //                                               model?.orderStatus ?? 0]
+    //                                           ['subtitle'],
+    //                                       style: accentTextTheme.body1)
+    //                                 ])),
+    //                           ),
+    //                           Container(
+    //                             color: themeData.primaryColor,
+    //                             padding: EdgeInsets.symmetric(
+    //                                 horizontal: UIKit.width(20),
+    //                                 vertical: UIKit.height(20)),
+    //                             child: Row(
+    //                               children: <Widget>[
+    //                                 Icon(
+    //                                   ZYIcon.add,
+    //                                   color: const Color(0xFF171717),
+    //                                 ),
+    //                                 Expanded(
+    //                                     child: Column(
+    //                                   mainAxisAlignment:
+    //                                       MainAxisAlignment.start,
+    //                                   crossAxisAlignment:
+    //                                       CrossAxisAlignment.start,
+    //                                   children: <Widget>[
+    //                                     Text(
+    //                                         '收货人: ${model?.clientName ?? ''}  ${model?.receiverMobile ?? ''}'),
+    //                                     Text(model?.receiverAddress ?? '')
+    //                                   ],
+    //                                 )),
+    //                               ],
+    //                             ),
+    //                           ),
+    //                           VSpacing(20),
+    //                           Container(
+    //                             color: themeData.primaryColor,
+    //                             padding: EdgeInsets.symmetric(
+    //                                 horizontal: UIKit.width(20),
+    //                                 vertical: UIKit.height(20)),
+    //                             child: buildinstallInfoTip(model),
+    //                           ),
+    //                           VSpacing(20),
+    //                           _orderGoodsDetail(context, model),
+    //                           VSpacing(20),
+    //                           model?.isShowManuscript == true
+    //                               ? _measureManuscript(context, model)
+    //                               : Container(),
+    //                           VSpacing(20),
+    //                           Container(
+    //                             color: themeData.primaryColor,
+    //                             padding: EdgeInsets.symmetric(
+    //                                 horizontal: UIKit.width(20),
+    //                                 vertical: UIKit.height(20)),
+    //                             alignment: Alignment.centerLeft,
+    //                             child: Column(
+    //                               crossAxisAlignment: CrossAxisAlignment.start,
+    //                               children: <Widget>[
+    //                                 Text(
+    //                                   '订单信息',
+    //                                 ),
+    //                                 _orderInfoBar(
+    //                                     context, '订单编号', model?.orderNo ?? ''),
+    //                                 _orderInfoBar(context, '创建时间',
+    //                                     getTimeStr(model?.createTime)),
+    //                                 Offstage(
+    //                                   offstage: model?.hasMeasured == false,
+    //                                   child: _orderInfoBar(
+    //                                       context,
+    //                                       '测量时间',
+    //                                       getTimeStr(
+    //                                           model?.realityMeasureTime)),
+    //                                 ),
+    //                                 Offstage(
+    //                                   offstage: model?.hasInstalled == false,
+    //                                   child: _orderInfoBar(
+    //                                       context,
+    //                                       '安装时间',
+    //                                       getTimeStr(
+    //                                           model?.realityInstallTime)),
+    //                                 ),
+    //                                 _orderInfoBar(
+    //                                     context, '下单人', model?.userName ?? ''),
+    //                                 _orderInfoBar(context, '客户名',
+    //                                     model?.clientName ?? ''),
+    //                                 _orderInfoBar(
+    //                                     context, '下单门店', model?.shopName ?? ''),
+    //                               ],
+    //                             ),
+    //                           ),
+    //                           VSpacing(50)
+    //                         ],
+    //                       ),
+    //                     ),
+    //                     bottomNavigationBar: BottomActionButtonBar(
+    //                       orderId: id,
+    //                       orderStatus: model?.orderStatus ?? 0,
+    //                     ),
+    //                   );
+    //                 });
+    //           });
+    //     },
+    //   ),
+    // );
   }
 }
 

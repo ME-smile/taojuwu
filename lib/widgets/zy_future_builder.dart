@@ -16,13 +16,14 @@ class ZYFutureBuilder<T> extends StatefulWidget {
   final Function futureFunc;
   final Map<String, dynamic> params;
   final Widget loadingWidget;
-
-  ZYFutureBuilder({
-    @required this.futureFunc,
-    @required this.builder,
-    this.params,
-    Widget loadingWidget,
-  }) : loadingWidget = loadingWidget ?? LoadingCircle();
+  final GlobalKey key;
+  ZYFutureBuilder(
+      {@required this.futureFunc,
+      @required this.builder,
+      this.params,
+      Widget loadingWidget,
+      this.key})
+      : loadingWidget = loadingWidget ?? LoadingCircle();
 
   @override
   _ZYFutureBuilderState<T> createState() => _ZYFutureBuilderState<T>();
@@ -36,11 +37,11 @@ class _ZYFutureBuilderState<T> extends State<ZYFutureBuilder<T>> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((call) {
-      _request();
+      request();
     });
   }
 
-  void _request() {
+  request() {
     if (mounted) {
       setState(() {
         if (widget.params == null)
@@ -58,7 +59,7 @@ class _ZYFutureBuilderState<T> extends State<ZYFutureBuilder<T>> {
     // 如果方法不一样了，那么则重新请求
     if (oldWidget.futureFunc != widget.futureFunc) {
       WidgetsBinding.instance.addPostFrameCallback((call) {
-        _request();
+        request();
       });
     }
 
@@ -69,7 +70,7 @@ class _ZYFutureBuilderState<T> extends State<ZYFutureBuilder<T>> {
       if (oldParams != widget.params.values.join()) {
         oldParams = widget.params.values.join();
         WidgetsBinding.instance.addPostFrameCallback((call) {
-          _request();
+          request();
         });
       }
     }
@@ -94,7 +95,7 @@ class _ZYFutureBuilderState<T> extends State<ZYFutureBuilder<T>> {
                   } else if (snapshot.hasError) {
                     return NetworkErrorWidget(
                       callback: () {
-                        _request();
+                        request();
                       },
                     );
                   }

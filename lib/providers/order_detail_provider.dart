@@ -3,8 +3,7 @@ import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/pages/order/utils/order_kit.dart';
 
 class OrderDetailProvider with ChangeNotifier {
-  final OrderDetailModel model;
-
+  OrderDetailModel model;
   bool _isMinus = true;
 
   bool get isMinus => _isMinus;
@@ -74,7 +73,9 @@ class OrderDetailProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  OrderDetailProvider({this.model});
+  OrderDetailProvider({
+    this.model,
+  });
 
   List<OrderGoods> get orderGoods => model?.orderGoods ?? [];
 

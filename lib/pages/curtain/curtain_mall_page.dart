@@ -7,6 +7,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/models/shop/product_tag_model.dart';
+import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -324,18 +325,25 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       CurtainProductListResp curtainProductListResp = data[0];
       TagListResp tagListResp = data[1];
 
-      setState(() {
-        beanData = curtainProductListResp?.data;
-        wrapper = beanData?.goodsList;
-        goodsList = wrapper?.data;
-        tagWrapper = tagListResp?.data;
-        isLoading = false;
-        int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
-        int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
-        totalPage = mod > 0 ? pages + 1 : pages;
-        print(totalPage);
-      });
-    }).catchError((err) => err);
+      if (mounted) {
+        setState(() {
+          beanData = curtainProductListResp?.data;
+          wrapper = beanData?.goodsList;
+          goodsList = wrapper?.data;
+          tagWrapper = tagListResp?.data;
+          isLoading = false;
+          int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
+          int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
+          totalPage = mod > 0 ? pages + 1 : pages;
+        });
+      }
+    }).catchError((err) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
   }
 
   void requestGoodsData() {
@@ -561,7 +569,12 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           Navigator.of(context).pop();
           OrderProvider orderProvider =
               Provider.of<OrderProvider>(context, listen: false);
+          GoodsProvider goodsProvider =
+              Provider.of<GoodsProvider>(context, listen: false);
+          goodsProvider?.clearGoodsInfo();
           orderProvider?.orderType = 1;
+          orderProvider?.curOrderGoods = null;
+          orderProvider.hasConfirmMeasureData = false;
           return Future.value(false);
         });
   }

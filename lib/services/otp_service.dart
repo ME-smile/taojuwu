@@ -247,6 +247,7 @@ class OTPService {
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.orderList, params: params);
+    print(OrderModelListResp.fromMap(response.data));
     return OrderModelListResp.fromMap(response.data);
   }
 

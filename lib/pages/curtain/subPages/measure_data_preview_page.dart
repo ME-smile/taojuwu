@@ -31,14 +31,15 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
     OTPService.measureData(context,
             params: {'order_goods_id': orderProvider?.orderGoodsId})
         .then((OrderGoodsMeasure data) {
+      if (goodsProvider?.dy == '0.0') {
+        goodsProvider?.dy = data?.verticalGroundHeight;
+      }
+      goodsProvider?.partName = data?.partsName;
       setState(() {
         measureData = data;
         isLoading = false;
         // goodsProvider?.width = measureData?.width;
         // goodsProvider?.height = measureData?.height;
-        if (goodsProvider?.dy == '0.0') {
-          goodsProvider?.dy = measureData?.verticalGroundHeight;
-        }
       });
     }).catchError((err) => err);
   }
@@ -226,10 +227,13 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                     Row(
                                       children: <Widget>[
                                         buildText(
-                                            '打开方式:${goodsProvider?.hasInitOpenMode == true ? goodsProvider?.curOpenMode : '打开方式待确定'}'),
+                                            '打开方式:${goodsProvider?.hasInitOpenMode == true ? goodsProvider?.curOpenMode : measureData?.openType}'),
                                         Text(goodsProvider?.hasInitOpenMode ==
                                                 true
-                                            ? '(原${measureData?.openType ?? ''})'
+                                            ? goodsProvider?.curOpenMode !=
+                                                    measureData?.openType
+                                                ? '(原${measureData?.openType ?? ''})'
+                                                : ''
                                             : ''),
                                         InkWell(
                                           child: Icon(
@@ -288,12 +292,14 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                       bottomNavigationBar: ZYSubmitButton('确认', () {
                         provider?.hasConfirmMeasureData = true;
                         goodsProvider?.initSize(measureData);
+                        goodsProvider?.hasInit = false;
                         // reset(provider);
                         Navigator.of(context).pop();
                       })),
                   onWillPop: () {
                     // reset(provider);
                     goodsProvider?.resetSize();
+                    goodsProvider?.hasInitOpenMode = false;
                     Navigator.of(context).pop();
                     return Future.value(false);
                   });

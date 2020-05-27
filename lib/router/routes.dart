@@ -39,7 +39,7 @@ class Routes {
   static const String collectList = '/collectList';
 
   static const String resetPwd = '/resetPwd';
-
+  static const String forgetPwd = 'forgetPwd';
   static const String version = '/version';
 
   static const String refund = '/refund';
@@ -87,5 +87,6 @@ class Routes {
     router.define(resetPwd, handler: RouteHandler.resetPwd);
     router.define(version, handler: RouteHandler.version);
     router.define(refund, handler: RouteHandler.refund);
+    router.define(forgetPwd, handler: RouteHandler.forgetPwd);
   }
 }

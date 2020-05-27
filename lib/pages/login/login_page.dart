@@ -270,7 +270,10 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: InputDecoration(
                             hintText: '请输入密码',
                             suffixIcon: FlatButton(
-                                onPressed: null, child: Text('忘记密码'))),
+                                onPressed: () {
+                                  RouteHandler.goForgetPwdPage(context);
+                                },
+                                child: Text('忘记密码'))),
                       ),
               ],
             ),

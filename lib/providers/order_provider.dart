@@ -44,6 +44,7 @@ class OrderProvider with ChangeNotifier {
     return sum;
   }
 
+  bool get hasOrderGoodsId => orderGoodsId != null;
   int get orderGoodsId => _curOrderGoods?.orderGoodsId;
   int get orderId => _orderId;
   bool get isMeasureOrder => _orderType == 2;
@@ -63,6 +64,8 @@ class OrderProvider with ChangeNotifier {
       '';
   String get cartId =>
       orderGoods?.map((item) => item.cartId)?.toList()?.join(',');
+  String get dy =>
+      '${Provider?.of<GoodsProvider>(context, listen: false)?.dyCMStr}';
   List<String> get attr => orderGoods?.map((item) => item.attr)?.toList() ?? [];
   bool get hasConfirmMeasureData => _hasConfirmMeasureData;
 
@@ -212,6 +215,7 @@ class OrderProvider with ChangeNotifier {
         'order_earnest_money': deposit,
         'client_uid': clientUid,
         'shop_id': shopId,
+        'vertical_ground_height': dy,
         'measure_id':
             '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
         'measure_time': measureTimeStr,
@@ -260,7 +264,7 @@ class OrderProvider with ChangeNotifier {
       'order_window_num': windowNum,
     }).then((ZYResponse response) {
       if (response.valid) {
-        RouteHandler.goOrderCommitSuccessPage(ctx, clientUid);
+        RouteHandler.goOrderCommitSuccessPage(ctx, clientUid, orderType: 2);
         clientProvider?.clearClientInfo();
         clearOrderData();
       } else {
@@ -278,6 +282,10 @@ class OrderProvider with ChangeNotifier {
     _orderId = provider?.model?.orderId;
     _curOrderGoods = orderGoods;
     _orderType = 2;
+    GoodsProvider goodsProvider =
+        Provider.of<GoodsProvider>(context, listen: false);
+    goodsProvider?.forWindowRollerMeasureData = orderGoods?.orderGoodsMeasure;
+    goodsProvider?.dy = orderGoods?.orderGoodsMeasure?.verticalGroundHeight;
     // _orderGoodsMeasure = orderGoods?.orderGoodsMeasure;
     // goodsProvider?.measureData = _orderGoodsMeasure;
     // goodsProvider?.initSize(_orderGoodsMeasure
@@ -321,6 +329,8 @@ class OrderProvider with ChangeNotifier {
 
   void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
     OTPService.selectProduct(params: params).then((ZYResponse response) {
+      print(params);
+      print(response);
       if (response.valid) {
         OrderProvider orderProvider =
             Provider.of<OrderProvider>(context, listen: false);
