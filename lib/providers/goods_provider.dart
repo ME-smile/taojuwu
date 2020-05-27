@@ -711,7 +711,19 @@ class GoodsProvider with ChangeNotifier {
   }
 
   Map<String, dynamic> getWindowRollerAttrArgs() {
-    return {};
+    return {
+      //窗型
+      '2': {
+        'name': windowPatternStr,
+        'id': WindowPatternAttr.patternIdMap[windowPatternStr]
+      },
+      '9': [
+        // {'name': '宽', 'value': provider?.width},
+        // {'name': '高', 'value': provider?.height},
+        {'name': '宽', 'value': '${widthCM ?? ''}'},
+        {'name': '高', 'value': '${heightCM ?? ''}'}
+      ],
+    };
   }
 
   Map<String, dynamic> getAttrArgs() {

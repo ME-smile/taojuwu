@@ -213,6 +213,9 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                                         onPressed: () {
                                                           goodsProvider?.dy =
                                                               tmp;
+                                                          measureData
+                                                                  ?.verticalGroundHeight =
+                                                              tmp;
                                                           Navigator.of(context)
                                                               .pop();
                                                         },
@@ -300,6 +303,7 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                     // reset(provider);
                     goodsProvider?.resetSize();
                     goodsProvider?.hasInitOpenMode = false;
+                    provider?.hasConfirmMeasureData = false;
                     Navigator.of(context).pop();
                     return Future.value(false);
                   });

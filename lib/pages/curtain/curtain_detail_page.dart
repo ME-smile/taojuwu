@@ -257,9 +257,9 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                       String h = heightInputController?.text?.trim();
                       if (w?.isNotEmpty != true ||
                           h?.isNotEmpty != true ||
-                          double.parse(w) == 0 ||
-                          double.parse(h) == 0) {
-                        CommonKit.showInfo('请输入正确的尺寸');
+                          double.parse(w ?? '0.00') == 0 ||
+                          double.parse(h ?? '0.00') == 0) {
+                        return CommonKit.showInfo('请输入正确的尺寸');
                       }
                       goodsProvider?.width = widthInputController?.text;
                       goodsProvider?.height = heightInputController?.text;
