@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';

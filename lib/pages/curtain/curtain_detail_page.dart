@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:common_utils/common_utils.dart';
@@ -6,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/event_bus/event_bus.dart';
+import 'package:taojuwu/event_bus/events/select_product_event.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
@@ -52,8 +55,9 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
 
   int id;
   String partType;
+  int orderGoodsId;
   ValueNotifier<bool> hasCollected = ValueNotifier<bool>(false);
-
+  StreamSubscription subscription;
   @override
   void dispose() {
     super.dispose();
@@ -61,6 +65,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     widthInputController?.dispose();
     heightInputController?.dispose();
     dyInputController?.dispose();
+    subscription?.cancel();
   }
 
   bool isLoading = true;
@@ -69,7 +74,17 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   void initState() {
     super.initState();
     id = widget.id;
+    subscription =
+        eventBus.on<SelectProductEvent>().listen((SelectProductEvent event) {
+      print(event.orderGoodsId);
+      orderGoodsId = event?.orderGoodsId;
+    })
+          ..asFuture().then((_) {
+            fetchData();
+          });
+  }
 
+  void fetchData() {
     ClientProvider clientProvider =
         Provider.of<ClientProvider>(context, listen: false);
     GoodsProvider goodsProvider =
@@ -89,7 +104,8 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     OTPService.fetchCurtainDetailData(context, params: {
       'goods_id': widget.id,
       'client_uid': clientProvider?.clientId,
-      'parts_type': partType
+      'parts_type': partType,
+      'order_goods_id': orderGoodsId,
     }).then((data) {
       ProductBeanRes productBeanRes = data[0];
       ProductBeanDataWrapper wrapper = productBeanRes.data;
@@ -842,7 +858,6 @@ class BottomActionButtonBar extends StatelessWidget {
                         'vertical_ground_height': goodsProvider?.dyCMStr,
                         'data': jsonEncode(data),
                         'wc_attr': jsonEncode(goodsProvider.getAttrArgs()),
-                        'order_goods_id': orderProvider?.orderGoodsId,
                       };
                       LogUtil.e(params);
                       orderProvider?.selectProduct(context, params: params);

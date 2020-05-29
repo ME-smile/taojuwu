@@ -15,7 +15,7 @@ import 'package:taojuwu/models/shop/sku_attr/craft_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/part_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
+// import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
 import 'package:taojuwu/models/user/category_customer_model.dart';
 import 'package:taojuwu/models/user/customer_detail_model.dart';
@@ -91,23 +91,23 @@ class OTPService {
     return CraftAttr.fromJson(response.data);
   }
 
-  //goods_id
-  static Future windowPatternAttr(BuildContext context,
-      {Map<String, dynamic> params}) async {
-    params = params ?? {};
-    params.addAll({
-      'type': 2,
-    });
-    Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
-    if (response.data != null &&
-        response.data['data'] != null &&
-        response.data['data'].isNotEmpty) {
-      response.data['data'].forEach((item) {
-        WindowPatternAttr.patternIdMap[item['name']] = item['id'];
-      });
-    }
-    return;
-  }
+  // //goods_id
+  // static Future windowPatternAttr(BuildContext context,
+  //     {Map<String, dynamic> params}) async {
+  //   params = params ?? {};
+  //   params.addAll({
+  //     'type': 2,
+  //   });
+  //   Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
+  //   if (response.data != null &&
+  //       response.data['data'] != null &&
+  //       response.data['data'].isNotEmpty) {
+  //     response.data['data'].forEach((item) {
+  //       WindowPatternAttr.patternIdMap[item['name']] = item['id'];
+  //     });
+  //   }
+  //   return;
+  // }
 
   //goods_id
   static Future<PartAttr> partAttr(BuildContext context,
@@ -196,6 +196,11 @@ class OTPService {
   static Future fetchCurtainDetailData(BuildContext context,
       {Map<String, dynamic> params}) async {
     params = params ?? {};
+
+    MeasureDataModelResp response =
+        await getMeasureData(context, params: params);
+    print(response?.data);
+
     List<Future> list = [
       curtainProductDetail(context, params: params),
       windowGauzeAttr(context, params: params),
@@ -388,10 +393,10 @@ class OTPService {
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
-  static Future<MeasureDataModelResp> getMeasureData(
+  static Future<MeasureDataModelResp> getMeasureData(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.post(ApiPath.getMeasureData, formdata: params);
+        await xhr.get(context, ApiPath.getMeasureData, params: params);
     return MeasureDataModelResp.fromJson(response.data);
   }
 

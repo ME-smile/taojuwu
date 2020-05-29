@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/event_bus/event_bus.dart';
+import 'package:taojuwu/event_bus/events/select_product_event.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 
@@ -635,6 +637,8 @@ class OrderKit {
                       Provider.of<OrderProvider>(context, listen: false);
                   ClientProvider clientProvider =
                       Provider.of<ClientProvider>(context, listen: false);
+                  eventBus.fire(
+                      SelectProductEvent(orderGoodsId: goods?.orderGoodsId));
                   clientProvider.clientId = provider?.clientId;
                   clientProvider?.name = provider?.clientName;
                   orderProvider.initMeasureOrder(provider, context,
