@@ -450,7 +450,6 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
             ),
           ),
           bottomNavigationBar: ZYSubmitButton('确认', () {
-            print(params);
             if (!beforeSendData(provider)) return;
             OTPService.saveMeasure(context, params: params)
                 .then((ZYResponse response) {

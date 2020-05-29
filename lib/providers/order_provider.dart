@@ -38,8 +38,13 @@ class OrderProvider with ChangeNotifier {
 
   double get totalPrice {
     double sum = 0.00;
+
     orderGoods?.forEach((item) {
-      sum += item?.totalPrice ?? 0.00;
+      double price = item?.totalPrice is String
+          ? double.parse(item?.totalPrice ?? '0.00')
+          : item?.totalPrice;
+
+      sum += price ?? 0.00;
     });
     return sum;
   }
@@ -329,8 +334,8 @@ class OrderProvider with ChangeNotifier {
 
   void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
     OTPService.selectProduct(params: params).then((ZYResponse response) {
+      print('---------------');
       print(params);
-      print(response);
       if (response.valid) {
         OrderProvider orderProvider =
             Provider.of<OrderProvider>(context, listen: false);
@@ -343,6 +348,8 @@ class OrderProvider with ChangeNotifier {
         clearOrderData();
         _curOrderGoods?.isSelectedGoods = 1;
         notifyListeners();
+      } else {
+        CommonKit.showInfo(response?.message ?? '');
       }
     }).catchError((err) => err);
   }

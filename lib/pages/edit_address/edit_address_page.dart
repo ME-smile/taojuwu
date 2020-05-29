@@ -13,8 +13,8 @@ import 'package:taojuwu/providers/client_provider.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
-import 'package:taojuwu/widgets/zy_future_builder.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
@@ -54,12 +54,34 @@ class _EditAddressPageState extends State<EditAddressPage> {
     'gender': '',
     'detail_address': ''
   };
+  bool isLoading = false;
   @override
   void initState() {
     super.initState();
     nameInput = TextEditingController();
     telInput = TextEditingController();
     houseNumInput = TextEditingController();
+    OTPService.customerDetail(
+      context,
+      params: {'id': widget.id},
+    ).then((CustomerDetailModelResp response) {
+      if (mounted) {
+        ClientProvider clientProvider =
+            Provider.of<ClientProvider>(context, listen: false);
+        clientProvider?.setClientModel(response?.data ?? null);
+        initToController(clientProvider);
+        setParams(clientProvider);
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }).catchError((err) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
   }
 
   void unFocus() {
@@ -192,18 +214,10 @@ class _EditAddressPageState extends State<EditAddressPage> {
           title: Text('填写收货地址'),
           centerTitle: true,
         ),
-        body: Consumer<ClientProvider>(
-          builder: (BuildContext context, ClientProvider provider, _) {
-            return ZYFutureBuilder(
-                futureFunc: OTPService.customerDetail,
-                params: {'id': widget.id},
-                builder: (
-                  BuildContext context,
-                  CustomerDetailModelResp response,
-                ) {
-                  provider?.setClientModel(response?.data ?? null);
-                  initToController(provider);
-                  setParams(provider);
+        body: isLoading
+            ? LoadingCircle()
+            : Consumer<ClientProvider>(
+                builder: (BuildContext context, ClientProvider provider, _) {
                   return Container(
                     color: themeData.primaryColor,
                     padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
@@ -374,8 +388,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                       ],
                     ),
                   );
-                });
-          },
-        ));
+                },
+              ));
   }
 }

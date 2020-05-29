@@ -7,6 +7,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
+import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 
 import 'package:taojuwu/models/zy_response.dart';
@@ -50,7 +51,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   TextEditingController dyInputController;
 
   int id;
-  String partName;
+  String partType;
   ValueNotifier<bool> hasCollected = ValueNotifier<bool>(false);
 
   @override
@@ -73,7 +74,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
         Provider.of<ClientProvider>(context, listen: false);
     GoodsProvider goodsProvider =
         Provider.of<GoodsProvider>(context, listen: false);
-    partName = goodsProvider?.partName;
+    partType = goodsProvider?.partType;
     widthInputController = TextEditingController();
     heightInputController = TextEditingController();
     dyInputController = TextEditingController();
@@ -88,7 +89,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     OTPService.fetchCurtainDetailData(context, params: {
       'goods_id': widget.id,
       'client_uid': clientProvider?.clientId,
-      'parts_type': partName
+      'parts_type': partType
     }).then((data) {
       ProductBeanRes productBeanRes = data[0];
       ProductBeanDataWrapper wrapper = productBeanRes.data;
@@ -273,7 +274,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
         });
   }
 
-  void setDy() async {
+  void setDy({OrderGoodsMeasure measureData}) async {
     await showCupertinoDialog(
         context: context,
         builder: (BuildContext context) {
@@ -303,6 +304,9 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                       // closeSizeDialog();
                       // print(depositInput?.text);
                       goodsProvider?.dy = dyInputController?.text;
+                      measureData?.verticalGroundHeight =
+                          dyInputController?.text;
+
                       Navigator.of(context).pop();
                     },
                   )
@@ -351,7 +355,9 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                     // isRollUpWindow: goodsProvider?.isWindowGauze,
                     trailingText: '${goodsProvider?.dyCMStr ?? ''}cm',
                     callback: () {
-                      setDy();
+                      setDy(
+                          measureData:
+                              goodsProvider?.forWindowRollerMeasureData);
                     },
                   ),
                 ],
@@ -566,11 +572,6 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                                             collect(context);
                                                           });
                                                     })),
-
-                                            // WidgetSpan(
-                                            //     child: IconButton(
-                                            //         icon: Icon(ZYIcon.share),
-                                            //         onPressed: () {})),
                                             WidgetSpan(
                                                 child: IconButton(
                                                     icon: Icon(ZYIcon.cart),
@@ -662,7 +663,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                         goodsProvider?.isWindowRoller == false) {
                       goodsProvider?.clearGoodsInfo();
                     }
-                    goodsProvider?.partName = '';
+                    goodsProvider?.partType = '';
                     goodsProvider?.hasInitOpenMode = false;
                     return Future.value(false);
                   });
@@ -673,14 +674,90 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
 
 class BottomActionButtonBar extends StatelessWidget {
   const BottomActionButtonBar({Key key}) : super(key: key);
-  bool beforePurchase(GoodsProvider goodsProvider,
-      ClientProvider clientProvider, BuildContext context) {
+
+  static Map<String, dynamic> data = {};
+  static Map<String, dynamic> params = {
+    'dataId': '',
+    'width': '',
+    'height': '',
+    'install_room': '',
+    'goods_id': '',
+    'vertical_ground_height': '',
+    'data': {},
+    'goods_id': ''
+  };
+  void setParams(GoodsProvider provider) {
+    params['dataId'] = '${provider?.windowPatternId ?? ''}';
+
+    params['width'] = '${provider?.widthM ?? ''}';
+    params['height'] = '${provider?.heightM ?? ''}';
+    params['vertical_ground_height'] = '${provider?.dy ?? ''}';
+    params['goods_id'] = '${provider?.goodsId ?? ''}';
+    params['install_room'] = '${provider?.curRoomAttrBean?.id ?? ''}';
+    data.clear();
+    data['${provider?.windowPatternId ?? ''}'] = {
+      'name': '${provider?.windowPatternStr ?? ''}',
+      'selected': {
+        '安装选项': ['${provider?.curInstallMode ?? ''}'],
+        '打开方式': provider?.openModeParams
+      }
+    };
+
+    params['data'] = jsonEncode(data);
+  }
+
+  bool validateData(GoodsProvider provider) {
+    String w = provider?.widthCMStr;
+    String h = provider?.heightCMStr;
+    if (w?.trim()?.isEmpty == true) {
+      CommonKit?.showInfo('请填写宽度');
+      return false;
+    }
+    if (double.parse(w) == 0) {
+      CommonKit?.showInfo('宽度不能为0哦');
+      return false;
+    }
+    if (h?.trim()?.isEmpty == true) {
+      CommonKit?.showInfo('请填写高度');
+      return false;
+    }
+    if (double.parse(h) == 0) {
+      CommonKit?.showInfo('高度不能为0哦');
+      return false;
+    }
+    if (double.parse(h) > 350) {
+      CommonKit.showInfo('暂不支持3.5m以上定制');
+      h = '350';
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> beforePurchase(GoodsProvider goodsProvider,
+      ClientProvider clientProvider, BuildContext context) async {
+    OrderProvider orderProvider =
+        Provider.of<OrderProvider>(context, listen: false);
+    setParams(goodsProvider);
     if (clientProvider?.clientId == null) {
       CommonKit.showInfo('请选择客户');
       return false;
     }
-    if (goodsProvider?.isWindowRoller == false &&
-        goodsProvider?.hasSetSize != true) {
+
+    if (validateData(goodsProvider)) {
+      if (orderProvider?.isMeasureOrder == false &&
+          goodsProvider?.isWindowRoller == true &&
+          goodsProvider?.hasSetSize != true) {
+        await OTPService.saveMeasure(context, params: params)
+            .then((ZYResponse response) {
+          if (response?.valid == true) {
+            goodsProvider?.measureId = response?.data;
+          } else {
+            CommonKit.showInfo(response?.message ?? '');
+          }
+        }).catchError((err) => err);
+      }
+    }
+    if (goodsProvider?.hasSetSize != true) {
       CommonKit.showInfo('请先填写尺寸');
       return false;
     }
@@ -751,7 +828,7 @@ class BottomActionButtonBar extends StatelessWidget {
                         'num': 1,
                         'goods_id': goodsProvider?.goodsId,
                         '安装选项': ['${goodsProvider?.curInstallMode ?? ''}'],
-                        '打开方式': jsonEncode(goodsProvider?.openModeParams)
+                        '打开方式': goodsProvider?.openModeParams
                       };
 
                       // data['${goodsProvider?.windowPatternId ?? ''}'] = {
@@ -785,8 +862,8 @@ class BottomActionButtonBar extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         InkWell(
-                          onTap: () {
-                            if (!beforePurchase(
+                          onTap: () async {
+                            if (!await beforePurchase(
                                 goodsProvider, clientProvider, context)) return;
                             setCartParams(goodsProvider);
                             addCart(context, goodsProvider);
@@ -801,8 +878,8 @@ class BottomActionButtonBar extends StatelessWidget {
                           ),
                         ),
                         InkWell(
-                          onTap: () {
-                            if (!beforePurchase(
+                          onTap: () async {
+                            if (!await beforePurchase(
                                 goodsProvider, clientProvider, context)) return;
                             Map map = goodsProvider.getAttrArgs();
                             List wrapper = [];

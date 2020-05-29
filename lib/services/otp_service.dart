@@ -86,8 +86,8 @@ class OTPService {
     params.addAll({
       'type': 4,
     });
-    Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
 
+    Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
     return CraftAttr.fromJson(response.data);
   }
 

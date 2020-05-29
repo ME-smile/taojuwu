@@ -3,18 +3,20 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
-import 'package:taojuwu/pages/cart/widgets/cart_card_view.dart';
+import 'package:taojuwu/models/zy_response.dart';
 
 import 'package:taojuwu/providers/cart_provider.dart';
-import 'package:taojuwu/providers/client_provider.dart';
 
 import 'package:taojuwu/router/handlers.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class CartPage extends StatefulWidget {
   final int clientId;
@@ -36,20 +38,24 @@ class _CartPageState extends State<CartPage>
   @override
   void initState() {
     super.initState();
-    ClientProvider clientProvider =
-        Provider.of<ClientProvider>(context, listen: false);
-    OTPService.cartList(context,
-            params: {'client_uid': clientProvider?.clientId})
+
+    OTPService.cartList(context, params: {'client_uid': widget?.clientId})
         .then((CartListResp response) {
       tabController = TabController(length: tabs?.length, vsync: this);
       isLoading = false;
-      print(response);
       if (response?.valid == true) {
         wrapper = response?.data;
         models = wrapper?.data;
       }
-      setState(() {});
-    }).catchError((err) => err);
+      if (mounted) {
+        setState(() {});
+      }
+    }).catchError((err) {
+      if (mounted) {
+        setState(() {});
+      }
+      return err;
+    });
   }
 
   @override
@@ -58,7 +64,120 @@ class _CartPageState extends State<CartPage>
     tabController?.dispose();
   }
 
-  CartProvider cartProvider;
+  void delCart(CartProvider provider, int id) {
+    OTPService.delCart(params: {'cart_id_array': '$id'})
+        .then((ZYResponse response) {
+      if (response.valid) {
+        provider?.removeGoods(id);
+        Navigator.of(context).pop();
+      } else {
+        CommonKit.showToast(response?.message ?? '');
+      }
+    }).catchError((err) => err);
+  }
+
+  void remove(CartProvider provider, CartModel cartModel) {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text('删除'),
+            content: Text('您确定要从购物车中删除该商品吗?'),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                child: Text('取消'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              CupertinoDialogAction(
+                child: Text('确定'),
+                onPressed: () {
+                  delCart(provider, cartModel?.cartId);
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  Widget buildCartCard(CartModel cartModel) {
+    ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
+    List<OrderProductAttrWrapper> attrs = cartModel.wcAttr;
+    String attrsText = '';
+    attrs.forEach((OrderProductAttrWrapper item) {
+      attrsText +=
+          '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
+    });
+    return Consumer<CartProvider>(
+        builder: (BuildContext context, CartProvider provider, _) {
+      return GestureDetector(
+        onLongPress: () {
+          remove(provider, cartModel);
+        },
+        child: Container(
+          color: themeData.primaryColor,
+          margin: EdgeInsets.only(top: UIKit.height(20)),
+          padding: EdgeInsets.symmetric(
+              horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Checkbox(
+                      value: cartModel?.isChecked,
+                      onChanged: (bool isSelected) {
+                        provider?.checkGoods(cartModel, isSelected);
+                      }),
+                  ZYNetImage(
+                    imgPath: cartModel?.pictureInfo?.picCoverSmall,
+                    isCache: false,
+                    height: UIKit.height(180),
+                  ),
+                  Expanded(
+                      child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    height: UIKit.height(180),
+                    // width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          cartModel?.goodsName ?? '',
+                          style:
+                              textTheme.title.copyWith(fontSize: UIKit.sp(28)),
+                        ),
+                        Expanded(
+                          child: Text(
+                            attrsText ?? '',
+                            softWrap: true,
+                            style: textTheme.caption,
+                          ),
+                        ),
+                        Text.rich(TextSpan(
+                            text: '￥' + '${cartModel?.price}' ?? '',
+                            children: [TextSpan(text: '/米')])),
+                      ],
+                    ),
+                  ))
+                ],
+              ),
+              Text.rich(
+                TextSpan(text: '预计总金额', children: [
+                  TextSpan(text: '￥' + cartModel?.estimatedPrice ?? '')
+                ]),
+                textAlign: TextAlign.end,
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -66,7 +185,7 @@ class _CartPageState extends State<CartPage>
         ? LoadingCircle()
         : ChangeNotifierProvider(
             create: (_) {
-              cartProvider = CartProvider(models: models);
+              CartProvider cartProvider = CartProvider(models: models);
               return cartProvider;
             },
             child: Consumer<CartProvider>(
@@ -89,19 +208,22 @@ class _CartPageState extends State<CartPage>
                       controller: tabController,
                       children: List.generate(tabs.length, (int i) {
                         print(models);
-                        return models == null || models?.isNotEmpty != true
+                        print(models == null);
+                        print(models?.isEmpty);
+                        print((models == null || models?.isEmpty == true));
+                        return (models == null || models?.isEmpty == true)
                             ? NoData()
                             : ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: models?.length ?? 0,
                                 itemBuilder: (BuildContext context, int i) {
-                                  return CartCardView(
-                                    cartModel: models[i],
+                                  return buildCartCard(
+                                    models[i],
                                   );
                                 });
                       })),
-                  bottomNavigationBar: provider?.models?.isNotEmpty != true
-                      ? Container()
+                  bottomNavigationBar: provider?.hasModels == false
+                      ? SizedBox.shrink()
                       : Container(
                           padding:
                               EdgeInsets.symmetric(vertical: UIKit.height(15)),

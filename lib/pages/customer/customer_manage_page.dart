@@ -32,17 +32,21 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
     super.initState();
     OTPService.userList(context, params: params)
         .then((CustomerModelListResp response) {
-      customerModelWrapper = response?.data;
-      _handleData(customerModelWrapper);
-      beans = customerModelWrapper?.data;
-      _handleList(beans);
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          customerModelWrapper = response?.data;
+          _handleData(customerModelWrapper);
+          beans = customerModelWrapper?.data;
+          _handleList(beans);
+          isLoading = false;
+        });
+      }
     }).catchError((err) {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     });
     controller = ScrollController();
   }

@@ -64,17 +64,17 @@ class WindowPatternAttr {
     '单窗/非飘窗/无盒/顶装': 'curtain/size_000011.png',
     '单窗/非飘窗/无盒/侧装': 'curtain/size_000001.png',
     '单窗/非飘窗/有盒/盒内装': 'curtain/size_0010-1-1.png',
-    '单窗/飘窗/无盒/顶装满墙': 'curtain/size_0100-1-1-SPW-H.png',
+    '单窗/飘窗/无盒/顶装满墙': 'curtain/size_0100-1-1-SPW-H.png',
     '单窗/飘窗/有盒/盒内装': 'curtain/size_0110-1-1-SPY-H.png',
     'L型窗/非飘窗/无盒/侧装': 'curtain/size_100000.png',
     'L型窗/非飘窗/无盒/顶装': 'curtain/size_100010.png',
     'L型窗/非飘窗/有盒/盒内装': 'curtain/size_1010-1-1.png',
-    'L型窗/飘窗/无盒/顶装满墙': 'curtain/size_1100-1-1.png',
+    'L型窗/飘窗/无盒/顶装满墙': 'curtain/size_1100-1-1.png',
     'L型窗/飘窗/有盒/盒内装': 'curtain/size_0110-1-1-LPY-H.png',
     'U型窗/非飘窗/无盒/顶装': 'curtain/size_200010.png',
     'U型窗/非飘窗/无盒/侧装': 'curtain/size_200000.png',
     'U型窗/非飘窗/有盒/盒内装': 'curtain/size_2010-1-1.png',
-    'U型窗/飘窗/无盒/顶装满墙': 'curtain/size_2100-1-1.png',
+    'U型窗/飘窗/无盒/顶装满墙': 'curtain/size_2100-1-1.png',
     'U型窗/飘窗/有盒/盒内装': 'curtain/size_2110-1-1.png',
   };
 
@@ -97,7 +97,7 @@ class WindowPatternAttr {
     ],
     '单窗/飘窗/无盒': [
       {
-        'text': '顶装满墙',
+        'text': '顶装满墙',
         'is_checked': true,
       }
     ],
@@ -125,7 +125,7 @@ class WindowPatternAttr {
     ],
     'L型窗/飘窗/无盒': [
       {
-        'text': '顶装满墙',
+        'text': '顶装满墙',
         'is_checked': true,
       }
     ],
@@ -153,7 +153,7 @@ class WindowPatternAttr {
     ],
     'U型窗/飘窗/无盒': [
       {
-        'text': '顶装满墙',
+        'text': '顶装满墙',
         'is_checked': true,
       }
     ],

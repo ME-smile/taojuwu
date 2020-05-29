@@ -248,7 +248,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 offstage: model?.canEditPrice == false,
                 child: Padding(
                     padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
-                    child: Text('原价: ¥${provider?.afterChangeOriginPrice}')),
+                    child: Text(
+                        '原价: ¥${provider?.originPrice?.toStringAsFixed(2)}')),
               ),
               Padding(
                   padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
@@ -256,7 +257,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       Text(
-                          '合计:   ¥${double.parse(model?.orderEstimatedPrice ?? '0') + provider?.deltaPrice}'),
+                          '合计:   ¥${(double.parse(model?.orderEstimatedPrice ?? '0') + provider?.deltaPrice).toStringAsFixed(2)}'),
                       Offstage(
                         offstage: model?.canEditPrice == false,
                         child: InkWell(
@@ -280,7 +281,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   ? Padding(
                       padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
                       child: Text(
-                          '修改: ¥${provider?.deltaPrice} ${provider?.hasRemark == true ? "(${provider?.changePriceRemark})" : ''}'))
+                          '修改: ${provider?.isMinus == false ? '+' : ''}¥${provider?.deltaPrice?.toStringAsFixed(2)} ${provider?.hasRemark == true ? "(${provider?.changePriceRemark})" : ''}'))
                   : Container(),
               Padding(
                   padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
@@ -289,7 +290,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       style: textTheme.title.copyWith(fontSize: UIKit.sp(28)),
                       children: [
                         TextSpan(
-                            text: '  ¥${provider?.afterChangeTailMoney}',
+                            text:
+                                '  ¥${provider?.afterChangeTailMoney?.toStringAsFixed(2)}',
                             style: TextStyle(color: const Color(0xFFE02020)))
                       ]))),
             ],

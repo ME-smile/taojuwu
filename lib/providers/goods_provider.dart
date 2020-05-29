@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
@@ -26,7 +28,7 @@ class GoodsProvider with ChangeNotifier {
   WindowShadeAttrBean _curWindowShadeAttrBean;
   CanopyAttrBean _curCanopyAttrBean;
 
-  String partName;
+  String partType;
   // List<AccessoryAttrBean> _allAccessoryAttrBeans;
   // List<AccessoryAttrBean> _curAccessoryAttrBeans;
 
@@ -402,7 +404,7 @@ class GoodsProvider with ChangeNotifier {
       for (int j = 0; j < item['options']?.length; j++) {
         Map dict = item['options'][j];
         if (dict['is_checked'] == true) {
-          tmp[item['name']] = dict['text'];
+          tmp[item['name']] = [dict['text']];
         }
       }
     }
@@ -467,7 +469,9 @@ class GoodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void initInstallMode(String mode) {
+  void initInstallMode(
+    String mode,
+  ) {
     installOptions?.forEach((item) {
       String tmp = item['text'];
 
@@ -478,7 +482,7 @@ class GoodsProvider with ChangeNotifier {
     });
   }
 
-  void initOpenMode(String mode) {
+  void initOpenMode(String mode, {List<String> subOpenModes}) {
     openOptions?.forEach((item) {
       String tmp = item['text'];
       item['is_checked'] =
@@ -486,20 +490,54 @@ class GoodsProvider with ChangeNotifier {
               ? true
               : false;
     });
+    if (mode?.contains('分墙体') == true && subOpenModes?.isNotEmpty == true) {
+      for (int i = 0; i < subOpenModes?.length; i++) {
+        String str = subOpenModes[i];
+        List<Map> options = WindowPatternAttr
+                .openSubOptionMap['$curWindowPatternName/$curOpenMode'][i]
+            ['options'];
+        options?.forEach((item) {
+          bool isChecked = (item['text']?.contains(str) == true ||
+              str?.contains(item['text']) == true);
+          item['is_checked'] = isChecked ? true : false;
+        });
+      }
+    }
   }
 
-  void initWindowPattern(
-      String windowPattern, String installMode, String openMode) {
-    initInstallMode(installMode);
+  void initWindowPattern(String windowPattern, String installMode,
+      String openMode, String measureData) {
+    List<String> arr = [];
+    // Map tmp = jsonDecode(measureData);
+    // String id = tmp?.keys?.first;
+    // if (tmp != null) {
+    //   if (tmp[id] != null) {
+    //     if (tmp[id]['selected'] != null &&
+    //         tmp[id]['selected']['打开方式'] != null) {
+    //       Map<String, dynamic> dict = tmp[id]['selected']['打开方式'];
+    //       String firstKey = dict?.keys?.first;
+    //       Map map = dict[firstKey];
+    //       print(firstKey?.contains('分墙体') == true);
+    //       if (firstKey?.contains('分墙体') == true) {
+    //         map?.values?.forEach((item) {
+    //           arr.add(item?.first);
+    //         });
+    //       }
+    //     }
+    //   }
+    // }
+    setWindowPatternByName(windowPattern);
+    initInstallMode(
+      installMode,
+    );
     const String WAIT_TO_CONFIRM = '待确认';
     if (openMode != null &&
         openMode?.isNotEmpty == true &&
         openMode?.contains(WAIT_TO_CONFIRM) == false) {
-      initOpenMode(openMode);
+      initOpenMode(openMode, subOpenModes: arr);
     } else {
       _hasInitOpenMode = false;
     }
-    setWindowPatternByName(windowPattern);
   }
 
   void initSize(OrderGoodsMeasure measureData) {
@@ -712,6 +750,11 @@ class GoodsProvider with ChangeNotifier {
 
   Map<String, dynamic> getWindowRollerAttrArgs() {
     return {
+      //工艺方式
+      '1': {
+        'name': curRoomAttrBean?.name ?? '',
+        'id': curRoomAttrBean?.id ?? ''
+      },
       //窗型
       '2': {
         'name': windowPatternStr,

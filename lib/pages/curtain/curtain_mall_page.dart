@@ -52,7 +52,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   Map<String, dynamic> params = {
     // 'keyword': '',
     // 'stock': '',
-    'order': '',
+    'order': 'sales',
     'sort': '',
     // 'brand_name': '',
     // 'min_price': '',
@@ -81,7 +81,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     fetchData();
   }
 
-  static const List<String> SORT_TYPES = ['推荐排序', '新品优先', '价格升序', '价格降序'];
+  static const List<String> SORT_TYPES = ['销量排序', '新品优先', '价格升序', '价格降序'];
 
   static const List<Map<String, dynamic>> sortParams = [
     {

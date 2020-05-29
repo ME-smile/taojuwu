@@ -388,8 +388,8 @@ class OrderKit {
                         if (deltaMoney?.trim()?.isEmpty == true) {
                           return CommonKit.showInfo('请输入正确的金额');
                         }
+                        deltaPrice = double.parse(deltaMoney) ?? 0;
                         if (provider?.isMinus == true) {
-                          deltaPrice = double.parse(deltaMoney) ?? 0;
                           deltaPrice = -deltaPrice;
                         }
                         sendEditPriceRequest(context, {

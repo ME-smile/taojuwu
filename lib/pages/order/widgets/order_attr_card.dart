@@ -29,6 +29,8 @@ class OrderAttrCard extends StatelessWidget {
       attrsText +=
           '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
     });
+    attrsText +=
+        ' 离地距离: ${goods?.orderGoodsMeasure?.verticalGroundHeight ?? 0}cm';
     TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
         child: Column(

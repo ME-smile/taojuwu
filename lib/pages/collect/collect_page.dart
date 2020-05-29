@@ -7,7 +7,6 @@ import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/providers/client_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
@@ -56,8 +55,8 @@ class _CollectPageState extends State<CollectPage>
     OTPService.cancelCollect(params: {
       'fav_id': bean?.goodsId ?? -1,
       'client_uid': widget.id ?? -1,
+      'fav_type': 'goods'
     }).then((ZYResponse response) {
-      CommonKit.showInfo(response.message);
       Navigator.of(context).pop();
       if (response?.valid == true) {
         setState(() {
@@ -113,7 +112,7 @@ class _CollectPageState extends State<CollectPage>
         child: Row(
           children: <Widget>[
             ZYNetImage(
-              imgPath: UIKit.getNetworkImgPath(bean?.picCoverMicro),
+              imgPath: bean?.picCoverMicro,
               isCache: false,
               height: UIKit.height(180),
             ),

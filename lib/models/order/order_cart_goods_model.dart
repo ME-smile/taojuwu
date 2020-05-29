@@ -13,7 +13,7 @@ class OrderCartGoods {
   String measureId;
   String skuId;
   String isShade;
-  double totalPrice;
+  String totalPrice;
   String attr;
   String count;
   String cartId;
@@ -35,8 +35,7 @@ class OrderCartGoods {
     goodsId = '${json['goods_id'] ?? ''}';
     skuId = '${json['sku_id'] ?? ''}';
     isShade = '${json['is_shade'] ?? '0'}';
-    totalPrice =
-        json['total_price'] != null ? double.parse(json['total_price']) : 0;
+    totalPrice = json['total_price'] != null ? '${json['total_price']}' : '0';
     attr = json['attr'];
     count = '${json['count'] ?? 1}';
     dy = '${json['dy']}';

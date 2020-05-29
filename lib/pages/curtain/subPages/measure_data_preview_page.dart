@@ -31,17 +31,27 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
     OTPService.measureData(context,
             params: {'order_goods_id': orderProvider?.orderGoodsId})
         .then((OrderGoodsMeasure data) {
-      if (goodsProvider?.dy == '0.0') {
-        goodsProvider?.dy = data?.verticalGroundHeight;
+      if (mounted) {
+        setState(() {
+          measureData = data;
+          isLoading = false;
+          goodsProvider?.partType = data?.partsType;
+
+          if (goodsProvider?.dy == '0.0') {
+            goodsProvider?.dy = data?.verticalGroundHeight;
+          }
+
+          // goodsProvider?.width = measureData?.width;
+          // goodsProvider?.height = measureData?.height;
+        });
       }
-      goodsProvider?.partName = data?.partsName;
-      setState(() {
-        measureData = data;
-        isLoading = false;
-        // goodsProvider?.width = measureData?.width;
-        // goodsProvider?.height = measureData?.height;
-      });
-    }).catchError((err) => err);
+    }).catchError((err) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    });
   }
 
   bool isLoading = true;
@@ -244,12 +254,13 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                             size: 14,
                                           ),
                                           onTap: () {
+                                            RouteHandler.goEditOpenModePage(
+                                                context);
                                             goodsProvider?.initWindowPattern(
                                                 measureData?.windowType,
                                                 measureData?.installType,
-                                                measureData?.openType);
-                                            RouteHandler.goEditOpenModePage(
-                                                context);
+                                                measureData?.openType,
+                                                measureData?.data);
                                           },
                                         )
                                       ],
@@ -302,9 +313,17 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                   onWillPop: () {
                     // reset(provider);
                     goodsProvider?.resetSize();
+                    if (goodsProvider?.hasInitOpenMode == false) {
+                      goodsProvider?.initWindowPattern(
+                          measureData?.windowType,
+                          measureData?.installType,
+                          measureData?.openType,
+                          measureData?.data);
+                    }
                     goodsProvider?.hasInitOpenMode = false;
                     provider?.hasConfirmMeasureData = false;
                     Navigator.of(context).pop();
+
                     return Future.value(false);
                   });
             },

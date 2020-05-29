@@ -40,7 +40,8 @@ class CustomerProfileHeader extends StatelessWidget {
               height: UIKit.height(120),
             ),
           ),
-          Column(
+          Expanded(
+              child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text.rich(TextSpan(
@@ -57,13 +58,15 @@ class CustomerProfileHeader extends StatelessWidget {
                 style: textTheme.subtitle,
               ),
               address != null && address.isNotEmpty
-                  ? Text.rich(TextSpan(text: '', children: [
-                      WidgetSpan(child: Icon(Icons.add_location)),
-                      TextSpan(text: '  $address', style: textTheme.caption)
-                    ]))
+                  ? Text.rich(
+                      TextSpan(text: '', children: [
+                        WidgetSpan(child: Icon(Icons.add_location)),
+                        TextSpan(text: '  $address', style: textTheme.caption)
+                      ]),
+                    )
                   : SizedBox(),
             ],
-          )
+          ))
         ],
       ),
     );
