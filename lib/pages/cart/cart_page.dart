@@ -207,10 +207,6 @@ class _CartPageState extends State<CartPage>
                   body: TabBarView(
                       controller: tabController,
                       children: List.generate(tabs.length, (int i) {
-                        print(models);
-                        print(models == null);
-                        print(models?.isEmpty);
-                        print((models == null || models?.isEmpty == true));
                         return (models == null || models?.isEmpty == true)
                             ? NoData()
                             : ListView.builder(
@@ -242,7 +238,8 @@ class _CartPageState extends State<CartPage>
                                   }),
                               Text('全选'),
                               Spacer(),
-                              Text('总价: ￥${provider?.totalAmount ?? 0.00}元'),
+                              Text(
+                                  '总价: ￥${provider?.totalAmount?.toStringAsFixed(2) ?? 0.00}元'),
                               InkWell(
                                 onTap: () {
                                   RouteHandler.goCommitOrderPage(context,

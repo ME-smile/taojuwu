@@ -637,6 +637,7 @@ class OrderKit {
                       Provider.of<OrderProvider>(context, listen: false);
                   ClientProvider clientProvider =
                       Provider.of<ClientProvider>(context, listen: false);
+
                   eventBus.fire(
                       SelectProductEvent(orderGoodsId: goods?.orderGoodsId));
                   clientProvider.clientId = provider?.clientId;

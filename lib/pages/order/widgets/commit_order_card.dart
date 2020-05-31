@@ -71,7 +71,7 @@ class CommitOrderCard extends StatelessWidget {
                             vertical: UIKit.height(10),
                             horizontal: UIKit.width(10)),
                         child: Text(
-                          '$attrsText  离地距离:${goods.dy}cm' ?? '',
+                          '$attrsText ' ?? '',
                           style: textTheme.caption,
                         ),
                       ),

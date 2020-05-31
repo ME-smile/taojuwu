@@ -379,7 +379,7 @@ class OTPService {
     ZYResponse<dynamic> resp =
         ZYResponse<dynamic>.fromJsonWithData(response.data);
     if (resp?.valid == true) {
-      CommonKit.showSuccessDIYInfo('取消成功');
+      CommonKit.showSuccessDIYInfo('取消待审核');
     } else {
       CommonKit.showErrorInfo(resp?.message);
     }
