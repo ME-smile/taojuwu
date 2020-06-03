@@ -46,11 +46,13 @@ class RouteHandler {
   static _jumpTo(BuildContext context, String path,
       {bool replace = false,
       bool clearStack = false,
+      bool maintainState = false,
       Duration transitionDuration = const Duration(milliseconds: 250),
       RouteTransitionsBuilder transitionBuilder}) {
     Application.router.navigateTo(context, path,
         replace: replace,
         clearStack: clearStack,
+        maintainState: maintainState,
         transitionDuration: transitionDuration,
         transitionBuilder: transitionBuilder,
         transition: TransitionType.cupertino);
@@ -96,12 +98,7 @@ class RouteHandler {
     BuildContext context,
     int id,
   ) {
-    print(id);
-    _jumpTo(context, '${Routes.curtainDetail}?id=$id');
-  }
-
-  static goCurtainPage(BuildContext context) {
-    _jumpTo(context, Routes.curtain);
+    _jumpTo(context, '${Routes.curtainDetail}?id=$id', maintainState: true);
   }
 
   static Handler order = Handler(
@@ -252,7 +249,8 @@ class RouteHandler {
 
   static goCurtainMallPage(BuildContext context, {String keyword: ''}) {
     keyword = FluroConvertUtils.fluroCnParamsEncode(keyword);
-    _jumpTo(context, '${Routes.curtainMall}?keyword=$keyword');
+    _jumpTo(context, '${Routes.curtainMall}?keyword=$keyword',
+        maintainState: true);
   }
 
   static Handler switchAccount = Handler(

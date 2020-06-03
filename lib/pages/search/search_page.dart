@@ -216,12 +216,12 @@ class _SearchPageState extends State<SearchPage> {
                             color: const Color(0xFF979797),
                           ),
                         ),
-                        suffix: IconButton(
-                          icon: Icon(
+                        suffixIcon: InkWell(
+                          child: Icon(
                             ZYIcon.clear,
                             color: const Color(0xFF979797),
                           ),
-                          onPressed: () {
+                          onTap: () {
                             inputController?.text = ' ';
                           },
                         ),

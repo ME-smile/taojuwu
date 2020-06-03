@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/pages/order/utils/order_kit.dart';
 
 import 'package:taojuwu/providers/order_detail_provider.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
@@ -54,7 +56,8 @@ class OrderAttrCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Text(goods?.goodsName ?? ''),
-                      Text('¥ ${goods?.price ?? 0.00}/米'),
+                      Text(
+                          '¥ ${goods?.price ?? 0.00}/${goods?.isWindowRoller == true ? '平方米' : '米'}'),
                     ],
                   ),
                   VSpacing(20),
@@ -75,7 +78,25 @@ class OrderAttrCard extends StatelessWidget {
               offstage: goods?.showExpressInfo == false,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
-                child: Text('物流编号:${goods?.expressInfo?.expressNo}'),
+                child: Text.rich(TextSpan(
+                    text: '物流编号:${goods?.expressInfo?.expressNo}',
+                    style: textTheme.caption,
+                    children: [
+                      TextSpan(text: '  '),
+                      WidgetSpan(
+                        child: InkWell(
+                          child: Text(
+                            '复制',
+                            style: textTheme.caption,
+                          ),
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(
+                                text: goods?.expressInfo?.expressNo ?? ''));
+                            CommonKit.showToast('已复制到剪切板');
+                          },
+                        ),
+                      )
+                    ])),
               ),
             ),
             Text.rich(TextSpan(
@@ -123,13 +144,15 @@ class CancelOrderGoodsButton extends StatelessWidget {
     return Consumer<OrderDetailProvider>(
       builder:
           (BuildContext context, OrderDetailProvider orderDetailProvider, _) {
-        return ZYOutlineButton(
-          goods?.canCancel == true ? '取消' : '取消待审核',
-          () {
-            orderDetailProvider?.cancelOrderGoods(context, goods);
-          },
-          isActive: goods?.canCancel ?? true,
-        );
+        return goods?.hasAlreadyCancel == true
+            ? ZYOutlineButton('已取消', null)
+            : ZYOutlineButton(
+                goods?.canCancel == true ? '取消' : '取消待审核',
+                () {
+                  orderDetailProvider?.cancelOrderGoods(context, goods);
+                },
+                isActive: goods?.canCancel ?? true,
+              );
       },
     );
   }

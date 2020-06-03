@@ -160,7 +160,7 @@ class OrderDetailModel {
   bool get haNotsSelectedProduct => orderStatus == 14;
   bool get hasAudited => orderStatus > 1;
   bool get hasMeasured => orderStatus > 2;
-  bool get hasInstalled => orderStatus >= 7;
+  bool get hasInstalled => orderStatus > 7;
   bool get hasProducted => orderStatus > 5;
   bool get canEditPrice => orderStatus == 3;
   bool get hasScheduled => orderStatus > 3;
@@ -394,6 +394,7 @@ class OrderGoods {
   int orderGoodsId;
   int orderId;
   int goodsId;
+  int goodsSpecialType;
   String goodsName;
   int skuId;
   String skuName;
@@ -449,9 +450,11 @@ class OrderGoods {
   bool get hasSelectedProduct => isSelectedGoods == 1;
   bool get canCancel =>
       (orderStatus != 15 && refundStatus == 0) || refundStatus == -4;
+  bool get hasAlreadyCancel => orderStatus == 9;
   bool get subOrderHasSameStatusWithParent =>
       (orderStatus == parentOrderStatus) ?? false;
   bool get showExpressInfo => orderStatus == 7;
+  bool get isWindowRoller => goodsSpecialType == 2;
   OrderGoods(
       {this.orderGoodsId,
       this.orderId,
@@ -512,6 +515,7 @@ class OrderGoods {
     orderGoodsId = json['order_goods_id'];
     orderId = json['order_id'];
     goodsId = json['goods_id'];
+    goodsSpecialType = json['goods_special_type'];
     goodsName = json['goods_name'];
     skuId = json['sku_id'];
     skuName = json['sku_name'];

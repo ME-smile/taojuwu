@@ -1,5 +1,6 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
@@ -9,6 +10,7 @@ import 'package:taojuwu/pages/order/utils/order_kit.dart';
 import 'package:taojuwu/pages/order/widgets/order_attr_card.dart';
 import 'package:taojuwu/providers/order_detail_provider.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 
@@ -304,6 +306,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
     TextTheme accentTextTheme = themeData.accentTextTheme;
     return ZYFutureBuilder(
         futureFunc: OTPService.orderDetail,
@@ -392,7 +395,28 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           Text(
                             '订单信息',
                           ),
-                          _orderInfoBar(context, '订单编号', model?.orderNo ?? ''),
+                          Row(
+                            children: <Widget>[
+                              _orderInfoBar(
+                                  context, '订单编号', model?.orderNo ?? ''),
+                              InkWell(
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                    left: UIKit.width(20),
+                                  ),
+                                  child: Text(
+                                    '复制',
+                                    style: textTheme.caption,
+                                  ),
+                                ),
+                                onTap: () {
+                                  Clipboard.setData(ClipboardData(
+                                      text: model?.orderNo ?? ''));
+                                  CommonKit.showToast('已复制到剪切板');
+                                },
+                              )
+                            ],
+                          ),
                           _orderInfoBar(
                               context, '创建时间', getTimeStr(model?.createTime)),
                           Offstage(

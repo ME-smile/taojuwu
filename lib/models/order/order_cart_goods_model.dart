@@ -18,6 +18,7 @@ class OrderCartGoods {
   String count;
   String cartId;
   String dy;
+  int goodsType;
   OrderCartGoods.fromJson(Map<String, dynamic> json) {
     tag = json['tag'];
     img = json['img'];
@@ -39,6 +40,7 @@ class OrderCartGoods {
     attr = json['attr'];
     count = '${json['count'] ?? 1}';
     dy = '${json['dy']}';
+    goodsType = json['goods_type'];
   }
 
   Map toJson() {

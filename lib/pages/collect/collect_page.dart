@@ -5,6 +5,7 @@ import 'package:taojuwu/models/shop/collect_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/providers/client_provider.dart';
+import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -103,6 +104,9 @@ class _CollectPageState extends State<CollectPage>
             Provider.of<ClientProvider>(context, listen: false);
         clientProvider?.clientId = widget.id;
         clientProvider?.name = widget?.name;
+        GoodsProvider goodsProvider =
+            Provider.of<GoodsProvider>(context, listen: false);
+        goodsProvider?.hasInit = false;
         RouteHandler.goCurtainDetailPage(
           context,
           bean?.goodsId ?? -1,

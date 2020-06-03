@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
@@ -250,6 +248,7 @@ class GoodsProvider with ChangeNotifier {
     _hasInit = true;
   }
 
+  int get goodsType => goods?.goodsSpecialType;
   int get goodsId => _goods?.goodsId ?? -1;
   WindowGauzeAttrBean get curWindowGauzeAttrBean => _curwindowGauzeAttrBean;
   CraftAttrBean get curCraftAttrBean => _curCraftAttrBean;

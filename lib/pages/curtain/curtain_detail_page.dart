@@ -434,11 +434,11 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
               },
             ),
             AttrOptionsBar(
-              title: '遮光里布',
+              title: '里布',
               trailingText: goodsProvider?.curWindowShadeAttrBean?.name ?? '',
               callback: () {
                 ZYDialog.checkAttr(
-                    context, '遮光里布选择', goodsProvider?.curWindowShadeAttrBean);
+                    context, '里布选择', goodsProvider?.curWindowShadeAttrBean);
               },
             ),
             AttrOptionsBar(
@@ -689,8 +689,8 @@ class BottomActionButtonBar extends StatelessWidget {
   void setParams(GoodsProvider provider) {
     params['dataId'] = '${provider?.windowPatternId ?? ''}';
 
-    params['width'] = '${provider?.widthM ?? ''}';
-    params['height'] = '${provider?.heightM ?? ''}';
+    params['width'] = '${provider?.widthCMStr ?? ''}';
+    params['height'] = '${provider?.heightCMStr ?? ''}';
     params['vertical_ground_height'] = '${provider?.dy ?? ''}';
     params['goods_id'] = '${provider?.goodsId ?? ''}';
     params['install_room'] = '${provider?.curRoomAttrBean?.id ?? ''}';
@@ -913,6 +913,7 @@ class BottomActionButtonBar extends StatelessWidget {
                                           goodsProvider?.goods?.goodsId ?? '',
                                       'total_price':
                                           goodsProvider?.totalPrice ?? 0.0,
+                                      'goods_type': goodsProvider?.goodsType
                                     }
                                   ],
                                 }));
