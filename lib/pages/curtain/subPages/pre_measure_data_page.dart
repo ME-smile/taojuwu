@@ -48,8 +48,8 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   void setParams(GoodsProvider provider) {
     params['dataId'] = '${provider?.windowPatternId ?? ''}';
 
-    params['width'] = '${provider?.widthM ?? ''}';
-    params['height'] = '${provider?.heightM ?? ''}';
+    params['width'] = '${provider?.widthCMStr ?? ''}';
+    params['height'] = '${provider?.heightCMStr ?? ''}';
     params['vertical_ground_height'] = '${provider?.dy ?? ''}';
     params['goods_id'] = '${provider?.goodsId ?? ''}';
     params['install_room'] = '${provider?.curRoomAttrBean?.id ?? ''}';
