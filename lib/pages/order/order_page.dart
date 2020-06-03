@@ -23,7 +23,7 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   List items = Constants.ORDER_STATUS_TAB_MAP.values.toList();
   TabController _tabController;
   List nums;
@@ -108,6 +108,7 @@ class _OrderPageState extends State<OrderPage>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ZYFutureBuilder(
         futureFunc: OTPService.orderList,
         params: params[_tabController.index],
@@ -148,6 +149,9 @@ class _OrderPageState extends State<OrderPage>
                   })));
         });
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class OrderTabView extends StatefulWidget {

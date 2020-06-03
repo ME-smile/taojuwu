@@ -6,13 +6,15 @@ class LoadingCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      alignment: Alignment.center,
-      // height: MediaQuery.of(context).size.height,
-      child: SpinKitCircle(
-        color: Color(0xffcccccc),
-        size: 50,
+    return Scaffold(
+      body: Container(
+        color: Colors.white,
+        alignment: Alignment.center,
+        // height: MediaQuery.of(context).size.height,
+        child: SpinKitCircle(
+          color: Color(0xffcccccc),
+          size: 50,
+        ),
       ),
     );
   }

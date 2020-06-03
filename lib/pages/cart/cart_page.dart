@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:taojuwu/models/order/order_model.dart';
+// import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
 
@@ -102,14 +102,15 @@ class _CartPageState extends State<CartPage>
   }
 
   Widget buildCartCard(CartModel cartModel) {
+    print(cartModel?.goodsAttrStr);
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    List<OrderProductAttrWrapper> attrs = cartModel.wcAttr;
-    String attrsText = '';
-    attrs.forEach((OrderProductAttrWrapper item) {
-      attrsText +=
-          '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
-    });
+    // List<OrderProductAttrWrapper> attrs = cartModel.wcAttr;
+    // String attrsText = '';
+    // attrs.forEach((OrderProductAttrWrapper item) {
+    //   attrsText +=
+    //       '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
+    // });
     return Consumer<CartProvider>(
         builder: (BuildContext context, CartProvider provider, _) {
       return GestureDetector(
@@ -134,12 +135,12 @@ class _CartPageState extends State<CartPage>
                   ZYNetImage(
                     imgPath: cartModel?.pictureInfo?.picCoverSmall,
                     isCache: false,
-                    height: UIKit.height(180),
+                    width: UIKit.width(180),
                   ),
                   Expanded(
                       child: Container(
                     margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                    height: UIKit.height(180),
+                    height: UIKit.height(190),
                     // width: MediaQuery.of(context).size.width,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -152,7 +153,7 @@ class _CartPageState extends State<CartPage>
                         ),
                         Expanded(
                           child: Text(
-                            attrsText ?? '',
+                            cartModel?.goodsAttrStr ?? '',
                             softWrap: true,
                             style: textTheme.caption,
                           ),

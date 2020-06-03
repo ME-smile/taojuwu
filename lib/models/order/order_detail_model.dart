@@ -394,6 +394,7 @@ class OrderGoods {
   int orderGoodsId;
   int orderId;
   int goodsId;
+  int goodsSpecialType;
   String goodsName;
   int skuId;
   String skuName;
@@ -443,15 +444,17 @@ class OrderGoods {
   List<String> refundOperation;
   String statusName;
   OrderGoodsMeasure orderGoodsMeasure;
-
+  String goodsAttrStr;
   int parentOrderStatus;
   String earnestMoney;
   bool get hasSelectedProduct => isSelectedGoods == 1;
   bool get canCancel =>
       (orderStatus != 15 && refundStatus == 0) || refundStatus == -4;
+  bool get hasAlreadyCancel => orderStatus == 9;
   bool get subOrderHasSameStatusWithParent =>
       (orderStatus == parentOrderStatus) ?? false;
   bool get showExpressInfo => orderStatus == 7;
+  bool get isWindowRoller => goodsSpecialType == 2;
   OrderGoods(
       {this.orderGoodsId,
       this.orderId,
@@ -512,6 +515,7 @@ class OrderGoods {
     orderGoodsId = json['order_goods_id'];
     orderId = json['order_id'];
     goodsId = json['goods_id'];
+    goodsSpecialType = json['goods_special_type'];
     goodsName = json['goods_name'];
     skuId = json['sku_id'];
     skuName = json['sku_name'];
@@ -554,6 +558,7 @@ class OrderGoods {
     isSelectedGoods = json['is_selected_goods'];
     isShade = json['is_shade'];
     parentOrderStatus = json['parent_order_status'];
+    goodsAttrStr = json['goods_attr_str'] ?? '';
     Map map = json['wc_attr'];
 
     List<Map<String, dynamic>> wrapper = [];

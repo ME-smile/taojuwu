@@ -46,6 +46,7 @@ class Category {
 
 class CartModel {
   bool isChecked = false;
+  String goodsAttrStr;
   int cartId;
   int clientId;
   int buyerId;
@@ -97,7 +98,7 @@ class CartModel {
     pointExchange = json['point_exchange'];
     earnestMoney = json['earnest_money'];
     promotionPrice = json['promotion_price'];
-
+    goodsAttrStr = json['goods_attr_str'] ?? '';
     Map map = json['wc_attr'] ?? {};
 
     List<Map<String, dynamic>> wrapper = [];

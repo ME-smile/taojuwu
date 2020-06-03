@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
+import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
@@ -13,6 +15,9 @@ class ListCard extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: () {
+        GoodsProvider goodsProvider =
+            Provider.of<GoodsProvider>(context, listen: false);
+        goodsProvider?.hasInit = false;
         RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
       },
       child: Container(

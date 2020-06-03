@@ -80,7 +80,7 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
           provider?.curPartAttrBean = tmp;
         }
       },
-      '遮光里布选择': {
+      '里布选择': {
         'list': provider?.windowShadeAttr?.data ?? [],
         'tap': (WindowShadeAttrBean bean) {
           setState(() {

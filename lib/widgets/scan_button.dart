@@ -1,8 +1,10 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/zy_response.dart';
+import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -53,6 +55,9 @@ class ScanButton extends StatelessWidget {
         child: IconButton(
           icon: Icon(ZYIcon.scan),
           onPressed: () {
+            GoodsProvider goodsProvider =
+                Provider.of<GoodsProvider>(context, listen: false);
+            goodsProvider?.hasInit = false;
             scan(context);
           },
         ));

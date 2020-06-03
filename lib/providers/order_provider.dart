@@ -322,8 +322,10 @@ class OrderProvider with ChangeNotifier {
                 Text('选品成功'),
                 Text('记得提醒客户及时支付尾款哦～'),
                 ZYRaisedButton('查看订单', () {
-                  RouteHandler.goOrderDetailPage(context, orderId,
-                      isReplaceMode: true);
+                  RouteHandler.goOrderDetailPage(
+                    context,
+                    orderId,
+                  );
                   Navigator.of(context).pop();
                 })
               ],
