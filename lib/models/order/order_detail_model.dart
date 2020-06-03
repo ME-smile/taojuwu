@@ -160,7 +160,7 @@ class OrderDetailModel {
   bool get haNotsSelectedProduct => orderStatus == 14;
   bool get hasAudited => orderStatus > 1;
   bool get hasMeasured => orderStatus > 2;
-  bool get hasInstalled => orderStatus > 7;
+  bool get hasInstalled => orderStatus >= 7;
   bool get hasProducted => orderStatus > 5;
   bool get canEditPrice => orderStatus == 3;
   bool get hasScheduled => orderStatus > 3;
@@ -444,7 +444,7 @@ class OrderGoods {
   List<String> refundOperation;
   String statusName;
   OrderGoodsMeasure orderGoodsMeasure;
-
+  String goodsAttrStr;
   int parentOrderStatus;
   String earnestMoney;
   bool get hasSelectedProduct => isSelectedGoods == 1;
@@ -558,6 +558,7 @@ class OrderGoods {
     isSelectedGoods = json['is_selected_goods'];
     isShade = json['is_shade'];
     parentOrderStatus = json['parent_order_status'];
+    goodsAttrStr = json['goods_attr_str'] ?? '';
     Map map = json['wc_attr'];
 
     List<Map<String, dynamic>> wrapper = [];

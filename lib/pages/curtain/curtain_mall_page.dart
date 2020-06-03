@@ -288,7 +288,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   setState(() {
                     checkTag(tagWrapper?.tag, 2, i);
 
-                    params['tag_id'] = item?.id;
+                    // params['tag_id'] = item?.id;
 
                     requestGoodsData();
                   });
@@ -347,8 +347,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   }
 
   void requestGoodsData() {
-    print(params);
-
     OTPService.curtainGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
       beanData = curtainProductListResp?.data;

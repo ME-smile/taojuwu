@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
-import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/pages/order/utils/order_kit.dart';
 
 import 'package:taojuwu/providers/order_detail_provider.dart';
@@ -24,15 +23,15 @@ class OrderAttrCard extends StatelessWidget {
       [1, 2, 3, 4, 14].contains(model?.orderStatus) ?? false;
   @override
   Widget build(BuildContext context) {
-    List<OrderProductAttrWrapper> attrs = goods.wcAttr;
-    String attrsText = '';
+    // List<OrderProductAttrWrapper> attrs = goods.wcAttr;
+    // String attrsText = '';
 
-    attrs.forEach((OrderProductAttrWrapper item) {
-      attrsText +=
-          '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
-    });
-    attrsText +=
-        ' 离地距离: ${goods?.orderGoodsMeasure?.verticalGroundHeight ?? 0}cm';
+    // attrs.forEach((OrderProductAttrWrapper item) {
+    //   attrsText +=
+    //       '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
+    // });
+    // attrsText +=
+    //     ' 离地距离: ${goods?.orderGoodsMeasure?.verticalGroundHeight ?? 0}cm';
     TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
         child: Column(
@@ -62,7 +61,7 @@ class OrderAttrCard extends StatelessWidget {
                   ),
                   VSpacing(20),
                   Text(
-                    attrsText,
+                    goods?.goodsAttrStr ?? '',
                     style: textTheme.caption,
                   ),
                   VSpacing(10),
