@@ -707,8 +707,8 @@ class BottomActionButtonBar extends StatelessWidget {
   }
 
   bool validateData(GoodsProvider provider) {
-    String w = provider?.widthCMStr;
-    String h = provider?.heightCMStr;
+    String w = provider?.widthCMStr ?? '0.00';
+    String h = provider?.heightCMStr ?? '0.00';
     if (w?.trim()?.isEmpty == true) {
       CommonKit?.showInfo('请填写宽度');
       return false;

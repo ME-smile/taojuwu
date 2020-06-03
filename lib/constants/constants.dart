@@ -100,7 +100,7 @@ class Constants {
       'subtitle': '联系预约安装时间',
     },
     7: {
-      'title': '等待安装',
+      'title': '已发货',
       'subtitle': '预约安装时间',
     },
     8: {'title': '交易成功', 'subtitle': ''},

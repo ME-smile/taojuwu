@@ -799,12 +799,17 @@ class GoodsProvider with ChangeNotifier {
                   'name': curPartAttrBean?.name ?? '',
                   'id': curPartAttrBean?.id ?? ''
                 },
+                '8': {
+                  'name': curCanopyAttrBean?.name ?? '',
+                  'id': curCanopyAttrBean?.id ?? '',
+                },
                 //帘身款式
                 // '6': {},
                 // // 帘身面料
                 // '7': {},
                 //幔头
                 // '8': {'name': '', 'id': ''},
+
                 '9': [
                   // {'name': '宽', 'value': provider?.width},
                   // {'name': '高', 'value': provider?.height},
