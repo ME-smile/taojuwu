@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:taojuwu/event_bus/event_bus.dart';
-import 'package:taojuwu/event_bus/events/select_product_event.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 
@@ -15,13 +13,13 @@ import 'package:taojuwu/pages/order/widgets/cancel_order_button.dart';
 import 'package:taojuwu/pages/order/widgets/cancel_order_goods_button.dart';
 import 'package:taojuwu/pages/order/widgets/remind_button.dart';
 import 'package:taojuwu/pages/order/widgets/select_product_button.dart';
-import 'package:taojuwu/providers/client_provider.dart';
 
 import 'package:taojuwu/providers/order_detail_provider.dart';
 import 'package:taojuwu/providers/order_provider.dart';
 
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -635,13 +633,10 @@ class OrderKit {
                 callback: () {
                   OrderProvider orderProvider =
                       Provider.of<OrderProvider>(context, listen: false);
-                  ClientProvider clientProvider =
-                      Provider.of<ClientProvider>(context, listen: false);
 
-                  eventBus.fire(
-                      SelectProductEvent(orderGoodsId: goods?.orderGoodsId));
-                  clientProvider.clientId = provider?.clientId;
-                  clientProvider?.name = provider?.clientName;
+                  TargetOrderGoods targetOrderGoods = TargetOrderGoods();
+                  targetOrderGoods?.setOrderGoodsId(goods?.orderGoodsId);
+
                   orderProvider.initMeasureOrder(provider, context,
                       orderGoods: goods);
                 },

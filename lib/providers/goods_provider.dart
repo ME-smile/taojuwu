@@ -9,8 +9,11 @@ import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 
 class GoodsProvider with ChangeNotifier {
+  bool get isMeasureOrderGoods =>
+      TargetOrderGoods.instance.orderGoodsId != null;
   ProductBean _goods;
   WindowGauzeAttr _windowGauzeAttr;
   CraftAttr _craftAttr;
@@ -19,6 +22,7 @@ class GoodsProvider with ChangeNotifier {
   WindowShadeAttr _windowShadeAttr;
   CanopyAttr _canopyAttr;
   AccessoryAttr _accessoryAttr;
+  OrderGoodsMeasure _measureData;
 
   WindowGauzeAttrBean _curwindowGauzeAttrBean;
   CraftAttrBean _curCraftAttrBean;
@@ -34,7 +38,6 @@ class GoodsProvider with ChangeNotifier {
   List<CraftAttrBean> _initCraftAttrBeanList = [];
   List<PartAttrBean> _initPartAttrBeanList = [];
   RoomAttrBean _curRoomAttrBean;
-  OrderGoodsMeasure _measureData;
   OrderGoodsMeasure _forWindowRollerMeasureData;
 
   Map<String, dynamic> attrParams;
@@ -61,6 +64,8 @@ class GoodsProvider with ChangeNotifier {
     return map['text'];
   }
 
+  OrderGoodsMeasure get measureData => _measureData;
+
   OrderGoodsMeasure get forWindowRollerMeasureData =>
       _forWindowRollerMeasureData;
   bool get isWindowGauze => goods?.goodsSpecialType == 3;
@@ -68,16 +73,12 @@ class GoodsProvider with ChangeNotifier {
   int _curWindowPattern = 0;
   int _curWindowStyle = 0;
   int _curWindowType = 0;
-  OrderGoodsMeasure get measureData => _measureData;
   int tmpWindowPattern = 0;
   int tmpWindowStyle = 0;
   int tmpWindowType = 0;
-  bool _hasInit = false;
 
   int _curInstallOptionIndex = 0;
   int _createType = 1;
-
-  GoodsProvider();
 
   set forWindowRollerMeasureData(OrderGoodsMeasure data) {
     _forWindowRollerMeasureData = data;
@@ -175,6 +176,7 @@ class GoodsProvider with ChangeNotifier {
   }
 
   void initDataWithFilter({
+    OrderGoodsMeasure measureData,
     ProductBean bean,
     WindowGauzeAttr windowGauzeAttr,
     CraftAttr craftAttr,
@@ -185,6 +187,7 @@ class GoodsProvider with ChangeNotifier {
     RoomAttr roomAttr,
   }) {
     initData(
+      measureData: measureData,
       bean: bean,
       windowGauzeAttr: windowGauzeAttr,
       craftAttr: craftAttr,
@@ -199,6 +202,7 @@ class GoodsProvider with ChangeNotifier {
   }
 
   void initData({
+    OrderGoodsMeasure measureData,
     ProductBean bean,
     WindowGauzeAttr windowGauzeAttr,
     CraftAttr craftAttr,
@@ -208,6 +212,7 @@ class GoodsProvider with ChangeNotifier {
     AccessoryAttr accessoryAttr,
     RoomAttr roomAttr,
   }) {
+    _measureData = measureData;
     _goods = bean;
     _windowGauzeAttr = windowGauzeAttr;
     _craftAttr = craftAttr;
@@ -244,8 +249,6 @@ class GoodsProvider with ChangeNotifier {
         _canopyAttr?.data?.isNotEmpty == true ? _canopyAttr?.data?.first : null;
     _curRoomAttrBean =
         _roomAttr?.data?.isNotEmpty == true ? _roomAttr?.data?.first : null;
-
-    _hasInit = true;
   }
 
   int get goodsType => goods?.goodsSpecialType;
@@ -275,7 +278,7 @@ class GoodsProvider with ChangeNotifier {
   int get curWindowPattern => _curWindowPattern;
   int get curWindowStyle => _curWindowStyle;
   int get curWindowType => _curWindowType;
-  bool get hasInit => _hasInit;
+
   bool get isShade => _curwindowGauzeAttrBean?.name?.contains('无');
 
   double get widthCM => double.parse(_width ?? '0.0');
@@ -435,7 +438,6 @@ class GoodsProvider with ChangeNotifier {
     }
   }
 
-  bool get isMeasureOrder => createType == 2;
   bool get hasSetSize => measureId != null;
   bool get hasLike => goods?.isCollect == 1;
 
@@ -449,11 +451,6 @@ class GoodsProvider with ChangeNotifier {
 
   set curInstallOptionIndex(int index) {
     _curInstallOptionIndex = index;
-    notifyListeners();
-  }
-
-  set hasInit(bool flag) {
-    _hasInit = flag;
     notifyListeners();
   }
 

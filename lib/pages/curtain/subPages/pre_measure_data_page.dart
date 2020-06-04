@@ -75,8 +75,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   void initState() {
     super.initState();
     // goodsProvider = widget.goodsProvider;
-    GoodsProvider goodsProvider =
-        Provider?.of<GoodsProvider>(context, listen: false);
+    GoodsProvider goodsProvider = GoodsProvider();
     widthInputController =
         TextEditingController(text: goodsProvider?.widthCMStr);
     heightInputController =
@@ -283,184 +282,189 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return Consumer<GoodsProvider>(
-      builder: (BuildContext context, GoodsProvider provider, _) {
-        setParams(provider);
-        return Scaffold(
-          // resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: Text('测装数据'),
-            centerTitle: true,
-          ),
-          body: SingleChildScrollView(
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    child: ZYAssetImage(
-                      WindowPatternAttr.pictureMap[
-                          '${provider?.windowPatternStr}/${provider?.curInstallMode}'],
-                      width: UIKit.width(480),
-                      height: UIKit.height(480),
+    return ChangeNotifierProvider.value(
+      value: GoodsProvider(),
+      child: Consumer<GoodsProvider>(
+        builder: (BuildContext context, GoodsProvider provider, _) {
+          setParams(provider);
+          return Scaffold(
+            // resizeToAvoidBottomInset: false,
+            appBar: AppBar(
+              title: Text('测装数据'),
+              centerTitle: true,
+            ),
+            body: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      child: ZYAssetImage(
+                        WindowPatternAttr.pictureMap[
+                            '${provider?.windowPatternStr}/${provider?.curInstallMode}'],
+                        width: UIKit.width(480),
+                        height: UIKit.height(480),
+                      ),
                     ),
-                  ),
-                  Divider(),
-                  AttrOptionsBar(
-                    title: '空间',
-                    trailingText: provider?.curRoomAttrBean?.name ?? '',
-                    callback: () {
-                      checkRoomAttr(context);
-                    },
-                  ),
-                  AttrOptionsBar(
-                    title: '窗型',
-                    trailingText: provider?.windowPatternStr ?? '',
-                    callback: () {
-                      checkWindowPattern(context);
-                    },
-                  ),
-                  // _buildInstallOptionBar(context),
-                  // _modeBar(
-                  //   context,
-                  //   '安装方式:',
-                  //   WindowPatternAttr.installModes,
-                  // ),
-                  Divider(),
-                  buildInstallOptionPicker(),
-                  Divider(),
-                  buildOpenOptionPicker(),
+                    Divider(),
+                    AttrOptionsBar(
+                      title: '空间',
+                      trailingText: provider?.curRoomAttrBean?.name ?? '',
+                      callback: () {
+                        checkRoomAttr(context);
+                      },
+                    ),
+                    AttrOptionsBar(
+                      title: '窗型',
+                      trailingText: provider?.windowPatternStr ?? '',
+                      callback: () {
+                        checkWindowPattern(context);
+                      },
+                    ),
+                    // _buildInstallOptionBar(context),
+                    // _modeBar(
+                    //   context,
+                    //   '安装方式:',
+                    //   WindowPatternAttr.installModes,
+                    // ),
+                    Divider(),
+                    buildInstallOptionPicker(),
+                    Divider(),
+                    buildOpenOptionPicker(),
 
-                  Divider(),
-                  buildOpenSubOptionPicker(),
-                  // _modeBar(
-                  //   context,
-                  //   '打开方式:',
-                  //   WindowPatternAttr.openModes,
-                  // ),
-                  // _buildOpenOptionBar(),
-                  Divider(),
-                  Column(
-                    children: <Widget>[
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: UIKit.height(20)),
-                        child: Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(right: UIKit.width(30)),
-                              child: Text(
-                                '宽   (cm):',
-                                style: textTheme.caption,
-                              ),
-                            ),
-                            Container(
-                              child: TextField(
-                                maxLines: 1,
-                                controller: widthInputController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(vertical: 2.5),
-                                ),
-                              ),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: UIKit.width(20)),
-                              width: UIKit.width(160),
-                              height: UIKit.height(50),
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey)),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: UIKit.height(20)),
-                        child: Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(right: UIKit.width(30)),
-                              child: Text(
-                                '高   (cm):',
-                                style: textTheme.caption,
-                              ),
-                            ),
-                            Container(
-                              child: TextField(
-                                maxLines: 1,
-                                controller: heightInputController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(vertical: 2.5),
-                                ),
-                              ),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: UIKit.width(20)),
-                              width: UIKit.width(160),
-                              height: UIKit.height(50),
-                              decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Divider(),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: UIKit.height(20)),
-                    child: Row(
+                    Divider(),
+                    buildOpenSubOptionPicker(),
+                    // _modeBar(
+                    //   context,
+                    //   '打开方式:',
+                    //   WindowPatternAttr.openModes,
+                    // ),
+                    // _buildOpenOptionBar(),
+                    Divider(),
+                    Column(
                       children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(right: UIKit.width(30)),
-                          child: Text(
-                            '离地距离:',
-                            style: textTheme.caption,
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(vertical: UIKit.height(20)),
+                          child: Row(
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(right: UIKit.width(30)),
+                                child: Text(
+                                  '宽   (cm):',
+                                  style: textTheme.caption,
+                                ),
+                              ),
+                              Container(
+                                child: TextField(
+                                  maxLines: 1,
+                                  controller: widthInputController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding:
+                                        EdgeInsets.symmetric(vertical: 2.5),
+                                  ),
+                                ),
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: UIKit.width(20)),
+                                width: UIKit.width(160),
+                                height: UIKit.height(50),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey)),
+                              )
+                            ],
                           ),
                         ),
                         Container(
-                          child: TextField(
-                            maxLines: 1,
-                            controller: dyInputController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              hintText: '单位(cm)',
-                              isDense: true,
-                              contentPadding:
-                                  EdgeInsets.symmetric(vertical: 2.5),
-                            ),
+                          padding:
+                              EdgeInsets.symmetric(vertical: UIKit.height(20)),
+                          child: Row(
+                            children: <Widget>[
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(right: UIKit.width(30)),
+                                child: Text(
+                                  '高   (cm):',
+                                  style: textTheme.caption,
+                                ),
+                              ),
+                              Container(
+                                child: TextField(
+                                  maxLines: 1,
+                                  controller: heightInputController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding:
+                                        EdgeInsets.symmetric(vertical: 2.5),
+                                  ),
+                                ),
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: UIKit.width(20)),
+                                width: UIKit.width(160),
+                                height: UIKit.height(50),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey)),
+                              ),
+                            ],
                           ),
-                          margin:
-                              EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                          width: UIKit.width(160),
-                          height: UIKit.height(50),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey)),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    Divider(),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: UIKit.height(20)),
+                      child: Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(right: UIKit.width(30)),
+                            child: Text(
+                              '离地距离:',
+                              style: textTheme.caption,
+                            ),
+                          ),
+                          Container(
+                            child: TextField(
+                              maxLines: 1,
+                              controller: dyInputController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                hintText: '单位(cm)',
+                                isDense: true,
+                                contentPadding:
+                                    EdgeInsets.symmetric(vertical: 2.5),
+                              ),
+                            ),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: UIKit.width(20)),
+                            width: UIKit.width(160),
+                            height: UIKit.height(50),
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          bottomNavigationBar: ZYSubmitButton('确认', () {
-            if (!beforeSendData(provider)) return;
-            OTPService.saveMeasure(context, params: params)
-                .then((ZYResponse response) {
-              if (response?.valid == true) {
-                provider?.measureId = response?.data;
-                Navigator.of(context).pop();
-              }
-            }).catchError((err) => err);
-          }),
-        );
-      },
+            bottomNavigationBar: ZYSubmitButton('确认', () {
+              if (!beforeSendData(provider)) return;
+              OTPService.saveMeasure(context, params: params)
+                  .then((ZYResponse response) {
+                if (response?.valid == true) {
+                  provider?.measureId = response?.data;
+                  Navigator.of(context).pop();
+                }
+              }).catchError((err) => err);
+            }),
+          );
+        },
+      ),
     );
   }
 }
@@ -483,62 +487,65 @@ class __RoomAttrCheckWrapperState extends State<RoomAttrCheckWrapper> {
   @override
   void initState() {
     super.initState();
-    GoodsProvider provider = Provider.of<GoodsProvider>(context, listen: false);
-    roomAttr = provider?.roomAttr;
-    tmpId = provider?.curRoomAttrBean?.id;
+    GoodsProvider goodsProvider = GoodsProvider();
+    roomAttr = goodsProvider?.roomAttr;
+    tmpId = goodsProvider?.curRoomAttrBean?.id;
   }
 
   @override
   Widget build(BuildContext context) {
     List<RoomAttrBean> beans = roomAttr?.data;
     ThemeData themeData = Theme.of(context);
-    return Consumer<GoodsProvider>(
-      builder: (BuildContext context, GoodsProvider provider, _) {
-        return SkuAttrPicker(
-          title: '空间选择',
-          child: SingleChildScrollView(
-            child: Wrap(
-              children: List.generate(beans?.length ?? 0, (int i) {
-                return Container(
-                  padding: EdgeInsets.symmetric(horizontal: UIKit.width(10)),
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        tmp = beans[i];
-                        tmpId = beans[i].id;
-                      });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          color: tmpId == beans[i].id
-                              ? themeData.accentColor
-                              : const Color(0xFFEDEDED)),
-                      margin: EdgeInsets.symmetric(
-                          horizontal: UIKit.width(10),
-                          vertical: UIKit.height(10)),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: UIKit.width(15),
-                          vertical: UIKit.height(10)),
-                      child: Text(
-                        beans[i].name,
-                        style: tmpId == beans[i].id
-                            ? themeData.accentTextTheme.button
-                            : TextStyle(),
+    return ChangeNotifierProvider.value(
+      value: GoodsProvider(),
+      child: Consumer<GoodsProvider>(
+        builder: (BuildContext context, GoodsProvider provider, _) {
+          return SkuAttrPicker(
+            title: '空间选择',
+            child: SingleChildScrollView(
+              child: Wrap(
+                children: List.generate(beans?.length ?? 0, (int i) {
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(10)),
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          tmp = beans[i];
+                          tmpId = beans[i].id;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            shape: BoxShape.rectangle,
+                            color: tmpId == beans[i].id
+                                ? themeData.accentColor
+                                : const Color(0xFFEDEDED)),
+                        margin: EdgeInsets.symmetric(
+                            horizontal: UIKit.width(10),
+                            vertical: UIKit.height(10)),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: UIKit.width(15),
+                            vertical: UIKit.height(10)),
+                        child: Text(
+                          beans[i].name,
+                          style: tmpId == beans[i].id
+                              ? themeData.accentTextTheme.button
+                              : TextStyle(),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }),
+                  );
+                }),
+              ),
             ),
-          ),
-          callback: () {
-            provider?.curRoomAttrBean = tmp;
-            // print(provider?.curRoomAttrBean?.name);
-            Navigator.of(context).pop();
-          },
-        );
-      },
+            callback: () {
+              provider?.curRoomAttrBean = tmp;
+              // print(provider?.curRoomAttrBean?.name);
+              Navigator.of(context).pop();
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -548,42 +555,45 @@ class WindowStyleCheckWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GoodsProvider>(
-      builder: (BuildContext context, GoodsProvider provider, _) {
-        return SkuAttrPicker(
-          title: '窗型选择',
-          child: SingleChildScrollView(
-              child: Container(
-            margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-            child: Column(
-              children: [
-                WindowPatternView(
-                  text: WindowPatternAttr.patterns['title'],
-                  imgs: WindowPatternAttr.patterns['options'],
-                  curOpotion: provider?.curWindowPattern ?? 0,
-                  provider: provider,
-                ),
-                WindowPatternView(
-                  text: WindowPatternAttr.styles['title'],
-                  imgs: WindowPatternAttr.styles['options'],
-                  curOpotion: provider?.curWindowStyle ?? 0,
-                  provider: provider,
-                ),
-                WindowPatternView(
-                  text: WindowPatternAttr.types['title'],
-                  imgs: WindowPatternAttr.types['options'],
-                  curOpotion: provider?.curWindowType ?? 0,
-                  provider: provider,
-                )
-              ],
-            ),
-          )),
-          callback: () {
-            provider?.saveWindowAttrs();
-            Navigator.of(context).pop();
-          },
-        );
-      },
+    return ChangeNotifierProvider.value(
+      value: GoodsProvider(),
+      child: Consumer<GoodsProvider>(
+        builder: (BuildContext context, GoodsProvider provider, _) {
+          return SkuAttrPicker(
+            title: '窗型选择',
+            child: SingleChildScrollView(
+                child: Container(
+              margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+              child: Column(
+                children: [
+                  WindowPatternView(
+                    text: WindowPatternAttr.patterns['title'],
+                    imgs: WindowPatternAttr.patterns['options'],
+                    curOpotion: provider?.curWindowPattern ?? 0,
+                    provider: provider,
+                  ),
+                  WindowPatternView(
+                    text: WindowPatternAttr.styles['title'],
+                    imgs: WindowPatternAttr.styles['options'],
+                    curOpotion: provider?.curWindowStyle ?? 0,
+                    provider: provider,
+                  ),
+                  WindowPatternView(
+                    text: WindowPatternAttr.types['title'],
+                    imgs: WindowPatternAttr.types['options'],
+                    curOpotion: provider?.curWindowType ?? 0,
+                    provider: provider,
+                  )
+                ],
+              ),
+            )),
+            callback: () {
+              provider?.saveWindowAttrs();
+              Navigator.of(context).pop();
+            },
+          );
+        },
+      ),
     );
   }
 }

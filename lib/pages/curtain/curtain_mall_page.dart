@@ -1,16 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
-import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/models/shop/product_tag_model.dart';
-import 'package:taojuwu/providers/goods_provider.dart';
-import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/singleton/target_client.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
@@ -410,6 +408,14 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         });
   }
 
+  void clear() {
+    TargetOrderGoods.instance.clear();
+    TargetClient.instance.clear();
+    print('----------------');
+    print(TargetClient.instance.clientName);
+    print('----------------');
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -565,14 +571,15 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         ),
         onWillPop: () {
           Navigator.of(context).pop();
-          OrderProvider orderProvider =
-              Provider.of<OrderProvider>(context, listen: false);
-          GoodsProvider goodsProvider =
-              Provider.of<GoodsProvider>(context, listen: false);
-          goodsProvider?.clearGoodsInfo();
-          orderProvider?.orderType = 1;
-          orderProvider?.curOrderGoods = null;
-          orderProvider.hasConfirmMeasureData = false;
+          clear();
+          // OrderProvider orderProvider =
+          //     Provider.of<OrderProvider>(context, listen: false);
+          // GoodsProvider goodsProvider =
+          //     Provider.of<GoodsProvider>(context, listen: false);
+          // goodsProvider?.clearGoodsInfo();
+          // orderProvider?.orderType = 1;
+          // orderProvider?.curOrderGoods = null;
+          // orderProvider.hasConfirmMeasureData = false;
           return Future.value(false);
         });
   }

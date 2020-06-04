@@ -1,9 +1,8 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 import 'package:taojuwu/models/user/customer_model.dart';
-import 'package:taojuwu/providers/client_provider.dart';
-import 'package:taojuwu/providers/goods_provider.dart';
+
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/widgets/no_data.dart';
@@ -11,7 +10,11 @@ import 'package:taojuwu/widgets/zy_future_builder.dart';
 
 class CustomerSearchPage extends StatefulWidget {
   final String keyword;
-  CustomerSearchPage({Key key, this.keyword}) : super(key: key);
+
+  CustomerSearchPage({
+    Key key,
+    this.keyword,
+  }) : super(key: key);
 
   @override
   _CustomerSearchPageState createState() => _CustomerSearchPageState();
@@ -71,25 +74,12 @@ class _CustomerSearchPageState extends State<CustomerSearchPage> {
         ),
         SizedBox(
           height: _itemHeight.toDouble(),
-          child: Consumer2<ClientProvider, GoodsProvider>(builder:
-              (BuildContext context, ClientProvider provider,
-                  GoodsProvider goodsProvider, _) {
-            return ListTile(
-              title: Text(model?.clientName),
-              onTap: () {
-                // Navigator.pop(context, model);
-                if (provider.isForSelectedClient) {
-                  RouteHandler.goCurtainDetailPage(
-                      context, goodsProvider?.goodsId);
-                  provider?.isForSelectedClient = false;
-                  provider?.name = model?.clientName;
-                  provider?.clientId = model?.id;
-                } else {
-                  RouteHandler.goCustomerDetailPage(context, model?.id);
-                }
-              },
-            );
-          }),
+          child: ListTile(
+            title: Text(model?.clientName),
+            onTap: () {
+              RouteHandler.goCustomerDetailPage(context, model?.id);
+            },
+          ),
         )
       ],
     );

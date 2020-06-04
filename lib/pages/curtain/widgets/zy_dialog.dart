@@ -43,7 +43,7 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
   String title;
   @override
   void initState() {
-    GoodsProvider provider = Provider.of<GoodsProvider>(context, listen: false);
+    GoodsProvider provider = GoodsProvider();
     tmp = widget.curOption;
     title = widget.title;
     dict = {
@@ -117,43 +117,47 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
   bool get isLessOption => dict[title]['list'].length < 4 ?? false;
   @override
   Widget build(BuildContext context) {
-    return Consumer<GoodsProvider>(
-      builder: (BuildContext context, GoodsProvider provider, _) {
-        return SkuAttrPicker(
-            title: title,
-            callback: () {
-              dict[title]['confirm']();
-              Navigator.of(context).pop();
-            },
-            child: SingleChildScrollView(
-                child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(
-                  horizontal: isLessOption ? UIKit.width(40) : 0),
-              alignment: isLessOption ? Alignment.centerLeft : Alignment.center,
-              child: Wrap(
-                alignment: WrapAlignment.start,
-                runAlignment: WrapAlignment.start,
-                crossAxisAlignment: WrapCrossAlignment.start,
-                direction: Axis.horizontal,
-                spacing: 8,
-                runSpacing: 20,
-                children: List.generate(dict[title]['list'].length, (int i) {
-                  var item = dict[title]['list'][i];
-                  return OptionView(
-                    img: item.picture,
-                    text: item.name,
-                    price: '${item.price ?? ''}',
-                    showBorder:
-                        title != '配饰选择' ? tmp.id == item.id : item.isChecked,
-                    callback: () {
-                      dict[title]['tap'](item);
-                    },
-                  );
-                }),
-              ),
-            )));
-      },
+    return ChangeNotifierProvider<GoodsProvider>.value(
+      value: GoodsProvider(),
+      child: Consumer<GoodsProvider>(
+        builder: (BuildContext context, GoodsProvider provider, _) {
+          return SkuAttrPicker(
+              title: title,
+              callback: () {
+                dict[title]['confirm']();
+                Navigator.of(context).pop();
+              },
+              child: SingleChildScrollView(
+                  child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(
+                    horizontal: isLessOption ? UIKit.width(40) : 0),
+                alignment:
+                    isLessOption ? Alignment.centerLeft : Alignment.center,
+                child: Wrap(
+                  alignment: WrapAlignment.start,
+                  runAlignment: WrapAlignment.start,
+                  crossAxisAlignment: WrapCrossAlignment.start,
+                  direction: Axis.horizontal,
+                  spacing: 8,
+                  runSpacing: 20,
+                  children: List.generate(dict[title]['list'].length, (int i) {
+                    var item = dict[title]['list'][i];
+                    return OptionView(
+                      img: item.picture,
+                      text: item.name,
+                      price: '${item.price ?? ''}',
+                      showBorder:
+                          title != '配饰选择' ? tmp.id == item.id : item.isChecked,
+                      callback: () {
+                        dict[title]['tap'](item);
+                      },
+                    );
+                  }),
+                ),
+              )));
+        },
+      ),
     );
   }
 }

@@ -22,9 +22,6 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
   @override
   void initState() {
     super.initState();
-    OrderProvider orderProvider =
-        Provider.of<OrderProvider>(context, listen: false);
-    orderProvider?.orderType = 2;
   }
 
   @override
@@ -32,69 +29,73 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     TextTheme accentTextTheme = themeData.accentTextTheme;
-    return WillPopScope(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('下测量单'),
-            centerTitle: true,
-            actions: <Widget>[
-              UserChooseButton(),
-            ],
-          ),
-          body: SingleChildScrollView(
-            child: Container(
-              child: Column(
-                children: <Widget>[
-                  BuyerInfoBar(),
-                  VSpacing(20),
-                  // BuyerInfoBar(),
-                  SellerInfoBar(),
-                  VSpacing(20),
-                  CustomerNeedBar(),
-                  VSpacing(20),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                    child: Text(
-                      Constants.SERVER_PROMISE,
-                      style: textTheme.caption,
-                    ),
-                  ),
-                ],
-              ),
+    return ChangeNotifierProvider<OrderProvider>(
+      create: (BuildContext context) => OrderProvider(),
+      child: WillPopScope(
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text('下测量单'),
+              centerTitle: true,
+              actions: <Widget>[
+                UserChooseButton(),
+              ],
             ),
-          ),
-          bottomNavigationBar: Consumer<OrderProvider>(
-            builder: (BuildContext context, OrderProvider provider, _) {
-              return Container(
-                // alignment: Alignment.bottomRight,
-                padding: EdgeInsets.symmetric(
-                    vertical: UIKit.height(10), horizontal: UIKit.width(20)),
-                color: themeData.primaryColor,
-                child: Row(
+            body: SingleChildScrollView(
+              child: Container(
+                child: Column(
                   children: <Widget>[
-                    Spacer(),
-                    FlatButton(
-                      color: themeData.accentColor,
+                    BuyerInfoBar(),
+                    VSpacing(20),
+                    // BuyerInfoBar(),
+                    SellerInfoBar(),
+                    VSpacing(20),
+                    CustomerNeedBar(),
+                    VSpacing(20),
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: UIKit.width(20)),
                       child: Text(
-                        '提交订单',
-                        style: accentTextTheme.button,
+                        Constants.SERVER_PROMISE,
+                        style: textTheme.caption,
                       ),
-                      onPressed: () {
-                        provider?.createMeasureOrder(context);
-                      },
                     ),
                   ],
                 ),
-              );
-            },
+              ),
+            ),
+            bottomNavigationBar: Consumer<OrderProvider>(
+              builder: (BuildContext context, OrderProvider provider, _) {
+                return Container(
+                  // alignment: Alignment.bottomRight,
+                  padding: EdgeInsets.symmetric(
+                      vertical: UIKit.height(10), horizontal: UIKit.width(20)),
+                  color: themeData.primaryColor,
+                  child: Row(
+                    children: <Widget>[
+                      Spacer(),
+                      FlatButton(
+                        color: themeData.accentColor,
+                        child: Text(
+                          '提交订单',
+                          style: accentTextTheme.button,
+                        ),
+                        onPressed: () {
+                          provider?.createMeasureOrder(context);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
-        ),
-        onWillPop: () {
-          OrderProvider orderProvider =
-              Provider.of<OrderProvider>(context, listen: false);
-          orderProvider?.clearOrderData();
-          Navigator.of(context).pop();
-          return Future.value(false);
-        });
+          onWillPop: () {
+            OrderProvider orderProvider =
+                Provider.of<OrderProvider>(context, listen: false);
+            orderProvider?.clearOrderData();
+            Navigator.of(context).pop();
+            return Future.value(false);
+          }),
+    );
   }
 }

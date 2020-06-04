@@ -145,14 +145,18 @@ class RouteHandler {
 
   static Handler customer = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    return CustomerManagePage();
+    int flag = int.parse(params['flag']?.first);
+
+    return CustomerManagePage(
+      flag: flag,
+    );
   });
-  static goCustomerPage(
-    BuildContext context,
-  ) {
+  static goCustomerPage(BuildContext context,
+      {int isForSelectedClient: 0 //1代表选择客户 0 //普通跳转
+      }) {
     _jumpTo(
       context,
-      Routes.customer,
+      '${Routes.customer}?flag=$isForSelectedClient',
     );
   }
 
@@ -194,8 +198,8 @@ class RouteHandler {
     int type = int.parse(params['type']?.first);
     return CustomerTablePage(type: type);
   });
-  static goCustomerTablePage(BuildContext context, int type) {
-    _jumpTo(context, '${Routes.customerTable}?type=$type');
+  static goCustomerTablePage(BuildContext context, int type, {int flag: 0}) {
+    _jumpTo(context, '${Routes.customerTable}?type=$type', replace: true);
   }
 
   static Handler dataCenter = Handler(

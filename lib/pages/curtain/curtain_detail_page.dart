@@ -6,24 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
+// import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/pages/curtain/subPages/pre_measure_data_page.dart';
-import 'package:taojuwu/providers/client_provider.dart';
 
 import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/singleton/target_client.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/loading.dart';
 
 import 'package:taojuwu/widgets/user_choose_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
+import 'package:taojuwu/widgets/zy_future_builder.dart';
 
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
@@ -54,6 +56,8 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   String partType;
   ValueNotifier<bool> hasCollected = ValueNotifier<bool>(false);
 
+  TargetClient targetClient = TargetClient.instance;
+
   @override
   void dispose() {
     super.dispose();
@@ -63,66 +67,23 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     dyInputController?.dispose();
   }
 
-  bool isLoading = true;
-
   @override
   void initState() {
     super.initState();
     id = widget.id;
+    int clientId = targetClient.clientId;
 
-    ClientProvider clientProvider =
-        Provider.of<ClientProvider>(context, listen: false);
-    GoodsProvider goodsProvider =
-        Provider.of<GoodsProvider>(context, listen: false);
-    partType = goodsProvider?.partType;
     widthInputController = TextEditingController();
     heightInputController = TextEditingController();
     dyInputController = TextEditingController();
     cartParams = {
-      'client_uid': clientProvider?.clientId,
+      'client_uid': clientId,
     };
     collectParams = {
       // 'fav_type':'goods',
       'fav_id': widget.id,
-      'client_uid': clientProvider?.clientId
+      'client_uid': clientId
     };
-    OTPService.fetchCurtainDetailData(context, params: {
-      'goods_id': widget.id,
-      'client_uid': clientProvider?.clientId,
-      'parts_type': partType
-    }).then((data) {
-      ProductBeanRes productBeanRes = data[0];
-      ProductBeanDataWrapper wrapper = productBeanRes.data;
-      ProductBean bean = wrapper.goodsDetail;
-
-      if (mounted) {
-        if (goodsProvider?.hasInit == false) {
-          goodsProvider?.initDataWithFilter(
-            bean: bean,
-            windowGauzeAttr: data[1],
-            craftAttr: data[2],
-            partAttr: data[3],
-            windowShadeAttr: data[4],
-            canopyAttr: data[5],
-            accessoryAttr: data[6],
-            roomAttr: data[7],
-          );
-        }
-        setCartParams(goodsProvider);
-        hasCollected?.value = goodsProvider?.hasLike;
-
-        setState(() {
-          isLoading = false;
-        });
-      }
-    }).catchError((err) {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
-      return err;
-    });
   }
 
   void setCartParams(GoodsProvider goodsProvider) {
@@ -220,56 +181,59 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     await showCupertinoDialog(
         context: context,
         builder: (BuildContext context) {
-          return Consumer<GoodsProvider>(
-            builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-              return CupertinoAlertDialog(
-                title: Text.rich(TextSpan(text: '请输入尺寸（cm)\n', children: [
-                  TextSpan(
-                      text: '不足1㎡按1㎡计算',
-                      style: Theme.of(context).textTheme.body1),
-                ])),
-                content: Column(
-                  children: <Widget>[
-                    CupertinoTextField(
-                      controller: widthInputController,
-                      keyboardType: TextInputType.number,
-                      placeholder: '请输入宽（cm）',
-                    ),
-                    CupertinoTextField(
-                      controller: heightInputController,
-                      keyboardType: TextInputType.number,
-                      placeholder: '请输入高（cm）',
-                    ),
-                  ],
-                ),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    child: Text('取消'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+          return ChangeNotifierProvider(
+            create: (BuildContext context) => GoodsProvider(),
+            child: Consumer<GoodsProvider>(
+              builder: (BuildContext context, GoodsProvider goodsProvider, _) {
+                return CupertinoAlertDialog(
+                  title: Text.rich(TextSpan(text: '请输入尺寸（cm)\n', children: [
+                    TextSpan(
+                        text: '不足1㎡按1㎡计算',
+                        style: Theme.of(context).textTheme.body1),
+                  ])),
+                  content: Column(
+                    children: <Widget>[
+                      CupertinoTextField(
+                        controller: widthInputController,
+                        keyboardType: TextInputType.number,
+                        placeholder: '请输入宽（cm）',
+                      ),
+                      CupertinoTextField(
+                        controller: heightInputController,
+                        keyboardType: TextInputType.number,
+                        placeholder: '请输入高（cm）',
+                      ),
+                    ],
                   ),
-                  CupertinoDialogAction(
-                    child: Text('确定'),
-                    onPressed: () {
-                      // closeSizeDialog();
-                      // print(depositInput?.text);
-                      String w = widthInputController?.text?.trim();
-                      String h = heightInputController?.text?.trim();
-                      if (w?.isNotEmpty != true ||
-                          h?.isNotEmpty != true ||
-                          double.parse(w ?? '0.00') == 0 ||
-                          double.parse(h ?? '0.00') == 0) {
-                        return CommonKit.showInfo('请输入正确的尺寸');
-                      }
-                      goodsProvider?.width = widthInputController?.text;
-                      goodsProvider?.height = heightInputController?.text;
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-              );
-            },
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      child: Text('取消'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    CupertinoDialogAction(
+                      child: Text('确定'),
+                      onPressed: () {
+                        // closeSizeDialog();
+                        // print(depositInput?.text);
+                        String w = widthInputController?.text?.trim();
+                        String h = heightInputController?.text?.trim();
+                        if (w?.isNotEmpty != true ||
+                            h?.isNotEmpty != true ||
+                            double.parse(w ?? '0.00') == 0 ||
+                            double.parse(h ?? '0.00') == 0) {
+                          return CommonKit.showInfo('请输入正确的尺寸');
+                        }
+                        goodsProvider?.width = widthInputController?.text;
+                        goodsProvider?.height = heightInputController?.text;
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              },
+            ),
           );
         });
   }
@@ -473,9 +437,8 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
         .catchError((err) => err);
   }
 
-  bool beforePurchase(
-      GoodsProvider goodsProvider, ClientProvider clientProvider) {
-    if (clientProvider?.clientId == null) {
+  bool beforePurchase(GoodsProvider goodsProvider) {
+    if (TargetClient.instance.hasSelectedClient == false) {
       CommonKit.showInfo('请选择客户');
       return false;
     }
@@ -491,184 +454,203 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
 
-    return isLoading
-        ? LoadingCircle()
-        : Consumer2<GoodsProvider, ClientProvider>(
-            builder: (BuildContext context, GoodsProvider goodsProvider,
-                ClientProvider clientProvider, _) {
-              ProductBean bean = goodsProvider?.goods;
-              return WillPopScope(
-                  child: Scaffold(
-                      body: NestedScrollView(
-                          headerSliverBuilder:
-                              (BuildContext context, bool innerBoxIsScrolled) {
-                            return <Widget>[
-                              SliverAppBar(
-                                actions: <Widget>[
-                                  UserChooseButton(
-                                    id: widget.id,
-                                  )
-                                ],
-                                expandedHeight: 400,
-                                floating: false,
-                                pinned: true,
-                                flexibleSpace: FlexibleSpaceBar(
-                                  background: Container(
-                                    margin: EdgeInsets.only(top: 80),
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              UIKit.getNetworkImgPath(
-                                                  bean?.picCoverMid))),
+    return ZYFutureBuilder(
+        futureFunc: OTPService.fetchCurtainDetailData,
+        params: {
+          'goods_id': widget.id,
+        },
+        builder: (BuildContext context, data) {
+          return ChangeNotifierProvider(
+            create: (BuildContext context) => GoodsProvider(),
+            child: Consumer<GoodsProvider>(
+              builder: (BuildContext context, GoodsProvider goodsProvider, _) {
+                OrderGoodsMeasure measureData = data[0];
+                ProductBeanRes productBeanRes = data[1];
+                ProductBeanDataWrapper wrapper = productBeanRes.data;
+                ProductBean bean = wrapper.goodsDetail;
+
+                goodsProvider?.initDataWithFilter(
+                  measureData: measureData,
+                  bean: bean,
+                  windowGauzeAttr: data[2],
+                  craftAttr: data[3],
+                  partAttr: data[4],
+                  windowShadeAttr: data[5],
+                  canopyAttr: data[6],
+                  accessoryAttr: data[7],
+                  roomAttr: data[8],
+                );
+                setCartParams(goodsProvider);
+                hasCollected?.value = goodsProvider?.hasLike;
+                return WillPopScope(
+                    child: Scaffold(
+                        body: NestedScrollView(
+                            headerSliverBuilder: (BuildContext context,
+                                bool innerBoxIsScrolled) {
+                              return <Widget>[
+                                SliverAppBar(
+                                  actions: <Widget>[
+                                    UserChooseButton(
+                                      id: widget.id,
+                                    )
+                                  ],
+                                  expandedHeight: 400,
+                                  floating: false,
+                                  pinned: true,
+                                  flexibleSpace: FlexibleSpaceBar(
+                                    background: Container(
+                                      margin: EdgeInsets.only(top: 80),
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                                UIKit.getNetworkImgPath(
+                                                    bean?.picCoverMid))),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ];
+                            },
+                            body: CustomScrollView(
+                              slivers: <Widget>[
+                                SliverToBoxAdapter(
+                                  child: Container(
+                                    color: themeData.primaryColor,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: UIKit.width(20),
+                                        vertical: UIKit.height(20)),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text.rich(TextSpan(
+                                                text:
+                                                    '${bean?.goodsName}      ' ??
+                                                        '',
+                                                children: [
+                                                  TextSpan(
+                                                      text:
+                                                          bean?.goodsName ?? '',
+                                                      style: textTheme.caption)
+                                                ])),
+                                            Text.rich(
+                                                TextSpan(text: '', children: [
+                                              WidgetSpan(
+                                                  child: ValueListenableBuilder(
+                                                      valueListenable:
+                                                          hasCollected,
+                                                      builder:
+                                                          (BuildContext context,
+                                                              bool isLiked, _) {
+                                                        return IconButton(
+                                                            icon: Icon(
+                                                              ZYIcon.like,
+                                                              color: isLiked
+                                                                  ? Colors.red
+                                                                  : const Color(
+                                                                      0xFFCCCCCC),
+                                                            ),
+                                                            onPressed: () {
+                                                              collect(context);
+                                                            });
+                                                      })),
+                                              WidgetSpan(
+                                                  child: IconButton(
+                                                      icon: Icon(ZYIcon.cart),
+                                                      onPressed: () {
+                                                        if (targetClient
+                                                            .hasSelectedClient) {
+                                                          return CommonKit
+                                                              .showInfo(
+                                                                  '请选择客户');
+                                                        }
+                                                        RouteHandler.goCartPage(
+                                                          context,
+                                                          clientId: targetClient
+                                                              .clientId,
+                                                        );
+                                                      }))
+                                            ]))
+                                          ],
+                                        ),
+                                        VSpacing(20),
+                                        Text.rich(TextSpan(
+                                            text: '¥${bean?.price ?? 0.00}',
+                                            children: [
+                                              TextSpan(text: ' '),
+                                              TextSpan(
+                                                  text: '元/米起',
+                                                  style: textTheme.caption)
+                                            ])),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              )
-                            ];
-                          },
-                          body: CustomScrollView(
-                            slivers: <Widget>[
-                              SliverToBoxAdapter(
-                                child: Container(
-                                  color: themeData.primaryColor,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: UIKit.width(20),
-                                      vertical: UIKit.height(20)),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text.rich(TextSpan(
-                                              text:
-                                                  '${bean?.goodsName}      ' ??
-                                                      '',
-                                              children: [
-                                                TextSpan(
-                                                    text: bean?.goodsName ?? '',
-                                                    style: textTheme.caption)
-                                              ])),
-                                          Text.rich(
-                                              TextSpan(text: '', children: [
-                                            WidgetSpan(
-                                                child: ValueListenableBuilder(
-                                                    valueListenable:
-                                                        hasCollected,
-                                                    builder:
-                                                        (BuildContext context,
-                                                            bool isLiked, _) {
-                                                      return IconButton(
-                                                          icon: Icon(
-                                                            ZYIcon.like,
-                                                            color: isLiked
-                                                                ? Colors.red
-                                                                : const Color(
-                                                                    0xFFCCCCCC),
-                                                          ),
-                                                          onPressed: () {
-                                                            collect(context);
-                                                          });
-                                                    })),
-                                            WidgetSpan(
-                                                child: IconButton(
-                                                    icon: Icon(ZYIcon.cart),
-                                                    onPressed: () {
-                                                      if (clientProvider
-                                                              ?.clientId ==
-                                                          null) {
-                                                        return CommonKit
-                                                            .showInfo('请选择客户');
-                                                      }
-                                                      RouteHandler.goCartPage(
-                                                        context,
-                                                        clientId: clientProvider
-                                                            ?.clientId,
-                                                      );
-                                                    }))
-                                          ]))
-                                        ],
-                                      ),
-                                      VSpacing(20),
-                                      Text.rich(TextSpan(
-                                          text: '¥${bean?.price ?? 0.00}',
-                                          children: [
-                                            TextSpan(text: ' '),
-                                            TextSpan(
-                                                text: '元/米起',
-                                                style: textTheme.caption)
-                                          ])),
-                                    ],
+                                SliverToBoxAdapter(
+                                  child: VSpacing(20),
+                                ),
+                                SliverToBoxAdapter(
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: UIKit.width(20),
+                                        vertical: UIKit.height(10)),
+                                    color: themeData.primaryColor,
+                                    child: Column(
+                                      children: <Widget>[
+                                        Offstage(
+                                          offstage:
+                                              goodsProvider?.isWindowRoller ==
+                                                  true,
+                                          child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: UIKit.height(10)),
+                                              alignment: Alignment.centerLeft,
+                                              child: MeasureDataTipBar()),
+                                        ),
+                                        Offstage(
+                                          offstage:
+                                              goodsProvider?.isWindowRoller ==
+                                                  true,
+                                          child: Divider(),
+                                        ),
+                                        goodsProvider?.isWindowGauze == true
+                                            ? buildWindowGauzeOption()
+                                            : goodsProvider?.isWindowRoller ==
+                                                    true
+                                                ? buildWindowRollerOption()
+                                                : buildCurtainOption(),
+                                        Container(
+                                          color:
+                                              themeData.scaffoldBackgroundColor,
+                                          height: UIKit.height(20),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SliverToBoxAdapter(
-                                child: VSpacing(20),
-                              ),
-                              SliverToBoxAdapter(
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: UIKit.width(20),
-                                      vertical: UIKit.height(10)),
-                                  color: themeData.primaryColor,
-                                  child: Column(
-                                    children: <Widget>[
-                                      Offstage(
-                                        offstage:
-                                            goodsProvider?.isWindowRoller ==
-                                                true,
-                                        child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: UIKit.height(10)),
-                                            alignment: Alignment.centerLeft,
-                                            child: MeasureDataTipBar()),
-                                      ),
-                                      Offstage(
-                                        offstage:
-                                            goodsProvider?.isWindowRoller ==
-                                                true,
-                                        child: Divider(),
-                                      ),
-                                      goodsProvider?.isWindowGauze == true
-                                          ? buildWindowGauzeOption()
-                                          : goodsProvider?.isWindowRoller ==
-                                                  true
-                                              ? buildWindowRollerOption()
-                                              : buildCurtainOption(),
-                                      Container(
-                                        color:
-                                            themeData.scaffoldBackgroundColor,
-                                        height: UIKit.height(20),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SliverToBoxAdapter(
-                                child: bean?.description?.isNotEmpty == true
-                                    ? Html(data: bean?.description)
-                                    : Container(),
-                              )
-                            ],
-                          )),
-                      bottomNavigationBar: BottomActionButtonBar()),
-                  onWillPop: () {
-                    Navigator.of(context).pop();
-                    OrderProvider orderProvider =
-                        Provider.of(context, listen: false);
-                    orderProvider.hasConfirmMeasureData = false;
-                    if (orderProvider?.isMeasureOrder == false &&
-                        goodsProvider?.isWindowRoller == false) {
-                      goodsProvider?.clearGoodsInfo();
-                    }
-                    goodsProvider?.partType = '';
-                    goodsProvider?.hasInitOpenMode = false;
-                    return Future.value(false);
-                  });
-            },
+                                SliverToBoxAdapter(
+                                  child: bean?.description?.isNotEmpty == true
+                                      ? Html(data: bean?.description)
+                                      : Container(),
+                                )
+                              ],
+                            )),
+                        bottomNavigationBar: BottomActionButtonBar()),
+                    onWillPop: () {
+                      Navigator.of(context).pop();
+
+                      goodsProvider?.partType = '';
+                      goodsProvider?.hasInitOpenMode = false;
+                      return Future.value(false);
+                    });
+              },
+            ),
           );
+        });
   }
 }
 
@@ -688,7 +670,6 @@ class BottomActionButtonBar extends StatelessWidget {
   };
   void setParams(GoodsProvider provider) {
     params['dataId'] = '${provider?.windowPatternId ?? ''}';
-
     params['width'] = '${provider?.widthCMStr ?? ''}';
     params['height'] = '${provider?.heightCMStr ?? ''}';
     params['vertical_ground_height'] = '${provider?.dy ?? ''}';
@@ -733,12 +714,12 @@ class BottomActionButtonBar extends StatelessWidget {
     return true;
   }
 
-  Future<bool> beforePurchase(GoodsProvider goodsProvider,
-      ClientProvider clientProvider, BuildContext context) async {
+  Future<bool> beforePurchase(
+      GoodsProvider goodsProvider, BuildContext context) async {
     OrderProvider orderProvider =
         Provider.of<OrderProvider>(context, listen: false);
     setParams(goodsProvider);
-    if (clientProvider?.clientId == null) {
+    if (TargetClient.instance.hasSelectedClient == false) {
       CommonKit.showInfo('请选择客户');
       return false;
     }
@@ -800,15 +781,17 @@ class BottomActionButtonBar extends StatelessWidget {
     }).catchError((err) => err);
   }
 
+  void addToCart() {}
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     // TextTheme textTheme = themeData.textTheme;
-    return Consumer3<GoodsProvider, ClientProvider, OrderProvider>(
-      builder: (BuildContext context, GoodsProvider goodsProvider,
-          ClientProvider clientProvider, OrderProvider orderProvider, _) {
-        cartParams['client_uid'] = clientProvider?.clientId;
-        return orderProvider?.isMeasureOrder == true
+    TargetOrderGoods targetOrderGoods = TargetOrderGoods.instance;
+    return Consumer<GoodsProvider>(
+      builder: (BuildContext context, GoodsProvider goodsProvider, _) {
+        cartParams['client_uid'] = TargetClient.instance.clientId;
+        return TargetOrderGoods.instance.isMeasureOrder
             ? Container(
                 color: themeData.primaryColor,
                 padding: EdgeInsets.symmetric(
@@ -820,7 +803,7 @@ class BottomActionButtonBar extends StatelessWidget {
                       TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
                     ])),
                     ZYRaisedButton('确认选品', () {
-                      if (orderProvider?.hasConfirmMeasureData == false &&
+                      if (targetOrderGoods?.hasConfirmMeasureData == false &&
                           goodsProvider?.isWindowRoller == false) {
                         return CommonKit.showInfo('请先确认测装数据');
                       }
@@ -842,10 +825,10 @@ class BottomActionButtonBar extends StatelessWidget {
                         'vertical_ground_height': goodsProvider?.dyCMStr,
                         'data': jsonEncode(data),
                         'wc_attr': jsonEncode(goodsProvider.getAttrArgs()),
-                        'order_goods_id': orderProvider?.orderGoodsId,
+                        'order_goods_id': targetOrderGoods?.orderGoodsId,
                       };
                       LogUtil.e(params);
-                      orderProvider?.selectProduct(context, params: params);
+                      // targetOrderGoods?.selectProduct(context, params: params);
                     })
                   ],
                 ))
@@ -863,8 +846,8 @@ class BottomActionButtonBar extends StatelessWidget {
                       children: <Widget>[
                         InkWell(
                           onTap: () async {
-                            if (!await beforePurchase(
-                                goodsProvider, clientProvider, context)) return;
+                            if (!await beforePurchase(goodsProvider, context))
+                              return;
                             setCartParams(goodsProvider);
                             addCart(context, goodsProvider);
                           },
@@ -879,8 +862,8 @@ class BottomActionButtonBar extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: () async {
-                            if (!await beforePurchase(
-                                goodsProvider, clientProvider, context)) return;
+                            if (!await beforePurchase(goodsProvider, context))
+                              return;
                             Map map = goodsProvider.getAttrArgs();
                             List wrapper = [];
                             map.forEach((key, val) {
@@ -949,10 +932,9 @@ class MeasureDataTipBar extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return Consumer2<GoodsProvider, OrderProvider>(builder:
-        (BuildContext context, GoodsProvider goodsProvider,
-            OrderProvider orderProvider, _) {
-      return orderProvider?.isMeasureOrder == true
+    return Consumer<GoodsProvider>(
+        builder: (BuildContext context, GoodsProvider goodsProvider, _) {
+      return goodsProvider?.isMeasureOrderGoods == true
           ? InkWell(
               onTap: () {
                 RouteHandler.goMeasureDataPreviewPage(context);
@@ -966,7 +948,9 @@ class MeasureDataTipBar extends StatelessWidget {
                         style: TextStyle(color: Color(0xFFE02020)),
                         children: [
                           TextSpan(
-                              text: orderProvider?.hasConfirmMeasureData == true
+                              text: TargetOrderGoods
+                                          .instance.hasConfirmMeasureData ==
+                                      true
                                   ? '已确认测装数据'
                                   : '请确认测装数据',
                               style: textTheme.body1),
@@ -974,7 +958,7 @@ class MeasureDataTipBar extends StatelessWidget {
                   ),
                   Spacer(),
                   Text(
-                    orderProvider?.hasConfirmMeasureData == true
+                    TargetOrderGoods.instance.hasConfirmMeasureData == true
                         ? goodsProvider?.measureDataStr ?? ''
                         : '',
                     textAlign: TextAlign.end,

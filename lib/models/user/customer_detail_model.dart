@@ -1,10 +1,9 @@
 import 'package:taojuwu/models/zy_response.dart';
 
 class CustomerDetailModelResp extends ZYResponse<CustomerDetailModel> {
-   CustomerDetailModelResp.fromMap(Map<String, dynamic> json)
+  CustomerDetailModelResp.fromMap(Map<String, dynamic> json)
       : super.fromJson(json) {
-    this.data =
-        this.valid ? CustomerDetailModel.fromJson(json['data']) : null;
+    this.data = this.valid ? CustomerDetailModel.fromJson(json['data']) : null;
   }
 }
 
@@ -31,6 +30,9 @@ class CustomerDetailModel {
   String provinceName;
   String cityName;
   String districtName;
+
+  String get address =>
+      '${provinceName ?? ''}${cityName ?? ''}${districtName ?? ''}';
   CustomerDetailModel(
       {this.id,
       this.memberUid,
@@ -66,7 +68,7 @@ class CustomerDetailModel {
     clientSex = json['client_sex'];
     clientWx = json['client_wx'];
     enterTime = json['enter_time'];
-    enterTime = enterTime!=null?enterTime*1000:enterTime;
+    enterTime = enterTime != null ? enterTime * 1000 : enterTime;
     style = json['style'];
     goodsCategoryId = json['goods_category_id'];
     provinceId = json['province_id'];

@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/user/category_customer_model.dart';
-import 'package:taojuwu/providers/client_provider.dart';
-import 'package:taojuwu/providers/goods_provider.dart';
-import 'package:taojuwu/providers/order_provider.dart';
-import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/zy_future_builder.dart';
 
 class CustomerTablePage extends StatelessWidget {
   final int type;
-  const CustomerTablePage({Key key, this.type}) : super(key: key);
+  final int flag; // 0表示普通跳转 1 表示选择客户
+  const CustomerTablePage({Key key, this.type, this.flag: 0}) : super(key: key);
 
   static List<Widget> tableHeader = [
     _tableHeader('姓名'),
@@ -39,33 +36,29 @@ class CustomerTablePage extends StatelessWidget {
     // 'page_size': 20,
   };
 
-  static Widget _tableCell(dynamic text, BuildContext context, int id,
+  void saveInfoToTargetClient(CategoryCustomerModelBean bean) {
+    TargetClient targetClient = TargetClient.instance;
+    targetClient.setClientId(bean?.id);
+    targetClient.setClientName(bean?.clientName);
+  }
+
+  Widget _tableCell(dynamic text, BuildContext context, int id,
       {CategoryCustomerModelBean bean}) {
     return TableCell(
-      child: Consumer3(builder: (BuildContext context, ClientProvider provider,
-          GoodsProvider goodsProvider, OrderProvider orderProvider, _) {
-        return InkWell(
-          onTap: () {
-            if (provider.isForSelectedClient) {
-              provider?.isForSelectedClient = false;
-              provider?.saveClientInfo(clientId: id, name: bean?.clientName);
-              if (orderProvider?.isMeasureOrder == true) {
-                orderProvider?.orderType = 1;
-                return RouteHandler.goMeasureOrderPage(context);
-              }
-              return RouteHandler.goCurtainDetailPage(
-                  context, goodsProvider?.goodsId);
-            } else {
-              return RouteHandler.goCustomerDetailPage(context, id);
-            }
-          },
-          child: Padding(
-            child: Center(child: Text('$text' ?? '-')),
-            padding: EdgeInsets.symmetric(vertical: UIKit.height(30)),
-          ),
-        );
-      }),
-    );
+        child: InkWell(
+      onTap: () {
+        if (flag == 1) {
+          saveInfoToTargetClient(bean);
+          Navigator.of(context).pop();
+        } else {
+          Navigator.of(context).pop();
+        }
+      },
+      child: Padding(
+        child: Center(child: Text('$text' ?? '-')),
+        padding: EdgeInsets.symmetric(vertical: UIKit.height(30)),
+      ),
+    ));
   }
 
   static CategoryCustomerModelListWrapper wrapper;

@@ -1,18 +1,19 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:taojuwu/models/user/customer_model.dart';
 
 import 'package:taojuwu/pages/customer/widgets/menu_entry.dart';
-import 'package:taojuwu/providers/client_provider.dart';
+
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/search_button.dart';
 import 'package:taojuwu/widgets/user_add_button.dart';
 
 class CustomerManagePage extends StatefulWidget {
-  CustomerManagePage({Key key}) : super(key: key);
+  final int flag; // 0表示普通跳转 1 表示选择客户
+  CustomerManagePage({Key key, this.flag: 0}) : super(key: key);
 
   @override
   _CustomerManagePageState createState() => _CustomerManagePageState();
@@ -140,6 +141,12 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
     );
   }
 
+  void saveInfoToTargetClient(CustomerModelBean model) {
+    TargetClient targetClient = TargetClient.instance;
+    targetClient.setClientName(model?.clientName);
+    targetClient.setClientId(model?.id);
+  }
+
   Widget _buildListItem(CustomerModelBean model) {
     String susTag = model.getSuspensionTag();
     susTag = (susTag == "★" ? "热门城市" : susTag);
@@ -150,26 +157,19 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
           child: _buildSusWidget(susTag),
         ),
         SizedBox(
-          height: _itemHeight.toDouble(),
-          child: Consumer<ClientProvider>(
-              builder: (BuildContext context, ClientProvider provider, _) {
-            return ListTile(
+            height: _itemHeight.toDouble(),
+            child: ListTile(
               title: Text(model?.clientName),
               onTap: () {
                 // Navigator.pop(context, model);
-                if (provider.isForSelectedClient) {
-                  provider?.isForSelectedClient = false;
-                  provider?.clientId = model?.id ?? -1;
-                  provider?.saveClientInfo(
-                      clientId: model?.id ?? -1, name: model?.clientName);
+                if (widget.flag == 1) {
+                  saveInfoToTargetClient(model);
                   Navigator.of(context).pop();
                 } else {
                   RouteHandler.goCustomerDetailPage(context, model?.id);
                 }
               },
-            );
-          }),
-        )
+            ))
       ],
     );
   }
@@ -217,7 +217,8 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                               number: item['number'],
                               callback: () {
                                 RouteHandler.goCustomerTablePage(
-                                    context, item['type']);
+                                    context, item['type'],
+                                    flag: widget.flag);
                               },
                             );
                           }),

@@ -11,30 +11,28 @@ import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/providers/order_detail_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/time_period_picker.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
-import 'client_provider.dart';
-
 import 'user_provider.dart';
 
 class OrderProvider with ChangeNotifier {
+  static OrderProvider _instance = OrderProvider._internal();
+  OrderProvider._internal();
+  factory OrderProvider() {
+    return _instance;
+  }
+  static OrderProvider get instance => _instance;
   List<OrderCartGoods> orderGoods;
 
   OrderGoods _curOrderGoods;
   int _orderId;
   int _orderType = 1;
   BuildContext context;
-
-  bool _hasConfirmMeasureData = false;
-
-  OrderProvider(
-    this.context, {
-    this.orderGoods,
-  });
 
   double get totalPrice {
     double sum = 0.00;
@@ -54,10 +52,8 @@ class OrderProvider with ChangeNotifier {
   int get orderId => _orderId;
   bool get isMeasureOrder => _orderType == 2;
 
-  int get addressId =>
-      Provider.of<ClientProvider>(context, listen: false).addressId;
-  String get clientUid =>
-      '${Provider.of<ClientProvider>(context, listen: false).clientId ?? ''}';
+  int get addressId => TargetClient.instance.addressId;
+  String get clientUid => '${TargetClient.instance.clientId}';
   String get shopId =>
       '${Provider?.of<UserProvider>(context, listen: false)?.userInfo?.shopId ?? ''}';
   String get goodsSkuListText =>
@@ -72,7 +68,6 @@ class OrderProvider with ChangeNotifier {
   String get dy =>
       '${Provider?.of<GoodsProvider>(context, listen: false)?.dyCMStr}';
   List<String> get attr => orderGoods?.map((item) => item.attr)?.toList() ?? [];
-  bool get hasConfirmMeasureData => _hasConfirmMeasureData;
 
   int get totalCount => orderGoods?.length ?? 0;
 
@@ -150,15 +145,10 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set hasConfirmMeasureData(bool flag) {
-    _hasConfirmMeasureData = flag;
-    notifyListeners();
-  }
-
   set orderType(int type) {
     _orderType = type;
     // notifyListeners();
-    print('object');
+    print('');
   }
 
   // set orderGoodsMeasure(OrderGoodsMeasure data) {
@@ -167,9 +157,7 @@ class OrderProvider with ChangeNotifier {
   // }
 
   bool beforeCreateOrder(BuildContext context) {
-    ClientProvider clientProvider =
-        Provider.of<ClientProvider>(context, listen: false);
-    if (clientProvider?.hasChoosenCustomer == false) {
+    if (TargetClient.instance?.hasSelectedClient == false) {
       CommonKit.showInfo('请选择客户');
       return false;
     }
@@ -243,9 +231,8 @@ class OrderProvider with ChangeNotifier {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid);
         GoodsProvider goodsProvider =
             Provider.of<GoodsProvider>(context, listen: false);
-        ClientProvider clientProvider =
-            Provider.of<ClientProvider>(context, listen: false);
-        clientProvider?.clearClientInfo();
+
+        TargetClient.instance.clear();
         goodsProvider?.clearGoodsInfo();
         clearOrderData();
       } else {
@@ -255,9 +242,6 @@ class OrderProvider with ChangeNotifier {
   }
 
   void createMeasureOrder(BuildContext ctx) {
-    ClientProvider clientProvider =
-        Provider.of<ClientProvider>(ctx, listen: false);
-
     if (!beforeCreateOrder(ctx)) return;
     OTPService.createMeasureOrder(params: {
       'client_uid': clientUid,
@@ -270,7 +254,7 @@ class OrderProvider with ChangeNotifier {
     }).then((ZYResponse response) {
       if (response.valid) {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid, orderType: 2);
-        clientProvider?.clearClientInfo();
+        TargetClient.instance.clear();
         clearOrderData();
       } else {
         CommonKit.showErrorInfo(response?.message ?? '');
@@ -284,13 +268,6 @@ class OrderProvider with ChangeNotifier {
     BuildContext context, {
     OrderGoods orderGoods,
   }) {
-    _orderId = provider?.model?.orderId;
-    _curOrderGoods = orderGoods;
-    _orderType = 2;
-    GoodsProvider goodsProvider =
-        Provider.of<GoodsProvider>(context, listen: false);
-    goodsProvider?.forWindowRollerMeasureData = orderGoods?.orderGoodsMeasure;
-    goodsProvider?.dy = orderGoods?.orderGoodsMeasure?.verticalGroundHeight;
     // _orderGoodsMeasure = orderGoods?.orderGoodsMeasure;
     // goodsProvider?.measureData = _orderGoodsMeasure;
     // goodsProvider?.initSize(_orderGoodsMeasure
@@ -301,7 +278,7 @@ class OrderProvider with ChangeNotifier {
     //     // openMode: _orderGoodsMeasure?.openType ?? '整体对开'
     //     // _orderGoodsMeasure?.
     //     );
-    notifyListeners();
+
     RouteHandler.goCurtainMallPage(context);
   }
 
@@ -336,15 +313,11 @@ class OrderProvider with ChangeNotifier {
 
   void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
     OTPService.selectProduct(params: params).then((ZYResponse response) {
-      print('---------------');
-      print(params);
       if (response.valid) {
-        OrderProvider orderProvider =
-            Provider.of<OrderProvider>(context, listen: false);
         GoodsProvider goodsProvider =
             Provider.of<GoodsProvider>(context, listen: false);
         goodsProvider?.clearGoodsInfo();
-        orderProvider?.hasConfirmMeasureData = false;
+
         Navigator.of(context)..pop()..pop();
 
         clearOrderData();

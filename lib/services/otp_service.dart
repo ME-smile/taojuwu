@@ -22,6 +22,8 @@ import 'package:taojuwu/models/user/customer_detail_model.dart';
 import 'package:taojuwu/models/user/customer_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/services/api_path.dart';
+import 'package:taojuwu/singleton/target_client.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'base/xhr.dart';
@@ -196,11 +198,11 @@ class OTPService {
   static Future fetchCurtainDetailData(BuildContext context,
       {Map<String, dynamic> params}) async {
     params = params ?? {};
-
-    MeasureDataModelResp response =
-        await getMeasureData(context, params: params);
-    print(response?.data);
-
+    MeasureDataModelResp measureDataModelResp = await getMeasureData(context,
+        params: {'order_goods_id': TargetOrderGoods.instance?.orderGoodsId});
+    String partsType = measureDataModelResp?.data?.measureData?.partsType;
+    int clientId = TargetClient.instance.clientId;
+    params.addAll({'client_uid': clientId, 'parts_type': partsType});
     List<Future> list = [
       curtainProductDetail(context, params: params),
       windowGauzeAttr(context, params: params),
@@ -215,8 +217,9 @@ class OTPService {
     list.forEach((v) {
       v.catchError((err) => err);
     });
-    List result = await Future.wait(list);
-    return result;
+    List<dynamic> result = await Future.wait(list);
+
+    return <dynamic>[measureDataModelResp?.data?.measureData] + result;
   }
 
   static Future<ZYResponse> addUser(Map<String, dynamic> params) async {

@@ -168,7 +168,12 @@ class _CartPageState extends State<CartPage>
               ),
               Text.rich(
                 TextSpan(text: '预计总金额', children: [
-                  TextSpan(text: '￥' + cartModel?.estimatedPrice ?? '')
+                  TextSpan(
+                      text: '￥' +
+                              (double.parse(
+                                      cartModel?.estimatedPrice ?? '0.00'))
+                                  .toStringAsFixed(2) ??
+                          '')
                 ]),
                 textAlign: TextAlign.end,
               ),

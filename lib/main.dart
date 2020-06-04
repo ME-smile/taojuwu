@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:fluro/fluro.dart';
-import 'package:taojuwu/providers/client_provider.dart';
-import 'package:taojuwu/providers/goods_provider.dart';
-import 'package:taojuwu/providers/order_provider.dart';
 
 import 'package:taojuwu/providers/theme_provider.dart';
 import 'package:taojuwu/providers/user_provider.dart';
@@ -12,7 +9,6 @@ import 'package:taojuwu/router/routes.dart';
 
 import 'app.dart';
 import 'application.dart';
-// import 'package:taojuwu/myapp.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,15 +30,6 @@ void main() async {
           create: (_) => UserProvider(),
         ),
         ChangeNotifierProvider<ThemeProvider>(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider<ClientProvider>(
-          create: (_) => ClientProvider(),
-        ),
-        ChangeNotifierProvider<GoodsProvider>(
-          create: (_) => GoodsProvider(),
-        ),
-        ChangeNotifierProvider<OrderProvider>(
-          create: (BuildContext context) => OrderProvider(context),
-        )
       ],
       child: App(),
     ));

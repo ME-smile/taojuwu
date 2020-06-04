@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/providers/client_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
 class UserChooseButton extends StatelessWidget {
@@ -11,26 +10,23 @@ class UserChooseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-        builder: (BuildContext context, ClientProvider provider, _) {
-      return InkWell(
-          onTap: () {
-            provider?.isForSelectedClient = true;
-            RouteHandler.goCustomerPage(context);
-          },
-          child: Row(
-            children: <Widget>[
-              Icon(
-                ZYIcon.user,
-              ),
-              Padding(
-                  padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                  child: Text(provider?.name != null &&
-                          provider?.name?.isNotEmpty == true
-                      ? provider?.name
-                      : '请选择'))
-            ],
-          ));
-    });
+    TargetClient targetClient = TargetClient.instance;
+    return InkWell(
+        onTap: () {
+          RouteHandler.goCustomerPage(context, isForSelectedClient: 1);
+        },
+        child: Row(
+          children: <Widget>[
+            Icon(
+              ZYIcon.user,
+            ),
+            Padding(
+                padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                child: Text(targetClient?.clientName != null &&
+                        targetClient?.clientName?.isNotEmpty == true
+                    ? targetClient?.clientName
+                    : '请选择'))
+          ],
+        ));
   }
 }
