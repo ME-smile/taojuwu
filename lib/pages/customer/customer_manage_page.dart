@@ -218,7 +218,8 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
                               callback: () {
                                 RouteHandler.goCustomerTablePage(
                                     context, item['type'],
-                                    flag: widget.flag);
+                                    flag: widget.flag,
+                                    replace: widget.flag == 1);
                               },
                             );
                           }),

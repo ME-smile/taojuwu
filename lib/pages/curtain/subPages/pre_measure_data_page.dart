@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,12 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 
-import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/pages/curtain/widgets/attr_options_bar.dart';
 import 'package:taojuwu/pages/curtain/widgets/sku_attr_picker.dart';
 import 'package:taojuwu/pages/curtain/widgets/window_pattern_view.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
-import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
@@ -33,38 +30,6 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   TextEditingController heightInputController;
   TextEditingController dyInputController;
 
-  Map<String, dynamic> data = {};
-  Map<String, dynamic> params = {
-    'dataId': '',
-    'width': '',
-    'height': '',
-    'install_room': '',
-    'goods_id': '',
-    'vertical_ground_height': '',
-    'data': {},
-    'goods_id': ''
-  };
-
-  void setParams(GoodsProvider provider) {
-    params['dataId'] = '${provider?.windowPatternId ?? ''}';
-
-    params['width'] = '${provider?.widthCMStr ?? ''}';
-    params['height'] = '${provider?.heightCMStr ?? ''}';
-    params['vertical_ground_height'] = '${provider?.dy ?? ''}';
-    params['goods_id'] = '${provider?.goodsId ?? ''}';
-    params['install_room'] = '${provider?.curRoomAttrBean?.id ?? ''}';
-    data.clear();
-    data['${provider?.windowPatternId ?? ''}'] = {
-      'name': '${provider?.windowPatternStr ?? ''}',
-      'selected': {
-        '安装选项': ['${provider?.curInstallMode ?? ''}'],
-        '打开方式': provider?.openModeParams
-      }
-    };
-
-    params['data'] = jsonEncode(data);
-  }
-
   String normalizeData(String n) {
     if (n == null || n?.isEmpty == true) return '';
     // return '${double/}';
@@ -75,7 +40,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   void initState() {
     super.initState();
     // goodsProvider = widget.goodsProvider;
-    GoodsProvider goodsProvider = GoodsProvider();
+    GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
     widthInputController =
         TextEditingController(text: goodsProvider?.widthCMStr);
     heightInputController =
@@ -270,11 +235,9 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
       h = '350';
       return false;
     }
-
     provider?.width = w;
     provider?.height = h;
     provider?.dy = dyInputController?.text;
-    setParams(provider);
     return true;
   }
 
@@ -282,11 +245,10 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return ChangeNotifierProvider.value(
-      value: GoodsProvider(),
+    return ChangeNotifierProvider<GoodsProvider>.value(
+      value: TargetOrderGoods.instance.goodsProvider,
       child: Consumer<GoodsProvider>(
         builder: (BuildContext context, GoodsProvider provider, _) {
-          setParams(provider);
           return Scaffold(
             // resizeToAvoidBottomInset: false,
             appBar: AppBar(
@@ -454,13 +416,8 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
             ),
             bottomNavigationBar: ZYSubmitButton('确认', () {
               if (!beforeSendData(provider)) return;
-              OTPService.saveMeasure(context, params: params)
-                  .then((ZYResponse response) {
-                if (response?.valid == true) {
-                  provider?.measureId = response?.data;
-                  Navigator.of(context).pop();
-                }
-              }).catchError((err) => err);
+              Navigator.of(context).pop();
+              provider?.hasSetSize = true;
             }),
           );
         },
@@ -487,7 +444,7 @@ class __RoomAttrCheckWrapperState extends State<RoomAttrCheckWrapper> {
   @override
   void initState() {
     super.initState();
-    GoodsProvider goodsProvider = GoodsProvider();
+    GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
     roomAttr = goodsProvider?.roomAttr;
     tmpId = goodsProvider?.curRoomAttrBean?.id;
   }
@@ -496,8 +453,8 @@ class __RoomAttrCheckWrapperState extends State<RoomAttrCheckWrapper> {
   Widget build(BuildContext context) {
     List<RoomAttrBean> beans = roomAttr?.data;
     ThemeData themeData = Theme.of(context);
-    return ChangeNotifierProvider.value(
-      value: GoodsProvider(),
+    return ChangeNotifierProvider<GoodsProvider>.value(
+      value: TargetOrderGoods.instance.goodsProvider,
       child: Consumer<GoodsProvider>(
         builder: (BuildContext context, GoodsProvider provider, _) {
           return SkuAttrPicker(
@@ -555,8 +512,8 @@ class WindowStyleCheckWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: GoodsProvider(),
+    return ChangeNotifierProvider<GoodsProvider>.value(
+      value: TargetOrderGoods.instance.goodsProvider,
       child: Consumer<GoodsProvider>(
         builder: (BuildContext context, GoodsProvider provider, _) {
           return SkuAttrPicker(

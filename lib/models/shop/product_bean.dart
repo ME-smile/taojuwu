@@ -283,7 +283,7 @@ class ProductBean {
   String categoryName;
   String displayPrice;
   String get picCoverMid {
-    return this?.imgList?.first?.picCoverMid;
+    return imgList?.isEmpty == true ? '' : imgList?.first?.picCover;
   }
 
   List<ProductBeanSpecValueBean> getSpecListByName(String name) {

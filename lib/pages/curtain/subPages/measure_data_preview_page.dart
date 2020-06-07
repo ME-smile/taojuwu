@@ -24,16 +24,15 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
   @override
   void initState() {
     super.initState();
-    GoodsProvider goodsProvider = GoodsProvider();
 
-    measureData = goodsProvider?.measureData;
+    measureData = TargetOrderGoods.instance.goodsProvider?.measureData;
   }
 
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
-    return ChangeNotifierProvider<GoodsProvider>(
-        create: (BuildContext context) => GoodsProvider(),
+    return ChangeNotifierProvider<GoodsProvider>.value(
+        value: TargetOrderGoods.instance.goodsProvider,
         child: Consumer<GoodsProvider>(
           builder: (BuildContext context, GoodsProvider goodsProvider, _) {
             // String dy = measureData?.verticalGroundHeight;

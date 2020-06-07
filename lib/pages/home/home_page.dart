@@ -60,7 +60,9 @@ class _HomePageState extends State<HomePage> {
         'subtitle': '把握客户，把握机会',
         'icon': 'customer_manage@2x.png',
         'callback': () {
-          RouteHandler.goCustomerPage(context);
+          RouteHandler.goCustomerPage(
+            context,
+          );
         },
         'color': const Color(0xffDDE0E1)
       },

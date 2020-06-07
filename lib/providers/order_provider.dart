@@ -7,11 +7,11 @@ import 'package:taojuwu/models/order/order_cart_goods_model.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 
 import 'package:taojuwu/models/zy_response.dart';
-import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/providers/order_detail_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/time_period_picker.dart';
@@ -21,12 +21,6 @@ import 'package:taojuwu/widgets/zy_raised_button.dart';
 import 'user_provider.dart';
 
 class OrderProvider with ChangeNotifier {
-  static OrderProvider _instance = OrderProvider._internal();
-  OrderProvider._internal();
-  factory OrderProvider() {
-    return _instance;
-  }
-  static OrderProvider get instance => _instance;
   List<OrderCartGoods> orderGoods;
 
   OrderGoods _curOrderGoods;
@@ -47,6 +41,7 @@ class OrderProvider with ChangeNotifier {
     return sum;
   }
 
+  OrderProvider(this.context, {this.orderGoods});
   bool get hasOrderGoodsId => orderGoodsId != null;
   int get orderGoodsId => _curOrderGoods?.orderGoodsId;
   int get orderId => _orderId;
@@ -54,8 +49,7 @@ class OrderProvider with ChangeNotifier {
 
   int get addressId => TargetClient.instance.addressId;
   String get clientUid => '${TargetClient.instance.clientId}';
-  String get shopId =>
-      '${Provider?.of<UserProvider>(context, listen: false)?.userInfo?.shopId ?? ''}';
+  String get shopId => '${Provider.of<UserProvider>(context, listen: false)}';
   String get goodsSkuListText =>
       orderGoods
           ?.map((item) =>
@@ -65,8 +59,7 @@ class OrderProvider with ChangeNotifier {
       '';
   String get cartId =>
       orderGoods?.map((item) => item.cartId)?.toList()?.join(',');
-  String get dy =>
-      '${Provider?.of<GoodsProvider>(context, listen: false)?.dyCMStr}';
+  String get dy => '${TargetOrderGoods.instance.goodsProvider.dyCMStr}';
   List<String> get attr => orderGoods?.map((item) => item.attr)?.toList() ?? [];
 
   int get totalCount => orderGoods?.length ?? 0;
@@ -229,12 +222,8 @@ class OrderProvider with ChangeNotifier {
     ).then((ZYResponse response) {
       if (response.valid) {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid);
-        GoodsProvider goodsProvider =
-            Provider.of<GoodsProvider>(context, listen: false);
 
         TargetClient.instance.clear();
-        goodsProvider?.clearGoodsInfo();
-        clearOrderData();
       } else {
         CommonKit.showErrorInfo(response?.message ?? '');
       }
@@ -255,7 +244,6 @@ class OrderProvider with ChangeNotifier {
       if (response.valid) {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid, orderType: 2);
         TargetClient.instance.clear();
-        clearOrderData();
       } else {
         CommonKit.showErrorInfo(response?.message ?? '');
       }
@@ -309,33 +297,5 @@ class OrderProvider with ChangeNotifier {
             ),
           );
         });
-  }
-
-  void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
-    OTPService.selectProduct(params: params).then((ZYResponse response) {
-      if (response.valid) {
-        GoodsProvider goodsProvider =
-            Provider.of<GoodsProvider>(context, listen: false);
-        goodsProvider?.clearGoodsInfo();
-
-        Navigator.of(context)..pop()..pop();
-
-        clearOrderData();
-        _curOrderGoods?.isSelectedGoods = 1;
-        notifyListeners();
-      } else {
-        CommonKit.showInfo(response?.message ?? '');
-      }
-    }).catchError((err) => err);
-  }
-
-  clearOrderData() {
-    _orderType = 1;
-    _measureTime = null;
-    _installTime = null;
-    _orderMark = null;
-    _deposit = null;
-    _windowNum = null;
-    notifyListeners();
   }
 }

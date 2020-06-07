@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 import 'package:taojuwu/models/shop/sku_attr/accessory_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/canopy_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/craft_attr.dart';
@@ -8,6 +8,7 @@ import 'package:taojuwu/models/shop/sku_attr/part_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
 import 'option_view.dart';
@@ -43,7 +44,7 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
   String title;
   @override
   void initState() {
-    GoodsProvider provider = GoodsProvider();
+    GoodsProvider provider = TargetOrderGoods.instance.goodsProvider;
     tmp = widget.curOption;
     title = widget.title;
     dict = {
@@ -117,47 +118,39 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
   bool get isLessOption => dict[title]['list'].length < 4 ?? false;
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GoodsProvider>.value(
-      value: GoodsProvider(),
-      child: Consumer<GoodsProvider>(
-        builder: (BuildContext context, GoodsProvider provider, _) {
-          return SkuAttrPicker(
-              title: title,
-              callback: () {
-                dict[title]['confirm']();
-                Navigator.of(context).pop();
-              },
-              child: SingleChildScrollView(
-                  child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(
-                    horizontal: isLessOption ? UIKit.width(40) : 0),
-                alignment:
-                    isLessOption ? Alignment.centerLeft : Alignment.center,
-                child: Wrap(
-                  alignment: WrapAlignment.start,
-                  runAlignment: WrapAlignment.start,
-                  crossAxisAlignment: WrapCrossAlignment.start,
-                  direction: Axis.horizontal,
-                  spacing: 8,
-                  runSpacing: 20,
-                  children: List.generate(dict[title]['list'].length, (int i) {
-                    var item = dict[title]['list'][i];
-                    return OptionView(
-                      img: item.picture,
-                      text: item.name,
-                      price: '${item.price ?? ''}',
-                      showBorder:
-                          title != '配饰选择' ? tmp.id == item.id : item.isChecked,
-                      callback: () {
-                        dict[title]['tap'](item);
-                      },
-                    );
-                  }),
-                ),
-              )));
+    return SkuAttrPicker(
+        title: title,
+        callback: () {
+          dict[title]['confirm']();
+          Navigator.of(context).pop();
         },
-      ),
-    );
+        child: SingleChildScrollView(
+            child: Container(
+          width: MediaQuery.of(context).size.width,
+          padding: EdgeInsets.symmetric(
+              horizontal: isLessOption ? UIKit.width(40) : 0),
+          alignment: isLessOption ? Alignment.centerLeft : Alignment.center,
+          child: Wrap(
+            alignment: WrapAlignment.start,
+            runAlignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.start,
+            direction: Axis.horizontal,
+            spacing: 8,
+            runSpacing: 20,
+            children: List.generate(dict[title]['list'].length, (int i) {
+              var item = dict[title]['list'][i];
+              return OptionView(
+                img: item.picture,
+                text: item.name,
+                price: '${item.price ?? ''}',
+                showBorder:
+                    title != '配饰选择' ? tmp.id == item.id : item.isChecked,
+                callback: () {
+                  dict[title]['tap'](item);
+                },
+              );
+            }),
+          ),
+        )));
   }
 }

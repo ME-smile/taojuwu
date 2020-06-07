@@ -39,6 +39,7 @@ import 'package:taojuwu/pages/profile/subPages/version_page.dart';
 import 'package:taojuwu/pages/refund/refund_page.dart';
 import 'package:taojuwu/pages/search/search_page.dart';
 import 'package:taojuwu/pages/splash/splash_page.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'routes.dart';
 
@@ -94,29 +95,29 @@ class RouteHandler {
     );
   });
 
-  static goCurtainDetailPage(
-    BuildContext context,
-    int id,
-  ) {
-    _jumpTo(context, '${Routes.curtainDetail}?id=$id', maintainState: true);
+  static goCurtainDetailPage(BuildContext context, int id,
+      {bool replace: false}) {
+    _jumpTo(context, '${Routes.curtainDetail}?id=$id',
+        maintainState: true, replace: replace);
   }
 
   static Handler order = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int clientId;
     String arg = params['clientId']?.first;
-    int tab = int.parse(params['tab']?.first);
     if (arg != null && arg != 'null') {
       clientId = int.parse(arg);
     }
     return OrderPage(
       clientId: clientId,
-      tab: tab,
     );
   });
 
-  static goOrderPage(BuildContext context, {int clientId, int tab: 0}) {
-    _jumpTo(context, '${Routes.order}?clientId=$clientId&tab=$tab');
+  static goOrderPage(
+    BuildContext context, {
+    int clientId,
+  }) {
+    _jumpTo(context, '${Routes.order}?clientId=$clientId', maintainState: true);
   }
 
   static Handler orderDetail = Handler(
@@ -129,9 +130,8 @@ class RouteHandler {
   });
 
   static goOrderDetailPage(BuildContext context, int id,
-      {int tab: 0, bool isReplaceMode: false}) {
-    _jumpTo(context, '${Routes.orderDetail}?id=$id&tab=$tab',
-        replace: isReplaceMode);
+      {bool isReplaceMode: false}) {
+    _jumpTo(context, '${Routes.orderDetail}?id=$id', replace: isReplaceMode);
   }
 
   static Handler measureOrder = Handler(
@@ -196,10 +196,16 @@ class RouteHandler {
   static Handler customerTable = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int type = int.parse(params['type']?.first);
-    return CustomerTablePage(type: type);
+    int flag = int.parse(params['flag']?.first);
+    return CustomerTablePage(
+      type: type,
+      flag: flag,
+    );
   });
-  static goCustomerTablePage(BuildContext context, int type, {int flag: 0}) {
-    _jumpTo(context, '${Routes.customerTable}?type=$type', replace: true);
+  static goCustomerTablePage(BuildContext context, int type,
+      {int flag: 0, bool replace: true}) {
+    _jumpTo(context, '${Routes.customerTable}?type=$type&flag=$flag',
+        replace: replace);
   }
 
   static Handler dataCenter = Handler(
@@ -253,6 +259,7 @@ class RouteHandler {
 
   static goCurtainMallPage(BuildContext context, {String keyword: ''}) {
     keyword = FluroConvertUtils.fluroCnParamsEncode(keyword);
+    TargetOrderGoods.instance.keyword = keyword;
     _jumpTo(context, '${Routes.curtainMall}?keyword=$keyword',
         maintainState: true);
   }
@@ -324,14 +331,14 @@ class RouteHandler {
 
   static Handler cart = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    int id = int.parse(params['id']?.first);
+    int clientId = int.parse(params['clientId']?.first);
     return CartPage(
-      clientId: id,
+      clientId: clientId,
     );
   });
 
   static goCartPage(BuildContext context, {int clientId: -1}) {
-    _jumpTo(context, '${Routes.cart}?id=$clientId');
+    _jumpTo(context, '${Routes.cart}?clientId=$clientId');
   }
 
   static Handler commitOrder = Handler(

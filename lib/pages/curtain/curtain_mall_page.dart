@@ -411,9 +411,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   void clear() {
     TargetOrderGoods.instance.clear();
     TargetClient.instance.clear();
-    print('----------------');
-    print(TargetClient.instance.clientName);
-    print('----------------');
   }
 
   @override
@@ -572,14 +569,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         onWillPop: () {
           Navigator.of(context).pop();
           clear();
-          // OrderProvider orderProvider =
-          //     Provider.of<OrderProvider>(context, listen: false);
-          // GoodsProvider goodsProvider =
-          //     Provider.of<GoodsProvider>(context, listen: false);
-          // goodsProvider?.clearGoodsInfo();
-          // orderProvider?.orderType = 1;
-          // orderProvider?.curOrderGoods = null;
-          // orderProvider.hasConfirmMeasureData = false;
           return Future.value(false);
         });
   }

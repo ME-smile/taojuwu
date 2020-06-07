@@ -49,7 +49,8 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     return ChangeNotifierProvider<OrderProvider>(
-      create: (BuildContext context) => OrderProvider(),
+      create: (BuildContext context) =>
+          OrderProvider(context, orderGoods: goodsList),
       child: Consumer<OrderProvider>(
         builder: (BuildContext context, OrderProvider provider, _) {
           return WillPopScope(
@@ -155,7 +156,6 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
                 }),
               ),
               onWillPop: () {
-                provider?.clearOrderData();
                 Navigator.of(context).pop();
                 return Future.value(false);
               });

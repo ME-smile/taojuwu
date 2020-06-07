@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/providers/order_provider.dart';
+import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
 import 'package:taojuwu/widgets/user_choose_button.dart';
@@ -30,7 +31,7 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
     TextTheme textTheme = themeData.textTheme;
     TextTheme accentTextTheme = themeData.accentTextTheme;
     return ChangeNotifierProvider<OrderProvider>(
-      create: (BuildContext context) => OrderProvider(),
+      create: (BuildContext context) => OrderProvider(context),
       child: WillPopScope(
           child: Scaffold(
             appBar: AppBar(
@@ -90,9 +91,7 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
             ),
           ),
           onWillPop: () {
-            OrderProvider orderProvider =
-                Provider.of<OrderProvider>(context, listen: false);
-            orderProvider?.clearOrderData();
+            TargetClient.instance.clear();
             Navigator.of(context).pop();
             return Future.value(false);
           }),

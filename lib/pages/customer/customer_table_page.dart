@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/user/category_customer_model.dart';
+import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -51,7 +52,7 @@ class CustomerTablePage extends StatelessWidget {
           saveInfoToTargetClient(bean);
           Navigator.of(context).pop();
         } else {
-          Navigator.of(context).pop();
+          RouteHandler.goCustomerDetailPage(context, id);
         }
       },
       child: Padding(

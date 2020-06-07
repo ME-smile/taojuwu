@@ -6,15 +6,15 @@ class TargetClient {
 
   String tel;
   String get address =>
-      '${provinceName ?? ''}${cityName ?? ''}${districtName ?? ''}$detailAddress';
-  String detailAddress;
+      '${_instance.provinceName ?? ''}${_instance.cityName ?? ''}${_instance.districtName ?? ''}${_instance.detailAddress ?? ''}';
+  String detailAddress = '';
   int gender; //1 表示男 2 表示女
 
   int addressId;
 
-  String districtName;
-  String cityName;
-  String provinceName;
+  String districtName = '';
+  String cityName = '';
+  String provinceName = '';
   bool get hasSelectedClient => clientId != null;
 
   static TargetClient _instance = TargetClient._internal();
@@ -35,6 +35,10 @@ class TargetClient {
     _instance.clientName = null;
     _instance.clientId = null;
     _instance.tel = null;
+    _instance.provinceName = null;
+    _instance.cityName = null;
+    _instance.districtName = null;
+    _instance.detailAddress = null;
   }
 
   saveInfo(int id, String name) {
@@ -43,16 +47,16 @@ class TargetClient {
   }
 
   setTel(String tel) {
-    instance.tel = tel;
+    _instance.tel = tel;
   }
 
   setAddress(String province, String city, String district) {
-    provinceName = province;
-    cityName = city;
-    districtName = district;
+    _instance.provinceName = province;
+    _instance.cityName = city;
+    _instance.districtName = district;
   }
 
   setAddressId(int id) {
-    addressId = id;
+    _instance.addressId = id;
   }
 }

@@ -160,12 +160,10 @@ class _AfterSaleServicePageState extends State<AfterSaleServicePage> {
 
   Future getImageFromFile() async {
     image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    print('allalalalalllalalalalalalalala');
-    print(image);
+
     setState(() {
       imgList.add(image);
     });
-    print('------------------------');
   }
 
   Future getImageFromCamera() async {

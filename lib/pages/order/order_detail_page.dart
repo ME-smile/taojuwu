@@ -10,6 +10,7 @@ import 'package:taojuwu/pages/order/utils/order_kit.dart';
 import 'package:taojuwu/pages/order/widgets/order_attr_card.dart';
 import 'package:taojuwu/providers/order_detail_provider.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 
 import 'package:taojuwu/utils/common_kit.dart';
 
@@ -311,6 +312,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     TargetClient targetClient = TargetClient();
     targetClient.setClientId(model?.clientId);
     targetClient.setClientName(model?.clientName);
+    TargetOrderGoods.instance.orderId = model?.orderId;
   }
 
   @override

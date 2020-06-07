@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
-// import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
@@ -15,8 +14,9 @@ import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/pages/curtain/subPages/pre_measure_data_page.dart';
 
 import 'package:taojuwu/providers/goods_provider.dart';
-import 'package:taojuwu/providers/order_provider.dart';
+
 import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/router/routes.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
@@ -45,8 +45,8 @@ class CurtainDetailPage extends StatefulWidget {
 }
 
 class _CurtainDetailPageState extends State<CurtainDetailPage> {
-  Map<String, dynamic> cartParams;
-  Map<String, dynamic> collectParams;
+  Map<String, dynamic> cartParams = {};
+  Map<String, dynamic> collectParams = {};
 
   TextEditingController widthInputController;
   TextEditingController heightInputController;
@@ -54,7 +54,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
 
   int id;
   String partType;
-  ValueNotifier<bool> hasCollected = ValueNotifier<bool>(false);
+  ValueNotifier<bool> hasCollected;
 
   TargetClient targetClient = TargetClient.instance;
 
@@ -71,19 +71,11 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   void initState() {
     super.initState();
     id = widget.id;
-    int clientId = targetClient.clientId;
 
     widthInputController = TextEditingController();
     heightInputController = TextEditingController();
     dyInputController = TextEditingController();
-    cartParams = {
-      'client_uid': clientId,
-    };
-    collectParams = {
-      // 'fav_type':'goods',
-      'fav_id': widget.id,
-      'client_uid': clientId
-    };
+    hasCollected = ValueNotifier<bool>(false);
   }
 
   void setCartParams(GoodsProvider goodsProvider) {
@@ -91,12 +83,22 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     cartParams['estimated_price'] = goodsProvider?.totalPrice;
     cartParams['measure_id'] = goodsProvider?.measureId;
     cartParams['wc_attr'] = '${goodsProvider.getAttrArgs()}';
+    cartParams['client_uid'] = TargetClient.instance.clientId;
   }
 
   collect(
     BuildContext context,
   ) {
     // final Completer<bool> completer = new Completer<bool>();
+    if (!TargetClient.instance.hasSelectedClient) {
+      CommonKit.showInfo('请选择客户');
+      return;
+    }
+    collectParams = {
+      // 'fav_type':'goods',
+      'fav_id': widget.id,
+      'client_uid': TargetClient.instance.clientId
+    };
     if (hasCollected?.value == false) {
       OTPService.collect(params: collectParams).then((ZYResponse response) {
         if (response?.valid == true) {
@@ -225,8 +227,10 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                             double.parse(h ?? '0.00') == 0) {
                           return CommonKit.showInfo('请输入正确的尺寸');
                         }
+                        goodsProvider?.hasSetSize = true;
                         goodsProvider?.width = widthInputController?.text;
                         goodsProvider?.height = heightInputController?.text;
+
                         Navigator.of(context).pop();
                       },
                     )
@@ -270,7 +274,6 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                       goodsProvider?.dy = dyInputController?.text;
                       measureData?.verticalGroundHeight =
                           dyInputController?.text;
-
                       Navigator.of(context).pop();
                     },
                   )
@@ -282,27 +285,20 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   }
 
   Widget buildWindowRollerOption() {
-    OrderProvider orderProvider =
-        Provider.of<OrderProvider>(context, listen: false);
-    return orderProvider?.hasOrderGoodsId == true
+    return TargetOrderGoods.instance.isMeasureOrder == true
         ? Consumer<GoodsProvider>(
             builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-              goodsProvider?.initMeasureDataForWindowRoller();
               return Column(
                 children: <Widget>[
                   AttrOptionsBar(
                     title: '空间',
-                    trailingText: goodsProvider
-                            ?.forWindowRollerMeasureData?.installRoom ??
-                        '',
+                    trailingText: goodsProvider?.measureData?.installRoom ?? '',
                     callback: null,
                     showNext: false,
                   ),
                   AttrOptionsBar(
                     title: '窗型',
-                    trailingText:
-                        goodsProvider?.forWindowRollerMeasureData?.windowType ??
-                            '',
+                    trailingText: goodsProvider?.measureData?.windowType ?? '',
                     callback: null,
                     showNext: false,
                   ),
@@ -310,7 +306,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                     title: '尺寸',
                     // isRollUpWindow: goodsProvider?.isWindowGauze,
                     trailingText:
-                        '${goodsProvider?.forWindowRollerWidthMstr ?? ''}米,${goodsProvider?.forWindowRollerHeightMstr ?? ''}米',
+                        '${goodsProvider?.widthCMStr ?? ''}米,${goodsProvider?.heightCMStr ?? ''}米',
                     callback: null,
                     showNext: false,
                   ),
@@ -319,9 +315,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                     // isRollUpWindow: goodsProvider?.isWindowGauze,
                     trailingText: '${goodsProvider?.dyCMStr ?? ''}cm',
                     callback: () {
-                      setDy(
-                          measureData:
-                              goodsProvider?.forWindowRollerMeasureData);
+                      setDy(measureData: goodsProvider?.measureData);
                     },
                   ),
                 ],
@@ -449,6 +443,28 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     return true;
   }
 
+  ProductBean bean;
+  void initData(data, GoodsProvider goodsProvider) {
+    OrderGoodsMeasure measureData = data[0];
+    ProductBeanRes productBeanRes = data[1];
+    ProductBeanDataWrapper wrapper = productBeanRes.data;
+    bean = wrapper.goodsDetail;
+
+    goodsProvider?.initDataWithFilter(
+      measureData: measureData,
+      bean: bean,
+      windowGauzeAttr: data[2],
+      craftAttr: data[3],
+      partAttr: data[4],
+      windowShadeAttr: data[5],
+      canopyAttr: data[6],
+      accessoryAttr: data[7],
+      roomAttr: data[8],
+    );
+    setCartParams(goodsProvider);
+    hasCollected?.value = goodsProvider?.hasLike;
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -461,27 +477,14 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
         },
         builder: (BuildContext context, data) {
           return ChangeNotifierProvider(
-            create: (BuildContext context) => GoodsProvider(),
+            create: (BuildContext context) {
+              GoodsProvider goodsProvider = GoodsProvider();
+              initData(data, goodsProvider);
+              TargetOrderGoods.instance.setGoodsProvider(goodsProvider);
+              return goodsProvider;
+            },
             child: Consumer<GoodsProvider>(
               builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-                OrderGoodsMeasure measureData = data[0];
-                ProductBeanRes productBeanRes = data[1];
-                ProductBeanDataWrapper wrapper = productBeanRes.data;
-                ProductBean bean = wrapper.goodsDetail;
-
-                goodsProvider?.initDataWithFilter(
-                  measureData: measureData,
-                  bean: bean,
-                  windowGauzeAttr: data[2],
-                  craftAttr: data[3],
-                  partAttr: data[4],
-                  windowShadeAttr: data[5],
-                  canopyAttr: data[6],
-                  accessoryAttr: data[7],
-                  roomAttr: data[8],
-                );
-                setCartParams(goodsProvider);
-                hasCollected?.value = goodsProvider?.hasLike;
                 return WillPopScope(
                     child: Scaffold(
                         body: NestedScrollView(
@@ -563,7 +566,8 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                                       icon: Icon(ZYIcon.cart),
                                                       onPressed: () {
                                                         if (targetClient
-                                                            .hasSelectedClient) {
+                                                                .hasSelectedClient ==
+                                                            false) {
                                                           return CommonKit
                                                               .showInfo(
                                                                   '请选择客户');
@@ -642,9 +646,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                         bottomNavigationBar: BottomActionButtonBar()),
                     onWillPop: () {
                       Navigator.of(context).pop();
-
-                      goodsProvider?.partType = '';
-                      goodsProvider?.hasInitOpenMode = false;
+                      TargetOrderGoods.instance.goodsProvider.release();
                       return Future.value(false);
                     });
               },
@@ -714,29 +716,12 @@ class BottomActionButtonBar extends StatelessWidget {
     return true;
   }
 
-  Future<bool> beforePurchase(
-      GoodsProvider goodsProvider, BuildContext context) async {
-    OrderProvider orderProvider =
-        Provider.of<OrderProvider>(context, listen: false);
+  bool beforePurchase(GoodsProvider goodsProvider, BuildContext context) {
     setParams(goodsProvider);
+
     if (TargetClient.instance.hasSelectedClient == false) {
       CommonKit.showInfo('请选择客户');
       return false;
-    }
-
-    if (validateData(goodsProvider)) {
-      if (orderProvider?.isMeasureOrder == false &&
-          goodsProvider?.isWindowRoller == true &&
-          goodsProvider?.hasSetSize != true) {
-        await OTPService.saveMeasure(context, params: params)
-            .then((ZYResponse response) {
-          if (response?.valid == true) {
-            goodsProvider?.measureId = response?.data;
-          } else {
-            CommonKit.showInfo(response?.message ?? '');
-          }
-        }).catchError((err) => err);
-      }
     }
     if (goodsProvider?.hasSetSize != true) {
       CommonKit.showInfo('请先填写尺寸');
@@ -781,7 +766,59 @@ class BottomActionButtonBar extends StatelessWidget {
     }).catchError((err) => err);
   }
 
-  void addToCart() {}
+  Future createOrder(BuildContext context) async {
+    GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
+    await goodsProvider?.saveMeasure(context, callback: () {
+      purchase(context);
+    });
+  }
+
+  Future purchase(BuildContext context) async {
+    GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
+    if (!beforePurchase(goodsProvider, context)) return;
+
+    Map map = goodsProvider.getAttrArgs();
+    List wrapper = [];
+    map.forEach((key, val) {
+      Map<String, dynamic> tmp = {};
+      tmp['attr_name'] = Constants.ATTR_MAP[int.parse('$key')];
+      tmp['attr'] = val is List ? val ?? [] : [val];
+      wrapper.add(jsonEncode(tmp));
+    });
+    RouteHandler.goCommitOrderPage(context,
+        params: jsonEncode({
+          'data': [
+            {
+              'tag': goodsProvider?.curRoomAttrBean?.name ?? '',
+              'img': goodsProvider?.goods?.picCoverMid ?? '',
+              'goods_name': goodsProvider?.goods?.goodsName,
+              'price': goodsProvider?.goods?.price,
+              'wc_attr': wrapper,
+              'attr': jsonEncode(map),
+              'dy': goodsProvider?.dy,
+              'measure_id': goodsProvider?.measureId ?? '',
+              'sku_id': goodsProvider?.goods?.skuId,
+              'goods_id': goodsProvider?.goods?.goodsId ?? '',
+              'total_price': goodsProvider?.totalPrice ?? 0.0,
+              'goods_type': goodsProvider?.goodsType
+            }
+          ],
+        }));
+  }
+
+  void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
+    OTPService.selectProduct(params: params).then((ZYResponse response) {
+      if (response.valid) {
+        GoodsProvider goodsProvider =
+            Provider.of<GoodsProvider>(context, listen: false);
+        goodsProvider?.clearGoodsInfo();
+        Navigator.of(context).popUntil(ModalRoute.withName(
+            '${Routes.orderDetail}?id=${TargetOrderGoods.instance.orderId}'));
+      } else {
+        CommonKit.showInfo(response?.message ?? '');
+      }
+    }).catchError((err) => err);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -828,7 +865,7 @@ class BottomActionButtonBar extends StatelessWidget {
                         'order_goods_id': targetOrderGoods?.orderGoodsId,
                       };
                       LogUtil.e(params);
-                      // targetOrderGoods?.selectProduct(context, params: params);
+                      selectProduct(context, params: params);
                     })
                   ],
                 ))
@@ -846,8 +883,7 @@ class BottomActionButtonBar extends StatelessWidget {
                       children: <Widget>[
                         InkWell(
                           onTap: () async {
-                            if (!await beforePurchase(goodsProvider, context))
-                              return;
+                            if (!beforePurchase(goodsProvider, context)) return;
                             setCartParams(goodsProvider);
                             addCart(context, goodsProvider);
                           },
@@ -861,45 +897,8 @@ class BottomActionButtonBar extends StatelessWidget {
                           ),
                         ),
                         InkWell(
-                          onTap: () async {
-                            if (!await beforePurchase(goodsProvider, context))
-                              return;
-                            Map map = goodsProvider.getAttrArgs();
-                            List wrapper = [];
-                            map.forEach((key, val) {
-                              Map<String, dynamic> tmp = {};
-                              tmp['attr_name'] =
-                                  Constants.ATTR_MAP[int.parse('$key')];
-                              tmp['attr'] = val is List ? val ?? [] : [val];
-                              wrapper.add(jsonEncode(tmp));
-                            });
-                            RouteHandler.goCommitOrderPage(context,
-                                params: jsonEncode({
-                                  'data': [
-                                    {
-                                      'tag': goodsProvider
-                                              ?.curRoomAttrBean?.name ??
-                                          '',
-                                      'img':
-                                          goodsProvider?.goods?.picCoverMid ??
-                                              '',
-                                      'goods_name':
-                                          goodsProvider?.goods?.goodsName,
-                                      'price': goodsProvider?.goods?.price,
-                                      'wc_attr': wrapper,
-                                      'attr': jsonEncode(map),
-                                      'dy': goodsProvider?.dy,
-                                      'measure_id':
-                                          goodsProvider?.measureId ?? '',
-                                      'sku_id': goodsProvider?.goods?.skuId,
-                                      'goods_id':
-                                          goodsProvider?.goods?.goodsId ?? '',
-                                      'total_price':
-                                          goodsProvider?.totalPrice ?? 0.0,
-                                      'goods_type': goodsProvider?.goodsType
-                                    }
-                                  ],
-                                }));
+                          onTap: () {
+                            createOrder(context);
                           },
                           child: Container(
                             padding: EdgeInsets.symmetric(

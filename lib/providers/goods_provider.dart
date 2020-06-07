@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
@@ -9,6 +11,8 @@ import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
+import 'package:taojuwu/models/zy_response.dart';
+import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
 
 class GoodsProvider with ChangeNotifier {
@@ -38,7 +42,6 @@ class GoodsProvider with ChangeNotifier {
   List<CraftAttrBean> _initCraftAttrBeanList = [];
   List<PartAttrBean> _initPartAttrBeanList = [];
   RoomAttrBean _curRoomAttrBean;
-  OrderGoodsMeasure _forWindowRollerMeasureData;
 
   Map<String, dynamic> attrParams;
 
@@ -66,8 +69,6 @@ class GoodsProvider with ChangeNotifier {
 
   OrderGoodsMeasure get measureData => _measureData;
 
-  OrderGoodsMeasure get forWindowRollerMeasureData =>
-      _forWindowRollerMeasureData;
   bool get isWindowGauze => goods?.goodsSpecialType == 3;
   bool get isWindowRoller => goods?.goodsSpecialType == 2;
   int _curWindowPattern = 0;
@@ -79,11 +80,6 @@ class GoodsProvider with ChangeNotifier {
 
   int _curInstallOptionIndex = 0;
   int _createType = 1;
-
-  set forWindowRollerMeasureData(OrderGoodsMeasure data) {
-    _forWindowRollerMeasureData = data;
-    notifyListeners();
-  }
 
   void filterCraft() {
     List<CraftAttrBean> list = _initCraftAttrBeanList;
@@ -249,6 +245,7 @@ class GoodsProvider with ChangeNotifier {
         _canopyAttr?.data?.isNotEmpty == true ? _canopyAttr?.data?.first : null;
     _curRoomAttrBean =
         _roomAttr?.data?.isNotEmpty == true ? _roomAttr?.data?.first : null;
+    initMeasureData();
   }
 
   int get goodsType => goods?.goodsSpecialType;
@@ -290,7 +287,7 @@ class GoodsProvider with ChangeNotifier {
   String get dyCMStr => _dy == '0.0' ? null : _dy;
   String get widthMStr => widthM.toStringAsFixed(2);
   double get heightM =>
-      double.parse(((double.parse(_height)) / 100).toStringAsFixed(3));
+      double.parse(((double.parse(_height ?? '0.0')) / 100).toStringAsFixed(3));
   String get heightMStr => heightM.toStringAsFixed(2);
   get measureId => _goods?.measureId;
   ProductBean get goods => _goods;
@@ -303,17 +300,6 @@ class GoodsProvider with ChangeNotifier {
   AccessoryAttr get accessoryAttr => _accessoryAttr;
   bool get hasInitOpenMode => _hasInitOpenMode;
   bool _hasInitOpenMode = false;
-  bool get hasSetSizeForWindowRoller {
-    if (_width == '0.0' ||
-        _height == '0.0' ||
-        _width == null ||
-        _height == null ||
-        _width?.isNotEmpty != true ||
-        _height?.isNotEmpty != true) {
-      return false;
-    }
-    return true;
-  }
 
   bool get hasSetDy {
     if (_dy == '0.0' || _dy?.isNotEmpty != true || _dy == null) {
@@ -322,9 +308,8 @@ class GoodsProvider with ChangeNotifier {
     return true;
   }
 
-  String get sizeText => hasSetSizeForWindowRoller
-      ? '宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米'
-      : '尺寸';
+  String get sizeText =>
+      hasSetSize ? '宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米' : '尺寸';
   String get dyText => hasSetDy ? '${_dy}cm' : '离地距离(cm)';
   String get windowPatternStr =>
       '${WindowPatternAttr.patternsText[curWindowPattern ?? 0]}/${WindowPatternAttr.stylesText[curWindowStyle ?? 0]}/${WindowPatternAttr.typesText[curWindowType ?? 0]}';
@@ -363,22 +348,6 @@ class GoodsProvider with ChangeNotifier {
       tmp['is_checked'] = j == k ? true : false;
     }
     notifyListeners();
-  }
-
-  String get forWindowRollerWidthMstr {
-    String w = forWindowRollerMeasureData?.width ?? '';
-    if (w == null && w?.isNotEmpty != true) return '0.00';
-    double width = double.parse(w ?? '0.00');
-    width = width / 100;
-    return width.toStringAsFixed(2);
-  }
-
-  String get forWindowRollerHeightMstr {
-    String h = forWindowRollerMeasureData?.height ?? '';
-    if (h == null && h?.isNotEmpty != true) return '0.00';
-    double height = double.parse(h ?? '0.00 ');
-    height = height / 100;
-    return height.toStringAsFixed(2);
   }
 
   String get accText {
@@ -438,7 +407,8 @@ class GoodsProvider with ChangeNotifier {
     }
   }
 
-  bool get hasSetSize => measureId != null;
+  bool _hasSetSize = false;
+  bool get hasSetSize => _hasSetSize;
   bool get hasLike => goods?.isCollect == 1;
 
   bool get hasWindowGauze =>
@@ -465,6 +435,11 @@ class GoodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  set hasSetSize(bool flag) {
+    _hasSetSize = flag;
+    notifyListeners();
+  }
+
   void initInstallMode(
     String mode,
   ) {
@@ -476,6 +451,14 @@ class GoodsProvider with ChangeNotifier {
               ? true
               : false;
     });
+  }
+
+  void initMeasureData() {
+    _width = measureData?.width;
+    _height = measureData?.height;
+    _dy = measureData?.verticalGroundHeight;
+
+    // initOpenMode(mode)
   }
 
   void initOpenMode(String mode, {List<String> subOpenModes}) {
@@ -827,9 +810,48 @@ class GoodsProvider with ChangeNotifier {
               };
   }
 
-  void initMeasureDataForWindowRoller() {
-    _width = forWindowRollerMeasureData?.width;
-    _height = forWindowRollerMeasureData?.height;
-    _dy = forWindowRollerMeasureData?.verticalGroundHeight;
+  Map<String, dynamic> getSaveMeasureParams() {
+    Map<String, dynamic> data = {};
+    Map<String, dynamic> params = {};
+    params['dataId'] = '${windowPatternId ?? ''}';
+    params['width'] = '${widthCMStr ?? ''}';
+    params['height'] = '${heightCMStr ?? ''}';
+    params['vertical_ground_height'] = '${dy ?? ''}';
+    params['goods_id'] = '${goodsId ?? ''}';
+    params['install_room'] = '${curRoomAttrBean?.id ?? ''}';
+    data.clear();
+    data['${windowPatternId ?? ''}'] = {
+      'name': '${windowPatternStr ?? ''}',
+      'selected': {
+        '安装选项': ['${curInstallMode ?? ''}'],
+        '打开方式': openModeParams
+      }
+    };
+
+    params['data'] = jsonEncode(data);
+    return params;
+  }
+
+  @override
+  void dispose() {
+    if (false == true) {
+      super.dispose();
+    }
+  }
+
+  release() {
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      super.dispose();
+    });
+  }
+
+  Future saveMeasure(BuildContext context, {Function callback}) async {
+    OTPService.saveMeasure(context, params: getSaveMeasureParams())
+        .then((ZYResponse response) {
+      if (response?.valid == true) {
+        measureId = response?.data;
+        if (callback != null) callback();
+      }
+    }).catchError((err) => err);
   }
 }

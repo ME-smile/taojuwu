@@ -196,7 +196,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
       CommonKit.showInfo('请填写联系人');
       return false;
     }
-    if (bean?.clientSex == null) {
+    if (bean?.clientSex == 0) {
       CommonKit.showInfo('请填写性别');
       return false;
     }
@@ -221,7 +221,6 @@ class _EditAddressPageState extends State<EditAddressPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(

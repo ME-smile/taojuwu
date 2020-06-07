@@ -45,7 +45,7 @@ class BuyerInfoBar extends StatelessWidget {
                   children: <Widget>[
                     Text('收货人:${targetClient?.clientName ?? ''}'),
                     Text('联系方式:${targetClient?.tel ?? ''}'),
-                    Text('收货地址:${targetClient?.detailAddress ?? ''}'),
+                    Text('收货地址:${targetClient?.address ?? ''}'),
                   ],
                 ),
               )),

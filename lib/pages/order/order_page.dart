@@ -9,14 +9,16 @@ import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/search_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
-import 'package:taojuwu/widgets/zy_future_builder.dart';
 
 import 'widgets/order_card.dart';
 
 class OrderPage extends StatefulWidget {
   final int clientId;
-  final int tab;
-  OrderPage({Key key, this.clientId, this.tab: 0}) : super(key: key);
+
+  OrderPage({
+    Key key,
+    this.clientId,
+  }) : super(key: key);
 
   @override
   _OrderPageState createState() => _OrderPageState();
@@ -28,6 +30,7 @@ class _OrderPageState extends State<OrderPage>
   TabController _tabController;
   List nums;
   List<OrderModelData> models;
+
   static const PAGE_SIZE = 10;
   List<Map<String, dynamic>> params = [
     {
@@ -83,9 +86,12 @@ class _OrderPageState extends State<OrderPage>
             item['page'] = 1;
           });
         });
-      _tabController?.index = widget.tab;
     }
 
+    fetchData();
+  }
+
+  void fetchData() {
     OTPService.orderList(context, params: params?.first)
         .then((OrderModelListResp response) {
       if (mounted) {
@@ -95,7 +101,6 @@ class _OrderPageState extends State<OrderPage>
         });
       }
     }).catchError((err) {
-      print('--------');
       return err;
     });
   }
@@ -109,45 +114,40 @@ class _OrderPageState extends State<OrderPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ZYFutureBuilder(
-        futureFunc: OTPService.orderList,
-        params: params[_tabController.index],
-        builder: (BuildContext context, OrderModelListResp response) {
-          return Scaffold(
-              appBar: AppBar(
-                title: Text('订单管理'),
-                actions: <Widget>[SearchButton(type: 3)],
-                centerTitle: true,
-                bottom: PreferredSize(
-                    child: TabBar(
-                        controller: _tabController,
-                        isScrollable: true,
-                        unselectedLabelColor: Colors.grey,
-                        labelPadding: EdgeInsets.only(
-                            bottom: UIKit.height(10),
-                            left: UIKit.width(10),
-                            right: UIKit.width(10)),
-                        tabs: List.generate(
-                            Constants.ORDER_STATUS_TAB_MAP.length, (int i) {
-                          return Text(
-                            '${items[i]}(${nums == null ? 0 : nums[i]})',
-                            textDirection: TextDirection.ltr,
-                            style: TextStyle(fontSize: UIKit.sp(32)),
-                          );
-                        })),
-                    preferredSize: Size.fromHeight(UIKit.height(60))),
-              ),
-              body: TabBarView(
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('订单管理'),
+          actions: <Widget>[SearchButton(type: 3)],
+          centerTitle: true,
+          bottom: PreferredSize(
+              child: TabBar(
                   controller: _tabController,
-                  children: List.generate(items?.length ?? 0, (int i) {
-                    return OrderTabView(
-                      tab: i,
-                      params: params[i],
-                      clientId: widget.clientId,
-                      models: i == 0 ? models : null,
+                  isScrollable: true,
+                  unselectedLabelColor: Colors.grey,
+                  labelPadding: EdgeInsets.only(
+                      bottom: UIKit.height(10),
+                      left: UIKit.width(10),
+                      right: UIKit.width(10)),
+                  tabs: List.generate(Constants.ORDER_STATUS_TAB_MAP.length,
+                      (int i) {
+                    return Text(
+                      '${items[i]}(${nums == null ? 0 : nums[i]})',
+                      textDirection: TextDirection.ltr,
+                      style: TextStyle(fontSize: UIKit.sp(32)),
                     );
-                  })));
-        });
+                  })),
+              preferredSize: Size.fromHeight(UIKit.height(60))),
+        ),
+        body: TabBarView(
+            controller: _tabController,
+            children: List.generate(items?.length ?? 0, (int i) {
+              return OrderTabView(
+                tab: i,
+                params: params[i],
+                clientId: widget.clientId,
+                models: i == 0 ? models : null,
+              );
+            })));
   }
 
   @override
@@ -187,6 +187,10 @@ class _OrderTabViewState extends State<OrderTabView> {
     params['page'] = 1;
     params['client_uid'] = widget.clientId;
     models = widget.models;
+    fetchData();
+  }
+
+  void fetchData() {
     OTPService.orderList(context, params: params)
         .then((OrderModelListResp response) {
       if (mounted) {
@@ -206,6 +210,12 @@ class _OrderTabViewState extends State<OrderTabView> {
   }
 
   OrderModelDataWrapper wrapper;
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    fetchData();
+  }
 
   @override
   void dispose() {

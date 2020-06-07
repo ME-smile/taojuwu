@@ -134,9 +134,6 @@ class EditOpenModePage extends StatelessWidget {
                         }),
                       ),
                       ZYSubmitButton('确认', () {
-                        // OrderProvider orderProvider =
-                        //     Provider.of<OrderProvider>(context, listen: false);
-                        // orderProvider?.openMode = provider?.curOpenMode;
                         provider?.hasInitOpenMode = true;
                         Navigator.of(context).pop();
                       })

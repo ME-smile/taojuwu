@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/router/routes.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
@@ -42,7 +44,8 @@ class OrderCommitSuccessPage extends StatelessWidget {
                 VSpacing(20),
                 InkWell(
                   onTap: () {
-                    RouteHandler.goCurtainMallPage(context);
+                    Navigator.of(context).popUntil(ModalRoute.withName(
+                        '${Routes.curtainMall}?keyword=${TargetOrderGoods.instance.keyword}'));
                   },
                   child: Container(
                       decoration: BoxDecoration(
@@ -78,9 +81,11 @@ class OrderCommitSuccessPage extends StatelessWidget {
         ),
         onWillPop: () async {
           if (orderType == 1) {
-            Navigator.of(context)..pop()..pop()..pop()..pop();
+            Navigator.of(context).popUntil(ModalRoute.withName(
+                '${Routes.curtainMall}?keyword=${TargetOrderGoods.instance.keyword}'));
           } else {
-            Navigator.of(context)..pop()..pop();
+            Navigator.of(context)
+                .popUntil((Route r) => r.settings.isInitialRoute);
           }
           return Future.value(false);
         });

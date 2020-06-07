@@ -15,7 +15,6 @@ import 'package:taojuwu/pages/order/widgets/remind_button.dart';
 import 'package:taojuwu/pages/order/widgets/select_product_button.dart';
 
 import 'package:taojuwu/providers/order_detail_provider.dart';
-import 'package:taojuwu/providers/order_provider.dart';
 
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -631,14 +630,9 @@ class OrderKit {
               child: SelectedProductButton(
                 text: goods?.hasSelectedProduct == false ? '去选品' : '更换选品',
                 callback: () {
-                  OrderProvider orderProvider =
-                      Provider.of<OrderProvider>(context, listen: false);
-
                   TargetOrderGoods targetOrderGoods = TargetOrderGoods();
                   targetOrderGoods?.setOrderGoodsId(goods?.orderGoodsId);
-
-                  orderProvider.initMeasureOrder(provider, context,
-                      orderGoods: goods);
+                  RouteHandler.goCurtainMallPage(context);
                 },
               ),
             ),
