@@ -242,7 +242,9 @@ class GoodsProvider with ChangeNotifier {
         _canopyAttr?.data?.isNotEmpty == true ? _canopyAttr?.data?.first : null;
     _curRoomAttrBean =
         _roomAttr?.data?.isNotEmpty == true ? _roomAttr?.data?.first : null;
-    initMeasureData();
+    if (measureData != null) {
+      initMeasureData();
+    }
   }
 
   int get goodsType => goods?.goodsSpecialType;
@@ -377,6 +379,7 @@ class GoodsProvider with ChangeNotifier {
   }
 
   setWindowPatternByName(String pattern) {
+    if (pattern == null || pattern.isEmpty) return;
     List<String> list = pattern?.split('/');
     for (int i = 0; i < WindowPatternAttr.patternsText?.length; i++) {
       String item = WindowPatternAttr.patternsText[i];
@@ -454,24 +457,25 @@ class GoodsProvider with ChangeNotifier {
     setWindowPatternByName(measureData?.windowType);
 
     List<String> arr = [];
-    Map tmp = jsonDecode(measureData?.data);
-    String id = tmp?.keys?.first;
-    if (tmp != null) {
-      if (tmp[id] != null) {
-        if (tmp[id]['selected'] != null &&
-            tmp[id]['selected']['打开方式'] != null) {
-          Map<String, dynamic> dict = tmp[id]['selected']['打开方式'];
-          String firstKey = dict?.keys?.first;
-          Map map = dict[firstKey];
-          print(firstKey?.contains('分墙体') == true);
-          if (firstKey?.contains('分墙体') == true) {
-            map?.values?.forEach((item) {
-              arr.add(item?.first);
-            });
-          }
-        }
-      }
-    }
+
+    // Map tmp = jsonDecode(measureData?.data);
+    // String id = tmp?.keys?.first;
+    // if (tmp != null) {
+    //   if (tmp[id] != null) {
+    //     if (tmp[id]['selected'] != null &&
+    //         tmp[id]['selected']['打开方式'] != null) {
+    //       Map<String, dynamic> dict = tmp[id]['selected']['打开方式'];
+    //       String firstKey = dict?.keys?.first;
+    //       Map map = dict[firstKey];
+    //       print(firstKey?.contains('分墙体') == true);
+    //       if (firstKey?.contains('分墙体') == true) {
+    //         map?.values?.forEach((item) {
+    //           arr.add(item?.first);
+    //         });
+    //       }
+    //     }
+    //   }
+    // }
     initInstallMode(measureData?.installType);
     initOpenMode(measureData?.openType, subOpenModes: arr);
   }
