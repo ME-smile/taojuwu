@@ -140,7 +140,7 @@ class RouteHandler {
   });
 
   static goMeasureOrderPage(BuildContext context) {
-    _jumpTo(context, Routes.measureOrder);
+    _jumpTo(context, Routes.measureOrder, maintainState: true);
   }
 
   static Handler customer = Handler(
@@ -354,7 +354,8 @@ class RouteHandler {
     params =
         params != null ? FluroConvertUtils.fluroCnParamsEncode(params) : '';
 
-    _jumpTo(context, '${Routes.commitOrder}?params=$params');
+    _jumpTo(context, '${Routes.commitOrder}?params=$params',
+        maintainState: true);
   }
 
   static Handler orderCommitSuccess = Handler(

@@ -241,6 +241,10 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
     return true;
   }
 
+  void unFocus() {
+    FocusManager.instance.primaryFocus.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -256,161 +260,167 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
               centerTitle: true,
             ),
             body: SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      child: ZYAssetImage(
-                        WindowPatternAttr.pictureMap[
-                            '${provider?.windowPatternStr}/${provider?.curInstallMode}'],
-                        width: UIKit.width(480),
-                        height: UIKit.height(480),
+              child: GestureDetector(
+                onTap: () {
+                  unFocus();
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        child: ZYAssetImage(
+                          WindowPatternAttr.pictureMap[
+                              '${provider?.windowPatternStr}/${provider?.curInstallMode}'],
+                          width: UIKit.width(480),
+                          height: UIKit.height(480),
+                        ),
                       ),
-                    ),
-                    Divider(),
-                    AttrOptionsBar(
-                      title: '空间',
-                      trailingText: provider?.curRoomAttrBean?.name ?? '',
-                      callback: () {
-                        checkRoomAttr(context);
-                      },
-                    ),
-                    AttrOptionsBar(
-                      title: '窗型',
-                      trailingText: provider?.windowPatternStr ?? '',
-                      callback: () {
-                        checkWindowPattern(context);
-                      },
-                    ),
-                    // _buildInstallOptionBar(context),
-                    // _modeBar(
-                    //   context,
-                    //   '安装方式:',
-                    //   WindowPatternAttr.installModes,
-                    // ),
-                    Divider(),
-                    buildInstallOptionPicker(),
-                    Divider(),
-                    buildOpenOptionPicker(),
+                      Divider(),
+                      AttrOptionsBar(
+                        title: '空间',
+                        trailingText: provider?.curRoomAttrBean?.name ?? '',
+                        callback: () {
+                          checkRoomAttr(context);
+                        },
+                      ),
+                      AttrOptionsBar(
+                        title: '窗型',
+                        trailingText: provider?.windowPatternStr ?? '',
+                        callback: () {
+                          checkWindowPattern(context);
+                        },
+                      ),
+                      // _buildInstallOptionBar(context),
+                      // _modeBar(
+                      //   context,
+                      //   '安装方式:',
+                      //   WindowPatternAttr.installModes,
+                      // ),
+                      Divider(),
+                      buildInstallOptionPicker(),
+                      Divider(),
+                      buildOpenOptionPicker(),
 
-                    Divider(),
-                    buildOpenSubOptionPicker(),
-                    // _modeBar(
-                    //   context,
-                    //   '打开方式:',
-                    //   WindowPatternAttr.openModes,
-                    // ),
-                    // _buildOpenOptionBar(),
-                    Divider(),
-                    Column(
-                      children: <Widget>[
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: UIKit.height(20)),
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(right: UIKit.width(30)),
-                                child: Text(
-                                  '宽   (cm):',
-                                  style: textTheme.caption,
-                                ),
-                              ),
-                              Container(
-                                child: TextField(
-                                  maxLines: 1,
-                                  controller: widthInputController,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(vertical: 2.5),
-                                  ),
-                                ),
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: UIKit.width(20)),
-                                width: UIKit.width(160),
-                                height: UIKit.height(50),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey)),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: UIKit.height(20)),
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(right: UIKit.width(30)),
-                                child: Text(
-                                  '高   (cm):',
-                                  style: textTheme.caption,
-                                ),
-                              ),
-                              Container(
-                                child: TextField(
-                                  maxLines: 1,
-                                  controller: heightInputController,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    contentPadding:
-                                        EdgeInsets.symmetric(vertical: 2.5),
-                                  ),
-                                ),
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: UIKit.width(20)),
-                                width: UIKit.width(160),
-                                height: UIKit.height(50),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Divider(),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: UIKit.height(20)),
-                      child: Row(
+                      Divider(),
+                      buildOpenSubOptionPicker(),
+                      // _modeBar(
+                      //   context,
+                      //   '打开方式:',
+                      //   WindowPatternAttr.openModes,
+                      // ),
+                      // _buildOpenOptionBar(),
+                      Divider(),
+                      Column(
                         children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(right: UIKit.width(30)),
-                            child: Text(
-                              '离地距离:',
-                              style: textTheme.caption,
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: UIKit.height(20)),
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(right: UIKit.width(30)),
+                                  child: Text(
+                                    '宽   (cm):',
+                                    style: textTheme.caption,
+                                  ),
+                                ),
+                                Container(
+                                  child: TextField(
+                                    maxLines: 1,
+                                    controller: widthInputController,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding:
+                                          EdgeInsets.symmetric(vertical: 2.5),
+                                    ),
+                                  ),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: UIKit.width(20)),
+                                  width: UIKit.width(160),
+                                  height: UIKit.height(50),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey)),
+                                )
+                              ],
                             ),
                           ),
                           Container(
-                            child: TextField(
-                              maxLines: 1,
-                              controller: dyInputController,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                hintText: '单位(cm)',
-                                isDense: true,
-                                contentPadding:
-                                    EdgeInsets.symmetric(vertical: 2.5),
-                              ),
+                            padding: EdgeInsets.symmetric(
+                                vertical: UIKit.height(20)),
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding:
+                                      EdgeInsets.only(right: UIKit.width(30)),
+                                  child: Text(
+                                    '高   (cm):',
+                                    style: textTheme.caption,
+                                  ),
+                                ),
+                                Container(
+                                  child: TextField(
+                                    maxLines: 1,
+                                    controller: heightInputController,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding:
+                                          EdgeInsets.symmetric(vertical: 2.5),
+                                    ),
+                                  ),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: UIKit.width(20)),
+                                  width: UIKit.width(160),
+                                  height: UIKit.height(50),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey)),
+                                ),
+                              ],
                             ),
-                            margin: EdgeInsets.symmetric(
-                                horizontal: UIKit.width(20)),
-                            width: UIKit.width(160),
-                            height: UIKit.height(50),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey)),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      Divider(),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(vertical: UIKit.height(20)),
+                        child: Row(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(right: UIKit.width(30)),
+                              child: Text(
+                                '离地距离:',
+                                style: textTheme.caption,
+                              ),
+                            ),
+                            Container(
+                              child: TextField(
+                                maxLines: 1,
+                                controller: dyInputController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: '单位(cm)',
+                                  isDense: true,
+                                  contentPadding:
+                                      EdgeInsets.symmetric(vertical: 2.5),
+                                ),
+                              ),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: UIKit.width(20)),
+                              width: UIKit.width(160),
+                              height: UIKit.height(50),
+                              decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -446,6 +456,7 @@ class __RoomAttrCheckWrapperState extends State<RoomAttrCheckWrapper> {
     super.initState();
     GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
     roomAttr = goodsProvider?.roomAttr;
+    tmp = goodsProvider?.curRoomAttrBean;
     tmpId = goodsProvider?.curRoomAttrBean?.id;
   }
 

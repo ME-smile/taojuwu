@@ -742,7 +742,7 @@ class OrderGoodsMeasure {
   int createTime;
   int updateTime;
   String partsName;
-
+  String newOpenType;
   OrderGoodsMeasure(
       {this.id,
       this.orderGoodsId,
@@ -818,6 +818,7 @@ class OrderGoodsMeasure {
     createTime = json['create_time'];
     updateTime = json['update_time'];
     partsName = json['parts_name'];
+    newOpenType = json['open_type'];
   }
 
   Map<String, dynamic> toJson() {

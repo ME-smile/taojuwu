@@ -147,10 +147,8 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                     children: <Widget>[
                                       buildText(
                                           '离地距离:${goodsProvider?.dyCMStr ?? '0'}cm'),
-                                      Text(hasChangedData(
-                                              measureData?.verticalGroundHeight,
-                                              goodsProvider?.dyCMStr)
-                                          ? '原(${measureData?.verticalGroundHeight}cm)'
+                                      Text(goodsProvider?.hasModifyDy == true
+                                          ? '  原(${measureData?.verticalGroundHeight}cm)'
                                           : ''),
                                       InkWell(
                                         child: Icon(
@@ -191,9 +189,6 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                                       child: Text('确定'),
                                                       onPressed: () {
                                                         goodsProvider?.dy = tmp;
-                                                        measureData
-                                                                ?.verticalGroundHeight =
-                                                            tmp;
                                                         Navigator.of(context)
                                                             .pop();
                                                       },
@@ -208,13 +203,10 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                   Row(
                                     children: <Widget>[
                                       buildText(
-                                          '打开方式:${goodsProvider?.hasInitOpenMode == true ? goodsProvider?.curOpenMode : measureData?.openType}'),
-                                      Text(goodsProvider?.hasInitOpenMode ==
+                                          '打开方式:${goodsProvider?.measureData?.newOpenType}'),
+                                      Text(goodsProvider?.hasModifyOpenMode ==
                                               true
-                                          ? goodsProvider?.curOpenMode !=
-                                                  measureData?.openType
-                                              ? '(原${measureData?.openType ?? ''})'
-                                              : ''
+                                          ? ' (原${measureData?.openType ?? ''})'
                                           : ''),
                                       InkWell(
                                         child: Icon(
@@ -224,11 +216,11 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                         onTap: () {
                                           RouteHandler.goEditOpenModePage(
                                               context);
-                                          goodsProvider?.initWindowPattern(
-                                              measureData?.windowType,
-                                              measureData?.installType,
-                                              measureData?.openType,
-                                              measureData?.data);
+                                          // goodsProvider?.initWindowPattern(
+                                          //     measureData?.windowType,
+                                          //     measureData?.installType,
+                                          //     measureData?.openType,
+                                          //     measureData?.data);
                                         },
                                       )
                                     ],
@@ -280,15 +272,15 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                     })),
                 onWillPop: () {
                   // reset(provider);
-                  goodsProvider?.resetSize();
-                  if (goodsProvider?.hasInitOpenMode == false) {
-                    goodsProvider?.initWindowPattern(
-                        measureData?.windowType,
-                        measureData?.installType,
-                        measureData?.openType,
-                        measureData?.data);
-                  }
-                  goodsProvider?.hasInitOpenMode = false;
+                  // goodsProvider?.resetSize();
+                  // if (goodsProvider?.hasInitOpenMode == false) {
+                  //   goodsProvider?.initWindowPattern(
+                  //       measureData?.windowType,
+                  //       measureData?.installType,
+                  //       measureData?.openType,
+                  //       measureData?.data);
+                  // }
+
                   TargetOrderGoods.instance.setHasConfirmMeasureDataFlag(false);
                   Navigator.of(context).pop();
                   return Future.value(false);
@@ -303,9 +295,5 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
       padding: EdgeInsets.symmetric(vertical: UIKit.height(20)),
       child: Text(text ?? ''),
     );
-  }
-
-  bool hasChangedData(String h1, String h2) {
-    return h1 != h2;
   }
 }

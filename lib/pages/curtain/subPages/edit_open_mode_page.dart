@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
@@ -33,114 +34,118 @@ class EditOpenModePage extends StatelessWidget {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     return WillPopScope(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('打开方式'),
-            centerTitle: true,
-          ),
-          body: SingleChildScrollView(
-            child: Consumer<GoodsProvider>(
-              builder: (BuildContext context, GoodsProvider provider, _) {
-                return Container(
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: UIKit.width(80)),
-                        child: ZYAssetImage(
-                          WindowPatternAttr.pictureMap[
-                              '${provider?.windowPatternStr}/${provider?.curInstallMode}'],
-                          width: 320,
-                          height: 280,
+        child: ChangeNotifierProvider.value(
+          value: TargetOrderGoods.instance.goodsProvider,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text('打开方式'),
+              centerTitle: true,
+            ),
+            body: SingleChildScrollView(
+              child: Consumer<GoodsProvider>(
+                builder: (BuildContext context, GoodsProvider provider, _) {
+                  return Container(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: UIKit.width(80)),
+                          child: ZYAssetImage(
+                            WindowPatternAttr.pictureMap[
+                                '${provider?.windowPatternStr}/${provider?.curInstallMode}'],
+                            width: 320,
+                            height: 280,
+                          ),
                         ),
-                      ),
-                      Container(
-                          margin: EdgeInsets.symmetric(
-                              horizontal: UIKit.width(20),
-                              vertical: UIKit.height(20)),
-                          child: Row(
-                              children: <Widget>[
-                                    Text('打开方式:'),
-                                  ] +
-                                  List.generate(
-                                      provider?.openOptions?.length ?? 0,
-                                      (int i) {
-                                    Map<String, dynamic> item =
-                                        provider?.openOptions[i];
-                                    return Container(
+                        Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: UIKit.width(20),
+                                vertical: UIKit.height(20)),
+                            child: Row(
+                                children: <Widget>[
+                                      Text('打开方式:'),
+                                    ] +
+                                    List.generate(
+                                        provider?.openOptions?.length ?? 0,
+                                        (int i) {
+                                      Map<String, dynamic> item =
+                                          provider?.openOptions[i];
+                                      return Container(
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: UIKit.width(10)),
+                                          child: item['is_checked'] == true
+                                              ? ZYRaisedButton(
+                                                  item['text'],
+                                                  () {
+                                                    provider?.checkOpenMode(i);
+                                                  },
+                                                  horizontalPadding:
+                                                      UIKit.width(15),
+                                                )
+                                              : ZYOutlineButton(
+                                                  item['text'],
+                                                  () {
+                                                    provider?.checkOpenMode(i);
+                                                  },
+                                                  horizontalPadding:
+                                                      UIKit.width(15),
+                                                ));
+                                    }))),
+                        Column(
+                          children: List.generate(
+                              provider?.openSubOptions?.length ?? 0, (int i) {
+                            Map<String, dynamic> tmp =
+                                provider?.openSubOptions[i];
+                            return Row(
+                                children: <Widget>[
+                                      Container(
+                                          margin: EdgeInsets.only(
+                                              right: UIKit.width(30)),
+                                          child: Text(
+                                            tmp['name'],
+                                            style: textTheme.caption,
+                                          )),
+                                    ] +
+                                    List.generate(tmp['options']?.length,
+                                        (int j) {
+                                      Map<String, dynamic> item =
+                                          tmp['options'][j];
+                                      return Container(
                                         margin: EdgeInsets.symmetric(
                                             horizontal: UIKit.width(10)),
-                                        child: item['is_checked'] == true
+                                        child: item['is_checked']
                                             ? ZYRaisedButton(
                                                 item['text'],
                                                 () {
-                                                  provider?.checkOpenMode(i);
+                                                  provider?.checkOpenSubOption(
+                                                      i, j);
                                                 },
                                                 horizontalPadding:
-                                                    UIKit.width(15),
+                                                    UIKit.width(20),
                                               )
                                             : ZYOutlineButton(
                                                 item['text'],
                                                 () {
-                                                  provider?.checkOpenMode(i);
+                                                  provider?.checkOpenSubOption(
+                                                      i, j);
                                                 },
                                                 horizontalPadding:
-                                                    UIKit.width(15),
-                                              ));
-                                  }))),
-                      Column(
-                        children: List.generate(
-                            provider?.openSubOptions?.length ?? 0, (int i) {
-                          Map<String, dynamic> tmp =
-                              provider?.openSubOptions[i];
-                          return Row(
-                              children: <Widget>[
-                                    Container(
-                                        margin: EdgeInsets.only(
-                                            right: UIKit.width(30)),
-                                        child: Text(
-                                          tmp['name'],
-                                          style: textTheme.caption,
-                                        )),
-                                  ] +
-                                  List.generate(tmp['options']?.length,
-                                      (int j) {
-                                    Map<String, dynamic> item =
-                                        tmp['options'][j];
-                                    return Container(
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: UIKit.width(10)),
-                                      child: item['is_checked']
-                                          ? ZYRaisedButton(
-                                              item['text'],
-                                              () {
-                                                provider?.checkOpenSubOption(
-                                                    i, j);
-                                              },
-                                              horizontalPadding:
-                                                  UIKit.width(20),
-                                            )
-                                          : ZYOutlineButton(
-                                              item['text'],
-                                              () {
-                                                provider?.checkOpenSubOption(
-                                                    i, j);
-                                              },
-                                              horizontalPadding:
-                                                  UIKit.width(20),
-                                            ),
-                                    );
-                                  }));
-                        }),
-                      ),
-                      ZYSubmitButton('确认', () {
-                        provider?.hasInitOpenMode = true;
-                        Navigator.of(context).pop();
-                      })
-                    ],
-                  ),
-                );
-              },
+                                                    UIKit.width(20),
+                                              ),
+                                      );
+                                    }));
+                          }),
+                        ),
+                        ZYSubmitButton('确认', () {
+                          provider?.measureData?.newOpenType =
+                              provider?.curOpenMode;
+                          Navigator.of(context).pop();
+                        })
+                      ],
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         ),

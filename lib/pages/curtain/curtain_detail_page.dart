@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -183,8 +182,8 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     await showCupertinoDialog(
         context: context,
         builder: (BuildContext context) {
-          return ChangeNotifierProvider(
-            create: (BuildContext context) => GoodsProvider(),
+          return ChangeNotifierProvider.value(
+            value: TargetOrderGoods.instance.goodsProvider,
             child: Consumer<GoodsProvider>(
               builder: (BuildContext context, GoodsProvider goodsProvider, _) {
                 return CupertinoAlertDialog(
@@ -242,44 +241,48 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
         });
   }
 
-  void setDy({OrderGoodsMeasure measureData}) async {
+  void setDy() async {
     await showCupertinoDialog(
         context: context,
         builder: (BuildContext context) {
-          return Consumer<GoodsProvider>(
-            builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-              return CupertinoAlertDialog(
-                title: Text('离地距离（cm）'),
-                content: Column(
-                  children: <Widget>[
-                    CupertinoTextField(
-                      controller: dyInputController,
-                      keyboardType: TextInputType.number,
-                      placeholder: '请输入离地距离（cm）',
-                    ),
-                  ],
-                ),
-                actions: <Widget>[
-                  CupertinoDialogAction(
-                    child: Text('取消'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+          return ChangeNotifierProvider.value(
+            value: TargetOrderGoods.instance.goodsProvider,
+            child: Consumer<GoodsProvider>(
+              builder: (BuildContext context, GoodsProvider goodsProvider, _) {
+                return CupertinoAlertDialog(
+                  title: Text('离地距离（cm）'),
+                  content: Column(
+                    children: <Widget>[
+                      CupertinoTextField(
+                        controller: dyInputController,
+                        keyboardType: TextInputType.number,
+                        placeholder: '请输入离地距离（cm）',
+                      ),
+                    ],
                   ),
-                  CupertinoDialogAction(
-                    child: Text('确定'),
-                    onPressed: () {
-                      // closeSizeDialog();
-                      // print(depositInput?.text);
-                      goodsProvider?.dy = dyInputController?.text;
-                      measureData?.verticalGroundHeight =
-                          dyInputController?.text;
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-              );
-            },
+                  actions: <Widget>[
+                    CupertinoDialogAction(
+                      child: Text('取消'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    CupertinoDialogAction(
+                      child: Text('确定'),
+                      onPressed: () {
+                        // closeSizeDialog();
+                        // print(depositInput?.text);
+
+                        goodsProvider?.dy = dyInputController?.text;
+                        goodsProvider?.measureData?.verticalGroundHeight =
+                            dyInputController?.text;
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                );
+              },
+            ),
           );
         });
   }
@@ -315,7 +318,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                     // isRollUpWindow: goodsProvider?.isWindowGauze,
                     trailingText: '${goodsProvider?.dyCMStr ?? ''}cm',
                     callback: () {
-                      setDy(measureData: goodsProvider?.measureData);
+                      setDy();
                     },
                   ),
                 ],
@@ -864,7 +867,7 @@ class BottomActionButtonBar extends StatelessWidget {
                         'wc_attr': jsonEncode(goodsProvider.getAttrArgs()),
                         'order_goods_id': targetOrderGoods?.orderGoodsId,
                       };
-                      LogUtil.e(params);
+
                       selectProduct(context, params: params);
                     })
                   ],

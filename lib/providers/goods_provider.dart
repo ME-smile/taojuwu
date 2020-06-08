@@ -34,7 +34,6 @@ class GoodsProvider with ChangeNotifier {
   WindowShadeAttrBean _curWindowShadeAttrBean;
   CanopyAttrBean _curCanopyAttrBean;
 
-  String partType;
   // List<AccessoryAttrBean> _allAccessoryAttrBeans;
   // List<AccessoryAttrBean> _curAccessoryAttrBeans;
 
@@ -42,8 +41,6 @@ class GoodsProvider with ChangeNotifier {
   List<CraftAttrBean> _initCraftAttrBeanList = [];
   List<PartAttrBean> _initPartAttrBeanList = [];
   RoomAttrBean _curRoomAttrBean;
-
-  Map<String, dynamic> attrParams;
 
   String _width = '0.0';
   String _height = '0.0';
@@ -298,8 +295,6 @@ class GoodsProvider with ChangeNotifier {
   WindowShadeAttr get windowShadeAttr => _windowShadeAttr;
   CanopyAttr get canopyAttr => _canopyAttr;
   AccessoryAttr get accessoryAttr => _accessoryAttr;
-  bool get hasInitOpenMode => _hasInitOpenMode;
-  bool _hasInitOpenMode = false;
 
   bool get hasSetDy {
     if (_dy == '0.0' || _dy?.isNotEmpty != true || _dy == null) {
@@ -309,7 +304,7 @@ class GoodsProvider with ChangeNotifier {
   }
 
   String get sizeText =>
-      hasSetSize ? '宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米' : '尺寸';
+      _hasSetSize ? '宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米' : '尺寸';
   String get dyText => hasSetDy ? '${_dy}cm' : '离地距离(cm)';
   String get windowPatternStr =>
       '${WindowPatternAttr.patternsText[curWindowPattern ?? 0]}/${WindowPatternAttr.stylesText[curWindowStyle ?? 0]}/${WindowPatternAttr.typesText[curWindowType ?? 0]}';
@@ -336,7 +331,6 @@ class GoodsProvider with ChangeNotifier {
 
       item['is_checked'] = i == j ? true : false;
     }
-    _hasInitOpenMode = true;
     notifyListeners();
   }
 
@@ -457,11 +451,38 @@ class GoodsProvider with ChangeNotifier {
     _width = measureData?.width;
     _height = measureData?.height;
     _dy = measureData?.verticalGroundHeight;
+    setWindowPatternByName(measureData?.windowType);
 
-    // initOpenMode(mode)
+    List<String> arr = [];
+    Map tmp = jsonDecode(measureData?.data);
+    String id = tmp?.keys?.first;
+    if (tmp != null) {
+      if (tmp[id] != null) {
+        if (tmp[id]['selected'] != null &&
+            tmp[id]['selected']['打开方式'] != null) {
+          Map<String, dynamic> dict = tmp[id]['selected']['打开方式'];
+          String firstKey = dict?.keys?.first;
+          Map map = dict[firstKey];
+          print(firstKey?.contains('分墙体') == true);
+          if (firstKey?.contains('分墙体') == true) {
+            map?.values?.forEach((item) {
+              arr.add(item?.first);
+            });
+          }
+        }
+      }
+    }
+    initInstallMode(measureData?.installType);
+    initOpenMode(measureData?.openType, subOpenModes: arr);
   }
 
   void initOpenMode(String mode, {List<String> subOpenModes}) {
+    const String WAIT_TO_CONFIRM = '待确认';
+    if (mode == null &&
+        mode?.isEmpty == true &&
+        mode?.contains(WAIT_TO_CONFIRM) == true) {
+      return;
+    }
     openOptions?.forEach((item) {
       String tmp = item['text'];
       item['is_checked'] =
@@ -484,40 +505,13 @@ class GoodsProvider with ChangeNotifier {
     }
   }
 
-  void initWindowPattern(String windowPattern, String installMode,
-      String openMode, String measureData) {
-    List<String> arr = [];
-    // Map tmp = jsonDecode(measureData);
-    // String id = tmp?.keys?.first;
-    // if (tmp != null) {
-    //   if (tmp[id] != null) {
-    //     if (tmp[id]['selected'] != null &&
-    //         tmp[id]['selected']['打开方式'] != null) {
-    //       Map<String, dynamic> dict = tmp[id]['selected']['打开方式'];
-    //       String firstKey = dict?.keys?.first;
-    //       Map map = dict[firstKey];
-    //       print(firstKey?.contains('分墙体') == true);
-    //       if (firstKey?.contains('分墙体') == true) {
-    //         map?.values?.forEach((item) {
-    //           arr.add(item?.first);
-    //         });
-    //       }
-    //     }
-    //   }
-    // }
-    setWindowPatternByName(windowPattern);
-    initInstallMode(
-      installMode,
-    );
-    const String WAIT_TO_CONFIRM = '待确认';
-    if (openMode != null &&
-        openMode?.isNotEmpty == true &&
-        openMode?.contains(WAIT_TO_CONFIRM) == false) {
-      initOpenMode(openMode, subOpenModes: arr);
-    } else {
-      _hasInitOpenMode = false;
-    }
-  }
+  // void initWindowPattern(String windowPattern, String installMode,
+  //     String openMode, String measureData) {
+  //   setWindowPatternByName(windowPattern);
+  //   initInstallMode(
+  //     installMode,
+  //   );
+  // }
 
   void initSize(OrderGoodsMeasure measureData) {
     _width = measureData?.width;
@@ -535,11 +529,6 @@ class GoodsProvider with ChangeNotifier {
 
   set curPartAttrBean(PartAttrBean bean) {
     _curPartAttrBean = bean;
-    notifyListeners();
-  }
-
-  set hasInitOpenMode(bool flag) {
-    _hasInitOpenMode = flag;
     notifyListeners();
   }
 
@@ -854,4 +843,9 @@ class GoodsProvider with ChangeNotifier {
       }
     }).catchError((err) => err);
   }
+
+  bool get hasModifyDy => _dy != _measureData?.verticalGroundHeight;
+
+  bool get hasModifyOpenMode =>
+      measureData?.openType != measureData?.newOpenType;
 }

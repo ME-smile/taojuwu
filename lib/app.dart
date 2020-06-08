@@ -62,8 +62,7 @@ class App extends StatelessWidget {
 
             debugShowCheckedModeBanner: false,
             onGenerateRoute: Application.router.generator,
-            darkTheme:
-                provider.isDarkMode ? ThemeData.dark() : ThemeData.light(),
+            darkTheme: ThemeProvider.lightTheme,
             theme: ThemeProvider.lightTheme,
             home: userProvider?.isLogin == true ? HomePage() : LoginPage(),
             // localizationsDelegates: [
