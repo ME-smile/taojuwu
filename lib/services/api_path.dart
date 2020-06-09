@@ -1,5 +1,5 @@
 class ApiPath {
-  static const HOST = "http://buyi.taoju5.com";
+  static const HOST = "http://106.14.219.213";
 
   static const String curtainMall = '/api/goods/goodsListByConditions';
 
