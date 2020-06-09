@@ -438,11 +438,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 child: _orderInfoBar(context, '测量时间',
                                     getTimeStr(model?.realityMeasureTime)),
                               ),
-                              Offstage(
-                                offstage: model?.hasInstalled == false,
-                                child: _orderInfoBar(context, '安装时间',
-                                    getTimeStr(model?.realityInstallTime)),
-                              ),
+                              // Offstage(
+                              //   offstage: model?.hasInstalled == false,
+                              //   child: _orderInfoBar(context, '安装时间',
+                              //       getTimeStr(model?.realityInstallTime)),
+                              // ),
                               _orderInfoBar(
                                   context, '下单人', model?.userName ?? ''),
                               _orderInfoBar(

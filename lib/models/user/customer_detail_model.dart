@@ -65,7 +65,7 @@ class CustomerDetailModel {
     headWord = json['head_word'];
     clientMobile = json['client_mobile'];
     clientAge = json['client_age'];
-    clientSex = json['client_sex'];
+    clientSex = json['client_sex'] == 0 ? 1 : json['client_sex'];
     clientWx = json['client_wx'];
     enterTime = json['enter_time'];
     enterTime = enterTime != null ? enterTime * 1000 : enterTime;

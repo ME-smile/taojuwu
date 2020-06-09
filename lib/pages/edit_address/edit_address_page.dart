@@ -68,8 +68,9 @@ class _EditAddressPageState extends State<EditAddressPage> {
       if (mounted) {
         setState(() {
           bean = response?.data;
-          setParams(response?.data);
-          initData(response?.data);
+          initData(bean);
+          setParams(bean);
+
           isLoading = false;
         });
       }
@@ -100,20 +101,36 @@ class _EditAddressPageState extends State<EditAddressPage> {
 
   void saveInfoToTargetClient(int addressId) {
     targetClient.setClientName(bean?.clientName);
+
     targetClient.setAddressId(addressId);
     targetClient.setTel(bean?.clientMobile);
+    targetClient.setGender(bean?.clientSex);
     targetClient.setAddress(
-        bean?.provinceName, bean?.cityName, bean?.districtName);
+        bean?.provinceName,
+        bean?.cityName,
+        bean?.districtName,
+        bean?.detailAddress,
+        bean?.provinceId,
+        bean?.cityId,
+        bean?.districtId);
   }
 
   void initData(CustomerDetailModel model) {
-    gender = model?.clientSex;
-    provinceName = model?.provinceName ?? '';
-    cityName = model?.cityName ?? '';
-    districtName = model?.districtName;
-    nameInput?.text = model?.clientName ?? null;
-    telInput?.text = model?.clientMobile ?? null;
-    houseNumInput?.text = model?.detailAddress ?? null;
+    TargetClient targetClient = TargetClient.instance;
+    gender = targetClient.gender ?? model?.clientSex ?? 1;
+    model?.provinceName =
+        targetClient.provinceName ?? model?.provinceName ?? '';
+
+    model?.cityName = targetClient.cityName ?? model?.cityName ?? '';
+    model?.districtName =
+        targetClient.districtName ?? model?.districtName ?? '';
+    model?.provinceId = targetClient?.provinceId ?? model?.provinceId ?? -1;
+    model?.cityId = targetClient?.cityId ?? model?.cityId ?? -1;
+    model?.districtId = targetClient?.districtId ?? model?.districtId ?? -1;
+    nameInput?.text = targetClient.clientName ?? model?.clientName ?? null;
+    telInput?.text = targetClient.tel ?? model?.clientMobile ?? null;
+    houseNumInput?.text =
+        targetClient.detailAddress ?? model.detailAddress ?? null;
   }
 
   void saveData(CustomerDetailModel model) {

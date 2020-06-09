@@ -70,9 +70,10 @@ class OrderProvider with ChangeNotifier {
   String _deposit;
   String _windowNum;
 
-  String get measureTimeStr =>
-      '${DateUtil.formatDate(_measureTime?.dateTime, format: 'yyyy年MM月dd日')} ${_measureTime?.period}' ??
-      '';
+  String get measureTimeStr => _measureTime == null
+      ? '时间'
+      : '${DateUtil.formatDate(_measureTime?.dateTime, format: 'yyyy年MM月dd日') ?? ''} ${_measureTime?.period ?? ''}' ??
+          '';
   String get installTime => _installTime;
   String get orderMark => _orderMark ?? '';
   String get deposit => _deposit;
@@ -143,11 +144,6 @@ class OrderProvider with ChangeNotifier {
     // notifyListeners();
     print('');
   }
-
-  // set orderGoodsMeasure(OrderGoodsMeasure data) {
-  //   _orderGoodsMeasure = data;
-  //   notifyListeners();
-  // }
 
   bool beforeCreateOrder(BuildContext context) {
     if (TargetClient.instance?.hasSelectedClient == false) {

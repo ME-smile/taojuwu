@@ -39,7 +39,8 @@ import 'package:taojuwu/pages/profile/subPages/version_page.dart';
 import 'package:taojuwu/pages/refund/refund_page.dart';
 import 'package:taojuwu/pages/search/search_page.dart';
 import 'package:taojuwu/pages/splash/splash_page.dart';
-import 'package:taojuwu/singleton/target_order_goods.dart';
+
+import 'package:taojuwu/singleton/target_route.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'routes.dart';
 
@@ -259,7 +260,8 @@ class RouteHandler {
 
   static goCurtainMallPage(BuildContext context, {String keyword: ''}) {
     keyword = FluroConvertUtils.fluroCnParamsEncode(keyword);
-    TargetOrderGoods.instance.keyword = keyword;
+
+    TargetRoute.instance.setRoute('${Routes.curtainMall}?keyword=$keyword');
     _jumpTo(context, '${Routes.curtainMall}?keyword=$keyword',
         maintainState: true);
   }
@@ -303,7 +305,10 @@ class RouteHandler {
   });
 
   static goEditAddressPage(BuildContext context, {int id}) {
-    _jumpTo(context, '${Routes.editAddress}?id=$id');
+    _jumpTo(
+      context,
+      '${Routes.editAddress}?id=$id',
+    );
   }
 
   static Handler search = Handler(

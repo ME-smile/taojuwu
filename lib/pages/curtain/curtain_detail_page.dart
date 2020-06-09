@@ -19,6 +19,7 @@ import 'package:taojuwu/router/routes.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
+import 'package:taojuwu/singleton/target_route.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -815,8 +816,10 @@ class BottomActionButtonBar extends StatelessWidget {
         GoodsProvider goodsProvider =
             Provider.of<GoodsProvider>(context, listen: false);
         goodsProvider?.clearGoodsInfo();
-        Navigator.of(context).popUntil(ModalRoute.withName(
-            '${Routes.orderDetail}?id=${TargetOrderGoods.instance.orderId}'));
+        TargetRoute.instance.setRoute(
+            '${Routes.orderDetail}?id=${TargetOrderGoods.instance.orderId}');
+        Navigator.of(context)
+            .popUntil(ModalRoute.withName(TargetRoute.instance.route));
       } else {
         CommonKit.showInfo(response?.message ?? '');
       }

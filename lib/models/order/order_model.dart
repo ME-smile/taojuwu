@@ -102,7 +102,8 @@ class OrderModel {
   double height = 0.0;
   String style = '';
   String mode = '';
-
+  bool get hasSelectedGoods => isSelectedGoods == 1;
+  String get sizeTextDesc => '宽: ${width / 100}米 高: ${height / 100}米';
   OrderModel.fromJson(Map<String, dynamic> json) {
     orderGoodsId = json['order_goods_id'].runtimeType == int
         ? json['order_goods_id']

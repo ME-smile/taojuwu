@@ -261,21 +261,6 @@ class _OrderTabViewState extends State<OrderTabView> {
     });
   }
 
-  Widget buildOrderCard(OrderModelData model) {
-    if (model?.isMeasureOrder == true) {
-      if (model?.hasNotsSelectedProduct == true) {
-        return MeasureOrderHasNotSelectedProductedCard(
-          orderModelData: model,
-          tab: widget.tab,
-        );
-      }
-      return MeasureOrderHasSelectedProductCard(
-        orderModelData: model,
-      );
-    }
-    return OrderCard(model, tab: widget.tab);
-  }
-
   Widget buildOrderListView(List<OrderModelData> models) {
     return models == null || models?.isEmpty == true
         ? NoData()
@@ -296,7 +281,11 @@ class _OrderTabViewState extends State<OrderTabView> {
             child: ListView.separated(
                 itemBuilder: (BuildContext context, int i) {
                   OrderModelData item = models[i];
-                  return buildOrderCard(item);
+                  return item?.isMeasureOrder == true
+                      ? MeasureOrderCard(
+                          orderModelData: item,
+                        )
+                      : OrderCard(item);
                 },
                 separatorBuilder: (BuildContext context, int i) {
                   return VSpacing(20);

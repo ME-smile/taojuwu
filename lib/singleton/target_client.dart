@@ -12,9 +12,13 @@ class TargetClient {
 
   int addressId;
 
-  String districtName = '';
-  String cityName = '';
-  String provinceName = '';
+  String districtName;
+  String cityName;
+  String provinceName;
+
+  int provinceId;
+  int cityId;
+  int districtId;
   bool get hasSelectedClient => clientId != null;
 
   static TargetClient _instance = TargetClient._internal();
@@ -25,6 +29,10 @@ class TargetClient {
 
   setClientId(int id) {
     _instance.clientId = id;
+  }
+
+  setGender(int i) {
+    _instance.gender = i;
   }
 
   setClientName(String name) {
@@ -39,6 +47,9 @@ class TargetClient {
     _instance.cityName = null;
     _instance.districtName = null;
     _instance.detailAddress = null;
+    _instance.provinceId = null;
+    _instance.cityId = null;
+    _instance.districtId = null;
   }
 
   saveInfo(int id, String name) {
@@ -50,10 +61,15 @@ class TargetClient {
     _instance.tel = tel;
   }
 
-  setAddress(String province, String city, String district) {
+  setAddress(String province, String city, String district,
+      String detailAddress, int provinceId, int cityId, int districtId) {
     _instance.provinceName = province;
     _instance.cityName = city;
     _instance.districtName = district;
+    _instance.detailAddress = detailAddress;
+    _instance.provinceId = provinceId;
+    _instance.cityId = cityId;
+    _instance.districtId = districtId;
   }
 
   setAddressId(int id) {

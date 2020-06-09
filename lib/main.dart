@@ -18,7 +18,6 @@ void main() async {
   Application.router = router;
   await Application.init();
 
-  print(Application.sp.getString('token'));
   // 强制竖屏
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {

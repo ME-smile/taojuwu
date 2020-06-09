@@ -48,7 +48,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
 
     return Consumer<OrderProvider>(
       builder: (BuildContext context, OrderProvider provider, _) {
-        provider?.initMeasureTime(measureTimePeriod?.value);
+        // provider?.initMeasureTime(measureTimePeriod?.value);
         return Container(
           color: themeData.primaryColor,
           child: Column(

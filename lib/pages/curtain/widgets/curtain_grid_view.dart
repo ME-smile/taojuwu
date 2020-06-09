@@ -28,6 +28,9 @@ class GridCard extends StatelessWidget {
               width: (width - 20) / 2,
               height: (width - 20) / 2,
               fit: BoxFit.cover,
+              callback: () {
+                RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+              },
             ),
             Expanded(
               child: Text(bean?.goodsName ?? '',

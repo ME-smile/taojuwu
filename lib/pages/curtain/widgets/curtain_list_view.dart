@@ -24,6 +24,9 @@ class ListCard extends StatelessWidget {
               imgPath: UIKit.getNetworkImgPath(
                 bean?.picCoverMid,
               ),
+              callback: () {
+                RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+              },
               fit: BoxFit.fill,
               width: width - 2 * UIKit.width(20),
             ),

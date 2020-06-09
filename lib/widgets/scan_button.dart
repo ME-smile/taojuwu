@@ -44,7 +44,7 @@ class ScanButton extends StatelessWidget {
         CommonKit.showToast('访问相机被拒绝');
       }
     } on FormatException catch (_) {
-      CommonKit.showToast('识别失败');
+      // CommonKit.showToast('');
     }
   }
 

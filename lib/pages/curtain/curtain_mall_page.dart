@@ -84,7 +84,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   static const List<Map<String, dynamic>> sortParams = [
     {
       'order': 'sales',
-      'sort': '',
+      'sort': 'desc',
     },
     {'order': 'is_new', 'sort': ''},
     {
