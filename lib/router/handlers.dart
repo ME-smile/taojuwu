@@ -69,8 +69,8 @@ class RouteHandler {
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     return HomePage();
   });
-  static goHomePage(BuildContext context, {bool isReplaceMode: true}) {
-    _jumpTo(context, Routes.home, replace: isReplaceMode);
+  static goHomePage(BuildContext context, {bool clearStack: false}) {
+    _jumpTo(context, Routes.home, replace: clearStack);
   }
 
   static Handler login = Handler(

@@ -35,8 +35,6 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
         value: TargetOrderGoods.instance.goodsProvider,
         child: Consumer<GoodsProvider>(
           builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-            // String dy = measureData?.verticalGroundHeight;
-
             return WillPopScope(
                 child: Scaffold(
                     appBar: AppBar(
@@ -146,7 +144,7 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                   Row(
                                     children: <Widget>[
                                       buildText(
-                                          '离地距离:${goodsProvider?.dyCMStr ?? '0'}cm'),
+                                          '离地距离:${measureData?.newVerticalGroundHeight ?? '0'}cm'),
                                       Text(goodsProvider?.hasModifyDy == true
                                           ? '  原(${measureData?.verticalGroundHeight}cm)'
                                           : ''),
@@ -188,6 +186,9 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                                     CupertinoDialogAction(
                                                       child: Text('确定'),
                                                       onPressed: () {
+                                                        measureData
+                                                                ?.newVerticalGroundHeight =
+                                                            tmp;
                                                         goodsProvider?.dy = tmp;
                                                         Navigator.of(context)
                                                             .pop();
@@ -216,11 +217,6 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                         onTap: () {
                                           RouteHandler.goEditOpenModePage(
                                               context);
-                                          // goodsProvider?.initWindowPattern(
-                                          //     measureData?.windowType,
-                                          //     measureData?.installType,
-                                          //     measureData?.openType,
-                                          //     measureData?.data);
                                         },
                                       )
                                     ],
@@ -266,7 +262,7 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                     bottomNavigationBar: ZYSubmitButton('确认', () {
                       TargetOrderGoods.instance
                           .setHasConfirmMeasureDataFlag(true);
-                      goodsProvider?.initSize(measureData);
+                      // goodsProvider?.initSize(measureData);
                       // reset(provider);
                       Navigator.of(context).pop();
                     })),

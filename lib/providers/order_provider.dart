@@ -170,27 +170,27 @@ class OrderProvider with ChangeNotifier {
   }
 
   void createOrder(BuildContext ctx) {
-    LogUtil.e({
-      'order_earnest_money': deposit,
-      'client_uid': clientUid,
-      'shop_id': shopId,
-      'measure_id':
-          '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
-      'measure_time': measureTimeStr,
-      'install_time': installTime,
-      'order_remark': orderMark,
-      'wc_attr': jsonEncode(attr),
-      'data': '''{
-          "order_type": '1',
-          "point": "0",
-          "pay_type": "10",
-          "shipping_info": {"shipping_type": "1", "shipping_company_id": "0"},
-          "address_id": "$addressId",
-          "coupon_id": "0",
-          "order_tag": "2",
-          "goods_sku_list": "$goodsSkuListText"
-        }'''
-    });
+    // LogUtil.e({
+    //   'order_earnest_money': deposit,
+    //   'client_uid': clientUid,
+    //   'shop_id': shopId,
+    //   'measure_id':
+    //       '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
+    //   'measure_time': measureTimeStr,
+    //   'install_time': installTime,
+    //   'order_remark': orderMark,
+    //   'wc_attr': jsonEncode(attr),
+    //   'data': '''{
+    //       "order_type": '1',
+    //       "point": "0",
+    //       "pay_type": "10",
+    //       "shipping_info": {"shipping_type": "1", "shipping_company_id": "0"},
+    //       "address_id": "$addressId",
+    //       "coupon_id": "0",
+    //       "order_tag": "2",
+    //       "goods_sku_list": "$goodsSkuListText"
+    //     }'''
+    // });
     if (!beforeCreateOrder(ctx)) return;
     OTPService.createOrder(
       params: {

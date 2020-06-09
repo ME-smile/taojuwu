@@ -40,6 +40,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
   CurtainProductListDataBean beanData;
   CurtainGoodsListWrapper wrapper;
+  ScrollController scrollController;
   List<CurtainGoodItemBean> goodsList = [];
   bool isRefresh = false;
 
@@ -73,7 +74,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     super.initState();
 
     tabController = TabController(length: tabs.length, vsync: this);
-
+    scrollController = ScrollController();
     params['keyword'] = widget.keyword;
     isFromSearch = widget.keyword.isNotEmpty;
     fetchData();
@@ -86,7 +87,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       'order': 'sales',
       'sort': 'desc',
     },
-    {'order': 'is_new', 'sort': ''},
+    {'order': 'is_new', 'sort': 'desc'},
     {
       'order': 'price',
       'sort': 'asc',
@@ -145,7 +146,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   Widget _buildFilter3() {
     return InkWell(
       onTap: () {
-        params['page_index'] = 1;
         setState(() {
           menuController?.show(0);
           closeEndDrawer();
@@ -182,11 +182,17 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     );
   }
 
+  void scrollToTop() {
+    scrollController?.animateTo(0,
+        duration: Duration(milliseconds: 300), curve: Curves.bounceInOut);
+  }
+
 // type参数代表系列
   void checkTag(List<TagBean> tags, int type, int i) {
     isRefresh = true;
     TagBean bean = tags[i];
     params['page_index'] = 1;
+
     if (bean?.isChecked == true) {
       bean?.isChecked = false;
 
@@ -216,6 +222,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     }
 
     Navigator.of(context).pop();
+    scrollToTop();
   }
 
   Widget endDrawer(BuildContext context) {
@@ -379,6 +386,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     menuController?.dispose();
     tabController?.dispose();
     _refreshController?.dispose();
+    scrollController?.dispose();
   }
 
   GridView buildGridView() {
@@ -473,6 +481,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                     SmartRefresher(
                       enablePullDown: true,
                       enablePullUp: true,
+                      primary: false,
                       onRefresh: () async {
                         params['page_index'] = 1;
                         isRefresh = true;
@@ -491,6 +500,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                         requestGoodsData();
                       },
                       controller: _refreshController,
+                      scrollController: scrollController,
                       child: isLoading
                           ? Center(
                               child: LoadingCircle(),
@@ -517,11 +527,13 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                                       if (isCurrentOption) return;
                                       setState(() {
                                         currentSortType = i;
+                                        params['page_index'] = 1;
                                         isRefresh = true;
                                         params['order'] =
                                             sortParams[i]['order'];
                                         params['sort'] = sortParams[i]['sort'];
                                         menuController?.hide();
+                                        scrollToTop();
                                         requestGoodsData();
                                       });
                                     },

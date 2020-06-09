@@ -31,7 +31,7 @@ class ScanButton extends StatelessWidget {
             RouteHandler.goCurtainDetailPage(
                 context, response?.data['goods_id']);
           } else {
-            CommonKit.showToast('识别失败');
+            // CommonKit.showToast('识别失败');
           }
         }).catchError((err) {
           CommonKit.showToast('识别出错');

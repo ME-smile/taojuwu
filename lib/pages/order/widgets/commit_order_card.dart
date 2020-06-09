@@ -62,7 +62,7 @@ class CommitOrderCard extends StatelessWidget {
                           )),
                           Text.rich(TextSpan(
                               text: '${goods?.price ?? 0.00}',
-                              children: [TextSpan(text: '/米')]))
+                              children: [TextSpan(text: goods?.unitPrice)]))
                         ],
                       ),
                       Container(

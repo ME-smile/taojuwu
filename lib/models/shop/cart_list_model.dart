@@ -59,6 +59,7 @@ class CartModel {
   int price;
   int count;
   int goodsPicture;
+  int goodsType;
   int blId;
   int isShade;
   String estimatedPrice;
@@ -99,6 +100,7 @@ class CartModel {
     earnestMoney = json['earnest_money'];
     promotionPrice = json['promotion_price'];
     goodsAttrStr = json['goods_attr_str'] ?? '';
+    goodsType = json['goods_special_type'];
     Map map = json['wc_attr'] ?? {};
 
     List<Map<String, dynamic>> wrapper = [];
@@ -135,7 +137,8 @@ class CartModel {
             ? estimatedPrice
             : double.parse(estimatedPrice ?? '0.0'),
         'is_shade': isShade,
-        'cart_id': cartId
+        'cart_id': cartId,
+        'goods_type': goodsType
       };
 
   @override

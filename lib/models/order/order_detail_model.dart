@@ -730,6 +730,7 @@ class OrderGoodsMeasure {
   String installType;
   String openType;
   String verticalGroundHeight;
+  String newVerticalGroundHeight;
   int plies;
   int curtainHead;
   int plasterLine;
@@ -819,6 +820,7 @@ class OrderGoodsMeasure {
     updateTime = json['update_time'];
     partsName = json['parts_name'];
     newOpenType = json['open_type'];
+    newVerticalGroundHeight = json['vertical_ground_height'];
   }
 
   Map<String, dynamic> toJson() {

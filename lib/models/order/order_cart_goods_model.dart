@@ -40,8 +40,10 @@ class OrderCartGoods {
     attr = json['attr'];
     count = '${json['count'] ?? 1}';
     dy = '${json['dy']}';
-    goodsType = json['goods_type'];
+    goodsType = json['goods_type'] ?? 1;
   }
+
+  String get unitPrice => goodsType == 2 ? '元/平方米' : '元/米';
 
   Map toJson() {
     Map tmp = {};

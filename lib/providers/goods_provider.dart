@@ -848,7 +848,9 @@ class GoodsProvider with ChangeNotifier {
     }).catchError((err) => err);
   }
 
-  bool get hasModifyDy => _dy != _measureData?.verticalGroundHeight;
+  bool get hasModifyDy =>
+      _measureData?.newVerticalGroundHeight !=
+      _measureData?.verticalGroundHeight;
 
   bool get hasModifyOpenMode =>
       measureData?.openType != measureData?.newOpenType;

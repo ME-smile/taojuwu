@@ -125,7 +125,7 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
                 obscureText: _isNewPwdCypher,
                 focusNode: newPwdFocusNode,
                 decoration: InputDecoration(
-                  hintText: '请输入旧密码',
+                  hintText: '请输入新密码',
                   suffixIcon: IconButton(
                       icon: Icon(
                         _isNewPwdCypher

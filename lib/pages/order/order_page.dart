@@ -214,6 +214,7 @@ class _OrderTabViewState extends State<OrderTabView> {
   @override
   void deactivate() {
     super.deactivate();
+    params['page'] = 1;
     fetchData();
   }
 

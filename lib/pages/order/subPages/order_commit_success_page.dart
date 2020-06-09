@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/router/handlers.dart';
+
 import 'package:taojuwu/singleton/target_route.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
@@ -83,8 +84,9 @@ class OrderCommitSuccessPage extends StatelessWidget {
             Navigator.of(context)
                 .popUntil(ModalRoute.withName(TargetRoute.instance.route));
           } else {
-            Navigator.of(context)
-                .popUntil((Route r) => r.settings.isInitialRoute);
+            RouteHandler.goHomePage(context, clearStack: true);
+            // Navigator.of(context)
+            //     .popUntil((Route r) => r.settings.isInitialRoute);
           }
           return Future.value(false);
         });
