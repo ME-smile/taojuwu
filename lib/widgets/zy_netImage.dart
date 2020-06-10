@@ -2,7 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/loading.dart';
+// import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 class ZYNetImage extends StatelessWidget {
@@ -66,7 +66,13 @@ class ZYNetImage extends StatelessWidget {
               }
             default:
               {
-                return LoadingCircle();
+                // return LoadingCircle();
+                return ZYAssetImage(
+                  'goods_placeholder.png',
+                  callback: callback,
+                  width: width,
+                  height: height,
+                );
               }
           }
         },

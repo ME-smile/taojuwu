@@ -1,5 +1,6 @@
 class Constants {
   static const HOST = "http://106.14.219.213:8001";
+  static const TRANSITION_DURATION = Duration(milliseconds: 250);
   //订单状态
 
   //order_status 订单状态 1待审核 2待测量 3待付款 4付款待审核 5生产中 6等待预约安装 7待安装 8已完成 9已取消 10售后维权 11售后维权已处理 12售后维权已关闭 -1退款中 13订单自动完成 14待选品' 15取消待审核

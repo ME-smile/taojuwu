@@ -44,8 +44,12 @@ class OrderCommitSuccessPage extends StatelessWidget {
                 VSpacing(20),
                 InkWell(
                   onTap: () {
-                    Navigator.of(context).popUntil(
-                        ModalRoute.withName(TargetRoute.instance.route));
+                    if (orderType == 2) {
+                      RouteHandler.goCurtainMallPage(context, replace: true);
+                    } else {
+                      Navigator.of(context).popUntil(
+                          ModalRoute.withName(TargetRoute.instance.route));
+                    }
                   },
                   child: Container(
                       decoration: BoxDecoration(
@@ -80,7 +84,7 @@ class OrderCommitSuccessPage extends StatelessWidget {
           ),
         ),
         onWillPop: () async {
-          if (orderType == 1) {
+          if (orderType == 1 && TargetRoute.instance.route != null) {
             Navigator.of(context)
                 .popUntil(ModalRoute.withName(TargetRoute.instance.route));
           } else {

@@ -187,7 +187,9 @@ class _OrderTabViewState extends State<OrderTabView> {
     params['page'] = 1;
     params['client_uid'] = widget.clientId;
     models = widget.models;
-    fetchData();
+    Future.delayed(Constants.TRANSITION_DURATION, () {
+      fetchData();
+    });
   }
 
   void fetchData() {

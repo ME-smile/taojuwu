@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/models/shop/product_tag_model.dart';
@@ -77,7 +78,9 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     scrollController = ScrollController();
     params['keyword'] = widget.keyword;
     isFromSearch = widget.keyword.isNotEmpty;
-    fetchData();
+    Future.delayed(Constants.TRANSITION_DURATION, () {
+      fetchData();
+    });
   }
 
   static const List<String> SORT_TYPES = ['销量排序', '新品优先', '价格升序', '价格降序'];

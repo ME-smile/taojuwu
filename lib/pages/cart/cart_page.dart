@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/constants/constants.dart';
 // import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
@@ -38,7 +39,12 @@ class _CartPageState extends State<CartPage>
   @override
   void initState() {
     super.initState();
+    Future.delayed(Constants.TRANSITION_DURATION, () {
+      fetchData();
+    });
+  }
 
+  void fetchData() {
     OTPService.cartList(context, params: {'client_uid': widget?.clientId})
         .then((CartListResp response) {
       tabController = TabController(length: tabs?.length, vsync: this);

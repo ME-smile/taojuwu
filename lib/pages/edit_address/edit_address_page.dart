@@ -4,6 +4,7 @@ import 'package:city_pickers/city_pickers.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/user/customer_detail_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
@@ -57,7 +58,9 @@ class _EditAddressPageState extends State<EditAddressPage> {
     nameInput = TextEditingController();
     telInput = TextEditingController();
     houseNumInput = TextEditingController();
-    fetchData();
+    Future.delayed(Constants.TRANSITION_DURATION, () {
+      fetchData();
+    });
   }
 
   void fetchData() {

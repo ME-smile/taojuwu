@@ -1,5 +1,6 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/user/customer_model.dart';
 
 import 'package:taojuwu/pages/customer/widgets/menu_entry.dart';
@@ -31,6 +32,13 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(Constants.TRANSITION_DURATION, () {
+      fetchData();
+    });
+    controller = ScrollController();
+  }
+
+  void fetchData() {
     OTPService.userList(context, params: params)
         .then((CustomerModelListResp response) {
       if (mounted) {
@@ -49,7 +57,6 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
         });
       }
     });
-    controller = ScrollController();
   }
 
   @override

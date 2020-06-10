@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/widgets/loading.dart';
 
 import 'network_error.dart';
@@ -36,9 +37,12 @@ class _ZYFutureBuilderState<T> extends State<ZYFutureBuilder<T>> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((call) {
+    Future.delayed(Constants.TRANSITION_DURATION, () {
       request();
     });
+    // WidgetsBinding.instance.addPostFrameCallback((CO) {
+    //   request();
+    // });
   }
 
   request() {

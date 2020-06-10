@@ -25,7 +25,7 @@ class OrderProvider with ChangeNotifier {
 
   OrderGoods _curOrderGoods;
   int _orderId;
-  int _orderType = 1;
+
   BuildContext context;
 
   double get totalPrice {
@@ -45,7 +45,6 @@ class OrderProvider with ChangeNotifier {
   bool get hasOrderGoodsId => orderGoodsId != null;
   int get orderGoodsId => _curOrderGoods?.orderGoodsId;
   int get orderId => _orderId;
-  bool get isMeasureOrder => _orderType == 2;
 
   int get addressId => TargetClient.instance.addressId;
   String get clientUid => '${TargetClient.instance.clientId}';
@@ -59,7 +58,7 @@ class OrderProvider with ChangeNotifier {
       '';
   String get cartId =>
       orderGoods?.map((item) => item.cartId)?.toList()?.join(',');
-  String get dy => '${TargetOrderGoods.instance.goodsProvider.dyCMStr}';
+  String get dy => '${TargetOrderGoods.instance.goodsProvider?.dyCMStr ?? ''}';
   List<String> get attr => orderGoods?.map((item) => item.attr)?.toList() ?? [];
 
   int get totalCount => orderGoods?.length ?? 0;
@@ -78,7 +77,7 @@ class OrderProvider with ChangeNotifier {
   String get orderMark => _orderMark ?? '';
   String get deposit => _deposit;
   String get windowNum => _windowNum;
-  int get orderType => _orderType;
+
   OrderGoods get curOrderGoods => _curOrderGoods;
 
   set orderMark(String orderMark) {
@@ -137,12 +136,6 @@ class OrderProvider with ChangeNotifier {
   set installTime(String date) {
     _installTime = date;
     notifyListeners();
-  }
-
-  set orderType(int type) {
-    _orderType = type;
-    // notifyListeners();
-    print('');
   }
 
   bool beforeCreateOrder(BuildContext context) {
@@ -219,11 +212,20 @@ class OrderProvider with ChangeNotifier {
       if (response.valid) {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid);
 
-        TargetClient.instance.clear();
+        clear();
       } else {
         CommonKit.showErrorInfo(response?.message ?? '');
       }
     }).catchError((err) => err);
+  }
+
+  clear() {
+    TargetClient.instance.clear();
+    _measureTime = null;
+    _installTime = null;
+    _orderMark = null;
+    _deposit = null;
+    _windowNum = null;
   }
 
   void createMeasureOrder(BuildContext ctx) {
