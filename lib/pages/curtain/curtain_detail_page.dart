@@ -191,7 +191,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                   title: Text.rich(TextSpan(text: '请输入尺寸（cm)\n', children: [
                     TextSpan(
                         text: '不足1㎡按1㎡计算',
-                        style: Theme.of(context).textTheme.body1),
+                        style: Theme.of(context).textTheme.bodyText1),
                   ])),
                   content: Column(
                     children: <Widget>[
@@ -489,170 +489,159 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
             },
             child: Consumer<GoodsProvider>(
               builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-                return WillPopScope(
-                    child: Scaffold(
-                        body: NestedScrollView(
-                            headerSliverBuilder: (BuildContext context,
-                                bool innerBoxIsScrolled) {
-                              return <Widget>[
-                                SliverAppBar(
-                                  actions: <Widget>[
-                                    UserChooseButton(
-                                      id: widget.id,
-                                    )
-                                  ],
-                                  expandedHeight: 400,
-                                  floating: false,
-                                  pinned: true,
-                                  flexibleSpace: FlexibleSpaceBar(
-                                    background: Container(
-                                      margin: EdgeInsets.only(top: 80),
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: NetworkImage(
-                                                UIKit.getNetworkImgPath(
-                                                    bean?.picCoverMid))),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ];
-                            },
-                            body: CustomScrollView(
-                              slivers: <Widget>[
-                                SliverToBoxAdapter(
-                                  child: Container(
-                                    color: themeData.primaryColor,
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: UIKit.width(20),
-                                        vertical: UIKit.height(20)),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text.rich(TextSpan(
-                                                text:
-                                                    '${bean?.goodsName}      ' ??
-                                                        '',
-                                                children: [
-                                                  TextSpan(
-                                                      text:
-                                                          bean?.goodsName ?? '',
-                                                      style: textTheme.caption)
-                                                ])),
-                                            Text.rich(
-                                                TextSpan(text: '', children: [
-                                              WidgetSpan(
-                                                  child: ValueListenableBuilder(
-                                                      valueListenable:
-                                                          hasCollected,
-                                                      builder:
-                                                          (BuildContext context,
-                                                              bool isLiked, _) {
-                                                        return IconButton(
-                                                            icon: Icon(
-                                                              ZYIcon.like,
-                                                              color: isLiked
-                                                                  ? Colors.red
-                                                                  : const Color(
-                                                                      0xFFCCCCCC),
-                                                            ),
-                                                            onPressed: () {
-                                                              collect(context);
-                                                            });
-                                                      })),
-                                              WidgetSpan(
-                                                  child: IconButton(
-                                                      icon: Icon(ZYIcon.cart),
-                                                      onPressed: () {
-                                                        if (targetClient
-                                                                .hasSelectedClient ==
-                                                            false) {
-                                                          return CommonKit
-                                                              .showInfo(
-                                                                  '请选择客户');
-                                                        }
-                                                        RouteHandler.goCartPage(
-                                                          context,
-                                                          clientId: targetClient
-                                                              .clientId,
-                                                        );
-                                                      }))
-                                            ]))
-                                          ],
-                                        ),
-                                        VSpacing(20),
-                                        Text.rich(TextSpan(
-                                            text: '¥${bean?.price ?? 0.00}',
-                                            children: [
-                                              TextSpan(text: ' '),
-                                              TextSpan(
-                                                  text: '元/米起',
-                                                  style: textTheme.caption)
-                                            ])),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SliverToBoxAdapter(
-                                  child: VSpacing(20),
-                                ),
-                                SliverToBoxAdapter(
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: UIKit.width(20),
-                                        vertical: UIKit.height(10)),
-                                    color: themeData.primaryColor,
-                                    child: Column(
-                                      children: <Widget>[
-                                        Offstage(
-                                          offstage:
-                                              goodsProvider?.isWindowRoller ==
-                                                  true,
-                                          child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: UIKit.height(10)),
-                                              alignment: Alignment.centerLeft,
-                                              child: MeasureDataTipBar()),
-                                        ),
-                                        Offstage(
-                                          offstage:
-                                              goodsProvider?.isWindowRoller ==
-                                                  true,
-                                          child: Divider(),
-                                        ),
-                                        goodsProvider?.isWindowGauze == true
-                                            ? buildWindowGauzeOption()
-                                            : goodsProvider?.isWindowRoller ==
-                                                    true
-                                                ? buildWindowRollerOption()
-                                                : buildCurtainOption(),
-                                        Container(
-                                          color:
-                                              themeData.scaffoldBackgroundColor,
-                                          height: UIKit.height(20),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SliverToBoxAdapter(
-                                  child: bean?.description?.isNotEmpty == true
-                                      ? Html(data: bean?.description)
-                                      : Container(),
+                return Scaffold(
+                    body: NestedScrollView(
+                        headerSliverBuilder:
+                            (BuildContext context, bool innerBoxIsScrolled) {
+                          return <Widget>[
+                            SliverAppBar(
+                              actions: <Widget>[
+                                UserChooseButton(
+                                  id: widget.id,
                                 )
                               ],
-                            )),
-                        bottomNavigationBar: BottomActionButtonBar()),
-                    onWillPop: () {
-                      Navigator.of(context).pop();
-                      TargetOrderGoods.instance.goodsProvider.release();
-                      return Future.value(false);
-                    });
+                              expandedHeight: 400,
+                              floating: false,
+                              pinned: true,
+                              flexibleSpace: FlexibleSpaceBar(
+                                background: Container(
+                                    margin: EdgeInsets.only(top: 80),
+                                    child: Hero(
+                                      tag: widget.id,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: NetworkImage(
+                                                  UIKit.getNetworkImgPath(
+                                                      bean?.picCoverMid))),
+                                        ),
+                                      ),
+                                    )),
+                              ),
+                            )
+                          ];
+                        },
+                        body: CustomScrollView(
+                          slivers: <Widget>[
+                            SliverToBoxAdapter(
+                              child: Container(
+                                color: themeData.primaryColor,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: UIKit.width(20),
+                                    vertical: UIKit.height(20)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text.rich(TextSpan(
+                                            text: '${bean?.goodsName}      ' ??
+                                                '',
+                                            children: [
+                                              TextSpan(
+                                                  text: bean?.goodsName ?? '',
+                                                  style: textTheme.caption)
+                                            ])),
+                                        Text.rich(TextSpan(text: '', children: [
+                                          WidgetSpan(
+                                              child: ValueListenableBuilder(
+                                                  valueListenable: hasCollected,
+                                                  builder:
+                                                      (BuildContext context,
+                                                          bool isLiked, _) {
+                                                    return IconButton(
+                                                        icon: Icon(
+                                                          ZYIcon.like,
+                                                          color: isLiked
+                                                              ? Colors.red
+                                                              : const Color(
+                                                                  0xFFCCCCCC),
+                                                        ),
+                                                        onPressed: () {
+                                                          collect(context);
+                                                        });
+                                                  })),
+                                          WidgetSpan(
+                                              child: IconButton(
+                                                  icon: Icon(ZYIcon.cart),
+                                                  onPressed: () {
+                                                    if (targetClient
+                                                            .hasSelectedClient ==
+                                                        false) {
+                                                      return CommonKit.showInfo(
+                                                          '请选择客户');
+                                                    }
+                                                    RouteHandler.goCartPage(
+                                                      context,
+                                                      clientId:
+                                                          targetClient.clientId,
+                                                    );
+                                                  }))
+                                        ]))
+                                      ],
+                                    ),
+                                    VSpacing(20),
+                                    Text.rich(TextSpan(
+                                        text: '¥${bean?.price ?? 0.00}',
+                                        children: [
+                                          TextSpan(text: ' '),
+                                          TextSpan(
+                                              text:
+                                                  goodsProvider?.goodsUnitPrice,
+                                              style: textTheme.caption)
+                                        ])),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SliverToBoxAdapter(
+                              child: VSpacing(20),
+                            ),
+                            SliverToBoxAdapter(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: UIKit.width(20),
+                                    vertical: UIKit.height(10)),
+                                color: themeData.primaryColor,
+                                child: Column(
+                                  children: <Widget>[
+                                    Offstage(
+                                      offstage:
+                                          goodsProvider?.isWindowRoller == true,
+                                      child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: UIKit.height(10)),
+                                          alignment: Alignment.centerLeft,
+                                          child: MeasureDataTipBar()),
+                                    ),
+                                    Offstage(
+                                      offstage:
+                                          goodsProvider?.isWindowRoller == true,
+                                      child: Divider(),
+                                    ),
+                                    goodsProvider?.isWindowGauze == true
+                                        ? buildWindowGauzeOption()
+                                        : goodsProvider?.isWindowRoller == true
+                                            ? buildWindowRollerOption()
+                                            : buildCurtainOption(),
+                                    Container(
+                                      color: themeData.scaffoldBackgroundColor,
+                                      height: UIKit.height(20),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SliverToBoxAdapter(
+                              child: bean?.description?.isNotEmpty == true
+                                  ? Html(data: bean?.description)
+                                  : Container(),
+                            )
+                          ],
+                        )),
+                    bottomNavigationBar: BottomActionButtonBar());
               },
             ),
           );
@@ -672,7 +661,6 @@ class BottomActionButtonBar extends StatelessWidget {
     'goods_id': '',
     'vertical_ground_height': '',
     'data': {},
-    'goods_id': ''
   };
   void setParams(GoodsProvider provider) {
     params['dataId'] = '${provider?.windowPatternId ?? ''}';
@@ -957,7 +945,7 @@ class MeasureDataTipBar extends StatelessWidget {
                                       true
                                   ? '已确认测装数据'
                                   : '请确认测装数据',
-                              style: textTheme.body1),
+                              style: textTheme.bodyText1),
                         ]),
                   ),
                   Spacer(),
@@ -986,7 +974,7 @@ class MeasureDataTipBar extends StatelessWidget {
                               text: goodsProvider?.hasSetSize == true
                                   ? '已预填测装数据'
                                   : '请预填测装数据',
-                              style: textTheme.body1),
+                              style: textTheme.bodyText1),
                         ]),
                   ),
                   Spacer(),

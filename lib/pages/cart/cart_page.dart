@@ -154,8 +154,8 @@ class _CartPageState extends State<CartPage>
                       children: <Widget>[
                         Text(
                           cartModel?.goodsName ?? '',
-                          style:
-                              textTheme.title.copyWith(fontSize: UIKit.sp(28)),
+                          style: textTheme.headline6
+                              .copyWith(fontSize: UIKit.sp(28)),
                         ),
                         Expanded(
                           child: Text(

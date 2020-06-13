@@ -104,7 +104,8 @@ class OrderAttrCard extends StatelessWidget {
                 children: [
                   TextSpan(
                       text: '¥${goods?.estimatedPrice ?? 0.00}',
-                      style: textTheme.body1.copyWith(fontSize: UIKit.sp(24))),
+                      style:
+                          textTheme.bodyText1.copyWith(fontSize: UIKit.sp(24))),
                 ]))
           ],
         ),

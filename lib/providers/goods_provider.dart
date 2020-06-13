@@ -34,6 +34,7 @@ class GoodsProvider with ChangeNotifier {
   WindowShadeAttrBean _curWindowShadeAttrBean;
   CanopyAttrBean _curCanopyAttrBean;
 
+  String goodsPic;
   // List<AccessoryAttrBean> _allAccessoryAttrBeans;
   // List<AccessoryAttrBean> _curAccessoryAttrBeans;
 
@@ -67,7 +68,7 @@ class GoodsProvider with ChangeNotifier {
   OrderGoodsMeasure get measureData => _measureData;
 
   bool get isWindowGauze => goods?.goodsSpecialType == 3;
-  bool get isWindowRoller => goods?.goodsSpecialType == 2;
+  bool get isWindowRoller => goods?.goodsSpecialType == 2 ?? false;
   int _curWindowPattern = 0;
   int _curWindowStyle = 0;
   int _curWindowType = 0;
@@ -246,6 +247,8 @@ class GoodsProvider with ChangeNotifier {
       initMeasureData();
     }
   }
+
+  String get goodsUnitPrice => isWindowRoller ? '元/平方米' : '元/米';
 
   int get goodsType => goods?.goodsSpecialType;
   int get goodsId => _goods?.goodsId ?? -1;

@@ -93,7 +93,8 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
               VSpacing(80),
               Text(
                 '重置密码',
-                style: textTheme.title.copyWith(fontWeight: FontWeight.w700),
+                style:
+                    textTheme.headline6.copyWith(fontWeight: FontWeight.w700),
               ),
               VSpacing(30),
               TextField(

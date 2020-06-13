@@ -130,12 +130,12 @@ class _HomePageState extends State<HomePage> {
                               TextSpan(
                                   text:
                                       '${UIKit.getGreetWord(snapshot.data) ?? ""},${provider?.userInfo?.nickName ?? ""}',
-                                  style: textTheme.title,
+                                  style: textTheme.headline6,
                                   children: [
                                     TextSpan(text: '\n'),
                                     TextSpan(
                                         text: provider?.userInfo?.shopName,
-                                        style: textTheme.subtitle)
+                                        style: textTheme.subtitle2)
                                   ]),
                               maxLines: 2,
                               overflow: TextOverflow.visible,
@@ -160,11 +160,11 @@ class _HomePageState extends State<HomePage> {
                       children: <Widget>[
                         Text(
                           '窗帘定制',
-                          style: accentTextTheme.title,
+                          style: accentTextTheme.headline6,
                         ),
                         Text(
                           'curtain',
-                          style: accentTextTheme.subtitle,
+                          style: accentTextTheme.subtitle2,
                         ),
                       ],
                     ),
@@ -211,14 +211,14 @@ class _HomePageState extends State<HomePage> {
                                   children: <Widget>[
                                     Text(
                                       item['title'],
-                                      style: textTheme.title.copyWith(
+                                      style: textTheme.headline6.copyWith(
                                           fontSize: UIKit.sp(28),
                                           fontWeight: FontWeight.w400),
                                     ),
                                     VSpacing(10),
                                     Text(
                                       item['subtitle'],
-                                      style: textTheme.subtitle
+                                      style: textTheme.subtitle2
                                           .copyWith(fontSize: UIKit.sp(22)),
                                     ),
                                   ],

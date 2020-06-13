@@ -52,7 +52,7 @@ class OptionView extends StatelessWidget {
                 text,
                 textAlign: TextAlign.center,
                 style: showBorder
-                    ? textTheme.body1.copyWith(fontSize: 12)
+                    ? textTheme.bodyText1.copyWith(fontSize: 12)
                     : textTheme.caption,
               ),
             ),
@@ -64,7 +64,7 @@ class OptionView extends StatelessWidget {
                   '¥$price',
                   textAlign: TextAlign.center,
                   style: showBorder
-                      ? textTheme.body1.copyWith(fontSize: 12)
+                      ? textTheme.bodyText1.copyWith(fontSize: 12)
                       : textTheme.caption,
                 ),
               ),

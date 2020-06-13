@@ -10,7 +10,7 @@ class TargetOrderGoods {
   static TargetOrderGoods _instance = TargetOrderGoods._internal();
 
   bool get isMeasureOrder => _instance.orderGoodsId != null;
-
+  String get goodsPic => _instance.goodsProvider?.goodsPic;
   factory TargetOrderGoods() {
     return _instance;
   }

@@ -46,7 +46,7 @@ class CustomerProfileHeader extends StatelessWidget {
             children: <Widget>[
               Text.rich(TextSpan(
                   text: '${name ?? ""}',
-                  style: textTheme.title,
+                  style: textTheme.headline6,
                   children: [
                     TextSpan(text: '  '),
                     TextSpan(
@@ -55,7 +55,7 @@ class CustomerProfileHeader extends StatelessWidget {
                   ])),
               Text(
                 '${Constants.GENDER_MAP[gender]}  $age岁',
-                style: textTheme.subtitle,
+                style: textTheme.subtitle2,
               ),
               address != null && address.isNotEmpty
                   ? Text.rich(

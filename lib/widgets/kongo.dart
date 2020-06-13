@@ -27,7 +27,7 @@ class Kongo extends StatelessWidget {
               Text(text,
                   style: Theme.of(context)
                       .textTheme
-                      .body1
+                      .bodyText1
                       .copyWith(fontSize: UIKit.sp(24)))
             ],
           )),

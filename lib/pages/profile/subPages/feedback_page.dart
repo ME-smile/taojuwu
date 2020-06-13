@@ -80,7 +80,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
             children: <Widget>[
               Text(
                 '问题反馈',
-                style: textTheme.title,
+                style: textTheme.headline6,
               ),
               Container(
                 height: UIKit.height(320),
@@ -100,7 +100,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ),
               Text(
                 '联系方式',
-                style: textTheme.title,
+                style: textTheme.headline6,
               ),
               Container(
                 // alignment: Alignment.center,

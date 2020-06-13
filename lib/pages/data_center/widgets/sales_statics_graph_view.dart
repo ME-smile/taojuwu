@@ -29,8 +29,8 @@ class _SalesStaticsGraphViewState extends State<SalesStaticsGraphView> {
               padding: EdgeInsets.symmetric(vertical: UIKit.height(20)),
               child: Text(
                 '各类目销量数据',
-                style:
-                    themeData.textTheme.title.copyWith(fontSize: UIKit.sp(24)),
+                style: themeData.textTheme.headline6
+                    .copyWith(fontSize: UIKit.sp(24)),
               ),
             ),
             Container(
@@ -39,7 +39,8 @@ class _SalesStaticsGraphViewState extends State<SalesStaticsGraphView> {
             ),
             Text(
               '近一年销售分析',
-              style: themeData.textTheme.title.copyWith(fontSize: UIKit.sp(24)),
+              style: themeData.textTheme.headline6
+                  .copyWith(fontSize: UIKit.sp(24)),
             ),
             Container(
               height: UIKit.height(360),

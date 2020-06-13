@@ -126,7 +126,7 @@ class _CollectPageState extends State<CollectPage>
                 children: <Widget>[
                   Text(
                     bean?.goodsName ?? '',
-                    style: textTheme.title,
+                    style: textTheme.headline6,
                   ),
                   Text(
                     bean?.categoryName ?? '',

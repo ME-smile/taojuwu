@@ -159,12 +159,12 @@ class _LoginPageState extends State<LoginPage> {
           Text(
             '欢迎回家',
             textAlign: TextAlign.center,
-            style: textTheme.headline,
+            style: textTheme.headline5,
           ),
           VSpacing(10),
           Text(
             '登陆后可购买商品或者查看更多内容',
-            style: textTheme.subtitle.copyWith(
+            style: textTheme.subtitle2.copyWith(
               fontSize: UIKit.sp(28),
             ),
             textAlign: TextAlign.center,
@@ -179,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                 InkWell(
                   child: Text(
                     '手机号码登录',
-                    style: textTheme.subhead,
+                    style: textTheme.subtitle1,
                   ),
                   onTap: () {
                     if (!_isPwdMode) {
@@ -192,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                 InkWell(
                   child: Text(
                     '密码登录',
-                    style: textTheme.subhead,
+                    style: textTheme.subtitle1,
                   ),
                   onTap: () {
                     if (_isPwdMode) {
@@ -305,7 +305,7 @@ class _LoginPageState extends State<LoginPage> {
                     },
                     child: Text('用户协议',
                         style: textTheme.caption
-                            .copyWith(color: textTheme.body1.color)),
+                            .copyWith(color: textTheme.bodyText1.color)),
                   )),
                 ])),
           ),

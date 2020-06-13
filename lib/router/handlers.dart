@@ -98,8 +98,7 @@ class RouteHandler {
 
   static goCurtainDetailPage(BuildContext context, int id,
       {bool replace: false}) {
-    _jumpTo(context, '${Routes.curtainDetail}?id=$id',
-        maintainState: true, replace: replace);
+    _jumpTo(context, '${Routes.curtainDetail}?id=$id', replace: replace);
   }
 
   static Handler order = Handler(

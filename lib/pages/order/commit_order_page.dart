@@ -143,7 +143,7 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
                               TextSpan(
                                   text:
                                       '${provider?.totalPrice?.toStringAsFixed(2)}',
-                                  style: textTheme.body1),
+                                  style: textTheme.bodyText1),
                               TextSpan(
                                   text: ' (具体金额以门店)', style: textTheme.caption)
                             ])),

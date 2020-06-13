@@ -31,7 +31,8 @@ class BuyerInfoBar extends StatelessWidget {
                 radius: UIKit.sp(60),
                 child: Text(
                   '收',
-                  style: accentTextTheme.title.copyWith(fontSize: UIKit.sp(36)),
+                  style: accentTextTheme.headline6
+                      .copyWith(fontSize: UIKit.sp(36)),
                 ),
                 backgroundColor: themeData.accentColor,
               ),

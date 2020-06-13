@@ -156,11 +156,11 @@ class ProfileHeader extends StatelessWidget {
                 children: <Widget>[
                   Text.rich(TextSpan(
                       text: provider?.userInfo?.nickName ?? '',
-                      style: textTheme.title,
+                      style: textTheme.headline6,
                       children: [
                         TextSpan(
                             text: provider?.userInfo?.userTel ?? "暂无联系方式",
-                            style: textTheme.body1)
+                            style: textTheme.bodyText1)
                       ])),
                   Text(
                     provider?.userInfo?.shopName ?? '',

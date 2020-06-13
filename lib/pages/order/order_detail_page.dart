@@ -294,7 +294,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
                   child: Text.rich(TextSpan(
                       text: '尾款:',
-                      style: textTheme.title.copyWith(fontSize: UIKit.sp(28)),
+                      style:
+                          textTheme.headline6.copyWith(fontSize: UIKit.sp(28)),
                       children: [
                         TextSpan(
                             text:
@@ -349,13 +350,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           child: Text.rich(TextSpan(
                               text:
                                   '${Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['title']}\n\n',
-                              style: accentTextTheme.title
+                              style: accentTextTheme.headline6
                                   .copyWith(fontSize: UIKit.sp(24)),
                               children: [
                                 TextSpan(
                                     text: Constants.ORDER_STATUS_TIP_MAP[
                                         model?.orderStatus ?? 0]['subtitle'],
-                                    style: accentTextTheme.body1)
+                                    style: accentTextTheme.bodyText1)
                               ])),
                         ),
                         Container(
