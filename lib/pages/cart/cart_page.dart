@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +14,14 @@ import 'package:taojuwu/providers/cart_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
+import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class CartPage extends StatefulWidget {
   final int clientId;
@@ -83,32 +87,68 @@ class _CartPageState extends State<CartPage>
   }
 
   void remove(CartProvider provider, CartModel cartModel) {
-    showCupertinoDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text('删除'),
-            content: Text('您确定要从购物车中删除该商品吗?'),
-            actions: <Widget>[
-              CupertinoDialogAction(
-                child: Text('取消'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+    if (Platform.isAndroid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                '删除',
+                textAlign: TextAlign.center,
               ),
-              CupertinoDialogAction(
-                child: Text('确定'),
-                onPressed: () {
-                  delCart(provider, cartModel?.cartId);
-                },
-              )
-            ],
-          );
-        });
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text('您确定要从购物车中删除该商品吗?'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ZYOutlineButton('取消', () {
+                        Navigator.of(context).pop();
+                      }),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      ZYRaisedButton('确定', () {
+                        delCart(provider, cartModel?.cartId);
+                      }),
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+    } else {
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text(
+                '删除',
+              ),
+              content: Text('您确定要从购物车中删除该商品吗?'),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('取消'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text('确定'),
+                  onPressed: () {
+                    delCart(provider, cartModel?.cartId);
+                  },
+                )
+              ],
+            );
+          });
+    }
   }
 
   Widget buildCartCard(CartModel cartModel) {
-    print(cartModel?.goodsAttrStr);
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     // List<OrderProductAttrWrapper> attrs = cartModel.wcAttr;
@@ -166,7 +206,7 @@ class _CartPageState extends State<CartPage>
                         ),
                         Text.rich(TextSpan(
                             text: '￥' + '${cartModel?.price}' ?? '',
-                            children: [TextSpan(text: '/米')])),
+                            children: [TextSpan(text: cartModel?.unit)])),
                       ],
                     ),
                   ))
@@ -254,6 +294,8 @@ class _CartPageState extends State<CartPage>
                                   '总价: ￥${provider?.totalAmount?.toStringAsFixed(2) ?? 0.00}元'),
                               InkWell(
                                 onTap: () {
+                                  TargetClient.instance.clientId =
+                                      provider?.clientId;
                                   RouteHandler.goCommitOrderPage(context,
                                       params: jsonEncode(
                                           {'data': provider?.checkedModels}));

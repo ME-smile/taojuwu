@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -59,28 +60,22 @@ class App extends StatelessWidget {
           enableBallisticLoad: true,
           child: FlutterEasyLoading(
               child: MaterialApp(
-            title: '淘居屋',
-            // initialRoute: userProvider?.isLogin == true ? Routes.home : null,
-            debugShowCheckedModeBanner: false,
-            onGenerateRoute: Application.router.generator,
-            darkTheme: ThemeProvider.lightTheme,
-            theme: ThemeProvider.lightTheme,
-
-            home: userProvider?.isLogin == true ? HomePage() : LoginPage(),
-            //     localizationsDelegates: [
-            //   GlobalMaterialLocalizations.delegate,
-            //   GlobalWidgetsLocalizations.delegate,
-            // ],
-            //     supportedLocales: [
-            //   const Locale('zh', 'CN'),
-            //   const Locale('en', 'US'),
-            // ]
-            // localizationsDelegates: [
-            //   const TranslationsDelegate(),
-            //   GlobalMaterialLocalizations.delegate,
-            //   GlobalWidgetsLocalizations.delegate,
-            // ],
-          )));
+                  title: '淘居屋',
+                  // initialRoute: userProvider?.isLogin == true ? Routes.home : null,
+                  debugShowCheckedModeBanner: false,
+                  onGenerateRoute: Application.router.generator,
+                  darkTheme: ThemeProvider.lightTheme,
+                  theme: ThemeProvider.lightTheme,
+                  home:
+                      userProvider?.isLogin == true ? HomePage() : LoginPage(),
+                  localizationsDelegates: [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+                  supportedLocales: [
+                const Locale('zh', 'CN'),
+                const Locale('en', 'US'),
+              ])));
     });
   }
 }

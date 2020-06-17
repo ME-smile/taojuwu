@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
+import 'package:taojuwu/pages/curtain/widgets/onsale_tag.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
@@ -31,7 +32,11 @@ class ListCard extends StatelessWidget {
               width: width - 2 * UIKit.width(20),
             ),
             Text(bean?.goodsName ?? ''),
-            Text('${bean?.displayPrice ?? "0.00"}')
+            Text('￥${bean?.displayPrice ?? "0.00"}'),
+            Offstage(
+              offstage: bean?.isPromotionGoods == false,
+              child: OnSaleTag(),
+            ),
           ],
         ),
       ),

@@ -55,8 +55,7 @@ class OrderAttrCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Text(goods?.goodsName ?? ''),
-                      Text(
-                          '¥ ${goods?.price ?? 0.00}/${goods?.isWindowRoller == true ? '平方米' : '米'}'),
+                      Text('¥ ${goods?.price ?? 0.00}${goods?.unit}'),
                     ],
                   ),
                   VSpacing(20),

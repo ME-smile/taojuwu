@@ -84,14 +84,15 @@ class OrderCommitSuccessPage extends StatelessWidget {
           ),
         ),
         onWillPop: () async {
-          if (orderType == 1 && TargetRoute.instance.route != null) {
-            Navigator.of(context)
-                .popUntil(ModalRoute.withName(TargetRoute.instance.route));
-          } else {
-            RouteHandler.goHomePage(context, clearStack: true);
-            // Navigator.of(context)
-            //     .popUntil((Route r) => r.settings.isInitialRoute);
-          }
+          RouteHandler.goHomePage(context, clearStack: true);
+          // if (orderType == 1 && TargetRoute.instance.route != null) {
+          //   Navigator.of(context)
+          //       .popUntil(ModalRoute.withName(TargetRoute.instance.route));
+          // } else {
+          //   RouteHandler.goHomePage(context, clearStack: true);
+          //   // Navigator.of(context)
+          //   //     .popUntil((Route r) => r.settings.isInitialRoute);
+          // }
           return Future.value(false);
         });
   }

@@ -308,6 +308,7 @@ class GoodsProvider with ChangeNotifier {
   String get sizeText =>
       _hasSetSize ? '宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米' : '尺寸';
   String get dyText => hasSetDy ? '${_dy}cm' : '离地距离(cm)';
+  String get unit => isWindowRoller ? '元/平方米' : '元/米';
   String get windowPatternStr =>
       '${WindowPatternAttr.patternsText[curWindowPattern ?? 0]}/${WindowPatternAttr.stylesText[curWindowStyle ?? 0]}/${WindowPatternAttr.typesText[curWindowType ?? 0]}';
   int get windowPatternId => WindowPatternAttr.patternIdMap[windowPatternStr];
@@ -613,7 +614,9 @@ class GoodsProvider with ChangeNotifier {
   }
 
   double get unitPrice {
-    return double.parse(goods?.price ?? '0.00');
+    return goods?.price.runtimeType == double
+        ? goods?.price
+        : double.parse(goods?.price ?? '0.00');
   }
 
   double get accPrice {

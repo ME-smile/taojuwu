@@ -173,7 +173,6 @@ class _AfterSaleServicePageState extends State<AfterSaleServicePage> {
     setState(() {
       imgList.add(image);
     });
-    print('------------------------');
   }
 
   void pickImage() async {

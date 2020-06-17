@@ -190,7 +190,7 @@ class CurtainGoodItemBean {
   String goodsName;
   dynamic picCoverMid;
   String promotionPrice;
-  String marketPrice;
+  double marketPrice;
   int goodsType;
   int stock;
   dynamic picId;
@@ -208,9 +208,11 @@ class CurtainGoodItemBean {
   int isOpenPresell;
   String imgIdArray;
   String introduction;
-  String displayPrice;
+  double displayPrice;
   String groupName;
 
+  bool get isPromotionGoods =>
+      !(marketPrice == displayPrice && marketPrice != 0);
   static CurtainGoodItemBean fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     CurtainGoodItemBean dataBean = CurtainGoodItemBean();
@@ -218,7 +220,9 @@ class CurtainGoodItemBean {
     dataBean.goodsName = map['goods_name'];
     dataBean.picCoverMid = map['pic_cover_mid'];
     dataBean.promotionPrice = map['promotion_price'];
-    dataBean.marketPrice = map['market_price'];
+    dataBean.marketPrice = map['market_price'].runtimeType == double
+        ? map['market_price']
+        : double.parse(map['market_price'] ?? '0.00');
     dataBean.goodsType = map['goods_type'];
     dataBean.stock = map['stock'];
     dataBean.picId = map['pic_id'];
@@ -236,7 +240,9 @@ class CurtainGoodItemBean {
     dataBean.isOpenPresell = map['is_open_presell'];
     dataBean.imgIdArray = map['img_id_array'];
     dataBean.introduction = map['introduction'];
-    dataBean.displayPrice = map['display_price'];
+    dataBean.displayPrice = map['display_price'].runtimeType == double
+        ? map['display_price']
+        : double.parse(map['display_price']);
     dataBean.groupName = map['group_name'];
     return dataBean;
   }

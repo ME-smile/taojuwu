@@ -53,7 +53,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     // 'keyword': '',
     // 'stock': '',
     'order': 'sales',
-    'sort': '',
+    'sort': 'desc',
     // 'brand_name': '',
     // 'min_price': '',
     // 'max_price': '',
@@ -359,6 +359,9 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         .then((CurtainProductListResp curtainProductListResp) {
       beanData = curtainProductListResp?.data;
       wrapper = beanData?.goodsList;
+      int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
+      int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
+      totalPage = mod > 0 ? pages + 1 : pages;
       if (isRefresh) {
         setState(() {
           goodsList = wrapper?.data;

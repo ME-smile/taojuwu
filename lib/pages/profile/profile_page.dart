@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +9,8 @@ import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_listTile.dart';
+import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({Key key}) : super(key: key);
@@ -17,6 +21,74 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   // bool _hasMessagePush = true;
+
+  void clearUserInfo() {
+    Navigator.of(context).pop();
+    UserProvider user = Provider.of<UserProvider>(context, listen: false);
+    user.logOut();
+    RouteHandler.goLoginPage(context);
+  }
+
+  void logout() {
+    if (Platform.isAndroid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                '退出提醒',
+                textAlign: TextAlign.center,
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text('你确定要退出吗？'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ZYOutlineButton('取消', () {
+                        Navigator.of(context).pop();
+                      }),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      ZYRaisedButton('确定', () {
+                        clearUserInfo();
+                      }),
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+    } else {
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text('退出提醒'),
+              content: Text('你确定要退出吗？'),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('取消'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text('确定'),
+                  onPressed: () {
+                    clearUserInfo();
+                  },
+                ),
+              ],
+            );
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -89,34 +161,8 @@ class _ProfilePageState extends State<ProfilePage> {
             VSpacing(20),
             _LoginButton(
               title: '退出登录',
-              callback: () async {
-                await showCupertinoDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return CupertinoAlertDialog(
-                        title: Text('退出提醒'),
-                        content: Text('你确定要退出吗？'),
-                        actions: <Widget>[
-                          CupertinoDialogAction(
-                            child: Text('取消'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          CupertinoDialogAction(
-                            child: Text('确定'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              UserProvider user = Provider.of<UserProvider>(
-                                  context,
-                                  listen: false);
-                              user.logOut();
-                              RouteHandler.goLoginPage(context);
-                            },
-                          ),
-                        ],
-                      );
-                    });
+              callback: () {
+                logout();
                 // RouteHandler.goSwitchAccountPage(context);
               },
             ),

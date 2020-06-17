@@ -261,7 +261,6 @@ class RouteHandler {
   static goCurtainMallPage(BuildContext context,
       {String keyword: '', bool replace: false}) {
     keyword = FluroConvertUtils.fluroCnParamsEncode(keyword);
-
     TargetRoute.instance.setRoute('${Routes.curtainMall}?keyword=$keyword');
     _jumpTo(context, '${Routes.curtainMall}?keyword=$keyword',
         maintainState: true, replace: replace);

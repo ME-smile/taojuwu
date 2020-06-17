@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,8 @@ import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/bottom_picker.dart';
 import 'package:taojuwu/widgets/time_period_picker.dart';
+import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class CustomerNeedBar extends StatefulWidget {
   final bool isHideMeasureWindowNum;
@@ -40,6 +44,180 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
     depositInput?.dispose();
     markInput?.dispose();
     measureTimePeriod?.dispose();
+  }
+
+  void note(OrderProvider provider) {
+    if (Platform.isAndroid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              title: Text(
+                '备注',
+                textAlign: TextAlign.center,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: 40,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      child: TextField(
+                        controller: markInput,
+                        // keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            filled: true,
+                            hintText: '请填写备注',
+                            fillColor: const Color(0xFFF2F2F2),
+                            contentPadding: EdgeInsets.all(10)),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ZYOutlineButton('取消', () {
+                        Navigator.of(context).pop();
+                      }),
+                      SizedBox(
+                        width: 40,
+                      ),
+                      ZYRaisedButton('确定', () {
+                        provider?.orderMark = markInput?.text;
+                        Navigator.of(context).pop();
+                      })
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+    } else {
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text('备注'),
+              content: Column(
+                children: <Widget>[
+                  CupertinoTextField(
+                    controller: markInput,
+                    placeholder: '请填写备注',
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('取消'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text('确定'),
+                  onPressed: () {
+                    // closeSizeDialog();
+                    provider?.orderMark = markInput?.text;
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    }
+  }
+
+  void deposit(OrderProvider provider) {
+    if (Platform.isAndroid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              title: Text(
+                '定金',
+                textAlign: TextAlign.center,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: 40,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      child: TextField(
+                        controller: depositInput,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            filled: true,
+                            hintText: '元',
+                            fillColor: const Color(0xFFF2F2F2),
+                            contentPadding: EdgeInsets.all(10)),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ZYOutlineButton('取消', () {
+                        Navigator.of(context).pop();
+                      }),
+                      SizedBox(
+                        width: 40,
+                      ),
+                      ZYRaisedButton('确定', () {
+                        provider?.deposit = depositInput?.text;
+                        Navigator.of(context).pop();
+                      })
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+    } else {
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text('定金'),
+              content: Column(
+                children: <Widget>[
+                  CupertinoTextField(
+                    controller: depositInput,
+                    keyboardType: TextInputType.number,
+                    placeholder: '元',
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('取消'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text('确定'),
+                  onPressed: () {
+                    // closeSizeDialog();
+                    // print(depositInput?.text);
+                    provider?.deposit = depositInput?.text;
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    }
   }
 
   @override
@@ -139,77 +317,15 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
               OptBar(
                 title: '定金:'.padLeft(25),
                 text: '${provider?.deposit ?? '请输入'}',
-                callback: () async {
-                  await showCupertinoDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CupertinoAlertDialog(
-                          title: Text('定金'),
-                          content: Column(
-                            children: <Widget>[
-                              CupertinoTextField(
-                                controller: depositInput,
-                                keyboardType: TextInputType.number,
-                                placeholder: '元',
-                              ),
-                            ],
-                          ),
-                          actions: <Widget>[
-                            CupertinoDialogAction(
-                              child: Text('取消'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            CupertinoDialogAction(
-                              child: Text('确定'),
-                              onPressed: () {
-                                // closeSizeDialog();
-                                // print(depositInput?.text);
-                                provider?.deposit = depositInput?.text;
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          ],
-                        );
-                      });
+                callback: () {
+                  deposit(provider);
                 },
               ),
               OptBar(
                 title: '订单备注:'.padLeft(19),
                 text: '${provider?.orderMark ?? '选填'}',
-                callback: () async {
-                  await showCupertinoDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CupertinoAlertDialog(
-                          title: Text('备注'),
-                          content: Column(
-                            children: <Widget>[
-                              CupertinoTextField(
-                                controller: markInput,
-                                placeholder: '请填写备注',
-                              ),
-                            ],
-                          ),
-                          actions: <Widget>[
-                            CupertinoDialogAction(
-                              child: Text('取消'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                            CupertinoDialogAction(
-                              child: Text('确定'),
-                              onPressed: () {
-                                // closeSizeDialog();
-                                provider?.orderMark = markInput?.text;
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          ],
-                        );
-                      });
+                callback: () {
+                  note(provider);
                 },
               ),
             ],

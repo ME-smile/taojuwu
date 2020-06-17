@@ -74,7 +74,7 @@ class OrderProvider with ChangeNotifier {
       : '${DateUtil.formatDate(_measureTime?.dateTime, format: 'yyyy年MM月dd日') ?? ''} ${_measureTime?.period ?? ''}' ??
           '';
   String get installTime => _installTime;
-  String get orderMark => _orderMark ?? '';
+  String get orderMark => _orderMark;
   String get deposit => _deposit;
   String get windowNum => _windowNum;
 
@@ -163,33 +163,35 @@ class OrderProvider with ChangeNotifier {
   }
 
   void createOrder(BuildContext ctx) {
-    // LogUtil.e({
-    //   'order_earnest_money': deposit,
-    //   'client_uid': clientUid,
-    //   'shop_id': shopId,
-    //   'measure_id':
-    //       '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
-    //   'measure_time': measureTimeStr,
-    //   'install_time': installTime,
-    //   'order_remark': orderMark,
-    //   'wc_attr': jsonEncode(attr),
-    //   'data': '''{
-    //       "order_type": '1',
-    //       "point": "0",
-    //       "pay_type": "10",
-    //       "shipping_info": {"shipping_type": "1", "shipping_company_id": "0"},
-    //       "address_id": "$addressId",
-    //       "coupon_id": "0",
-    //       "order_tag": "2",
-    //       "goods_sku_list": "$goodsSkuListText"
-    //     }'''
-    // });
+    LogUtil.e({
+      'order_earnest_money': deposit,
+      'client_uid': clientUid,
+      'shop_id': shopId,
+      'cart_id': cartId,
+      'measure_id':
+          '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
+      'measure_time': measureTimeStr,
+      'install_time': installTime,
+      'order_remark': orderMark,
+      'wc_attr': jsonEncode(attr),
+      'data': '''{
+          "order_type": '1',
+          "point": "0",
+          "pay_type": "10",
+          "shipping_info": {"shipping_type": "1", "shipping_company_id": "0"},
+          "address_id": "$addressId",
+          "coupon_id": "0",
+          "order_tag": "2",
+          "goods_sku_list": "$goodsSkuListText"
+        }'''
+    });
     if (!beforeCreateOrder(ctx)) return;
     OTPService.createOrder(
       params: {
         'order_earnest_money': deposit,
         'client_uid': clientUid,
         'shop_id': shopId,
+        'cart_id': cartId,
         'vertical_ground_height': dy,
         'measure_id':
             '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',

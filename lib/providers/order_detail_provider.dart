@@ -61,7 +61,7 @@ class OrderDetailProvider with ChangeNotifier {
 
   bool get canEditPrice => model?.orderStatus == 4;
   bool get hasFinished => model?.hasFinished ?? false;
-
+  bool get hasCanceled => model?.hasCanceled;
   bool get showButton => [1, 2, 3, 6, 7, 8, 14].contains(model?.orderStatus);
   set deltaPrice(double price) {
     _deltaPrice = price;

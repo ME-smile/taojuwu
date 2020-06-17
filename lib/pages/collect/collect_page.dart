@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +14,8 @@ import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
+import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class CollectPage extends StatefulWidget {
   final int id;
@@ -68,28 +72,63 @@ class _CollectPageState extends State<CollectPage>
   }
 
   void remove(BuildContext ctx, ProductBean bean) {
-    showCupertinoDialog(
-        context: ctx,
-        builder: (BuildContext context) {
-          return CupertinoAlertDialog(
-            title: Text('删除'),
-            content: Text('您确定要从收藏夹中删除该商品吗?'),
-            actions: <Widget>[
-              CupertinoDialogAction(
-                child: Text('取消'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
+    if (Platform.isAndroid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                '删除',
+                textAlign: TextAlign.center,
               ),
-              CupertinoDialogAction(
-                child: Text('确定'),
-                onPressed: () {
-                  cancelCollect(context, bean);
-                },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text('您确定要从收藏夹中删除该商品吗'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ZYOutlineButton('取消', () {
+                        Navigator.of(context).pop();
+                      }),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      ZYRaisedButton('确定', () {
+                        cancelCollect(context, bean);
+                      }),
+                    ],
+                  )
+                ],
               ),
-            ],
-          );
-        });
+            );
+          });
+    } else {
+      showCupertinoDialog(
+          context: ctx,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text('删除'),
+              content: Text('您确定要从收藏夹中删除该商品吗?'),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('取消'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text('确定'),
+                  onPressed: () {
+                    cancelCollect(context, bean);
+                  },
+                ),
+              ],
+            );
+          });
+    }
   }
 
   Widget buildCollectCard(BuildContext context, ProductBean bean, int index) {
@@ -132,7 +171,7 @@ class _CollectPageState extends State<CollectPage>
                     bean?.categoryName ?? '',
                     style: textTheme.caption.copyWith(fontSize: UIKit.sp(28)),
                   ),
-                  Text(bean?.displayPrice ?? '')
+                  Text('￥${bean?.price ?? ''}')
                 ],
               ),
             ))

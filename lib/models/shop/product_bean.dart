@@ -183,8 +183,8 @@ class ProductBean {
   int promotionType;
   int promoteId;
   int goodsType;
-  String marketPrice;
-  String price;
+  double marketPrice;
+  double price;
   String earnestMoney;
   String promotionPrice;
   String costPrice;
@@ -281,7 +281,8 @@ class ProductBean {
   int skuPicture;
   String picCoverMicro;
   String categoryName;
-  String displayPrice;
+
+  bool get isPromotionGoods => !(marketPrice == price && marketPrice != 0);
   String get picCoverMid {
     return imgList?.isEmpty == true ? '' : imgList?.first?.picCover;
   }
@@ -314,8 +315,12 @@ class ProductBean {
     tmpBean.promotionType = map['promotion_type'];
     tmpBean.promoteId = map['promote_id'];
     tmpBean.goodsType = map['goods_type'];
-    tmpBean.marketPrice = map['market_price'];
-    tmpBean.price = map['price'];
+    tmpBean.marketPrice = map['market_price'].runtimeType == double
+        ? map['market_price']
+        : double.parse(map['market_price'] ?? '0.00');
+    tmpBean.price = map['price'].runtimeType == double
+        ? map['price']
+        : double.parse(map['price'] ?? '0.00');
     tmpBean.earnestMoney = map['earnest_money'];
     tmpBean.promotionPrice = map['promotion_price'];
     tmpBean.costPrice = map['cost_price'];
@@ -427,7 +432,6 @@ class ProductBean {
     tmpBean.skuPicture = map['sku_picture'];
     tmpBean?.picCoverMicro = map['pic_cover_micro'];
     tmpBean?.categoryName = map['category_name'];
-    tmpBean?.displayPrice = map['display_price'];
     return tmpBean;
   }
 

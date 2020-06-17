@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,12 @@ import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/user_choose_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_future_builder.dart';
+import 'package:taojuwu/widgets/zy_outline_button.dart';
 
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 import 'widgets/attr_options_bar.dart';
+import 'widgets/onsale_tag.dart';
 import 'widgets/zy_dialog.dart';
 
 class CurtainDetailPage extends StatefulWidget {
@@ -179,113 +182,260 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
         });
   }
 
-  void setSize() async {
-    await showCupertinoDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ChangeNotifierProvider.value(
-            value: TargetOrderGoods.instance.goodsProvider,
-            child: Consumer<GoodsProvider>(
-              builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-                return CupertinoAlertDialog(
-                  title: Text.rich(TextSpan(text: '请输入尺寸（cm)\n', children: [
-                    TextSpan(
-                        text: '不足1㎡按1㎡计算',
-                        style: Theme.of(context).textTheme.body1),
-                  ])),
+  void setSize() {
+    if (Platform.isAndroid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return ChangeNotifierProvider.value(
+              value: TargetOrderGoods.instance.goodsProvider,
+              child: Consumer<GoodsProvider>(builder:
+                  (BuildContext context, GoodsProvider goodsProvider, _) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  title: Text.rich(
+                    TextSpan(text: '请输入尺寸（cm)\n', children: [
+                      TextSpan(
+                          text: '不足1㎡按1㎡计算',
+                          style: Theme.of(context).textTheme.body1),
+                    ]),
+                    textAlign: TextAlign.center,
+                  ),
                   content: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      CupertinoTextField(
-                        controller: widthInputController,
-                        keyboardType: TextInputType.number,
-                        placeholder: '请输入宽（cm）',
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: 40,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          child: TextField(
+                            controller: widthInputController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                filled: true,
+                                hintText: '请输入宽（cm）',
+                                fillColor: const Color(0xFFF2F2F2),
+                                contentPadding: EdgeInsets.all(10)),
+                          ),
+                        ),
                       ),
-                      CupertinoTextField(
-                        controller: heightInputController,
-                        keyboardType: TextInputType.number,
-                        placeholder: '请输入高（cm）',
+                      VSpacing(5),
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxHeight: 40,
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          child: TextField(
+                            controller: heightInputController,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                                filled: true,
+                                hintText: '请输入高（cm）',
+                                fillColor: const Color(0xFFF2F2F2),
+                                contentPadding: EdgeInsets.all(10)),
+                          ),
+                        ),
                       ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          ZYOutlineButton('取消', () {
+                            Navigator.of(context).pop();
+                          }),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          ZYRaisedButton('确定', () {
+                            saveSize(goodsProvider);
+                          })
+                        ],
+                      )
                     ],
                   ),
-                  actions: <Widget>[
-                    CupertinoDialogAction(
-                      child: Text('取消'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    CupertinoDialogAction(
-                      child: Text('确定'),
-                      onPressed: () {
-                        // closeSizeDialog();
-                        // print(depositInput?.text);
-                        String w = widthInputController?.text?.trim();
-                        String h = heightInputController?.text?.trim();
-                        if (w?.isNotEmpty != true ||
-                            h?.isNotEmpty != true ||
-                            double.parse(w ?? '0.00') == 0 ||
-                            double.parse(h ?? '0.00') == 0) {
-                          return CommonKit.showInfo('请输入正确的尺寸');
-                        }
-                        goodsProvider?.hasSetSize = true;
-                        goodsProvider?.width = widthInputController?.text;
-                        goodsProvider?.height = heightInputController?.text;
-
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
                 );
-              },
-            ),
-          );
-        });
+              }),
+            );
+          });
+    } else {
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return ChangeNotifierProvider.value(
+              value: TargetOrderGoods.instance.goodsProvider,
+              child: Consumer<GoodsProvider>(
+                builder:
+                    (BuildContext context, GoodsProvider goodsProvider, _) {
+                  return CupertinoAlertDialog(
+                    title: Text.rich(TextSpan(text: '请输入尺寸（cm)\n', children: [
+                      TextSpan(
+                          text: '不足1㎡按1㎡计算',
+                          style: Theme.of(context).textTheme.body1),
+                    ])),
+                    content: Column(
+                      children: <Widget>[
+                        CupertinoTextField(
+                          controller: widthInputController,
+                          keyboardType: TextInputType.number,
+                          placeholder: '请输入宽（cm）',
+                        ),
+                        CupertinoTextField(
+                          controller: heightInputController,
+                          keyboardType: TextInputType.number,
+                          placeholder: '请输入高（cm）',
+                        ),
+                      ],
+                    ),
+                    actions: <Widget>[
+                      CupertinoDialogAction(
+                        child: Text('取消'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      CupertinoDialogAction(
+                        child: Text('确定'),
+                        onPressed: () {
+                          // closeSizeDialog();
+                          // print(depositInput?.text);
+                          saveSize(goodsProvider);
+                        },
+                      )
+                    ],
+                  );
+                },
+              ),
+            );
+          });
+    }
   }
 
-  void setDy() async {
-    await showCupertinoDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ChangeNotifierProvider.value(
-            value: TargetOrderGoods.instance.goodsProvider,
-            child: Consumer<GoodsProvider>(
-              builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-                return CupertinoAlertDialog(
-                  title: Text('离地距离（cm）'),
-                  content: Column(
-                    children: <Widget>[
-                      CupertinoTextField(
-                        controller: dyInputController,
-                        keyboardType: TextInputType.number,
-                        placeholder: '请输入离地距离（cm）',
-                      ),
-                    ],
-                  ),
-                  actions: <Widget>[
-                    CupertinoDialogAction(
-                      child: Text('取消'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    CupertinoDialogAction(
-                      child: Text('确定'),
-                      onPressed: () {
-                        // closeSizeDialog();
-                        // print(depositInput?.text);
+  void saveSize(GoodsProvider goodsProvider) {
+    String w = widthInputController?.text?.trim();
+    String h = heightInputController?.text?.trim();
+    if (w?.isNotEmpty != true ||
+        h?.isNotEmpty != true ||
+        double.parse(w ?? '0.00') == 0 ||
+        double.parse(h ?? '0.00') == 0) {
+      return CommonKit.showInfo('请输入正确的尺寸');
+    }
+    goodsProvider?.hasSetSize = true;
+    goodsProvider?.width = widthInputController?.text;
+    goodsProvider?.height = heightInputController?.text;
 
-                        goodsProvider?.dy = dyInputController?.text;
-                        goodsProvider?.measureData?.verticalGroundHeight =
-                            dyInputController?.text;
-                        Navigator.of(context).pop();
-                      },
-                    )
-                  ],
-                );
-              },
-            ),
-          );
-        });
+    Navigator.of(context).pop();
+  }
+
+  void saveDy(GoodsProvider goodsProvider) {
+    goodsProvider?.dy = dyInputController?.text;
+    goodsProvider?.measureData?.verticalGroundHeight = dyInputController?.text;
+    Navigator.of(context).pop();
+  }
+
+  void setDy() {
+    if (Platform.isAndroid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return ChangeNotifierProvider.value(
+              value: TargetOrderGoods.instance.goodsProvider,
+              child: Consumer<GoodsProvider>(
+                builder:
+                    (BuildContext context, GoodsProvider goodsProvider, _) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    title: Text(
+                      '离地距离（cm）',
+                      textAlign: TextAlign.center,
+                    ),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 40,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            child: TextField(
+                              controller: dyInputController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                  filled: true,
+                                  hintText: '请输入离地距离（cm）',
+                                  fillColor: const Color(0xFFF2F2F2),
+                                  contentPadding: EdgeInsets.all(10)),
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            ZYOutlineButton('取消', () {
+                              Navigator.of(context).pop();
+                            }),
+                            SizedBox(
+                              width: 40,
+                            ),
+                            ZYRaisedButton('确定', () {
+                              saveSize(goodsProvider);
+                            })
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                },
+              ),
+            );
+          });
+    } else {
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return ChangeNotifierProvider.value(
+              value: TargetOrderGoods.instance.goodsProvider,
+              child: Consumer<GoodsProvider>(
+                builder:
+                    (BuildContext context, GoodsProvider goodsProvider, _) {
+                  return CupertinoAlertDialog(
+                    title: Text('离地距离（cm）'),
+                    content: Column(
+                      children: <Widget>[
+                        CupertinoTextField(
+                          controller: dyInputController,
+                          keyboardType: TextInputType.number,
+                          placeholder: '请输入离地距离（cm）',
+                        ),
+                      ],
+                    ),
+                    actions: <Widget>[
+                      CupertinoDialogAction(
+                        child: Text('取消'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      CupertinoDialogAction(
+                        child: Text('确定'),
+                        onPressed: () {
+                          // closeSizeDialog();
+                          // print(depositInput?.text);
+
+                          saveDy(goodsProvider);
+                        },
+                      )
+                    ],
+                  );
+                },
+              ),
+            );
+          });
+    }
   }
 
   Widget buildWindowRollerOption() {
@@ -591,8 +741,26 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                             children: [
                                               TextSpan(text: ' '),
                                               TextSpan(
-                                                  text: '元/米起',
-                                                  style: textTheme.caption)
+                                                  text: goodsProvider?.unit,
+                                                  style: textTheme.caption),
+                                              TextSpan(text: ' '),
+                                              TextSpan(
+                                                  text: bean?.isPromotionGoods ==
+                                                          true
+                                                      ? '¥${bean?.marketPrice}'
+                                                      : '',
+                                                  style: textTheme.caption
+                                                      .copyWith(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .lineThrough)),
+                                              WidgetSpan(
+                                                  child: Offstage(
+                                                offstage:
+                                                    bean?.isPromotionGoods ==
+                                                        false,
+                                                child: OnSaleTag(),
+                                              ))
                                             ])),
                                       ],
                                     ),

@@ -6,7 +6,7 @@ import 'package:taojuwu/pages/order/widgets/buyer_info_bar.dart';
 import 'package:taojuwu/pages/order/widgets/seller_info_bar.dart';
 import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/user_choose_button.dart';
+
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
@@ -58,7 +58,7 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
                 appBar: AppBar(
                   title: Text('提交订单'),
                   centerTitle: true,
-                  actions: <Widget>[UserChooseButton()],
+                  // actions: <Widget>[UserChooseButton()],
                 ),
                 body: SingleChildScrollView(
                   controller: controller,

@@ -164,7 +164,9 @@ class OrderDetailModel {
   bool get hasProducted => orderStatus > 5;
   bool get canEditPrice => orderStatus == 3;
   bool get hasScheduled => orderStatus > 3;
+  bool get hasAlreadyCancel => orderStatus == 9;
   // bool get hasCancel
+  bool get hasCanceled => orderStatus == 9;
   bool get hasFinished =>
       orderStatus >= 8 && [14, 9].contains(orderStatus) == false;
   bool get hasPaid => orderStatus > 4;
@@ -455,6 +457,7 @@ class OrderGoods {
       (orderStatus == parentOrderStatus) ?? false;
   bool get showExpressInfo => orderStatus == 7;
   bool get isWindowRoller => goodsSpecialType == 2;
+  String get unit => goodsSpecialType == 2 ? '元/平方米' : '米';
   OrderGoods(
       {this.orderGoodsId,
       this.orderId,

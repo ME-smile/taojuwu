@@ -1,3 +1,4 @@
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:taojuwu/constants/constants.dart';
@@ -52,5 +53,17 @@ class UIKit {
     if (6 < h && h < 13) return '上午好';
     if (13 <= h && h < 19) return '下午好';
     return '晚上好';
+  }
+
+  static String getTimeStr(var milliSeconds) {
+    var time = milliSeconds;
+    if (time is num) {
+      time = time * 1000;
+    } else {
+      time = 0;
+    }
+    return DateUtil.formatDateMs(time ?? 0,
+            isUtc: false, format: 'yyyy-MM-dd HH:mm:ss') ??
+        '';
   }
 }

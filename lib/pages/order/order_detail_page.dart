@@ -240,6 +240,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               ListBody(
                 children:
                     List.generate(model?.orderGoods?.length ?? 0, (int i) {
+                  print(model?.orderStatus);
+
                   return OrderAttrCard(
                     goods: model?.orderGoods[i],
                     model: model,
@@ -325,7 +327,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         params: {'order_id': id},
         builder: (BuildContext ctx, OrderDerailModelResp response) {
           OrderDetailModelWrppaer wrppaer = response?.data;
-          OrderDetailModel model = wrppaer.orderDetailModel;
+          OrderDetailModel model = wrppaer?.orderDetailModel;
           saveInfoForTargetClient(model);
           return ChangeNotifierProvider<OrderDetailProvider>(
             create: (_) => OrderDetailProvider(

@@ -10,6 +10,7 @@ class CartProvider with ChangeNotifier {
   int totalCount = 0;
   bool isAllChecked = false;
   bool get hasModels => models?.isNotEmpty;
+  int get clientId => hasModels ? models?.first?.clientId : null;
   CartProvider({this.models});
 
   void checkAll(bool isSelected) {

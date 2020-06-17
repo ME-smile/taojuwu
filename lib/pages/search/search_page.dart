@@ -194,6 +194,10 @@ class _SearchPageState extends State<SearchPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Expanded(
+                    child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxHeight: 40,
+                  ),
                   child: TextField(
                     controller: inputController,
                     enableInteractiveSelection: false,
@@ -220,16 +224,16 @@ class _SearchPageState extends State<SearchPage> {
                           child: Icon(
                             ZYIcon.clear,
                             color: const Color(0xFF979797),
+                            size: 16,
                           ),
                           onTap: () {
                             inputController?.text = ' ';
                           },
                         ),
-                        contentPadding:
-                            EdgeInsets.symmetric(vertical: UIKit.height(2)),
+                        contentPadding: EdgeInsets.all(10),
                         hintText: HINT_TEXT_MAP[type]),
                   ),
-                ),
+                )),
                 InkWell(
                   onTap: () {
                     Navigator.of(context).pop();

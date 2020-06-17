@@ -51,6 +51,7 @@ class OrderModelData {
       models?.where((item) => item.isSelectedGoods == 1)?.length ?? 0;
   bool get isMeasureOrder => orderType == 2 ?? false;
   bool get hasNotsSelectedProduct => orderStatus == 14;
+  bool get hasSelectedProduct => orderStatus != 14 && orderStatus > 2;
   bool get hasAudited => orderStatus > 1;
   bool get hasMeasured => orderStatus > 2;
   bool get hasInstalled => orderStatus >= 7;
@@ -102,7 +103,10 @@ class OrderModel {
   double height = 0.0;
   String style = '';
   String mode = '';
+  int goodsType = 1;
+  String get unit => goodsType == 2 ? '元/平方米' : '元/米';
   bool get hasSelectedGoods => isSelectedGoods == 1;
+  bool get hasAudit => orderStatus > 2;
   String get sizeTextDesc => '宽: ${width / 100}米 高: ${height / 100}米';
   OrderModel.fromJson(Map<String, dynamic> json) {
     orderGoodsId = json['order_goods_id'].runtimeType == int
@@ -151,6 +155,7 @@ class OrderModel {
         ? json['order_status']
         : int.parse(json['order_status']);
     statusName = json['status_name'] ?? '';
+    goodsType = json['goods_special_type'];
     picture = json['picture'] != null
         ? OrderThumbnailPicture.fromJson(json['picture'])
         : null;

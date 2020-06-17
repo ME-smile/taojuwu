@@ -75,6 +75,8 @@ class CartModel {
   Map attr;
   List<OrderProductAttrWrapper> wcAttr;
   PictureInfo pictureInfo;
+
+  String get unit => goodsType == 2 ? '元/平方米' : '元/米';
   CartModel.fromJson(Map<String, dynamic> json) {
     cartId = json['cart_id'];
     clientId = json['client_id'];

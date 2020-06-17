@@ -78,7 +78,7 @@ class OrderCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Text('应收定金:${orderModelData?.orderEarnestMoneyStr}'),
+                  Text('已收定金:${orderModelData?.orderEarnestMoneyStr}'),
                   Text(
                     '创建时间:$createTimeStr',
                     style: textTheme.caption,
@@ -147,11 +147,10 @@ class OrderItemView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Text.rich(TextSpan(
-                      text: '￥${model?.price ?? '0.00'}',
-                      children: [
-                        TextSpan(text: '/米', style: textTheme.caption)
-                      ])),
+                  Text.rich(
+                      TextSpan(text: '￥${model?.price ?? '0.00'}', children: [
+                    TextSpan(text: '${model?.unit}', style: textTheme.caption)
+                  ])),
                   Text(
                     '客户: $name',
                     style: textTheme.caption,

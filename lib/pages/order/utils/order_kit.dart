@@ -454,6 +454,64 @@ class OrderKit {
     }).catchError((err) => err);
   }
 
+  static Widget buildOrderInfoText(
+    BuildContext context,
+    OrderModelData orderModelData,
+  ) {
+    ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
+    if (orderModelData?.hasSelectedProduct == true) {
+      return Row(
+        children: <Widget>[
+          Expanded(child: SizedBox()),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Text(
+                '尾款金额:${orderModelData?.tailMoney ?? ''}',
+              ),
+              Text('创建时间:${UIKit.getTimeStr(orderModelData?.createTime)}',
+                  style: textTheme.caption),
+            ],
+          )
+        ],
+      );
+    }
+    if (orderModelData?.hasAudited == true) {
+      return Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+        Expanded(child: SizedBox()),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Text('客户:${orderModelData?.clientName ?? ''}'),
+            Text('订单号:${orderModelData?.orderNo ?? ''}',
+                style: textTheme.caption),
+            Text('测量时间:${orderModelData?.measureTime ?? ''}',
+                style: textTheme.caption),
+            Text(
+                '共${orderModelData?.orderWindowNum ?? 1}窗,已选${orderModelData?.goodsCount}件商品 合计: ￥${orderModelData?.orderEstimatedPrice}',
+                style: textTheme.caption)
+          ],
+        )
+      ]);
+    }
+    return Row(
+      children: <Widget>[
+        Expanded(child: SizedBox()),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            Text(
+              '应收定金:${orderModelData?.orderEarnestMoneyStr ?? ''}',
+            ),
+            Text('创建时间:${UIKit.getTimeStr(orderModelData?.createTime)}',
+                style: textTheme.caption),
+          ],
+        )
+      ],
+    );
+  }
+
   static Widget buildButton(BuildContext context, OrderModelData model,
       {Function callback}) {
     //状态从后往前判断
@@ -509,6 +567,7 @@ class OrderKit {
                       // provider?.refresh();
                       // provider?.globalKey?.currentState?.initState();
                     });
+                    CommonKit.showSuccess();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -528,6 +587,9 @@ class OrderKit {
 
   static List<Widget> buildBottomActionButton(
       BuildContext context, OrderDetailProvider provider) {
+    if (provider?.hasCanceled == true) {
+      return [];
+    }
     if (provider?.hasFinished == true) {
       return [
         AfterSaleButton(),
@@ -617,12 +679,18 @@ class OrderKit {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          CancelOrderGoodsButton(
-            isActive: goods?.canCancel,
-            callback: () {
-              provider?.cancelOrderGoods(context, goods);
-            },
-          ),
+          goods?.hasAlreadyCancel == true
+              ? ZYOutlineButton(
+                  '商品已取消',
+                  null,
+                  isActive: false,
+                )
+              : CancelOrderGoodsButton(
+                  isActive: goods?.canCancel,
+                  callback: () {
+                    provider?.cancelOrderGoods(context, goods);
+                  },
+                ),
           Offstage(
             offstage: provider?.showSelectedProductButton == false,
             child: Padding(

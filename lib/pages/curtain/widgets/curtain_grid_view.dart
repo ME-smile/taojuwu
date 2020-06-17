@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
+import 'package:taojuwu/pages/curtain/widgets/onsale_tag.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class GridCard extends StatelessWidget {
@@ -21,7 +23,7 @@ class GridCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+          // mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ZYNetImage(
               imgPath: bean?.picCoverMid ?? '',
@@ -33,21 +35,41 @@ class GridCard extends StatelessWidget {
               },
             ),
             Expanded(
-              child: Text(bean?.goodsName ?? '',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(fontSize: UIKit.sp(30))),
+              child: Row(
+                children: <Widget>[
+                  Text(bean?.goodsName ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: UIKit.sp(30))),
+                  Offstage(
+                    offstage: bean?.isPromotionGoods == false,
+                    child: OnSaleTag(),
+                  ),
+                ],
+              ),
             ),
             Expanded(
                 child: Text.rich(TextSpan(
-                    text: bean.displayPrice ?? "0.00",
+                    text: '￥${bean.displayPrice ?? "0.00"}',
                     style: TextStyle(fontSize: UIKit.sp(32)),
                     children: [
                   TextSpan(
-                      text: '  起',
+                    text: '起',
+                    style: themeData.textTheme.caption
+                        .copyWith(fontSize: UIKit.sp(22)),
+                  ),
+                  TextSpan(
+                    text: ' ',
+                  ),
+                  TextSpan(
+                      text: bean?.isPromotionGoods == true
+                          ? '￥${bean?.marketPrice}起'
+                          : '',
                       style: themeData.textTheme.caption
-                          .copyWith(fontSize: UIKit.sp(22))),
+                          .copyWith(decoration: TextDecoration.lineThrough)),
+                  // TextSpan(text: '\n'),
+                  // TextSpan(text: '11324'),
                 ]))),
           ],
         ),
