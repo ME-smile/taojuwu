@@ -1,11 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/pages/order/utils/order_kit.dart';
-import 'package:taojuwu/widgets/zy_outline_button.dart';
-import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class OrderDetailProvider with ChangeNotifier {
   OrderDetailModel model;
@@ -100,67 +96,67 @@ class OrderDetailProvider with ChangeNotifier {
   bool get showDeltaPrice => deltaPrice != 0;
 
   void cancelOrderGoods(BuildContext ctx, OrderGoods orderGoods) async {
-    bool flag = false;
-    if (Platform.isAndroid) {
-      await showDialog(
-          context: ctx,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                '您确定要取消该商品',
-                textAlign: TextAlign.center,
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ZYOutlineButton('取消', () {
-                        flag = false;
-                        Navigator.of(context).pop();
-                      }),
-                      SizedBox(
-                        width: 40,
-                      ),
-                      ZYRaisedButton('确定', () {
-                        flag = true;
-                        Navigator.of(context).pop();
-                      })
-                    ],
-                  )
-                ],
-              ),
-            );
-          });
-    } else {
-      showCupertinoDialog(
-          context: ctx,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text(
-                '您确定要取消该商品',
-              ),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  child: Text('取消'),
-                  onPressed: () {
-                    flag = false;
-                    Navigator.of(context).pop();
-                  },
-                ),
-                CupertinoDialogAction(
-                  child: Text('确认'),
-                  onPressed: () {
-                    flag = true;
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          });
-    }
-    if (flag == false) return;
+    // bool flag = false;
+    // if (Platform.isAndroid) {
+    //   await showDialog(
+    //       context: ctx,
+    //       builder: (BuildContext context) {
+    //         return AlertDialog(
+    //           title: Text(
+    //             '您确定要取消该商品',
+    //             textAlign: TextAlign.center,
+    //           ),
+    //           content: Column(
+    //             mainAxisSize: MainAxisSize.min,
+    //             children: <Widget>[
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.center,
+    //                 children: <Widget>[
+    //                   ZYOutlineButton('取消', () {
+    //                     flag = false;
+    //                     Navigator.of(context).pop();
+    //                   }),
+    //                   SizedBox(
+    //                     width: 40,
+    //                   ),
+    //                   ZYRaisedButton('确定', () {
+    //                     flag = true;
+    //                     Navigator.of(context).pop();
+    //                   })
+    //                 ],
+    //               )
+    //             ],
+    //           ),
+    //         );
+    //       });
+    // } else {
+    //   showCupertinoDialog(
+    //       context: ctx,
+    //       builder: (BuildContext context) {
+    //         return CupertinoAlertDialog(
+    //           title: Text(
+    //             '您确定要取消该商品',
+    //           ),
+    //           actions: <Widget>[
+    //             CupertinoDialogAction(
+    //               child: Text('取消'),
+    //               onPressed: () {
+    //                 flag = false;
+    //                 Navigator.of(context).pop();
+    //               },
+    //             ),
+    //             CupertinoDialogAction(
+    //               child: Text('确认'),
+    //               onPressed: () {
+    //                 flag = true;
+    //                 Navigator.of(context).pop();
+    //               },
+    //             ),
+    //           ],
+    //         );
+    //       });
+    // }
+    // if (flag == false) return;
     OrderKit.cancelOrderGoods(ctx, model?.orderId, orderGoods?.orderGoodsId,
         callback: () {
       orderGoods?.refundStatus = 1;

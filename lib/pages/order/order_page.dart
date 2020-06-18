@@ -91,6 +91,12 @@ class _OrderPageState extends State<OrderPage>
     fetchData();
   }
 
+  @override
+  void deactivate() {
+    super.deactivate();
+    fetchData();
+  }
+
   void fetchData() {
     OTPService.orderList(context, params: params?.first)
         .then((OrderModelListResp response) {

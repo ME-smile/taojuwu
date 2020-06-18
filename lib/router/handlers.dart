@@ -133,8 +133,11 @@ class RouteHandler {
 
   static goOrderDetailPage(BuildContext context, int id,
       {bool isReplaceMode: false}) {
-    _jumpTo(context, '${Routes.orderDetail}?id=$id',
-        replace: isReplaceMode, maintainState: true);
+    _jumpTo(
+      context,
+      '${Routes.orderDetail}?id=$id',
+      replace: isReplaceMode,
+    );
   }
 
   static Handler measureOrder = Handler(

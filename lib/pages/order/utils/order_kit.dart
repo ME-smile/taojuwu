@@ -571,11 +571,12 @@ class OrderKit {
                             'order_id': provider?.model?.orderId ?? -1
                           }, callback: () {
                             // provider?.refresh();
-                            CommonKit.showSuccess();
+
                             // provider?.globalKey?.currentState?.initState();
                           });
 
                           Navigator.of(context).pop();
+                          CommonKit.showSuccess();
                         }),
                         SizedBox(
                           width: 40,
@@ -607,11 +608,12 @@ class OrderKit {
                           context, {'order_id': provider?.model?.orderId ?? -1},
                           callback: () {
                         // provider?.refresh();
-                        CommonKit.showSuccess();
+
                         // provider?.globalKey?.currentState?.initState();
                       });
 
                       Navigator.of(context).pop();
+                      CommonKit.showSuccess();
                     },
                   ),
                   CupertinoDialogAction(
