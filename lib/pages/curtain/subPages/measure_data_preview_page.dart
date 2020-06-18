@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +12,8 @@ import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
 import 'package:taojuwu/widgets/zy_netImage.dart';
+import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
 
 class MeasureDataPreviewPage extends StatefulWidget {
@@ -26,6 +30,98 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
     super.initState();
 
     measureData = TargetOrderGoods.instance.goodsProvider?.measureData;
+  }
+
+  void setDy(GoodsProvider goodsProvider) {
+    String tmp;
+    if (Platform.isAndroid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                '离地距离',
+                textAlign: TextAlign.center,
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: 40,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      child: TextField(
+                        onChanged: (String text) {
+                          tmp = text;
+                        },
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            filled: true,
+                            hintText: '请输入离地距离（cm）',
+                            fillColor: const Color(0xFFF2F2F2),
+                            contentPadding: EdgeInsets.all(10)),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ZYOutlineButton('取消', () {
+                        Navigator.of(context).pop();
+                      }),
+                      SizedBox(
+                        width: 40,
+                      ),
+                      ZYRaisedButton('确定', () {
+                        // saveSize(goodsProvider);
+                        measureData?.newVerticalGroundHeight = tmp;
+                        goodsProvider?.dy = tmp;
+                        Navigator.of(context).pop();
+                      })
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+    } else {
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text('离地距离(cm)'),
+              content: Column(
+                children: <Widget>[
+                  CupertinoTextField(
+                    placeholder: '请输入离地距离(cm)',
+                    keyboardType: TextInputType.number,
+                    onChanged: (String text) {
+                      tmp = text;
+                    },
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('取消'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text('确定'),
+                  onPressed: () {
+                    measureData?.newVerticalGroundHeight = tmp;
+                    goodsProvider?.dy = tmp;
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          });
+    }
   }
 
   @override
@@ -153,50 +249,8 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                           ZYIcon.edit,
                                           size: 14,
                                         ),
-                                        onTap: () async {
-                                          String tmp;
-                                          await showCupertinoDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return CupertinoAlertDialog(
-                                                  title: Text('离地距离(cm)'),
-                                                  content: Column(
-                                                    children: <Widget>[
-                                                      CupertinoTextField(
-                                                        placeholder:
-                                                            '请输入离地距离(cm)',
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        onChanged:
-                                                            (String text) {
-                                                          tmp = text;
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  actions: <Widget>[
-                                                    CupertinoDialogAction(
-                                                      child: Text('取消'),
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    ),
-                                                    CupertinoDialogAction(
-                                                      child: Text('确定'),
-                                                      onPressed: () {
-                                                        measureData
-                                                                ?.newVerticalGroundHeight =
-                                                            tmp;
-                                                        goodsProvider?.dy = tmp;
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    )
-                                                  ],
-                                                );
-                                              });
+                                        onTap: () {
+                                          setDy(goodsProvider);
                                         },
                                       ),
                                     ],

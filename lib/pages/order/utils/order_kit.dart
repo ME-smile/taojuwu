@@ -551,35 +551,79 @@ class OrderKit {
 
   static void selectProduct(OrderDetailProvider provider, BuildContext ctx) {
     if (provider?.hasUnselectedGoods == true) {
-      showCupertinoDialog(
-          context: ctx,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text('您还有${provider?.unselectedGoodsNum}窗未完成选品,是否确认提交?'),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  child: Text('确定'),
-                  onPressed: () async {
-                    // print();
-                    await confirmToSelect(
-                        context, {'order_id': provider?.model?.orderId ?? -1},
-                        callback: () {
-                      // provider?.refresh();
-                      // provider?.globalKey?.currentState?.initState();
-                    });
-                    CommonKit.showSuccess();
-                    Navigator.of(context).pop();
-                  },
+      if (Platform.isAndroid) {
+        showDialog(
+            context: ctx,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  '您还有${provider?.unselectedGoodsNum}窗未完成选品,是否确认提交?',
+                  textAlign: TextAlign.center,
                 ),
-                CupertinoDialogAction(
-                  child: Text('继续选品'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          });
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        ZYRaisedButton('确认提交', () async {
+                          await confirmToSelect(context, {
+                            'order_id': provider?.model?.orderId ?? -1
+                          }, callback: () {
+                            // provider?.refresh();
+                            CommonKit.showSuccess();
+                            // provider?.globalKey?.currentState?.initState();
+                          });
+
+                          Navigator.of(context).pop();
+                        }),
+                        SizedBox(
+                          width: 40,
+                        ),
+                        ZYOutlineButton('继续选品', () {
+                          // saveSize(goodsProvider);
+                          // measureData?.newVerticalGroundHeight = tmp;
+                          // goodsProvider?.dy = tmp;
+                          Navigator.of(context).pop();
+                        })
+                      ],
+                    )
+                  ],
+                ),
+              );
+            });
+      } else {
+        showCupertinoDialog(
+            context: ctx,
+            builder: (BuildContext context) {
+              return CupertinoAlertDialog(
+                title: Text('您还有${provider?.unselectedGoodsNum}窗未完成选品,是否确认提交?'),
+                actions: <Widget>[
+                  CupertinoDialogAction(
+                    child: Text('确定'),
+                    onPressed: () async {
+                      // print();
+                      await confirmToSelect(
+                          context, {'order_id': provider?.model?.orderId ?? -1},
+                          callback: () {
+                        // provider?.refresh();
+                        CommonKit.showSuccess();
+                        // provider?.globalKey?.currentState?.initState();
+                      });
+
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  CupertinoDialogAction(
+                    child: Text('继续选品'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  )
+                ],
+              );
+            });
+      }
     } else {
       confirmToSelect(ctx, {'order_id': provider?.model?.orderId ?? -1});
     }

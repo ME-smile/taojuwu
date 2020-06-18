@@ -21,7 +21,10 @@ class AttrOptionsBar extends StatelessWidget {
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
     return InkWell(
-      onTap: callback,
+      onTap: () {
+        FocusManager.instance.primaryFocus.unfocus();
+        callback();
+      },
       child: Container(
         padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
         child: Row(

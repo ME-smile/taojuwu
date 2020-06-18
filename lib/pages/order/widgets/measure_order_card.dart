@@ -41,13 +41,18 @@ class MeasureOrderCard extends StatelessWidget {
                       orderModelData: orderModelData,
                       model: item,
                     )
-                  : item?.hasSelectedGoods == true
-                      ? MeasureOrderHasSelectedProductCard(
-                          model: item, id: orderModelData?.orderId)
-                      : MeasureOrderHasNotSelectedProductCard(
+                  : orderModelData?.hasNotsSelectedProduct == true
+                      ? MeasureOrderBeforePayCard(
                           model: item,
                           orderModelData: orderModelData,
-                        );
+                        )
+                      : item?.hasSelectedGoods == true
+                          ? MeasureOrderHasSelectedProductCard(
+                              model: item, id: orderModelData?.orderId)
+                          : MeasureOrderHasNotSelectedProductCard(
+                              model: item,
+                              orderModelData: orderModelData,
+                            );
             }),
           ),
           OrderKit.buildOrderInfoText(context, orderModelData),
@@ -228,6 +233,67 @@ class MeasureOrderHasNotSelectedProductCard extends StatelessWidget {
                               style: textTheme.caption),
                           Text('订单编号:${orderModelData?.orderNo}',
                               style: textTheme.caption),
+                          // Text(model?.sizeTextDesc ?? '',
+                          //     style: textTheme.caption),
+                        ]))),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class MeasureOrderBeforePayCard extends StatelessWidget {
+  final OrderModel model;
+
+  final OrderModelData orderModelData;
+  const MeasureOrderBeforePayCard({Key key, this.model, this.orderModelData})
+      : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
+    return InkWell(
+      onTap: () {
+        RouteHandler.goOrderDetailPage(context, orderModelData?.orderId);
+      },
+      child: Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Image.network(
+              UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+              height: UIKit.height(180),
+            ),
+            Expanded(
+                child: Container(
+                    height: UIKit.height(180),
+                    padding: EdgeInsets.only(left: UIKit.width(20)),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(model?.roomName ?? ''),
+                              Text(
+                                model?.statusName ?? '未知状态',
+                                style:
+                                    TextStyle(color: const Color(0xFFDE6D6C)),
+                              )
+                            ],
+                          ),
+                          Text('¥${model?.sizeTextDesc}'),
+                          Text('${model?.style}', style: textTheme.caption),
+                          Text(
+                            '${model?.mode}',
+                            style: textTheme.caption,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           // Text(model?.sizeTextDesc ?? '',
                           //     style: textTheme.caption),
                         ]))),

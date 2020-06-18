@@ -9,6 +9,7 @@ import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/pages/order/utils/order_kit.dart';
 import 'package:taojuwu/pages/order/widgets/order_attr_card.dart';
 import 'package:taojuwu/providers/order_detail_provider.dart';
+import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
 
@@ -237,16 +238,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              ListBody(
-                children:
-                    List.generate(model?.orderGoods?.length ?? 0, (int i) {
-                  print(model?.orderStatus);
-
-                  return OrderAttrCard(
-                    goods: model?.orderGoods[i],
-                    model: model,
-                  );
-                }),
+              InkWell(
+                onTap: () {
+                  RouteHandler.goOrderMainfestPage(context, model?.orderId);
+                },
+                child: ListBody(
+                  children:
+                      List.generate(model?.orderGoods?.length ?? 0, (int i) {
+                    return OrderAttrCard(
+                      goods: model?.orderGoods[i],
+                      model: model,
+                    );
+                  }),
+                ),
               ),
               Divider(),
               Padding(

@@ -28,6 +28,7 @@ import 'package:taojuwu/pages/order/order_detail_page.dart';
 
 import 'package:taojuwu/pages/order/order_page.dart';
 import 'package:taojuwu/pages/order/subPages/order_commit_success_page.dart';
+import 'package:taojuwu/pages/order/subPages/order_mainfest_page.dart';
 import 'package:taojuwu/pages/order/subPages/order_search_page.dart';
 import 'package:taojuwu/pages/profile/profile_page.dart';
 import 'package:taojuwu/pages/profile/subPages/forget_pwd_page.dart';
@@ -132,7 +133,8 @@ class RouteHandler {
 
   static goOrderDetailPage(BuildContext context, int id,
       {bool isReplaceMode: false}) {
-    _jumpTo(context, '${Routes.orderDetail}?id=$id', replace: isReplaceMode);
+    _jumpTo(context, '${Routes.orderDetail}?id=$id',
+        replace: isReplaceMode, maintainState: true);
   }
 
   static Handler measureOrder = Handler(
@@ -494,4 +496,14 @@ class RouteHandler {
   ) {
     _jumpTo(context, Routes.forgetPwd);
   }
+
+  static goOrderMainfestPage(BuildContext context, int id) {
+    _jumpTo(context, '${Routes.mainfest}?id=$id');
+  }
+
+  static Handler mainfest = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int id = int.parse(params['id']?.first);
+    return OrderMainfestPage(id);
+  });
 }

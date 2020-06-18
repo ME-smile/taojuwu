@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/models/order/measure_data_model.dart';
 
 import 'package:taojuwu/models/order/order_detail_model.dart';
+import 'package:taojuwu/models/order/order_mainfest_model.dart';
+
 import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/shop/collect_list_model.dart';
@@ -477,5 +479,12 @@ class OTPService {
       response?.data = response?.data['data']['order_goods_measure'];
     }
     return OrderGoodsMeasure.fromJson(response.data);
+  }
+
+  static Future<OrderMainfestModelResp> mainfest(context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.mainfest, params: params);
+    return OrderMainfestModelResp.fromJson(response.data);
   }
 }

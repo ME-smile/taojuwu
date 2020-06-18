@@ -76,4 +76,6 @@ class ApiPath {
   static const String windowStyle = '/api/order/wcCategory';
 
   static const String measureData = '/api/order/orderGoodsMeasureData';
+
+  static const String mainfest = '/api/order/productList';
 }

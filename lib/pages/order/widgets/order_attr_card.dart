@@ -21,17 +21,9 @@ class OrderAttrCard extends StatelessWidget {
   bool get canCancelGoods => goods?.refundStatus == 0;
   bool get showCancelButton =>
       [1, 2, 3, 4, 14].contains(model?.orderStatus) ?? false;
+
   @override
   Widget build(BuildContext context) {
-    // List<OrderProductAttrWrapper> attrs = goods.wcAttr;
-    // String attrsText = '';
-
-    // attrs.forEach((OrderProductAttrWrapper item) {
-    //   attrsText +=
-    //       '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
-    // });
-    // attrsText +=
-    //     ' 离地距离: ${goods?.orderGoodsMeasure?.verticalGroundHeight ?? 0}cm';
     TextTheme textTheme = Theme.of(context).textTheme;
     return Container(
         child: Column(

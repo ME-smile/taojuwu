@@ -41,6 +41,7 @@ class Routes {
   static const String resetPwd = '/resetPwd';
   static const String forgetPwd = 'forgetPwd';
   static const String version = '/version';
+  static const String mainfest = '/mainfest';
 
   static const String refund = '/refund';
   static void configureRoutes(Router router) {
@@ -88,5 +89,6 @@ class Routes {
     router.define(version, handler: RouteHandler.version);
     router.define(refund, handler: RouteHandler.refund);
     router.define(forgetPwd, handler: RouteHandler.forgetPwd);
+    router.define(mainfest, handler: RouteHandler.mainfest);
   }
 }

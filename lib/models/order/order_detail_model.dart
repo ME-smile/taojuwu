@@ -156,7 +156,7 @@ class OrderDetailModel {
   bool get canCancel => orderStatus != 15 ?? true;
   bool get isMeasureOrder => orderType == 2 ?? false;
   bool get isShowAllInfo => [1, 2].contains(orderStatus) ?? false;
-  bool get isShowManuscript => (isShowAllInfo && isMeasureOrder) ?? false;
+  bool get isShowManuscript => (hasMeasured && isMeasureOrder) ?? false;
   bool get haNotsSelectedProduct => orderStatus == 14;
   bool get hasAudited => orderStatus > 1;
   bool get hasMeasured => orderStatus > 2;
