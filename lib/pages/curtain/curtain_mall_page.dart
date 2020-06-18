@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
@@ -6,7 +7,8 @@ import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/models/shop/product_tag_model.dart';
-import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/pages/order/measure_order_page.dart';
+
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
@@ -434,19 +436,28 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     width = MediaQuery.of(context).size.width;
     return WillPopScope(
         child: Scaffold(
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: themeData.primaryColor,
-            onPressed: () {
-              RouteHandler.goMeasureOrderPage(context);
+          floatingActionButton: OpenContainer(
+            closedColor: Colors.transparent,
+            closedElevation: 0,
+            // closedShape: RoundedRectangleBorder(
+            //   borderRadius: BorderRadius.all(
+            //     Radius.circular(UIKit.width(60) / 2),
+            //   ),
+            // ),
+            closedBuilder: (BuildContext context, _) {
+              return CircleAvatar(
+                backgroundColor: Colors.white,
+                radius: UIKit.width(60),
+                child: Image.asset(
+                  'assets/images/create_measure_order@2x.png',
+                  width: UIKit.width(60),
+                  height: UIKit.width(60),
+                ),
+              );
             },
-            child: ZYAssetImage(
-              'create_measure_order@2x.png',
-              width: UIKit.width(60),
-              height: UIKit.height(60),
-              callback: () {
-                RouteHandler.goMeasureOrderPage(context);
-              },
-            ),
+            openBuilder: (BuildContext context, _) {
+              return MeasureOrderPage();
+            },
           ),
           appBar: AppBar(
             centerTitle: true,
@@ -501,7 +512,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                           });
                           return;
                         }
-
                         isRefresh = false;
                         requestGoodsData();
                       },
