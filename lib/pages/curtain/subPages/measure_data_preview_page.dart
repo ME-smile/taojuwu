@@ -11,8 +11,8 @@ import 'package:taojuwu/singleton/target_order_goods.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 
-import 'package:taojuwu/widgets/zy_netImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_photo_view.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
 
@@ -299,13 +299,13 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                 children: <Widget>[
                                   Text('图片:'),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: UIKit.width(20)),
-                                    child: ZYNetImage(
-                                      imgPath: measureData?.picture ?? '',
-                                      width: UIKit.width(200),
-                                    ),
-                                  ),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: UIKit.width(20)),
+                                      child: ZYPhotoView(
+                                        UIKit.getNetworkImgPath(
+                                            measureData?.picture ?? ''),
+                                        width: UIKit.width(200),
+                                      )),
                                 ],
                               ),
                             ),

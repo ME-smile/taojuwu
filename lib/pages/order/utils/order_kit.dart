@@ -437,6 +437,7 @@ class OrderKit {
         .then((ZYResponse response) {
       if (response.valid) {
         Navigator.of(context).pop();
+        CommonKit.showSuccess();
       } else {
         CommonKit.showInfo(response?.message ?? '');
       }
@@ -550,6 +551,9 @@ class OrderKit {
   }
 
   static void selectProduct(OrderDetailProvider provider, BuildContext ctx) {
+    if (provider?.unselectedGoodsNum == 1) {
+      return CommonKit.showInfo('您当前尚未选品，请先选品后提交');
+    }
     if (provider?.hasUnselectedGoods == true) {
       if (Platform.isAndroid) {
         showDialog(
@@ -576,7 +580,6 @@ class OrderKit {
                           });
 
                           Navigator.of(context).pop();
-                          CommonKit.showSuccess();
                         }),
                         SizedBox(
                           width: 40,
@@ -613,7 +616,6 @@ class OrderKit {
                       });
 
                       Navigator.of(context).pop();
-                      CommonKit.showSuccess();
                     },
                   ),
                   CupertinoDialogAction(

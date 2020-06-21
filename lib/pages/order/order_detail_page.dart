@@ -18,10 +18,11 @@ import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 
-import 'package:taojuwu/widgets/zy_future_builder.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_photo_view.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final int id;
@@ -38,6 +39,23 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   void initState() {
     super.initState();
     id = widget.id;
+    Future.delayed(Constants.TRANSITION_DURATION, () {
+      fetchData();
+    });
+  }
+
+  void fetchData() {
+    OTPService.orderDetail(context, params: {'order_id': id})
+        .then((OrderDerailModelResp response) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          OrderDetailModelWrppaer wrppaer = response?.data;
+          model = wrppaer?.orderDetailModel;
+          saveInfoForTargetClient(model);
+        });
+      }
+    }).catchError((err) => err);
   }
 
   @override
@@ -45,6 +63,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     super.dispose();
   }
 
+  bool isLoading = true;
+  OrderDetailModel model;
   bool isShowDialog(String title) {
     return !['售后维权'].contains(title);
   }
@@ -204,10 +224,35 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text('测量手稿'),
-          Image.network(
+          ZYPhotoView(
             UIKit.getNetworkImgPath(model?.measureManuscriptsPicture?.first),
             width: UIKit.width(240),
           )
+          // Container(
+          //   width: UIKit.width(240),
+          //   child: ExtendedImage.network(
+          //       UIKit.getNetworkImgPath(
+          //           model?.measureManuscriptsPicture?.first),
+          //       fit: BoxFit.contain,
+          //       //enableLoadState: false,
+          //       mode: ExtendedImageMode.gesture,
+          //       initGestureConfigHandler: (state) {
+          //     return GestureConfig(
+          //         minScale: 0.9,
+          //         animationMinScale: 0.7,
+          //         maxScale: 3.0,
+          //         animationMaxScale: 3.5,
+          //         speed: 1.0,
+          //         inertialSpeed: 100.0,
+          //         initialScale: 1.0,
+          //         inPageView: true);
+          //   }),
+          // ),
+          // ExtendedImageGesturePageView(),
+          // Image.network(
+          //   UIKit.getNetworkImgPath(model?.measureManuscriptsPicture?.first),
+          //   width: UIKit.width(240),
+          // )
         ],
       ),
     );
@@ -314,6 +359,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
+  @override
+  void deactivate() {
+    super.deactivate();
+    if (mounted) {
+      fetchData();
+    }
+  }
+
   void saveInfoForTargetClient(OrderDetailModel model) {
     TargetClient targetClient = TargetClient();
     targetClient.setClientId(model?.clientId);
@@ -326,14 +379,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     TextTheme accentTextTheme = themeData.accentTextTheme;
-    return ZYFutureBuilder(
-        futureFunc: OTPService.orderDetail,
-        params: {'order_id': id},
-        builder: (BuildContext ctx, OrderDerailModelResp response) {
-          OrderDetailModelWrppaer wrppaer = response?.data;
-          OrderDetailModel model = wrppaer?.orderDetailModel;
-          saveInfoForTargetClient(model);
-          return ChangeNotifierProvider<OrderDetailProvider>(
+    return isLoading
+        ? LoadingCircle()
+        : ChangeNotifierProvider<OrderDetailProvider>(
             create: (_) => OrderDetailProvider(
               model: model,
             ),
@@ -473,7 +521,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   return false;
                 }),
           );
-        });
   }
 }
 

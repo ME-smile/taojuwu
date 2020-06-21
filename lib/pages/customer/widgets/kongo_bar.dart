@@ -20,7 +20,7 @@ class KongoBar extends StatelessWidget {
         }
       },
       {
-        'icon': 'shopping.png',
+        'icon': 'cart@2x.png',
         'title': '购物车',
         'callback': () {
           RouteHandler.goCartPage(context, clientId: id);

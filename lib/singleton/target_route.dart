@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class TargetRoute {
   TargetRoute._internal();
   static TargetRoute _instance = TargetRoute._internal();
@@ -8,6 +10,8 @@ class TargetRoute {
   static TargetRoute get instance => _instance;
   String route;
 
+  State state;
+  bool flag = false;
   void setRoute(String route) {
     _instance.route = route;
   }

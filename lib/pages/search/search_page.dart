@@ -200,7 +200,7 @@ class _SearchPageState extends State<SearchPage> {
                   ),
                   child: TextField(
                     controller: inputController,
-                    enableInteractiveSelection: false,
+                    // enableInteractiveSelection: false,
                     // textAlignVertical: TextAlignVertical(y: .5),
                     onSubmitted: (String text) {
                       if (text?.trim()?.isEmpty == true) {

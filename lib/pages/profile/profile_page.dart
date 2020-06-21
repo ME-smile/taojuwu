@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
+import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -21,6 +23,87 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   // bool _hasMessagePush = true;
+
+  String cacheSizeStr = '';
+  @override
+  void initState() {
+    super.initState();
+    getAppCacheSize();
+  }
+
+  getAppCacheSize() async {
+    String sizeStr = await Application.loadCache();
+
+    setState(() {
+      cacheSizeStr = sizeStr;
+    });
+  }
+
+  void clearCache() {
+    if (Platform.isAndroid) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                '清除缓存',
+                textAlign: TextAlign.center,
+              ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text('你确定要清除缓存吗？'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      ZYOutlineButton('取消', () {
+                        Navigator.of(context).pop();
+                      }),
+                      SizedBox(
+                        width: 30,
+                      ),
+                      ZYRaisedButton('确定', () async {
+                        Application.clearCache();
+                        Navigator.of(context).pop();
+                        cacheSizeStr = await getAppCacheSize();
+                        setState(() {});
+                      }),
+                    ],
+                  )
+                ],
+              ),
+            );
+          });
+    } else {
+      showCupertinoDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CupertinoAlertDialog(
+              title: Text('清除缓存'),
+              content: Text('你确定要清除缓存吗？'),
+              actions: <Widget>[
+                CupertinoDialogAction(
+                  child: Text('取消'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  child: Text('确定'),
+                  onPressed: () async {
+                    Application.clearCache();
+                    Navigator.of(context).pop();
+                    cacheSizeStr = await getAppCacheSize();
+                    setState(() {});
+                  },
+                ),
+              ],
+            );
+          });
+    }
+  }
 
   void clearUserInfo() {
     Navigator.of(context).pop();
@@ -125,6 +208,22 @@ class _ProfilePageState extends State<ProfilePage> {
             //   title: '清除缓存',
             // ),
             ZYListTile(
+              title: '清除缓存',
+              showDivider: true,
+              trailing: Row(
+                children: <Widget>[
+                  Text(
+                    cacheSizeStr ?? '0.00B',
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                  Icon(ZYIcon.next),
+                ],
+              ),
+              callback: () {
+                clearCache();
+              },
+            ),
+            ZYListTile(
               title: '重置密码',
               showDivider: false,
               callback: () {
@@ -145,7 +244,7 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
             ZYListTile(
-              title: '关于陶居屋',
+              title: '关于淘居屋',
               showDivider: false,
               callback: () {
                 RouteHandler.goVersionPage(context);

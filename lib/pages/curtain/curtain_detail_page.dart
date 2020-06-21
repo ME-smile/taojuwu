@@ -11,6 +11,7 @@ import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 
 import 'package:taojuwu/models/zy_response.dart';
+
 import 'package:taojuwu/pages/curtain/subPages/pre_measure_data_page.dart';
 
 import 'package:taojuwu/providers/goods_provider.dart';
@@ -474,7 +475,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                     title: '尺寸',
                     // isRollUpWindow: goodsProvider?.isWindowGauze,
                     trailingText:
-                        '${goodsProvider?.widthCMStr ?? ''}米,${goodsProvider?.heightCMStr ?? ''}米',
+                        '${goodsProvider?.widthMStr ?? ''}米,${goodsProvider?.heightMStr ?? ''}米',
                     callback: null,
                     showNext: false,
                   ),
@@ -653,16 +654,14 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                       floating: false,
                       pinned: true,
                       flexibleSpace: FlexibleSpaceBar(
-                        background: Hero(
-                            tag: id,
-                            child: Container(
-                              margin: EdgeInsets.only(top: 80),
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: NetworkImage(UIKit.getNetworkImgPath(
-                                        widget?.heroImg))),
-                              ),
-                            )),
+                        background: Container(
+                          margin: EdgeInsets.only(top: 80),
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: NetworkImage(
+                                    UIKit.getNetworkImgPath(widget?.heroImg))),
+                          ),
+                        ),
                       ),
                     )
                   ];
@@ -998,8 +997,26 @@ class BottomActionButtonBar extends StatelessWidget {
         goodsProvider?.clearGoodsInfo();
         TargetRoute.instance.setRoute(
             '${Routes.orderDetail}?id=${TargetOrderGoods.instance.orderId}');
+        TargetRoute.instance.flag = true;
+        // Navigator.of(context).pushAndRemoveUntil(
+        //     CupertinoPageRoute(
+        //         builder: (BuildContext context) => OrderDetailPage(
+        //               id: TargetOrderGoods.instance.orderId,
+        //             )), (Route r) {
+        //   return false;
+        // });
+        // Navigator.of(context)
+        //     .removeRoute(CupertinoPageRoute(builder: (BuildContext context) {
+        //   return CurtainMallPage();
+        // }));
         Navigator.of(context)
             .popUntil(ModalRoute.withName(TargetRoute.instance.route));
+        // Navigator.push(
+        //     context,
+        //     CupertinoPageRoute(
+        //         builder: (BuildContext context) => OrderDetailPage(
+        //               id: TargetOrderGoods.instance.orderId,
+        //             )));
       } else {
         CommonKit.showInfo(response?.message ?? '');
       }

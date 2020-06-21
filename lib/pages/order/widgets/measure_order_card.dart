@@ -4,6 +4,7 @@ import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/pages/order/utils/order_kit.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class MeasureOrderCard extends StatelessWidget {
   final OrderModelData orderModelData;
@@ -84,8 +85,8 @@ class MeasureOrderHasSelectedProductCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.network(
-              UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+            ZYNetImage(
+              imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
               height: UIKit.height(180),
             ),
             Expanded(
@@ -145,8 +146,8 @@ class MeasureOrderHasNotAuditCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.network(
-              UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+            ZYNetImage(
+              imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
               height: UIKit.height(180),
             ),
             Expanded(
@@ -203,8 +204,8 @@ class MeasureOrderHasNotSelectedProductCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.network(
-              UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+            ZYNetImage(
+              imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
               height: UIKit.height(180),
             ),
             Expanded(
@@ -263,8 +264,8 @@ class MeasureOrderBeforePayCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.network(
-              UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+            ZYNetImage(
+              imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
               height: UIKit.height(180),
             ),
             Expanded(

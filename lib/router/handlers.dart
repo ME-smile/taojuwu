@@ -79,8 +79,8 @@ class RouteHandler {
     return LoginPage();
   });
 
-  static goLoginPage(BuildContext context) {
-    _jumpTo(context, Routes.login);
+  static goLoginPage(BuildContext context, {bool replace: false}) {
+    _jumpTo(context, Routes.login, replace: replace);
   }
 
   static Handler curtain = Handler(
@@ -133,11 +133,8 @@ class RouteHandler {
 
   static goOrderDetailPage(BuildContext context, int id,
       {bool isReplaceMode: false}) {
-    _jumpTo(
-      context,
-      '${Routes.orderDetail}?id=$id',
-      replace: isReplaceMode,
-    );
+    _jumpTo(context, '${Routes.orderDetail}?id=$id',
+        replace: isReplaceMode, maintainState: true);
   }
 
   static Handler measureOrder = Handler(
@@ -427,7 +424,7 @@ class RouteHandler {
   });
 
   static goMeasureDataPreviewPage(BuildContext context) {
-    _jumpTo(context, Routes.measureDataPreview);
+    _jumpTo(context, Routes.measureDataPreview, maintainState: true);
   }
 
   static Handler editOpenMode = Handler(

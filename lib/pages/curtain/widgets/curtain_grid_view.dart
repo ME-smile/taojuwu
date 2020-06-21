@@ -23,17 +23,15 @@ class GridCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         // mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Hero(
-              tag: bean?.goodsId,
-              child: ZYNetImage(
-                imgPath: bean?.picCoverMid ?? '',
-                width: (width - 20) / 2,
-                height: (width - 20) / 2,
-                fit: BoxFit.cover,
-                // callback: () {
-                //   RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
-                // },
-              )),
+          ZYNetImage(
+            imgPath: bean?.picCoverMid ?? '',
+            width: (width - 20) / 2,
+            height: (width - 20) / 2,
+            fit: BoxFit.cover,
+            // callback: () {
+            //   RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+            // },
+          ),
           Expanded(
             child: Row(
               children: <Widget>[
@@ -79,8 +77,16 @@ class GridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return OpenContainer(
+      transitionType: ContainerTransitionType.fade,
       transitionDuration: Constants.TRANSITION_DURATION,
+      useRootNavigator: false,
       closedElevation: 0,
+      openElevation: 0,
+      onClosed: (_) {
+        // Navigator.of(context).pop();
+        // Navigator.of(context).removeRoute(MaterialPageRoute(
+        //     builder: (BuildContext context) => CurtainMallPage()));
+      },
       closedShape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(0))),
       closedBuilder: (BuildContext context, VoidCallback _) {

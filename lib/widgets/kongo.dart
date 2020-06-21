@@ -21,6 +21,7 @@ class Kongo extends StatelessWidget {
               ZYAssetImage(
                 iconPath,
                 width: UIKit.width(80),
+                height: UIKit.height(50),
                 // height: UIKit.height(80),
               ),
               VSpacing(10),

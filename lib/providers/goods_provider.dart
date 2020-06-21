@@ -58,10 +58,14 @@ class GoodsProvider with ChangeNotifier {
 
   String get curOpenMode {
     List list = WindowPatternAttr.openOptionMap[curWindowPatternName] ?? [];
-    Map<String, dynamic> map =
-        list?.firstWhere((item) => item['is_checked'] == true);
 
-    return map['text'];
+    for (int i = 0; i < list?.length ?? 0; i++) {
+      Map<String, dynamic> item = list[i];
+      if (item['is_checked']) {
+        return item['text'];
+      }
+    }
+    return '打开方式未确认';
   }
 
   OrderGoodsMeasure get measureData => _measureData;

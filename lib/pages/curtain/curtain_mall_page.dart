@@ -12,6 +12,7 @@ import 'package:taojuwu/pages/order/measure_order_page.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
+
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
@@ -80,6 +81,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     scrollController = ScrollController();
     params['keyword'] = widget.keyword;
     isFromSearch = widget.keyword.isNotEmpty;
+
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData();
     });
@@ -102,7 +104,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       'sort': 'desc',
     },
   ];
-
   GZXDropdownMenuController menuController = GZXDropdownMenuController();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   RefreshController _refreshController = RefreshController(
@@ -359,8 +360,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   void requestGoodsData() {
     OTPService.curtainGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
+      _refreshController?.resetNoData();
       beanData = curtainProductListResp?.data;
       wrapper = beanData?.goodsList;
+      List<CurtainGoodItemBean> beans = wrapper?.data ?? [];
       int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
       int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
       totalPage = mod > 0 ? pages + 1 : pages;
@@ -370,14 +373,18 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         });
         _refreshController?.refreshCompleted();
       } else {
-        setState(() {
-          wrapper?.data?.forEach((item) {
-            if (goodsList?.contains(item) == false) {
-              goodsList.add(item);
-            }
+        if (beans?.isEmpty == true) {
+          _refreshController?.loadNoData();
+        } else {
+          setState(() {
+            beans?.forEach((item) {
+              if (goodsList?.contains(item) == false) {
+                goodsList.add(item);
+              }
+            });
+            _refreshController?.loadComplete();
           });
-        });
-        _refreshController?.loadComplete();
+        }
       }
     }).catchError((err) {
       if (isRefresh) {
@@ -427,6 +434,11 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   void clear() {
     TargetOrderGoods.instance.clear();
     TargetClient.instance.clear();
+  }
+
+  @override
+  void deactivate() {
+    super.deactivate();
   }
 
   @override
@@ -506,12 +518,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                       },
                       onLoading: () async {
                         params['page_index']++;
-                        if (hasMoreData == false) {
-                          setState(() {
-                            _refreshController?.loadNoData();
-                          });
-                          return;
-                        }
+
                         isRefresh = false;
                         requestGoodsData();
                       },

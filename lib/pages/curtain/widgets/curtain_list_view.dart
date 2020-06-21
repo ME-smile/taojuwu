@@ -20,18 +20,16 @@ class ListCard extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
       child: Column(
         children: <Widget>[
-          Hero(
-              tag: bean?.goodsId,
-              child: ZYNetImage(
-                imgPath: UIKit.getNetworkImgPath(
-                  bean?.picCoverMid,
-                ),
-                // callback: () {
-                //   RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
-                // },
-                fit: BoxFit.fill,
-                width: width - 2 * UIKit.width(20),
-              )),
+          ZYNetImage(
+            imgPath: UIKit.getNetworkImgPath(
+              bean?.picCoverMid,
+            ),
+            // callback: () {
+            //   RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+            // },
+            fit: BoxFit.fill,
+            width: width - 2 * UIKit.width(20),
+          ),
           Text(bean?.goodsName ?? ''),
           Text('￥${bean?.displayPrice ?? "0.00"}'),
           Offstage(

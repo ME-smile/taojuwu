@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/zy_response.dart';
+import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
+import 'package:taojuwu/widgets/zy_submit_button.dart';
 
 class ResetPwdPage extends StatefulWidget {
   ResetPwdPage({Key key}) : super(key: key);
@@ -60,7 +62,8 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
             params: {'old_password': oldPwd, 'new_password': newPwd})
         .then((ZYResponse response) {
       if (response?.valid == true) {
-        Navigator.of(context).pop();
+        CommonKit.showSuccessDIYInfo('密码修改成功');
+        RouteHandler.goLoginPage(context, replace: true);
       } else {
         CommonKit.showInfo(response?.message ?? '');
       }
@@ -76,13 +79,15 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
 
     return Scaffold(
       appBar: AppBar(
-        actions: <Widget>[
-          FlatButton(
-              onPressed: () {
-                resetPwd();
-              },
-              child: Text('完成'))
-        ],
+        centerTitle: true,
+        title: Text('重置密码'),
+        // actions: <Widget>[
+        //   FlatButton(
+        //       onPressed: () {
+        //         resetPwd();
+        //       },
+        //       child: Text('完成'))
+        // ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -143,6 +148,10 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
                           BorderSide(color: Color(0xFFC7C8CB), width: .8)),
                 ),
               ),
+              VSpacing(40),
+              ZYSubmitButton('重置密码', () {
+                resetPwd();
+              }),
             ],
           ),
         ),
