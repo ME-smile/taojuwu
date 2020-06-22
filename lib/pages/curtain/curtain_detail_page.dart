@@ -13,6 +13,7 @@ import 'package:taojuwu/models/shop/product_bean.dart';
 import 'package:taojuwu/models/zy_response.dart';
 
 import 'package:taojuwu/pages/curtain/subPages/pre_measure_data_page.dart';
+import 'package:taojuwu/pages/order/order_detail_page.dart';
 
 import 'package:taojuwu/providers/goods_provider.dart';
 
@@ -989,7 +990,8 @@ class BottomActionButtonBar extends StatelessWidget {
         }));
   }
 
-  void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
+  Future selectProduct(BuildContext context,
+      {Map<String, dynamic> params}) async {
     OTPService.selectProduct(params: params).then((ZYResponse response) {
       if (response.valid) {
         GoodsProvider goodsProvider =
@@ -997,26 +999,13 @@ class BottomActionButtonBar extends StatelessWidget {
         goodsProvider?.clearGoodsInfo();
         TargetRoute.instance.setRoute(
             '${Routes.orderDetail}?id=${TargetOrderGoods.instance.orderId}');
-        TargetRoute.instance.flag = true;
-        // Navigator.of(context).pushAndRemoveUntil(
-        //     CupertinoPageRoute(
-        //         builder: (BuildContext context) => OrderDetailPage(
-        //               id: TargetOrderGoods.instance.orderId,
-        //             )), (Route r) {
-        //   return false;
-        // });
-        // Navigator.of(context)
-        //     .removeRoute(CupertinoPageRoute(builder: (BuildContext context) {
-        //   return CurtainMallPage();
-        // }));
+
+        Navigator.of(context).push(CupertinoPageRoute(
+            builder: (BuildContext context) =>
+                OrderDetailPage(id: TargetOrderGoods.instance.orderId)));
+
         Navigator.of(context)
             .popUntil(ModalRoute.withName(TargetRoute.instance.route));
-        // Navigator.push(
-        //     context,
-        //     CupertinoPageRoute(
-        //         builder: (BuildContext context) => OrderDetailPage(
-        //               id: TargetOrderGoods.instance.orderId,
-        //             )));
       } else {
         CommonKit.showInfo(response?.message ?? '');
       }
@@ -1044,7 +1033,7 @@ class BottomActionButtonBar extends StatelessWidget {
                       Text.rich(TextSpan(text: '预计:\n', children: [
                         TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
                       ])),
-                      ZYRaisedButton('确认选品', () {
+                      ZYRaisedButton('确认选品', () async {
                         if (targetOrderGoods?.hasConfirmMeasureData == false &&
                             goodsProvider?.isWindowRoller == false) {
                           return CommonKit.showInfo('请先确认测装数据');
@@ -1069,7 +1058,8 @@ class BottomActionButtonBar extends StatelessWidget {
                           'wc_attr': jsonEncode(goodsProvider.getAttrArgs()),
                           'order_goods_id': targetOrderGoods?.orderGoodsId,
                         };
-                        selectProduct(context, params: params);
+                        await selectProduct(context, params: params);
+                        // Navigator.of(context).pop();
                       })
                     ],
                   ))

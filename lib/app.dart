@@ -66,16 +66,17 @@ class App extends StatelessWidget {
                   onGenerateRoute: Application.router.generator,
                   darkTheme: ThemeProvider.lightTheme,
                   theme: ThemeProvider.lightTheme,
+                  navigatorObservers: [RouteObserver()],
                   home:
                       userProvider?.isLogin == true ? HomePage() : LoginPage(),
                   localizationsDelegates: [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                  ],
                   supportedLocales: [
-                const Locale('zh', 'CN'),
-                const Locale('en', 'US'),
-              ])));
+                    const Locale('zh', 'CN'),
+                    const Locale('en', 'US'),
+                  ])));
     });
   }
 }

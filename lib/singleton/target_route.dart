@@ -12,6 +12,7 @@ class TargetRoute {
 
   State state;
   bool flag = false;
+  BuildContext context;
   void setRoute(String route) {
     _instance.route = route;
   }

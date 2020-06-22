@@ -149,7 +149,7 @@ class ZYPhotoPreviewer extends StatelessWidget {
                   minScale: minScale,
                   maxScale: maxScale,
                   heroAttributes: PhotoViewHeroAttributes(tag: heroTag),
-                  enableRotation: true,
+                  enableRotation: false,
                 )),
             Positioned(
                 right: 10,

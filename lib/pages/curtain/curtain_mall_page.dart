@@ -1,4 +1,4 @@
-import 'package:animations/animations.dart';
+// import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
@@ -7,11 +7,13 @@ import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/models/shop/product_tag_model.dart';
-import 'package:taojuwu/pages/order/measure_order_page.dart';
+// import 'package:taojuwu/pages/order/measure_order_page.dart';
+import 'package:taojuwu/router/handlers.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
+import 'package:taojuwu/singleton/target_route.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
@@ -76,7 +78,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   @override
   void initState() {
     super.initState();
-
+    TargetRoute.instance.context = context;
     tabController = TabController(length: tabs.length, vsync: this);
     scrollController = ScrollController();
     params['keyword'] = widget.keyword;
@@ -448,29 +450,46 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     width = MediaQuery.of(context).size.width;
     return WillPopScope(
         child: Scaffold(
-          floatingActionButton: OpenContainer(
-            closedColor: Colors.transparent,
-            closedElevation: 0,
-            // closedShape: RoundedRectangleBorder(
-            //   borderRadius: BorderRadius.all(
-            //     Radius.circular(UIKit.width(60) / 2),
-            //   ),
-            // ),
-            closedBuilder: (BuildContext context, _) {
-              return CircleAvatar(
-                backgroundColor: Colors.white,
-                radius: UIKit.width(60),
-                child: Image.asset(
-                  'assets/images/create_measure_order@2x.png',
-                  width: UIKit.width(60),
-                  height: UIKit.width(60),
-                ),
-              );
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              RouteHandler.goMeasureOrderPage(context);
             },
-            openBuilder: (BuildContext context, _) {
-              return MeasureOrderPage();
-            },
+            backgroundColor: themeData.primaryColor,
+            child: ZYAssetImage(
+              'create_measure_order@2x.png',
+              width: UIKit.width(60),
+              height: UIKit.width(60),
+              callback: () {
+                RouteHandler.goMeasureOrderPage(context);
+              },
+            ),
           ),
+          // floatingActionButton: OpenContainer(
+          //   transitionDuration: Constants.TRANSITION_DURATION,
+          //   openColor: Colors.white,
+          //   closedColor: Colors.transparent,
+          //   closedElevation: 0,
+          //   openElevation: 0,
+          //   // closedShape: RoundedRectangleBorder(
+          //   //   borderRadius: BorderRadius.all(
+          //   //     Radius.circular(UIKit.width(60) / 2),
+          //   //   ),
+          //   // ),
+          //   closedBuilder: (BuildContext context, _) {
+          //     return CircleAvatar(
+          //       backgroundColor: Colors.white,
+          //       radius: UIKit.width(60),
+          //       child: Image.asset(
+          //         'assets/images/create_measure_order@2x.png',
+          //         width: UIKit.width(60),
+          //         height: UIKit.width(60),
+          //       ),
+          //     );
+          //   },
+          //   openBuilder: (BuildContext context, _) {
+          //     return MeasureOrderPage();
+          //   },
+          // ),
           appBar: AppBar(
             centerTitle: true,
             actions: <Widget>[
