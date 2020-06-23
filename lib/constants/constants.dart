@@ -1,5 +1,5 @@
 class Constants {
-  static const HOST = "http://106.14.219.213:80";
+  static const HOST = "http://www.taoju5.com";
   static const TRANSITION_DURATION = Duration(milliseconds: 300);
   //订单状态
 

@@ -148,6 +148,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.2"
+  extended_tabs:
+    dependency: "direct main"
+    description:
+      name: extended_tabs
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.3"
   file:
     dependency: transitive
     description:
@@ -174,6 +181,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_app_upgrade:
+    dependency: "direct main"
+    description:
+      name: flutter_app_upgrade
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.0"
   flutter_datetime_picker:
     dependency: "direct main"
     description:
@@ -287,6 +301,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.0"
+  install_plugin:
+    dependency: "direct main"
+    description:
+      name: install_plugin
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.1"
   intl:
     dependency: transitive
     description:
@@ -329,6 +350,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.0.4"
+  package_info:
+    dependency: "direct main"
+    description:
+      name: package_info
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.1"
   path:
     dependency: transitive
     description:

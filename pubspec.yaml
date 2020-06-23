@@ -44,7 +44,10 @@ dependencies:
   image_picker: ^0.6.6+1
   path_provider: ^1.6.11
   photo_view: ^0.9.2
-
+  extended_tabs: ^0.2.3
+  install_plugin: ^2.0.1
+  flutter_app_upgrade: ^1.1.0
+  package_info: ^0.4.1
   # barcode_scan:
   #   git:
   #     url: https://github.com/simplezhli/flutter_barcode_reader.git

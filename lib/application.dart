@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:fluro/fluro.dart';
+import 'package:install_plugin/install_plugin.dart';
+import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -8,6 +10,7 @@ import 'package:taojuwu/utils/common_kit.dart';
 class Application {
   static Router router;
   static SharedPreferences sp;
+  static const String apkName = 'taoju5.apk';
   static init() async {
     sp = await SharedPreferences.getInstance();
   }
@@ -71,5 +74,31 @@ class Application {
       }
     }
     await file.delete();
+  }
+
+  static Future<String> getAppVersion() async {
+    return '1.1.2';
+  }
+
+  static Future<String> getApkPath() async {
+    final directory = await getExternalStorageDirectory();
+    return directory.path;
+  }
+
+  static Future<bool> hasNewAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String localVersion = packageInfo.version;
+    String remoteVersion = await getAppVersion();
+    return remoteVersion.compareTo(localVersion) == 1;
+  }
+
+  static Future<Null> installApk() async {
+    try {
+      String path = await getApkPath();
+
+      InstallPlugin.installApk(path + apkName, 'com.buyi.taojuwu')
+          .then((_) {})
+          .catchError((err) => err);
+    } on Error catch (_) {}
   }
 }
