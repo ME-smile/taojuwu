@@ -11,9 +11,7 @@ import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 
 import 'package:taojuwu/models/zy_response.dart';
-
 import 'package:taojuwu/pages/curtain/subPages/pre_measure_data_page.dart';
-import 'package:taojuwu/pages/order/order_detail_page.dart';
 
 import 'package:taojuwu/providers/goods_provider.dart';
 
@@ -25,10 +23,11 @@ import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/singleton/target_route.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/loading.dart';
 
 import 'package:taojuwu/widgets/user_choose_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
+import 'package:taojuwu/widgets/zy_future_builder.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
 
 import 'package:taojuwu/widgets/zy_raised_button.dart';
@@ -38,10 +37,13 @@ import 'widgets/onsale_tag.dart';
 import 'widgets/zy_dialog.dart';
 
 class CurtainDetailPage extends StatefulWidget {
-  CurtainDetailPage(this.id, {Key key, this.heroImg}) : super(key: key);
+  CurtainDetailPage(
+    this.id, {
+    Key key,
+  }) : super(key: key);
 
   final int id; //商品id
-  final String heroImg;
+
   @override
   _CurtainDetailPageState createState() => _CurtainDetailPageState();
 }
@@ -69,8 +71,6 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     dyInputController?.dispose();
   }
 
-  bool isLoading = true;
-  List data;
   @override
   void initState() {
     super.initState();
@@ -80,10 +80,6 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     heightInputController = TextEditingController();
     dyInputController = TextEditingController();
     hasCollected = ValueNotifier<bool>(false);
-    fetchData();
-    // Future.delayed(Constants.TRANSITION_DURATION, () {
-    //   fetchData();
-    // });
   }
 
   void setCartParams(GoodsProvider goodsProvider) {
@@ -92,17 +88,6 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     cartParams['measure_id'] = goodsProvider?.measureId;
     cartParams['wc_attr'] = '${goodsProvider.getAttrArgs()}';
     cartParams['client_uid'] = TargetClient.instance.clientId;
-  }
-
-  fetchData() {
-    OTPService.fetchCurtainDetailData(context, params: {
-      'goods_id': widget.id,
-    }).then((val) {
-      setState(() {
-        isLoading = false;
-        data = val;
-      });
-    }).catchError((err) => err);
   }
 
   collect(
@@ -398,7 +383,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                               width: 40,
                             ),
                             ZYRaisedButton('确定', () {
-                              saveDy(goodsProvider);
+                              saveSize(goodsProvider);
                             })
                           ],
                         )
@@ -476,7 +461,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                     title: '尺寸',
                     // isRollUpWindow: goodsProvider?.isWindowGauze,
                     trailingText:
-                        '${goodsProvider?.widthMStr ?? ''}米,${goodsProvider?.heightMStr ?? ''}米',
+                        '${goodsProvider?.widthCMStr ?? ''}米,${goodsProvider?.heightCMStr ?? ''}米',
                     callback: null,
                     showNext: false,
                   ),
@@ -619,6 +604,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     ProductBeanRes productBeanRes = data[1];
     ProductBeanDataWrapper wrapper = productBeanRes.data;
     bean = wrapper.goodsDetail;
+
     goodsProvider?.initDataWithFilter(
       measureData: measureData,
       bean: bean,
@@ -639,48 +625,54 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
 
-    return WillPopScope(
-        child: Scaffold(
-            body: NestedScrollView(
-                headerSliverBuilder:
-                    (BuildContext context, bool innerBoxIsScrolled) {
-                  return <Widget>[
-                    SliverAppBar(
-                      actions: <Widget>[
-                        UserChooseButton(
-                          id: widget.id,
-                        )
-                      ],
-                      expandedHeight: 400,
-                      floating: false,
-                      pinned: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Container(
-                          margin: EdgeInsets.only(top: 80),
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                    UIKit.getNetworkImgPath(widget?.heroImg))),
-                          ),
-                        ),
-                      ),
-                    )
-                  ];
-                },
-                body: isLoading
-                    ? LoadingCircle()
-                    : ChangeNotifierProvider(
-                        create: (BuildContext context) {
-                          GoodsProvider goodsProvider = GoodsProvider();
-                          initData(data, goodsProvider);
-                          TargetOrderGoods.instance
-                              .setGoodsProvider(goodsProvider);
-                          return goodsProvider;
-                        },
-                        child: Consumer<GoodsProvider>(
-                          builder: (BuildContext context,
-                              GoodsProvider goodsProvider, _) {
-                            return CustomScrollView(
+    return ZYFutureBuilder(
+        futureFunc: OTPService.fetchCurtainDetailData,
+        params: {
+          'goods_id': widget.id,
+        },
+        builder: (BuildContext context, data) {
+          return ChangeNotifierProvider(
+            create: (BuildContext context) {
+              GoodsProvider goodsProvider = GoodsProvider();
+              initData(data, goodsProvider);
+              TargetOrderGoods.instance.setGoodsProvider(goodsProvider);
+              return goodsProvider;
+            },
+            child: Consumer<GoodsProvider>(
+              builder: (BuildContext context, GoodsProvider goodsProvider, _) {
+                return WillPopScope(
+                    child: Scaffold(
+                        body: NestedScrollView(
+                            headerSliverBuilder: (BuildContext context,
+                                bool innerBoxIsScrolled) {
+                              return <Widget>[
+                                SliverAppBar(
+                                  actions: <Widget>[
+                                    UserChooseButton(
+                                      id: widget.id,
+                                    )
+                                  ],
+                                  expandedHeight: 400,
+                                  floating: false,
+                                  pinned: true,
+                                  flexibleSpace: FlexibleSpaceBar(
+                                    background: Container(
+                                        margin: EdgeInsets.only(top: 80),
+                                        child: ZYNetImage(
+                                          imgPath: bean?.picCoverMid,
+                                        )
+                                        // decoration: BoxDecoration(
+                                        //   image: DecorationImage(
+                                        //       image: NetworkImage(
+                                        // UIKit.getNetworkImgPath(
+                                        //     bean?.picCoverMid))),
+                                        // ),
+                                        ),
+                                  ),
+                                )
+                              ];
+                            },
+                            body: CustomScrollView(
                               slivers: <Widget>[
                                 SliverToBoxAdapter(
                                   child: Container(
@@ -826,16 +818,16 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                       : Container(),
                                 )
                               ],
-                            );
-                          },
-                        ),
-                      )),
-            bottomNavigationBar:
-                isLoading ? Container() : BottomActionButtonBar()),
-        onWillPop: () {
-          Navigator.of(context).pop();
-          TargetOrderGoods.instance.goodsProvider?.release();
-          return Future.value(false);
+                            )),
+                        bottomNavigationBar: BottomActionButtonBar()),
+                    onWillPop: () {
+                      Navigator.of(context).pop();
+                      TargetOrderGoods.instance.goodsProvider.release();
+                      return Future.value(false);
+                    });
+              },
+            ),
+          );
         });
   }
 }
@@ -990,8 +982,7 @@ class BottomActionButtonBar extends StatelessWidget {
         }));
   }
 
-  Future selectProduct(BuildContext context,
-      {Map<String, dynamic> params}) async {
+  void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
     OTPService.selectProduct(params: params).then((ZYResponse response) {
       if (response.valid) {
         GoodsProvider goodsProvider =
@@ -999,11 +990,6 @@ class BottomActionButtonBar extends StatelessWidget {
         goodsProvider?.clearGoodsInfo();
         TargetRoute.instance.setRoute(
             '${Routes.orderDetail}?id=${TargetOrderGoods.instance.orderId}');
-
-        Navigator.of(context).push(CupertinoPageRoute(
-            builder: (BuildContext context) =>
-                OrderDetailPage(id: TargetOrderGoods.instance.orderId)));
-
         Navigator.of(context)
             .popUntil(ModalRoute.withName(TargetRoute.instance.route));
       } else {
@@ -1017,105 +1003,100 @@ class BottomActionButtonBar extends StatelessWidget {
     ThemeData themeData = Theme.of(context);
     // TextTheme textTheme = themeData.textTheme;
     TargetOrderGoods targetOrderGoods = TargetOrderGoods.instance;
-    return ChangeNotifierProvider<GoodsProvider>.value(
-      value: TargetOrderGoods.instance.goodsProvider,
-      child: Consumer<GoodsProvider>(
-        builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-          cartParams['client_uid'] = TargetClient.instance.clientId;
-          return TargetOrderGoods.instance.isMeasureOrder
-              ? Container(
-                  color: themeData.primaryColor,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: UIKit.width(20), vertical: UIKit.height(10)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text.rich(TextSpan(text: '预计:\n', children: [
-                        TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
-                      ])),
-                      ZYRaisedButton('确认选品', () async {
-                        if (targetOrderGoods?.hasConfirmMeasureData == false &&
-                            goodsProvider?.isWindowRoller == false) {
-                          return CommonKit.showInfo('请先确认测装数据');
-                        }
-                        Map<String, dynamic> data = {
-                          'num': 1,
-                          'goods_id': goodsProvider?.goodsId,
-                          '安装选项': ['${goodsProvider?.curInstallMode ?? ''}'],
-                          '打开方式': goodsProvider?.openModeParams
-                        };
+    return Consumer<GoodsProvider>(
+      builder: (BuildContext context, GoodsProvider goodsProvider, _) {
+        cartParams['client_uid'] = TargetClient.instance.clientId;
+        return TargetOrderGoods.instance.isMeasureOrder
+            ? Container(
+                color: themeData.primaryColor,
+                padding: EdgeInsets.symmetric(
+                    horizontal: UIKit.width(20), vertical: UIKit.height(10)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text.rich(TextSpan(text: '预计:\n', children: [
+                      TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
+                    ])),
+                    ZYRaisedButton('确认选品', () {
+                      if (targetOrderGoods?.hasConfirmMeasureData == false &&
+                          goodsProvider?.isWindowRoller == false) {
+                        return CommonKit.showInfo('请先确认测装数据');
+                      }
+                      Map<String, dynamic> data = {
+                        'num': 1,
+                        'goods_id': goodsProvider?.goodsId,
+                        '安装选项': ['${goodsProvider?.curInstallMode ?? ''}'],
+                        '打开方式': goodsProvider?.openModeParams
+                      };
 
-                        // data['${goodsProvider?.windowPatternId ?? ''}'] = {
-                        //   'name': '${goodsProvider?.windowPatternStr ?? ''}',
-                        //   'selected': {
-                        //     '安装选项': ['${goodsProvider?.curInstallMode ?? ''}'],
-                        //     '打开方式': goodsProvider?.openModeParams
-                        //   }
-                        // };
-                        Map<String, dynamic> params = {
-                          'vertical_ground_height': goodsProvider?.dyCMStr,
-                          'data': jsonEncode(data),
-                          'wc_attr': jsonEncode(goodsProvider.getAttrArgs()),
-                          'order_goods_id': targetOrderGoods?.orderGoodsId,
-                        };
-                        await selectProduct(context, params: params);
-                        // Navigator.of(context).pop();
-                      })
-                    ],
-                  ))
-              : Container(
-                  color: themeData.primaryColor,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: UIKit.width(20), vertical: UIKit.height(10)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text.rich(TextSpan(text: '预计:\n', children: [
-                        TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
-                      ])),
-                      Row(
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () async {
-                              if (!beforePurchase(goodsProvider, context))
-                                return;
-                              setCartParams(goodsProvider);
-                              addCart(context, goodsProvider);
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: UIKit.width(20),
-                                  vertical: UIKit.height(10)),
-                              decoration:
-                                  BoxDecoration(border: Border.all(width: 1)),
-                              child: Text('加入购物车'),
+                      // data['${goodsProvider?.windowPatternId ?? ''}'] = {
+                      //   'name': '${goodsProvider?.windowPatternStr ?? ''}',
+                      //   'selected': {
+                      //     '安装选项': ['${goodsProvider?.curInstallMode ?? ''}'],
+                      //     '打开方式': goodsProvider?.openModeParams
+                      //   }
+                      // };
+                      Map<String, dynamic> params = {
+                        'vertical_ground_height': goodsProvider?.dyCMStr,
+                        'data': jsonEncode(data),
+                        'wc_attr': jsonEncode(goodsProvider.getAttrArgs()),
+                        'order_goods_id': targetOrderGoods?.orderGoodsId,
+                      };
+                      selectProduct(context, params: params);
+                    })
+                  ],
+                ))
+            : Container(
+                color: themeData.primaryColor,
+                padding: EdgeInsets.symmetric(
+                    horizontal: UIKit.width(20), vertical: UIKit.height(10)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text.rich(TextSpan(text: '预计:\n', children: [
+                      TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
+                    ])),
+                    Row(
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () async {
+                            if (!beforePurchase(goodsProvider, context)) return;
+                            setCartParams(goodsProvider);
+                            addCart(context, goodsProvider);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: UIKit.width(20),
+                                vertical: UIKit.height(10)),
+                            decoration:
+                                BoxDecoration(border: Border.all(width: 1)),
+                            child: Text('加入购物车'),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            createOrder(context);
+                          },
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: UIKit.width(20),
+                                vertical: UIKit.height(10)),
+                            decoration: BoxDecoration(
+                                color: themeData.accentColor,
+                                border:
+                                    Border.all(color: themeData.accentColor)),
+                            child: Text(
+                              '立即购买',
+                              style: themeData.accentTextTheme.button,
                             ),
                           ),
-                          InkWell(
-                            onTap: () {
-                              createOrder(context);
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: UIKit.width(20),
-                                  vertical: UIKit.height(10)),
-                              decoration: BoxDecoration(
-                                  color: themeData.accentColor,
-                                  border:
-                                      Border.all(color: themeData.accentColor)),
-                              child: Text(
-                                '立即购买',
-                                style: themeData.accentTextTheme.button,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-        },
-      ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              );
+      },
     );
   }
 }
