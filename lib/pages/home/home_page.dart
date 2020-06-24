@@ -71,8 +71,8 @@ class _HomePageState extends State<HomePage> {
         'subtitle': '销售统计，清晰明了',
         'icon': 'data@2x.png',
         'callback': () {
-          CommonKit.showInfo('暂未开放');
-          // RouteHandler.goDataCenterPage(context);
+          // CommonKit.showInfo('暂未开放');
+          RouteHandler.goDataCenterPage(context);
         },
         'color': const Color(0xff0D0B14)
       },

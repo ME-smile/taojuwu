@@ -78,4 +78,6 @@ class ApiPath {
   static const String measureData = '/api/order/orderGoodsMeasureData';
 
   static const String mainfest = '/api/order/productList';
+
+  static const String passengerStatisticsData = '/api/order/analysis1';
 }

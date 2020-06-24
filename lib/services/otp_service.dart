@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/models/data_center/statistics_data_model.dart';
 import 'package:taojuwu/models/order/measure_data_model.dart';
 
 import 'package:taojuwu/models/order/order_detail_model.dart';
@@ -486,5 +487,12 @@ class OTPService {
     Response response =
         await xhr.get(context, ApiPath.mainfest, params: params);
     return OrderMainfestModelResp.fromJson(response.data);
+  }
+
+  static Future<PassengerStatisticsDataModelResp> statisticsData(context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.passengerStatisticsData, params: params);
+    return PassengerStatisticsDataModelResp.fromJson(response.data);
   }
 }

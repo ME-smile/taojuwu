@@ -5,10 +5,16 @@ import 'package:taojuwu/utils/ui_kit.dart';
 class BottomPicker extends StatelessWidget {
   final String title;
   final Function callback;
+  final double height;
+  final TextStyle cancelTextStyle;
+  final TextStyle confirmTextStyle;
   const BottomPicker({
     Key key,
     this.title,
     this.callback,
+    this.cancelTextStyle: UIKit.CANCEL_BUTTON_STYLE,
+    this.confirmTextStyle: UIKit.CONFIRM_BUTTON_STYLE,
+    this.height: UIKit.BOTTOM_PICKER_HEIGHT,
     @required this.child,
   })  : assert(child != null),
         super(key: key);
@@ -23,7 +29,7 @@ class BottomPicker extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.only(
               topRight: Radius.circular(10), topLeft: Radius.circular(10))),
-      height: UIKit.BOTTOM_PICKER_HEIGHT,
+      height: height,
       // padding: const EdgeInsets.only(top: 6.0),
       child: DefaultTextStyle(
         style: TextStyle(
@@ -50,7 +56,7 @@ class BottomPicker extends StatelessWidget {
                           padding: EdgeInsets.only(left: UIKit.height(30)),
                           child: Text(
                             '取消',
-                            style: UIKit.CANCEL_BUTTON_STYLE,
+                            style: cancelTextStyle,
                           ),
                         ),
                       ),
@@ -66,7 +72,7 @@ class BottomPicker extends StatelessWidget {
                           padding: EdgeInsets.only(right: UIKit.width(30)),
                           child: Text(
                             '确定',
-                            style: UIKit.CONFIRM_BUTTON_STYLE,
+                            style: confirmTextStyle,
                           ),
                         ),
                       )

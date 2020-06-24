@@ -3,8 +3,6 @@ import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:intl/intl.dart';
 
-import 'passenger_graph_view.dart';
-
 class SalesStaticsGraphView extends StatefulWidget {
   SalesStaticsGraphView({Key key}) : super(key: key);
 
@@ -41,10 +39,10 @@ class _SalesStaticsGraphViewState extends State<SalesStaticsGraphView> {
               '近一年销售分析',
               style: themeData.textTheme.title.copyWith(fontSize: UIKit.sp(24)),
             ),
-            Container(
-              height: UIKit.height(360),
-              child: DonutAutoLabelChart.withSampleData(),
-            ),
+            // Container(
+            //   height: UIKit.height(360),
+            //   child: DonutAutoLabelChart.withSampleData(),
+            // ),
           ],
         ),
       ),
