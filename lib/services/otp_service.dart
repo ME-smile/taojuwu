@@ -1,6 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/models/data_center/statistics_data_model.dart';
+import 'package:taojuwu/models/data_center/passenger_statistics_data_model.dart';
+import 'package:taojuwu/models/data_center/sale_analysis_data_model.dart';
+import 'package:taojuwu/models/data_center/sale_statistics_data_model.dart';
+
 import 'package:taojuwu/models/order/measure_data_model.dart';
 
 import 'package:taojuwu/models/order/order_detail_model.dart';
@@ -489,10 +492,24 @@ class OTPService {
     return OrderMainfestModelResp.fromJson(response.data);
   }
 
-  static Future<PassengerStatisticsDataModelResp> statisticsData(context,
+  static Future<PassengerStatisticsDataModelResp> passengerData(context,
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.passengerStatisticsData, params: params);
     return PassengerStatisticsDataModelResp.fromJson(response.data);
+  }
+
+  static Future<SaleStatisticsDataModelResp> saleData(context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.saleStatisticsData, params: params);
+    return SaleStatisticsDataModelResp.fromJson(response.data);
+  }
+
+  static Future<SaleAnalysisDataModelResp> analysisData(context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.saleAnalysisData, params: params);
+    return SaleAnalysisDataModelResp.fromJson(response.data);
   }
 }

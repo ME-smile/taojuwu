@@ -80,4 +80,8 @@ class ApiPath {
   static const String mainfest = '/api/order/productList';
 
   static const String passengerStatisticsData = '/api/order/analysis1';
+
+  static const String saleStatisticsData = '/api/order/analysis2';
+
+  static const String saleAnalysisData = '/api/order/analysis3';
 }

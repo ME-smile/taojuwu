@@ -17,10 +17,14 @@ class PassengerStatisticsDataModelDataWrapper {
 
   PassengerStatisticsDataModelDataWrapper.fromJson(Map<String, dynamic> json) {
     passengerFlowData = PassengerFlowData.fromJson(json);
+
     if (json['week'] != null) {
       statisticsDataModels = new List<PassengerStatisticsDataModel>();
       json['week'].forEach((v) {
-        statisticsDataModels.add(new PassengerStatisticsDataModel.fromJson(v));
+        if (v['date'] != null && v['date']?.isNotEmpty == true) {
+          statisticsDataModels
+              .add(new PassengerStatisticsDataModel.fromJson(v));
+        }
       });
     }
     time = json['time'];
@@ -59,10 +63,23 @@ class PassengerStatisticsDataModel {
   DateTime date;
   int value;
   List<int> data;
+  bool showAsMonth = false;
+  PassengerStatisticsDataModel({this.date, this.value});
   PassengerStatisticsDataModel.fromJson(Map<String, dynamic> json) {
-    List<String> tmp = json['date']?.split('.') ?? [];
-    List<int> arr = tmp?.map((item) => int.parse(item))?.toList();
-    date = DateTime(DateTime.now().year, arr?.first, arr?.last);
+    String str = json['date'];
+
+    if (str?.contains('月') == true) {
+      showAsMonth = true;
+      List<String> tmp = str?.split('月') ?? [];
+      int month = int.parse(tmp?.first);
+      date = DateTime(DateTime.now().year, month);
+    } else {
+      showAsMonth = false;
+      List<String> tmp = str?.split('.') ?? [];
+      List<int> arr = tmp?.map((item) => int.parse(item))?.toList();
+      date = DateTime(DateTime.now().year, arr?.first, arr?.last);
+    }
+
     value = json['value'];
     data = json['data'].cast<int>();
   }

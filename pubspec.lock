@@ -134,6 +134,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.9"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.0"
   event_bus:
     dependency: "direct main"
     description:
@@ -169,6 +176,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.10.11"
+  fl_chart:
+    dependency: "direct main"
+    description:
+      name: fl_chart
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.10.0"
   fluro:
     dependency: "direct main"
     description:
@@ -181,6 +195,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_chart:
+    dependency: "direct main"
+    description:
+      name: flutter_chart
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.5"
   flutter_datetime_picker:
     dependency: "direct main"
     description:
@@ -280,6 +301,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.4"
+  image_gallery_saver:
+    dependency: transitive
+    description:
+      name: image_gallery_saver
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.5.0"
   image_picker:
     dependency: "direct main"
     description:
@@ -329,6 +357,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.8"
+  mp_chart:
+    dependency: "direct main"
+    description:
+      name: mp_chart
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.2"
   nested:
     dependency: transitive
     description:
@@ -336,6 +371,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.0.4"
+  optimized_gesture_detector:
+    dependency: transitive
+    description:
+      name: optimized_gesture_detector
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.5"
   path:
     dependency: transitive
     description:
@@ -343,6 +385,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.6.4"
+  path_drawing:
+    dependency: transitive
+    description:
+      name: path_drawing
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.1"
+  path_parsing:
+    dependency: transitive
+    description:
+      name: path_parsing
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.4"
   path_provider:
     dependency: "direct main"
     description:
@@ -448,6 +504,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.3.8"
+  screenshot:
+    dependency: transitive
+    description:
+      name: screenshot
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.1"
   shared_preferences:
     dependency: "direct main"
     description:

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:taojuwu/pages/data_center/widgets/passenger_graph_view.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -140,8 +141,12 @@ class _DataCenterPageState extends State<DataCenterPage> {
             PassengerGraphView(
               type: currentType,
             ),
-            SalesStaticsGraphView(),
-            SalesAnalysisGraphView()
+            SalesStaticsGraphView(
+              type: currentType,
+            ),
+            SalesAnalysisGraphView(
+              type: currentType,
+            )
           ]),
         ));
   }
@@ -330,5 +335,23 @@ class _MoreOptionSheetState extends State<_MoreOptionSheet> {
         ],
       ),
     );
+  }
+}
+
+class DataProvider with ChangeNotifier {
+  int _type;
+  String _date;
+
+  String get date => _date;
+
+  int get type => _type;
+  set type(int t) {
+    _type = t;
+    notifyListeners();
+  }
+
+  set date(String d) {
+    _date = d;
+    notifyListeners();
   }
 }
