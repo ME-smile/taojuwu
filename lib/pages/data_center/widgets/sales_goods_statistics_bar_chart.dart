@@ -41,7 +41,11 @@ class _SalesGoodsStaticsBarChartState extends State<SalesGoodsStaticsBarChart> {
       entries
           .add(BarEntry(x: i.toDouble(), y: model?.money, data: model?.name));
     }
+    if (entries?.isEmpty == true) {
+      entries.add(BarEntry(x: 0.0, y: 0.0, data: ''));
+    }
     BarDataSet dataSet = BarDataSet(entries, 'goods');
+
     dataSet.setColor1(Color(0xFF5C89FF));
     return dataSet;
   }
@@ -51,46 +55,46 @@ class _SalesGoodsStaticsBarChartState extends State<SalesGoodsStaticsBarChart> {
     Description desc = Description()..enabled = false;
 
     controller = BarChartController(
-      axisLeftSettingFunction: (axisLeft, controller) {
-        axisLeft
-          ..setLabelCount2(8, false)
-          ..position = YAxisLabelPosition.OUTSIDE_CHART
-          ..spacePercentTop = 15
-          ..setAxisMinimum(0);
-      },
-      axisRightSettingFunction: (axisRight, controller) {
-        axisRight.enabled = (false);
-      },
-      legendSettingFunction: (legend, controller) {
-        legend
-          ..verticalAlignment = LegendVerticalAlignment.BOTTOM
-          ..orientation = LegendOrientation.HORIZONTAL
-          ..drawInside = false
-          ..shape = LegendForm.SQUARE
-          ..formSize = 20
-          ..textSize = 11
-          ..textColor = ColorUtils.RED
-          ..xEntrySpace = 4;
-      },
-      xAxisSettingFunction: (xAxis, controller) {
-        xAxis
-          ..position = XAxisPosition.BOTTOM
-          ..drawGridLines = false
-          ..setValueFormatter(NameFormatter(entries))
-          ..setGranularity(1.0)
-          ..setLabelCount1(7);
-      },
-      drawBarShadow: false,
-      drawValueAboveBar: true,
-      drawGridBackground: false,
-      dragXEnabled: true,
-      dragYEnabled: true,
-      scaleXEnabled: true,
-      scaleYEnabled: true,
-      pinchZoomEnabled: false,
-      maxVisibleCount: 60,
-      description: desc,
-    );
+        axisLeftSettingFunction: (axisLeft, controller) {
+          axisLeft
+            ..setLabelCount2(8, false)
+            ..position = YAxisLabelPosition.OUTSIDE_CHART
+            ..spacePercentTop = 15
+            ..setAxisMinimum(0);
+        },
+        axisRightSettingFunction: (axisRight, controller) {
+          axisRight.enabled = (false);
+        },
+        legendSettingFunction: (legend, controller) {
+          legend
+            ..verticalAlignment = LegendVerticalAlignment.BOTTOM
+            ..orientation = LegendOrientation.HORIZONTAL
+            ..drawInside = false
+            ..shape = LegendForm.SQUARE
+            ..formSize = 20
+            ..textSize = 11
+            ..textColor = ColorUtils.RED
+            ..xEntrySpace = 4;
+        },
+        xAxisSettingFunction: (xAxis, controller) {
+          xAxis
+            ..position = XAxisPosition.BOTTOM
+            ..drawGridLines = false
+            ..setValueFormatter(NameFormatter(entries))
+            ..setGranularity(1.0)
+            ..setLabelCount1(7);
+        },
+        drawBarShadow: false,
+        drawValueAboveBar: true,
+        drawGridBackground: false,
+        dragXEnabled: true,
+        dragYEnabled: true,
+        scaleXEnabled: true,
+        scaleYEnabled: true,
+        pinchZoomEnabled: false,
+        maxVisibleCount: 60,
+        description: desc,
+        noDataText: '暂无数据');
     controller.data = BarData([initDataset()]);
   }
 

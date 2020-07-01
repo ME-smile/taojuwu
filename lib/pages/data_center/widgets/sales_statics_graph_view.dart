@@ -7,6 +7,7 @@ import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_future_builder.dart';
 
 import 'sales_analysis_line_chart.dart';
+import 'sales_goods_statistics_bar_chart.dart';
 
 class SalesStaticsGraphView extends StatefulWidget {
   final int type;
@@ -78,9 +79,9 @@ class _SalesStaticsGraphViewState extends State<SalesStaticsGraphView> {
                     date: date,
                   ),
                   _TextGraphView(),
-                  // SalesGoodsStaticsBarChart(
-                  //   goodsList: goodsList,
-                  // ),
+                  SalesGoodsStaticsBarChart(
+                    goodsList: goodsList,
+                  ),
                   SalesAnalysisLineChart(
                     models: models,
                     type: widget.type,

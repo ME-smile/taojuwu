@@ -1,7 +1,7 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/models/zy_response.dart';
-import 'package:taojuwu/services/otp_service.dart';
+// import 'package:taojuwu/models/zy_response.dart';
+// import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -100,14 +100,15 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
                       if (!RegexUtil.isMobileExact(tel)) {
                         return CommonKit.showInfo('请输入正确的手机号');
                       }
-                      return OTPService.getSms(context, {'mobile': tel})
-                          .then((ZYResponse response) {
-                        if (response.valid) {
-                          CommonKit.showToast('验证码发送成功,请注意查收');
-                        } else {
-                          CommonKit.showToast('验证码发送失败,请稍后重试');
-                        }
-                      }).catchError((err) => err);
+                      return CommonKit.showToast('暂未开通注册');
+                      // return OTPService.getSms(context, {'mobile': tel})
+                      //     .then((ZYResponse response) {
+                      //   if (response.valid) {
+                      //     CommonKit.showToast('验证码发送成功,请注意查收');
+                      //   } else {
+                      //     CommonKit.showToast('验证码发送失败,请稍后重试');
+                      //   }
+                      // }).catchError((err) => err);
                     },
                   ),
                   enabledBorder: UnderlineInputBorder(

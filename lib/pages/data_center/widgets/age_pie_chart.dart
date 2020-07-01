@@ -35,6 +35,8 @@ class _AgePieChartState extends State<AgePieChart> {
     return ageList.reduce((int a, int b) => a + b);
   }
 
+  bool get hasData => total == 0;
+
   PieDataSet initDataset() {
     List arr = ageList;
     Map dict = {
@@ -44,10 +46,10 @@ class _AgePieChartState extends State<AgePieChart> {
       3: '50岁以上',
     };
 
-    List<CustomerAgePieSector> list = total == 0
+    List<CustomerAgePieSector> list = hasData
         ? [
             CustomerAgePieSector(
-                color: Colors.black, index: -1, label: '暂无数据', count: 0)
+                color: Colors.black, index: -1, label: '暂无数据', count: 100)
           ]
         : List.generate(4, (int i) {
             return CustomerAgePieSector(
@@ -55,21 +57,22 @@ class _AgePieChartState extends State<AgePieChart> {
           });
 
     List<PieEntry> entries = [];
-    List<Color> colors = [];
+    List<Color> colors = hasData
+        ? [Colors.black]
+        : [
+            Color(0xFFC5CAE9),
+            Color(0xFF303F9F),
+            Color(0xFF212121),
+            Color(0xFF536DFE)
+          ];
     list.forEach((item) {
       entries.add(PieEntry(
         label: item.label,
         value: item.count.toDouble(),
       ));
-      colors.add(item.color);
     });
     PieDataSet dataSet = new PieDataSet(entries, "Election Results");
     dataSet.setColors1(colors);
-    dataSet.setSelectionShift(0);
-
-    dataSet.setValueLinePart1OffsetPercentage(80.0);
-    dataSet.setValueLinePart1Length(0.2);
-    dataSet.setValueLinePart2Length(0.4);
     return dataSet;
   }
 
@@ -77,8 +80,8 @@ class _AgePieChartState extends State<AgePieChart> {
 
   @override
   void initState() {
-    super.initState();
     initController();
+    super.initState();
   }
 
   void initController() {
@@ -115,6 +118,10 @@ class _AgePieChartState extends State<AgePieChart> {
         // transparentCircleRadiusPercent: 61,
         highLightPerTapEnabled: true,
         description: desc);
+    controller.data = PieData(initDataset())
+      ..setValueFormatter(formatter)
+      ..setValueTextSize(11)
+      ..setValueTextColor(ColorUtils.WHITE);
     controller.data = PieData(initDataset())
       ..setValueFormatter(formatter)
       ..setValueTextSize(11)

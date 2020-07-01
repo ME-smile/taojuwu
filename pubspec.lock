@@ -36,13 +36,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.0"
-  bezier_chart:
-    dependency: "direct main"
-    description:
-      name: bezier_chart
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.17+1"
   boolean_selector:
     dependency: transitive
     description:
@@ -57,20 +50,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.2"
-  charts_common:
-    dependency: transitive
-    description:
-      name: charts_common
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.9.0"
-  charts_flutter:
-    dependency: "direct main"
-    description:
-      name: charts_flutter
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.9.0"
   city_pickers:
     dependency: "direct main"
     description:
@@ -134,13 +113,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.0.9"
-  equatable:
-    dependency: transitive
-    description:
-      name: equatable
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.2.0"
   event_bus:
     dependency: "direct main"
     description:
@@ -176,13 +148,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.10.11"
-  fl_chart:
-    dependency: "direct main"
-    description:
-      name: fl_chart
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.10.0"
   fluro:
     dependency: "direct main"
     description:
@@ -195,13 +160,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_chart:
-    dependency: "direct main"
-    description:
-      name: flutter_chart
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.1.5"
   flutter_datetime_picker:
     dependency: "direct main"
     description:
@@ -329,13 +287,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.16.0"
-  logging:
-    dependency: transitive
-    description:
-      name: logging
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.11.4"
   lpinyin:
     dependency: transitive
     description:
