@@ -38,9 +38,9 @@ class SaleStatisticsDataModelWrapper {
 }
 
 class SalesGoodsModel {
-  String name;
-  var money;
-  SalesGoodsModel(this.name, this.money);
+  final String name;
+  final money;
+  const SalesGoodsModel(this.name, this.money);
 }
 
 class SaleStatisticsDataModel {

@@ -38,34 +38,56 @@ class _OrderPieChartState extends State<OrderPieChart> {
   double get convertionRate => widget.convertionRate;
   double get unconvertionRate => widget.uncovertionRate;
 
+  double get total => convertionRate + unconvertionRate;
+  bool get hasData => total != 0;
+
   @override
   void initState() {
     super.initState();
+
     initController();
   }
 
-  PieDataSet initDataset() {
-    List<ConvertionRateData> list = [
-      ConvertionRateData(
-        convertionRate,
-        '转单率',
-        color: Color(0xFF5C89FF),
-      ),
-      ConvertionRateData(unconvertionRate, '非转单率', color: Colors.black),
-    ];
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void beforeBuild() {
+    controller.animator
+      ..reset()
+      ..animateY2(1400, Easing.EaseInOutQuad);
+    PieData data = controller?.data;
+    data.setDataSet(createDataset());
+
+    // data.notifyDataChanged();
+  }
+
+  PieDataSet createDataset() {
+    List<ConvertionRateData> list = hasData
+        ? [
+            ConvertionRateData(
+              convertionRate,
+              '转单率',
+              color: Color(0xFF5C89FF),
+            ),
+            ConvertionRateData(unconvertionRate, '非转单率', color: Colors.black),
+          ]
+        : [ConvertionRateData(1.0, '暂无数据', color: Colors.black)];
     List<Color> colors = [];
     List<PieEntry> entries = [];
+
     list.forEach((item) {
       entries.add(PieEntry(label: item.text, value: item.percentage));
       colors.add(item.color);
     });
     PieDataSet dataSet = new PieDataSet(entries, "Election Results");
     dataSet.setColors1(colors);
-    dataSet.setSelectionShift(0);
+    // dataSet.setSelectionShift(0);
 
-    dataSet.setValueLinePart1OffsetPercentage(80.0);
-    dataSet.setValueLinePart1Length(0.2);
-    dataSet.setValueLinePart2Length(0.4);
+    // dataSet.setValueLinePart1OffsetPercentage(80.0);
+    // dataSet.setValueLinePart1Length(0.2);
+    // dataSet.setValueLinePart2Length(0.4);
     return dataSet;
   }
 
@@ -93,10 +115,10 @@ class _OrderPieChartState extends State<OrderPieChart> {
         rotateEnabled: true,
         drawHole: false,
         drawCenterText: true,
-        extraLeftOffset: 20,
-        extraTopOffset: 10,
-        extraRightOffset: 20,
-        extraBottomOffset: 10,
+        extraLeftOffset: 0,
+        extraTopOffset: 0,
+        extraRightOffset: 0,
+        extraBottomOffset: 0,
         usePercentValues: true,
         holeRadiusPercent: 10,
         drawMarkers: true,
@@ -105,7 +127,7 @@ class _OrderPieChartState extends State<OrderPieChart> {
         // transparentCircleRadiusPercent: 61,
         highLightPerTapEnabled: true,
         description: desc);
-    controller.data = PieData(initDataset())
+    controller.data = PieData(createDataset())
       ..setValueFormatter(formatter)
       ..setValueTextSize(11)
       ..setValueTextColor(ColorUtils.WHITE);
@@ -113,21 +135,11 @@ class _OrderPieChartState extends State<OrderPieChart> {
 
   @override
   Widget build(BuildContext context) {
+    beforeBuild();
     return Container(
-      width: MediaQuery.of(context).size.width,
-      child: AspectRatio(
-        aspectRatio: 1.5,
-        child: _initPieChart(),
-      ),
+      height: 300,
+      width: 300,
+      child: PieChart(controller),
     );
-  }
-
-  Widget _initPieChart() {
-    var pieChart = PieChart(controller);
-
-    controller.animator
-      ..reset()
-      ..animateY2(1400, Easing.EaseInOutQuad);
-    return pieChart;
   }
 }

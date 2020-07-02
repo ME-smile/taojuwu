@@ -20,23 +20,44 @@ import '../formatter.dart';
 class PassengerFlowLineChart extends StatefulWidget {
   final List<PassengerStatisticsDataModel> models;
   final int type;
-  PassengerFlowLineChart({Key key, this.models, this.type}) : super(key: key);
+  PassengerFlowLineChart({Key key, this.models: const [], this.type})
+      : super(key: key);
 
   @override
   _PassengerFlowLineChartState createState() => _PassengerFlowLineChartState();
 }
 
 class _PassengerFlowLineChartState extends State<PassengerFlowLineChart> {
-  List<PassengerStatisticsDataModel> get models => widget.models;
+  List<PassengerStatisticsDataModel> get models => widget.models ?? [];
   int get type => widget.type;
   List<Entry> entries = [];
-  LineDataSet initDataset() {
+
+  LineDataSet createDataset() {
+    List<Entry> list = [];
+
     for (int i = 0; i < models?.length ?? 0; i++) {
+      print(
+          '${models[i].date}--------${models[i].data}---客流量---------------------');
+
       PassengerStatisticsDataModel model = models[i];
-      entries.add(
-        Entry(x: i.toDouble(), y: model?.value?.toDouble(), data: model?.date),
-      );
+      print(
+          'x: ${i.toDouble()}---------y:${model?.value?.toDouble()}------data:${model?.date}');
+      Entry entry = Entry(
+          x: i.toDouble(), y: model?.value?.toDouble(), data: model?.date);
+      list.add(entry);
+      // if (entries.contains(entry) == false) {
+
+      // }
     }
+    entries = list;
+    print(entries.length);
+
+    // if (entries?.isEmpty == true) {
+    //   entries.add(
+    //     Entry(x: 0.0, y: 0.0, data: DateTime.now()),
+    //   );
+    // }
+
     LineDataSet dataSet = LineDataSet(entries, 'passenger-flow');
 
     dataSet.setMode(Mode.CUBIC_BEZIER);
@@ -60,7 +81,7 @@ class _PassengerFlowLineChartState extends State<PassengerFlowLineChart> {
   LineChartController controller;
 
   void initController() {
-    Description desc = Description()..enabled = true;
+    Description desc = Description()..enabled = false;
     controller = LineChartController(
         // marker: ,
         drawMarkers: true,
@@ -82,7 +103,6 @@ class _PassengerFlowLineChartState extends State<PassengerFlowLineChart> {
           xAxis
             ..textColor = Colors.black
             ..drawGridLines = (false)
-            ..setLabelCount1(models?.length)
             ..position = XAxisPosition.BOTTOM
             ..setValueFormatter(DateTimeFormatter(type: type, entries: entries))
             ..setGranularity(1);
@@ -105,35 +125,73 @@ class _PassengerFlowLineChartState extends State<PassengerFlowLineChart> {
         scaleYEnabled: false,
         pinchZoomEnabled: true,
         description: desc);
-
-    controller.data = LineData.fromList([initDataset()])
-      ..setValueTextSize(9)
-      ..setDrawValues(false)
-      ..setValueTextColor(Colors.black);
   }
 
-  Widget _initLineChart() {
-    var lineChart = LineChart(controller);
+  void beforeBuild() {
+    initController();
+    controller?.axisLeftSettingFunction = (axisLeft, controller) {
+      axisLeft
+        ..textColor = (ColorUtils.BLACK)
+        ..position = (YAxisLabelPosition.OUTSIDE_CHART)
+        ..axisLineWidth = (.5)
+        ..drawGridLines = (false)
+        ..setAxisMinValue(0)
+        ..setLabelCount1(models?.length)
+        ..axisLineColor = (ColorUtils.BLACK);
+    };
+    controller?.xAxisSettingFunction = (xAxis, controller) {
+      xAxis
+        ..textColor = Colors.black
+        ..drawGridLines = (false)
+        ..position = XAxisPosition.BOTTOM
+        ..setLabelCount1(models?.length)
+        ..setValueFormatter(DateTimeFormatter(type: type, entries: entries))
+        ..setGranularity(1);
+      // ..setValueFormatter((controller));
+    };
+    controller?.legendSettingFunction = (legend, controller) {
+      (controller as LineChartController).setViewPortOffsets(0, 0, 0, 0);
+      legend.enabled = (false);
+      var data = (controller as LineChartController).data;
+      if (data != null) {
+        var formatter = data.getDataSetByIndex(0).getFillFormatter();
+        if (formatter is A) {
+          formatter.setPainter(controller);
+        }
+      }
+    };
+
+    controller.data = LineData();
+    controller?.data?.setDataSet(createDataset());
+  }
+
+  @override
+  void didUpdateWidget(PassengerFlowLineChart oldWidget) {
     controller.animator
       ..reset()
       ..animateXY1(1000, 1000);
-    return lineChart;
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   void initState() {
-    initController();
     super.initState();
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    beforeBuild();
     return Container(
       padding: EdgeInsets.all(20),
       width: MediaQuery.of(context).size.width,
       child: AspectRatio(
         aspectRatio: 2,
-        child: _initLineChart(),
+        child: LineChart(controller),
       ),
     );
   }

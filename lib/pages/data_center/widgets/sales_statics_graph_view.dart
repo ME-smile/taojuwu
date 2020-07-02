@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/models/data_center/sale_statistics_data_model.dart';
 import 'package:taojuwu/pages/data_center/widgets/date_tag.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/zy_future_builder.dart';
-
+import 'package:taojuwu/widgets/v_spacing.dart';
 import 'sales_analysis_line_chart.dart';
 import 'sales_goods_statistics_bar_chart.dart';
+import 'share_data_widget.dart';
 
 class SalesStaticsGraphView extends StatefulWidget {
   final int type;
@@ -19,78 +18,70 @@ class SalesStaticsGraphView extends StatefulWidget {
 
 class _SalesStaticsGraphViewState extends State<SalesStaticsGraphView> {
   int get type => widget.type;
-  Widget buildLoadingWidget(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
 
-    return SingleChildScrollView(
-      child: Container(
-        margin: EdgeInsets.symmetric(
-            vertical: UIKit.height(30), horizontal: UIKit.width(20)),
-        color: themeData.primaryColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            _TextGraphView(),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: UIKit.height(20)),
-              child: Text(
-                '各类目销量数据',
-                style:
-                    themeData.textTheme.title.copyWith(fontSize: UIKit.sp(24)),
-              ),
-            ),
+  void fetchData() {
+    Map<String, dynamic> params = ShareDataWidget.of(context).data;
+    OTPService.saleData(context, params: params)
+        .then((SaleStatisticsDataModelResp response) {
+      if (response.valid) {
+        handleData(response);
+      }
+    }).catchError((err) => err);
+  }
 
-            Text(
-              '近一年销售分析',
-              style: themeData.textTheme.title.copyWith(fontSize: UIKit.sp(24)),
-            ),
-            // Container(
-            //   height: UIKit.height(360),
-            //   child: DonutAutoLabelChart.withSampleData(),
-            // ),
-          ],
-        ),
-      ),
-    );
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fetchData();
+  }
+
+  List<SalesGoodsModel> goodsList;
+  List<SaleStatisticsDataModel> models;
+  String date;
+  void handleData(SaleStatisticsDataModelResp response) {
+    SaleStatisticsDataModelWrapper wrapper = response?.data;
+    goodsList = wrapper?.goodsList;
+    models = wrapper?.models;
+    date = wrapper?.time;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     // ThemeData themeData = Theme.of(context);
-    return ZYFutureBuilder(
-        futureFunc: OTPService.saleData,
-        params: {
-          'type': widget.type,
-          'date': '',
-        },
-        loadingWidget: buildLoadingWidget(context),
-        builder: (BuildContext context, SaleStatisticsDataModelResp response) {
-          SaleStatisticsDataModelWrapper wrapper = response?.data;
-          List<SalesGoodsModel> goodsList = wrapper?.goodsList;
-          List<SaleStatisticsDataModel> models = wrapper?.models;
-          String date = wrapper?.time;
-          return Container(
-            margin: EdgeInsets.symmetric(
-                vertical: UIKit.height(30), horizontal: UIKit.width(20)),
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  DateTag(
-                    date: date,
-                  ),
-                  _TextGraphView(),
-                  SalesGoodsStaticsBarChart(
-                    goodsList: goodsList,
-                  ),
-                  SalesAnalysisLineChart(
-                    models: models,
-                    type: widget.type,
-                  )
-                ],
-              ),
+    return Container(
+      child: Column(
+        children: <Widget>[
+          DateTag(
+            date: date,
+          ),
+          Expanded(
+              child: SingleChildScrollView(
+            key: UniqueKey(),
+            child: ListBody(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _TextGraphView(),
+                SalesGoodsStaticsBarChart(
+                  goodsList: goodsList,
+                ),
+                SalesAnalysisLineChart(
+                  models: models,
+                  type: widget.type,
+                ),
+                VSpacing(20),
+                Offstage(
+                  offstage: true,
+                  child: Text(ShareDataWidget.of(context).data.toString()),
+                )
+              ],
             ),
-          );
-        });
+          ))
+        ],
+      ),
+    );
   }
 }
 

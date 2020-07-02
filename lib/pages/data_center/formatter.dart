@@ -10,6 +10,7 @@ import 'package:mp_chart/mp/core/value_formatter/value_formatter.dart';
 class DateTimeFormatter extends ValueFormatter {
   String getformatDateTime(Entry entry) {
     DateTime dateTime = entry.mData;
+
     return type == 4
         ? DateUtil.formatDate(dateTime, format: 'M月')
         : DateUtil.formatDate(dateTime, format: 'M.d');
@@ -20,7 +21,11 @@ class DateTimeFormatter extends ValueFormatter {
   DateTimeFormatter({this.type, this.entries});
   @override
   String getAxisLabel(double value, AxisBase axis) {
+    // if (entries?.length == 1) {
+    //   return getformatDateTime(entries?.first);
+    // }
     return getformatDateTime(entries[value.toInt()]);
+    // return getformatDateTime(entries[value.toInt()]);
   }
 }
 

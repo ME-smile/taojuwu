@@ -49,7 +49,7 @@ class _AgePieChartState extends State<AgePieChart> {
     List<CustomerAgePieSector> list = hasData
         ? [
             CustomerAgePieSector(
-                color: Colors.black, index: -1, label: '暂无数据', count: 100)
+                color: Colors.black, index: -1, label: '暂无数据', count: 10)
           ]
         : List.generate(4, (int i) {
             return CustomerAgePieSector(

@@ -20,12 +20,21 @@ class PassengerStatisticsDataModelDataWrapper {
 
     if (json['week'] != null) {
       statisticsDataModels = new List<PassengerStatisticsDataModel>();
-      json['week'].forEach((v) {
-        if (v['date'] != null && v['date']?.isNotEmpty == true) {
+      List list = json['week'];
+      for (int i = 0; i < list.length ?? 0; i++) {
+        Map json = list[i];
+        json['index'] = i;
+        if (json['date'] != null && json['date']?.isNotEmpty == true) {
           statisticsDataModels
-              .add(new PassengerStatisticsDataModel.fromJson(v));
+              .add(new PassengerStatisticsDataModel.fromJson(json));
         }
-      });
+      }
+      // json['week'].forEach((v) {
+      //   if (v['date'] != null && v['date']?.isNotEmpty == true) {
+      //     statisticsDataModels
+      //         .add(new PassengerStatisticsDataModel.fromJson(v));
+      //   }
+      // });
     }
     time = json['time'];
   }
@@ -63,6 +72,7 @@ class PassengerStatisticsDataModel {
   DateTime date;
   int value;
   List<int> data;
+  int index;
   bool showAsMonth = false;
   PassengerStatisticsDataModel({this.date, this.value});
   PassengerStatisticsDataModel.fromJson(Map<String, dynamic> json) {
@@ -79,7 +89,7 @@ class PassengerStatisticsDataModel {
       List<int> arr = tmp?.map((item) => int.parse(item))?.toList();
       date = DateTime(DateTime.now().year, arr?.first, arr?.last);
     }
-
+    index = json['index'];
     value = json['value'];
     data = json['data'].cast<int>();
   }

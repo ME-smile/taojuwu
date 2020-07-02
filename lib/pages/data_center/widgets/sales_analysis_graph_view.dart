@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/data_center/sale_analysis_data_model.dart';
+import 'package:taojuwu/pages/data_center/widgets/style_bar_chart.dart';
 import 'package:taojuwu/pages/data_center/widgets/title_tag.dart';
 import 'package:taojuwu/services/otp_service.dart';
 
@@ -25,7 +26,7 @@ class _SalesAnalysisGraphViewState extends State<SalesAnalysisGraphView> {
       builder: (BuildContext context, SaleAnalysisDataModelResp response) {
         SaleAnalysisDataModelWrapper wrapper = response?.data;
         List ageList = wrapper?.ageList;
-        // List<SaleGoodsCount> goodsList = wrapper?.goodsList;
+        List<SaleGoodsCount> goodsList = wrapper?.goodsList;
         List genderList = wrapper?.genderList;
         String date = wrapper?.time;
         return SingleChildScrollView(
@@ -39,6 +40,9 @@ class _SalesAnalysisGraphViewState extends State<SalesAnalysisGraphView> {
                   ageList: ageList,
                   genderList: genderList,
                 ),
+                StyleBarChart(
+                  goodsList: goodsList,
+                )
               ],
             ),
           ),

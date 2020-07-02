@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:taojuwu/pages/data_center/widgets/passenger_graph_view.dart';
+import 'package:taojuwu/pages/data_center/widgets/share_data_widget.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/bottom_picker.dart';
@@ -88,6 +89,17 @@ class _DataCenterPageState extends State<DataCenterPage> {
     return 1;
   }
 
+  String get currentDate {
+    return '';
+  }
+
+  Map<String, dynamic> get shareData {
+    return {
+      'type': currentType,
+      'date': currentDate,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -137,17 +149,20 @@ class _DataCenterPageState extends State<DataCenterPage> {
                 ),
                 preferredSize: Size.fromHeight(60)),
           ),
-          body: TabBarView(children: [
-            PassengerGraphView(
-              type: currentType,
-            ),
-            SalesStaticsGraphView(
-              type: currentType,
-            ),
-            SalesAnalysisGraphView(
-              type: currentType,
-            )
-          ]),
+          body: ShareDataWidget(
+            data: shareData,
+            child: TabBarView(children: [
+              PassengerGraphView(
+                type: currentType,
+              ),
+              SalesStaticsGraphView(
+                type: currentType,
+              ),
+              SalesAnalysisGraphView(
+                type: currentType,
+              )
+            ]),
+          ),
         ));
   }
 }

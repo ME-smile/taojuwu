@@ -21,7 +21,7 @@ class DateTag extends StatelessWidget {
             padding: EdgeInsets.symmetric(
                 vertical: UIKit.height(10), horizontal: UIKit.width(20)),
             decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-            child: Text(date),
+            child: Text(date ?? '--——--'),
           ),
           Expanded(
               child: Container(
