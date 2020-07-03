@@ -25,29 +25,29 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _pwdController = TextEditingController();
-  final TextEditingController _smsController = TextEditingController();
+  TextEditingController _phoneController;
+  TextEditingController _pwdController;
+  TextEditingController _smsController;
 
-  FocusNode _phoneNode;
-  FocusNode _pwdNode;
-  FocusNode _smsNode;
   UserProvider _userProvider;
   bool _isPwdMode = false;
+  String get tel => _phoneController?.text;
+
+  bool get isValidTel {
+    return RegexUtil.isMobileExact(tel);
+  }
 
   @override
   void initState() {
     super.initState();
     _userProvider = Provider.of<UserProvider>(context, listen: false);
-    _phoneNode = FocusNode();
-    _pwdNode = FocusNode();
-    _smsNode = FocusNode();
+    _phoneController = TextEditingController();
+    _pwdController = TextEditingController();
+    _smsController = TextEditingController();
   }
 
   void unfocus() {
-    _phoneNode?.unfocus();
-    _pwdNode?.unfocus();
-    _smsNode?.unfocus();
+    FocusManager.instance.primaryFocus.unfocus();
   }
 
   @override
@@ -56,9 +56,7 @@ class _LoginPageState extends State<LoginPage> {
     _phoneController?.dispose();
     _pwdController?.dispose();
     _smsController?.dispose();
-    _phoneNode?.dispose();
-    _pwdNode?.dispose();
-    _smsNode?.dispose();
+
     // _isPwdMode?.dispose();
   }
 
@@ -217,7 +215,6 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 TextField(
                   controller: _phoneController,
-                  focusNode: _phoneNode,
                   decoration: InputDecoration(
                       hintText: '请输入手机号',
                       enabledBorder: UnderlineInputBorder(
@@ -239,34 +236,34 @@ class _LoginPageState extends State<LoginPage> {
                 _isPwdMode
                     ? TextField(
                         controller: _smsController,
-                        focusNode: _smsNode,
                         decoration: InputDecoration(
                             hintText: '请输入验证码',
                             suffixIcon: SendSmsButton(
-                              callback: () async {
-                                String tel = _phoneController.text;
-                                if (tel.trim().isEmpty) {
-                                  return CommonKit.showInfo('手机号不能为空哦');
-                                }
-                                if (!RegexUtil.isMobileExact(tel)) {
-                                  return CommonKit.showInfo('请输入正确的手机号');
-                                }
-                                return OTPService.getSms(
-                                        context, {'mobile': tel})
-                                    .then((ZYResponse response) {
-                                  if (response.valid) {
-                                    CommonKit.showToast('验证码发送成功,请注意查收');
-                                  } else {
-                                    CommonKit.showToast('验证码发送失败,请稍后重试');
-                                  }
-                                }).catchError((err) => err);
+                              isActive: isValidTel,
+                              callback: () {
+                                CommonKit.showToast('暂未开通注册');
+                                // String tel = _phoneController.text;
+                                // if (tel.trim().isEmpty) {
+                                //   return CommonKit.showInfo('手机号不能为空哦');
+                                // }
+                                // if (!RegexUtil.isMobileExact(tel)) {
+                                //   return CommonKit.showInfo('请输入正确的手机号');
+                                // }
+                                // return OTPService.getSms(
+                                //         context, {'mobile': tel})
+                                //     .then((ZYResponse response) {
+                                //   if (response.valid) {
+                                //     CommonKit.showToast('验证码发送成功,请注意查收');
+                                //   } else {
+                                //     CommonKit.showToast('验证码发送失败,请稍后重试');
+                                //   }
+                                // }).catchError((err) => err);
                               },
                             )),
                       )
                     : TextField(
                         obscureText: true,
                         controller: _pwdController,
-                        focusNode: _pwdNode,
                         decoration: InputDecoration(
                             hintText: '请输入密码',
                             suffixIcon: FlatButton(

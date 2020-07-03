@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 
 class SendSmsButton extends StatefulWidget {
   final Function callback;
-  SendSmsButton({Key key, this.callback}) : super(key: key);
+  final bool isActive;
+  SendSmsButton({Key key, this.callback, this.isActive: true})
+      : super(key: key);
 
   @override
   _SendSmsButtonState createState() => _SendSmsButtonState();
@@ -45,19 +47,21 @@ class _SendSmsButtonState extends State<SendSmsButton> {
                     '获取验证码',
                     style: accentTextTheme.button,
                   ),
-                  onPressed: () {
-                    hasSend?.value = true;
-                    timer = Timer.periodic(const Duration(seconds: 1),
-                        (Timer timer) {
-                      if (countDown.value <= 0) {
-                        hasSend?.value = false;
-                        countDown.value = 120;
-                      } else {
-                        countDown.value--;
-                      }
-                    });
-                    widget.callback();
-                  },
+                  onPressed: widget.isActive
+                      ? () {
+                          // hasSend?.value = true;
+                          // timer = Timer.periodic(const Duration(seconds: 1),
+                          //     (Timer timer) {
+                          //   if (countDown.value <= 0) {
+                          //     hasSend?.value = false;
+                          //     countDown.value = 120;
+                          //   } else {
+                          //     countDown.value--;
+                          //   }
+                          // });
+                          widget.callback();
+                        }
+                      : null,
                 )
               : ValueListenableBuilder(
                   valueListenable: countDown,
