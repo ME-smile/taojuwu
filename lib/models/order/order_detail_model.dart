@@ -167,6 +167,7 @@ class OrderDetailModel {
   bool get hasAlreadyCancel => orderStatus == 9;
   // bool get hasCancel
   bool get hasCanceled => orderStatus == 9;
+  bool get isWaitingToInstall => orderStatus == 7;
   bool get hasFinished =>
       orderStatus >= 8 && [14, 9].contains(orderStatus) == false;
   bool get hasPaid => orderStatus > 4;

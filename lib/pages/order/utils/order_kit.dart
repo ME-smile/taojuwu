@@ -638,10 +638,14 @@ class OrderKit {
     if (provider?.hasCanceled == true) {
       return [];
     }
+
     if (provider?.hasFinished == true) {
       return [
         AfterSaleButton(),
       ];
+    }
+    if (provider?.isWaitingToInstall == true) {
+      return [];
     }
     if (provider?.hasProducted == true && provider?.hasInstalled == false) {
       return [

@@ -22,7 +22,7 @@ class OrderDetailProvider with ChangeNotifier {
       model?.tailMoney != null ? double.parse(model?.tailMoney) : 0.0;
 
   bool get hasRemark => changePriceRemark?.isNotEmpty == true;
-
+  bool get isWaitingToInstall => model?.isWaitingToInstall;
   double get afterChangeTailMoney {
     if (_deltaPrice == null) {
       return tailPrice;

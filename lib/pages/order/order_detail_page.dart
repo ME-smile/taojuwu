@@ -375,7 +375,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    TextTheme textTheme = themeData.textTheme;
+
     TextTheme accentTextTheme = themeData.accentTextTheme;
     return isLoading
         ? LoadingCircle()
@@ -388,13 +388,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   appBar: AppBar(
                     title: Text('订单详情'),
                     centerTitle: true,
-                    actions: <Widget>[
-                      FlatButton(
-                          onPressed: () {
-                            RouteHandler.goLogisticsPage(context, id);
-                          },
-                          child: Text('物流'))
-                    ],
+                    // actions: <Widget>[
+                    //   FlatButton(
+                    //       onPressed: () {
+                    //         RouteHandler.goLogisticsPage(context, id);
+                    //       },
+                    //       child: Text('物流'))
+                    // ],
                   ),
                   body: SingleChildScrollView(
                     child: Column(
