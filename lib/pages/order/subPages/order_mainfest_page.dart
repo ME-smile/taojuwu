@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:taojuwu/models/order/order_mainfest_model.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/copy_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_future_builder.dart';
 
@@ -32,21 +31,7 @@ class OrderMainfestPage extends StatelessWidget {
             children: <Widget>[
               Text('订单编号:${model?.orderNo ?? ''}',
                   style: textTheme.caption.copyWith(fontSize: UIKit.sp(26))),
-              InkWell(
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: UIKit.width(20),
-                  ),
-                  child: Text(
-                    '复制',
-                    style: textTheme.caption.copyWith(fontSize: UIKit.sp(26)),
-                  ),
-                ),
-                onTap: () {
-                  Clipboard.setData(ClipboardData(text: model?.orderNo ?? ''));
-                  CommonKit.showToast('已复制到剪切板');
-                },
-              )
+              CopyButton(model?.orderNo ?? '')
             ],
           )
         ],

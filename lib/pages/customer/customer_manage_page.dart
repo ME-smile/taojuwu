@@ -28,14 +28,22 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
   };
 
   bool isLoading = true;
-  ScrollController controller;
+  double height = 0;
+
   @override
   void initState() {
     super.initState();
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData();
     });
-    controller = ScrollController();
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      // RenderObject renderObject = headerBuildContext.findRenderObject();
+      setState(() {
+        print('啦啦啦啦啦');
+        // height = renderObject.semanticBounds.size.height;
+        print(height);
+      });
+    });
   }
 
   void fetchData() {
@@ -57,12 +65,6 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
         });
       }
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    controller?.dispose();
   }
 
   static List<Map<String, dynamic>> entrys = [
@@ -130,6 +132,8 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
     });
   }
 
+  static const ENTRY_HEIGHT = 50.0;
+
   Widget _buildSusWidget(String susTag) {
     susTag = (susTag == "★" ? "热门城市" : susTag);
     return Container(
@@ -190,6 +194,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
 
   @override
   Widget build(BuildContext context) {
+    print('build方法');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -203,53 +208,43 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
       ),
       body: isLoading
           ? LoadingCircle()
-          : SingleChildScrollView(
-              controller: controller,
-              child: Container(
-                height: MediaQuery.of(context).size.height,
-                child: Container(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(left: 15.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(entrys.length, (int i) {
-                            final item = entrys[i];
-                            return MenuEntry(
-                              title: item['title'],
-                              iconPath: item['iconPath'],
-                              number: item['number'],
-                              callback: () {
-                                RouteHandler.goCustomerTablePage(
-                                    context, item['type'],
-                                    flag: widget.flag,
-                                    replace: widget.flag == 1);
-                              },
-                            );
-                          }),
-                        ),
+          : Container(
+              child: AzListView(
+              data: beans,
+              topData: hotBeans,
+              header: AzListViewHeader(
+                  height: (ENTRY_HEIGHT * entrys.length).toInt(),
+                  builder: (BuildContext ctx) {
+                    return Container(
+                      // alignment: Alignment.centerLeft,
+                      // padding: const EdgeInsets.only(left: 15.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: List.generate(entrys.length, (int i) {
+                          final item = entrys[i];
+                          return MenuEntry(
+                            title: item['title'],
+                            iconPath: item['iconPath'],
+                            number: item['number'],
+                            showBorder: i != entrys.length - 1,
+                            callback: () {
+                              RouteHandler.goCustomerTablePage(
+                                  context, item['type'],
+                                  flag: widget.flag, replace: widget.flag == 1);
+                            },
+                          );
+                        }),
                       ),
-                      Flexible(
-                          child: AzListView(
-                        data: beans,
-                        topData: hotBeans,
-
-                        itemBuilder: (context, model) => _buildListItem(model),
-                        suspensionWidget: _buildSusWidget(_suspensionTag),
-                        isUseRealIndex: true,
-                        itemHeight: _itemHeight,
-                        suspensionHeight: _suspensionHeight,
-                        onSusTagChanged: _onSusTagChanged,
-                        // showCenterTip: false,
-                      )),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+                    );
+                  }),
+              itemBuilder: (context, model) => _buildListItem(model),
+              suspensionWidget: _buildSusWidget(_suspensionTag),
+              isUseRealIndex: true,
+              itemHeight: _itemHeight,
+              suspensionHeight: _suspensionHeight,
+              onSusTagChanged: _onSusTagChanged,
+              // showCenterTip: false,
+            )),
     );
   }
 }

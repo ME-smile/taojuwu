@@ -1,6 +1,5 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
@@ -13,11 +12,10 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
 
-import 'package:taojuwu/utils/common_kit.dart';
-
 import 'package:taojuwu/singleton/target_client.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/copy_button.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 
@@ -390,6 +388,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   appBar: AppBar(
                     title: Text('订单详情'),
                     centerTitle: true,
+                    actions: <Widget>[
+                      FlatButton(
+                          onPressed: () {
+                            RouteHandler.goLogisticsPage(context, id);
+                          },
+                          child: Text('物流'))
+                    ],
                   ),
                   body: SingleChildScrollView(
                     child: Column(
@@ -467,22 +472,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 children: <Widget>[
                                   _orderInfoBar(
                                       context, '订单编号', model?.orderNo ?? ''),
-                                  InkWell(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                        left: UIKit.width(20),
-                                      ),
-                                      child: Text(
-                                        '复制',
-                                        style: textTheme.caption,
-                                      ),
-                                    ),
-                                    onTap: () {
-                                      Clipboard.setData(ClipboardData(
-                                          text: model?.orderNo ?? ''));
-                                      CommonKit.showToast('已复制到剪切板');
-                                    },
-                                  )
+                                  CopyButton(model?.orderNo ?? ''),
                                 ],
                               ),
                               _orderInfoBar(context, '创建时间',

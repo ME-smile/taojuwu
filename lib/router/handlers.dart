@@ -22,6 +22,7 @@ import 'package:taojuwu/pages/customer/subPages/customer_search_page.dart';
 import 'package:taojuwu/pages/data_center/data_center_page.dart';
 import 'package:taojuwu/pages/edit_address/edit_address_page.dart';
 import 'package:taojuwu/pages/login/login_page.dart';
+import 'package:taojuwu/pages/logistics/logistics_page.dart';
 import 'package:taojuwu/pages/order/commit_order_page.dart';
 import 'package:taojuwu/pages/order/measure_order_page.dart';
 import 'package:taojuwu/pages/order/order_detail_page.dart';
@@ -506,4 +507,13 @@ class RouteHandler {
     int id = int.parse(params['id']?.first);
     return OrderMainfestPage(id);
   });
+
+  static Handler logistics = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int id = int.parse(params['id']?.first);
+    return LogisticsPage(id);
+  });
+  static goLogisticsPage(BuildContext context, int id) {
+    _jumpTo(context, '${Routes.logistics}?id=$id');
+  }
 }

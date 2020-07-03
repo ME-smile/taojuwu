@@ -101,7 +101,9 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
                           color: themeData.primaryColor,
                           width: double.infinity,
                           child: Text.rich(TextSpan(text: '小计:', children: [
-                            TextSpan(text: '￥${provider?.totalPrice}\n'),
+                            TextSpan(
+                                text:
+                                    '￥${provider?.totalPrice?.toStringAsFixed(2)}\n'),
                             WidgetSpan(
                               child: Icon(
                                 Icons.warning,

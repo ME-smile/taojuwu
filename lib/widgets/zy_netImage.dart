@@ -41,6 +41,7 @@ class ZYNetImage extends StatelessWidget {
                   callback: callback,
                   width: width,
                   height: height,
+                  fit: fit,
                 );
               }
             case LoadState.completed:
@@ -48,6 +49,7 @@ class ZYNetImage extends StatelessWidget {
                 return FadeInImage(
                     width: width,
                     height: height,
+                    fit: fit,
                     placeholder: AssetImage(UIKit.getAssetsImagePath(
                       'goods_placeholder.png',
                     )),
@@ -62,6 +64,7 @@ class ZYNetImage extends StatelessWidget {
                   callback: callback,
                   width: width,
                   height: height,
+                  fit: fit,
                 );
               }
             default:
@@ -72,6 +75,7 @@ class ZYNetImage extends StatelessWidget {
                   callback: callback,
                   width: width,
                   height: height,
+                  fit: fit,
                 );
               }
           }

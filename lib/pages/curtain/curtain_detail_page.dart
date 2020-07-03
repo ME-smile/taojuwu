@@ -930,16 +930,20 @@ class BottomActionButtonBar extends StatelessWidget {
     'client_uid': '',
   };
 
-  void addCart(
+  addCart(
     BuildContext context,
     GoodsProvider provider,
   ) {
     cartParams.addAll({'wc_attr': jsonEncode(provider.getAttrArgs())});
     cartParams
         .addAll({'cart_detail': jsonEncode(getCartDetail(provider?.goods))});
-    OTPService.addCart(params: cartParams).then((ZYResponse response) {
-      // CommonKit.toast(context, response.message ?? '');
-    }).catchError((err) => err);
+    print(cartParams);
+    GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
+    goodsProvider.saveMeasure(context, callback: () {
+      OTPService.addCart(params: cartParams).then((ZYResponse response) {
+        // CommonKit.toast(context, response.message ?? '');
+      }).catchError((err) => err);
+    });
   }
 
   Future createOrder(BuildContext context) async {

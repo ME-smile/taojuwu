@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/pages/order/utils/order_kit.dart';
 
 import 'package:taojuwu/providers/order_detail_provider.dart';
-import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/copy_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
@@ -74,17 +73,7 @@ class OrderAttrCard extends StatelessWidget {
                     children: [
                       TextSpan(text: '  '),
                       WidgetSpan(
-                        child: InkWell(
-                          child: Text(
-                            '复制',
-                            style: textTheme.caption,
-                          ),
-                          onTap: () {
-                            Clipboard.setData(ClipboardData(
-                                text: goods?.expressInfo?.expressNo ?? ''));
-                            CommonKit.showToast('已复制到剪切板');
-                          },
-                        ),
+                        child: CopyButton(goods?.expressInfo?.expressNo ?? ''),
                       )
                     ])),
               ),
