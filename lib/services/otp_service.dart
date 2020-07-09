@@ -4,6 +4,7 @@ import 'package:taojuwu/models/logistics/logistics_data_model.dart';
 import 'package:taojuwu/models/order/measure_data_model.dart';
 
 import 'package:taojuwu/models/order/order_detail_model.dart';
+import 'package:taojuwu/models/order/order_edit_log_model.dart';
 import 'package:taojuwu/models/order/order_mainfest_model.dart';
 
 import 'package:taojuwu/models/order/order_model.dart';
@@ -776,5 +777,44 @@ class OTPService {
     //     await xhr.get(context, ApiPath.logistics, params: params);
 
     return Future.value(LogisticsDataModelResp.fromJson(map));
+  }
+
+  static Future<OrderEditLogModelResp> orderEditLog(context,
+      {Map<String, dynamic> params}) {
+    Map<String, dynamic> map = {
+      "code": 0,
+      "message": "success",
+      "data": [
+        {
+          "user_name": "工程部",
+          "record_time": "2020年07月02日 ",
+          "action_time": 1594108918,
+          "record_name": "创建测量预约时间:"
+        },
+        {
+          "user_name": "工程部",
+          "record_time": "2020年07月30日 ",
+          "action_time": 1594108923,
+          "record_name": "预约测量时间:"
+        },
+        {
+          "user_name": "工程部",
+          "record_time": "2020年07月31日 ",
+          "action_time": 1594108927,
+          "record_name": "预约测量时间:"
+        },
+        {
+          "user_name": "工程部",
+          "record_time": "2020年07月30日 ",
+          "action_time": 1594108931,
+          "record_name": "预约测量时间:"
+        }
+      ],
+      "title": "测量安装时间记录"
+    };
+    return Future.value(OrderEditLogModelResp.fromJson(map));
+    // Response response =
+    //     await xhr.get(context, ApiPath.orderEditLog, params: params);
+    // return OrderEditLogModelResp.fromJson(response.data);
   }
 }

@@ -27,6 +27,12 @@ class _LogisticsPageState extends State<LogisticsPage> {
     fetchData();
   }
 
+  @override
+  void dispose() {
+    _refreshController?.dispose();
+    super.dispose();
+  }
+
   LogisticsDataModelWrapper wrapper;
   List<GoodsPacketModel> packetList;
   void fetchData() {

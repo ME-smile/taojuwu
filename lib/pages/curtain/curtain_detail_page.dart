@@ -844,7 +844,6 @@ class BottomActionButtonBar extends StatelessWidget {
     'goods_id': '',
     'vertical_ground_height': '',
     'data': {},
-    'goods_id': ''
   };
   void setParams(GoodsProvider provider) {
     params['dataId'] = '${provider?.windowPatternId ?? ''}';

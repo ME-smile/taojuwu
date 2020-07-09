@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+// import 'package:image_picker/image_picker.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -159,7 +159,7 @@ class _AfterSaleServicePageState extends State<AfterSaleServicePage> {
   var image;
 
   Future getImageFromFile() async {
-    image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    // image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       imgList.add(image);
@@ -167,7 +167,7 @@ class _AfterSaleServicePageState extends State<AfterSaleServicePage> {
   }
 
   Future getImageFromCamera() async {
-    image = await ImagePicker.pickImage(source: ImageSource.camera);
+    // image = await ImagePicker.pickImage(source: ImageSource.camera);
     print('allalalalalllalalalalalalalala');
     print(image);
     setState(() {

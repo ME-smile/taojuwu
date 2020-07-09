@@ -30,9 +30,10 @@ class _AnimationImageState extends State<AnimationImage>
     _logoController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300))
           ..drive(_scaleTween);
-    Future.delayed(Duration(milliseconds: 500), () {
-      _logoController?.forward();
-    });
+    // Future.delayed(Duration(milliseconds: 500), () {
+    //   _logoController?.forward();
+    // });
+    _logoController?.forward();
     _logoAnimation =
         CurvedAnimation(parent: _logoController, curve: Curves.bounceOut);
   }
@@ -40,7 +41,7 @@ class _AnimationImageState extends State<AnimationImage>
   @override
   void dispose() {
     super.dispose();
-    _logoController?.dispose();
+    if (mounted) _logoController?.dispose();
   }
 
   @override

@@ -4,12 +4,13 @@ import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/pages/order/utils/order_kit.dart';
 
 import 'package:taojuwu/providers/order_detail_provider.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/copy_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
-import 'package:taojuwu/widgets/zy_netImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_photo_view.dart';
 
 class OrderAttrCard extends StatelessWidget {
   final OrderGoods goods;
@@ -31,10 +32,15 @@ class OrderAttrCard extends StatelessWidget {
       children: <Widget>[
         Row(
           children: <Widget>[
-            ZYNetImage(
-              imgPath: goods?.pictureInfo?.picCoverSmall ?? '',
+            ZYPhotoView(
+              UIKit.getNetworkImgPath(goods?.pictureInfo?.picCoverSmall ?? ''),
               width: UIKit.width(200),
+              tag: CommonKit.getRandomStr(),
             ),
+            // ZYNetImage(
+            //   imgPath: goods?.pictureInfo?.picCoverSmall ?? '',
+            //   width: UIKit.width(200),
+            // ),
             Expanded(
                 child: Container(
               // height: UIKit.height(180),
@@ -45,14 +51,24 @@ class OrderAttrCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Text(goods?.goodsName ?? ''),
+                      Text(goods?.goodsName ?? '' + ''),
+                      Text(
+                        model?.statusName ?? '',
+                        style: TextStyle(
+                            color: Color(0xFFFC5252),
+                            fontSize: UIKit.sp(28),
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
                       Text('¥ ${goods?.price ?? 0.00}${goods?.unit}'),
                     ],
                   ),
-                  VSpacing(20),
                   Text(
                     goods?.goodsAttrStr ?? '',
-                    style: textTheme.caption,
+                    style: textTheme.caption.copyWith(fontSize: UIKit.sp(22)),
                   ),
                   VSpacing(10),
                 ],
@@ -68,7 +84,7 @@ class OrderAttrCard extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
                 child: Text.rich(TextSpan(
-                    text: '物流编号:${goods?.expressInfo?.expressNo}',
+                    text: '物流编号:${goods?.expressInfo?.expressNo ?? ''}',
                     style: textTheme.caption,
                     children: [
                       TextSpan(text: '  '),

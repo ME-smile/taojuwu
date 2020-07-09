@@ -134,9 +134,25 @@ class OrderDetailModel {
   List<String> promotionTypeInfo;
   String promotionTypeName;
   String orderTypeName;
-
+  int measureAdjustment;
+  int installAdjustment;
   Distribution distribution;
   List<Reason> reason;
+  String autoSignTime;
+  String acceptStation;
+  String acceptTime;
+  bool get isSameYear {
+    if (measureTime?.isNotEmpty == true && installTime?.isNotEmpty == true) {
+      if (measureTime.length > 4 && installTime.length > 4) {
+        return measureTime?.substring(0, 4) == installTime?.substring(0, 4);
+      }
+      return false;
+    }
+    return false;
+  }
+
+  bool get hasAdjustMeasureTime => measureAdjustment == 1;
+  bool get hasAdjustInstallime => installAdjustment == 1;
   int get goodsNum =>
       orderGoods
           ?.where((item) => item.isSelectedGoods == 1)
@@ -150,6 +166,14 @@ class OrderDetailModel {
           ?.toList()
           ?.length ??
       0;
+
+  int get selectedGoodsNum => orderGoods.length - unselectedGoodsNum;
+
+  String get goodsNumDescText => isMeasureOrder
+      ? isWaitingToSelectProduct
+          ? '共${orderWindowNum ?? '0'}窗已选${selectedGoodsNum ?? 0}件商品'
+          : '共${goodsNum ?? 0}件'
+      : '共${goodsNum ?? 0}件';
 
   bool get showExpressInfo => orderStatus == 7 ?? false;
   String get windowNum => '${orderWindowNum ?? '1'}';
@@ -167,10 +191,20 @@ class OrderDetailModel {
   bool get hasAlreadyCancel => orderStatus == 9;
   // bool get hasCancel
   bool get hasCanceled => orderStatus == 9;
+
+  bool get isProducting => orderStatus == 5;
+  bool get isWaitingToShipOrReceive => orderStatus == 6 || orderStatus == 15;
   bool get isWaitingToInstall => orderStatus == 7;
+  bool get isWaitingToSelectProduct => orderStatus == 14;
+  bool get isWaitingToPay => orderStatus == 3 || orderStatus == 4;
   bool get hasFinished =>
-      orderStatus >= 8 && [14, 9].contains(orderStatus) == false;
+      orderStatus >= 8 && [14, 9, 15].contains(orderStatus) == false;
   bool get hasPaid => orderStatus > 4;
+
+  bool get isAdjustPriceRemarkEmpty =>
+      adjustMoneyRemark == null || adjustMoneyRemark?.isNotEmpty == false;
+
+  bool get displayDeliveryInfo => orderStatus == 15 || orderStatus == 7;
   OrderDetailModel.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
     orderNo = json['order_no'];
@@ -324,6 +358,11 @@ class OrderDetailModel {
         reason.add(new Reason.fromJson(v));
       });
     }
+    measureAdjustment = json['measure_adjustment '] ?? 0;
+    installAdjustment = json['install_adjustment'] ?? 0;
+    autoSignTime = json['auto_sign_time'] ?? '';
+    acceptStation = json['AcceptStation'] ?? '';
+    acceptTime = json['AcceptTime'] ?? '';
   }
 }
 
@@ -458,7 +497,7 @@ class OrderGoods {
       (orderStatus == parentOrderStatus) ?? false;
   bool get showExpressInfo => orderStatus == 7;
   bool get isWindowRoller => goodsSpecialType == 2;
-  String get unit => goodsSpecialType == 2 ? '元/平方米' : '米';
+  String get unit => goodsSpecialType == 2 ? '元/平方米' : '元/米';
   OrderGoods(
       {this.orderGoodsId,
       this.orderId,

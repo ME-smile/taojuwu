@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -49,6 +50,16 @@ class CommonKit {
         size: 30,
       );
     EasyLoading.showInfo(msg);
+  }
+
+  static String getRandomStr({int length: 30}) {
+    String alphabet = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM';
+    String str = '';
+    for (int i = 0; i < length; i++) {
+//    right = right + (min + (Random().nextInt(max - min))).toString();
+      str = str + alphabet[Random().nextInt(alphabet.length)];
+    }
+    return str;
   }
 }
 
