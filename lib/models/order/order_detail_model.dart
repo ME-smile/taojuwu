@@ -204,6 +204,8 @@ class OrderDetailModel {
   bool get isAdjustPriceRemarkEmpty =>
       adjustMoneyRemark == null || adjustMoneyRemark?.isNotEmpty == false;
 
+  bool get hasModifyPrice => adjustMoney?.isNotEmpty == true;
+
   bool get displayDeliveryInfo => orderStatus == 15 || orderStatus == 7;
   OrderDetailModel.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
@@ -358,7 +360,7 @@ class OrderDetailModel {
         reason.add(new Reason.fromJson(v));
       });
     }
-    measureAdjustment = json['measure_adjustment '] ?? 0;
+    measureAdjustment = json['measure_adjustment'] ?? 0;
     installAdjustment = json['install_adjustment'] ?? 0;
     autoSignTime = json['auto_sign_time'] ?? '';
     acceptStation = json['AcceptStation'] ?? '';

@@ -3,8 +3,7 @@ import 'package:taojuwu/models/zy_response.dart';
 class LogisticsDataModelResp extends ZYResponse<LogisticsDataModelWrapper> {
   LogisticsDataModelResp.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
-    this.data =
-        this.valid ? LogisticsDataModelWrapper.fromJson(json['data']) : null;
+    this.data = this.valid ? LogisticsDataModelWrapper.fromJson(json) : null;
   }
 }
 
@@ -23,9 +22,10 @@ class LogisticsDataModelWrapper {
 
   LogisticsDataModelWrapper({this.goodsPacketList});
   LogisticsDataModelWrapper.fromJson(Map<String, dynamic> json) {
-    if (json['goods_packet_list'] != null) {
+    if (json['data'] != null) {
       goodsPacketList = new List<GoodsPacketModel>();
-      json['goods_packet_list'].forEach((v) {
+
+      json['data'].forEach((v) {
         goodsPacketList.add(new GoodsPacketModel.fromJson(v));
       });
     }
@@ -69,7 +69,8 @@ class GoodsPacketModel {
     expressCode = json['express_code'];
     orderGoodsNum = json['order_goods_num'];
     orderGoodsPictures = json['order_goods_picture'].cast<String>();
-    if (json['express_message'] != null) {
+    if (json['express_message'] != null &&
+        json['express_message']?.isNotEmpty == true) {
       expressOrderModels = new List<ExpressOrderModel>();
       json['express_message'].forEach((v) {
         expressOrderModels.add(new ExpressOrderModel.fromJson(v));

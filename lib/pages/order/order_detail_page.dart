@@ -2,6 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
@@ -38,6 +39,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   void initState() {
     super.initState();
     id = widget.id;
+    print(Application.sp.get('token'));
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData();
     });
@@ -374,16 +376,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     '¥${provider?.deltaPrice ?? 0.00}${provider?.hasEditPrice == true ? "(" + provider?.changePriceRemark + ")" : ""}')
               ],
             )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  '修改:',
-                  style: leadingTextStyle,
-                ),
-                Text(
-                    '¥${model?.adjustMoney ?? 0.00}${model?.isAdjustPriceRemarkEmpty == true ? "(" + model?.adjustMoney + ")" : ""}')
-              ],
+          : Offstage(
+              offstage: model?.hasModifyPrice == true,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    '修改:',
+                    style: leadingTextStyle,
+                  ),
+                  Text(
+                      '¥${model?.adjustMoney ?? 0.00}${model?.isAdjustPriceRemarkEmpty == true ? "(" + model?.adjustMoney + ")" : ""}')
+                ],
+              ),
             ),
     );
   }
@@ -442,7 +447,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             buildDepositPriceNote(context, provider, model),
-            buildOriginPriceNote(context, provider, model),
+            Offstage(
+              offstage: model?.hasModifyPrice == true,
+              child: buildOriginPriceNote(context, provider, model),
+            ),
             buildEditPriceNote(context, provider, model),
             buildTailPriceNote(context, provider, model),
             buildTotalPriceNote(
@@ -709,6 +717,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 TextSpan(
                                   text: Constants.ORDER_STATUS_TIP_MAP[
                                       model?.orderStatus ?? 0]['subtitle'],
+                                  style: accentTextTheme.body1
+                                      .copyWith(color: Color(0xFFD7D7D7)),
+                                ),
+                                TextSpan(
+                                  text: model?.installTime ?? '',
                                   style: accentTextTheme.body1
                                       .copyWith(color: Color(0xFFD7D7D7)),
                                 ),

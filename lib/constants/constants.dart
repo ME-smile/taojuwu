@@ -124,7 +124,7 @@ class Constants {
     10: {'title': '售后问题已提交', 'subtitle': '我们将尽快为您解决'},
     11: {'title': '交易完成', 'subtitle': '售后问题已处理'},
     14: {'title': '已完成测量', 'subtitle': '请根据房型选择商品'},
-    15: {'title': '已完成测量', 'subtitle': ''},
+    15: {'title': '订单已发货', 'subtitle': ''},
     // ORDER_STATUS_PRODUCTED: {'title': '交易成功', 'subtitle': ''},
   };
 

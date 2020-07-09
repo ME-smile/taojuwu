@@ -370,34 +370,11 @@ class _OrderPageState extends State<OrderPage>
                 controller: _tabController,
                 children: List.generate(tabs.length ?? 0, (int i) {
                   params[i]['order_time'] = currentTimePeriodOption['index'];
-                  // return ZYFutureBuilder(
-                  //     futureFunc: OTPService.orderList,
-                  //     params: currentParams,
-                  //     builder:
-                  //         (BuildContext context, OrderModelListResp response) {
-                  //       return OrderTabView(
-                  //          tab: i,
-                  //         clientId: widget.clientId,
-                  //         params: currentParams,
-                  //         models: models,
-                  //       );
-                  //     });
-                  // return StreamBuilder(
-                  //     stream: streamController?.stream,
-                  //     initialData: currentParams,
-                  //     builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  //       return OrderTabView(
-                  //         tab: i,
-                  //         clientId: widget.clientId,
-                  //         streamController: streamController,
-                  //         params: currentParams,
-                  //         models: models,
-                  //       );
-                  //     });
+                  params[i] = currentParams;
                   return OrderTabView(
                     tab: i,
                     clientId: widget.clientId,
-                    params: currentParams,
+                    params: params[i],
                     models: modelList[i],
                   );
                 }))),
@@ -454,10 +431,12 @@ class OrderTabView extends StatefulWidget {
   final int tab;
   final StreamController streamController;
   final Map<String, dynamic> params;
+  final String status;
   final List<OrderModelData> models;
   const OrderTabView(
       {Key key,
       this.clientId,
+      this.status,
       this.tab,
       this.streamController,
       this.params,
@@ -470,7 +449,7 @@ class OrderTabView extends StatefulWidget {
 
 class _OrderTabViewState extends State<OrderTabView>
     with AutomaticKeepAliveClientMixin {
-  Map<String, dynamic> get params => widget.params;
+  Map<String, dynamic> params = {};
   List<OrderModelData> get models => widget.models;
   int totalPage = 0;
 
@@ -554,6 +533,7 @@ class _OrderTabViewState extends State<OrderTabView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return isLoading
         ? LoadingCircle()
         : SmartRefresher(
