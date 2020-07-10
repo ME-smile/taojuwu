@@ -941,7 +941,7 @@ class BottomActionButtonBar extends StatelessWidget {
     GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
     goodsProvider.saveMeasure(context, callback: () {
       cartParams['measure_id'] = goodsProvider?.measureId;
-      print(cartParams);
+
       OTPService.addCart(params: cartParams).then((ZYResponse response) {
         CommonKit.showToast(response.message ?? '');
       }).catchError((err) => err);
