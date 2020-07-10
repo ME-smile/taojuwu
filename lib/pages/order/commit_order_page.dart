@@ -44,6 +44,7 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
     controller?.dispose();
   }
 
+  bool canClick = true;
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -149,9 +150,20 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
                               TextSpan(
                                   text: ' (具体金额以门店)', style: textTheme.caption)
                             ])),
-                        ZYRaisedButton('提交订单', () {
-                          provider?.createOrder(context);
-                        }),
+                        ZYRaisedButton(
+                          '提交订单',
+                          () {
+                            setState(() {
+                              canClick = false;
+                            });
+                            provider?.createOrder(context, callback: () {
+                              setState(() {
+                                canClick = true;
+                              });
+                            });
+                          },
+                          isActive: canClick,
+                        ),
                       ],
                     ),
                   );

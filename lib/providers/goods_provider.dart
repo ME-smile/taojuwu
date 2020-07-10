@@ -82,6 +82,16 @@ class GoodsProvider with ChangeNotifier {
   int _curInstallOptionIndex = 0;
   int _createType = 1;
 
+  // 是否允许添加到购物车的操作
+  bool _canAddToCart = true;
+
+  bool get canAddToCart => _canAddToCart;
+
+  set canAddToCart(bool flag) {
+    _canAddToCart = flag;
+    notifyListeners();
+  }
+
   void filterCraft() {
     List<CraftAttrBean> list = _initCraftAttrBeanList;
     if (list?.isNotEmpty != true) return;
@@ -846,13 +856,19 @@ class GoodsProvider with ChangeNotifier {
   }
 
   Future saveMeasure(BuildContext context, {Function callback}) async {
+    canAddToCart = false;
     OTPService.saveMeasure(context, params: getSaveMeasureParams())
         .then((ZYResponse response) {
       if (response?.valid == true) {
         measureId = response?.data;
         if (callback != null) callback();
       }
-    }).catchError((err) => err);
+      canAddToCart = true;
+    }).catchError((err) {
+      if (callback != null) callback();
+      canAddToCart = true;
+      return err;
+    });
   }
 
   bool get hasModifyDy =>

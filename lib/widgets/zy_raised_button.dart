@@ -20,18 +20,21 @@ class ZYRaisedButton extends StatelessWidget {
     ThemeData themeData = Theme.of(context);
     TextTheme accentTextTheme = themeData.accentTextTheme;
     return InkWell(
-      onTap: callback,
+      onTap: isActive ? callback : null,
       child: Container(
         child: Text(
           text,
-          style: accentTextTheme.button.copyWith(fontSize: 16),
+          style: isActive
+              ? accentTextTheme.button.copyWith(fontSize: 16)
+              : accentTextTheme.button
+                  .copyWith(fontSize: 16, color: Colors.white70),
         ),
         decoration: BoxDecoration(
-            color: themeData.accentColor,
+            color: isActive ? themeData.accentColor : themeData.disabledColor,
             borderRadius: BorderRadius.all(Radius.circular(4)),
             border: Border.all(
               width: 1,
-              color: themeData.accentColor,
+              color: isActive ? themeData.accentColor : themeData.disabledColor,
             )),
         margin: EdgeInsets.symmetric(vertical: UIKit.height(20)),
         padding: EdgeInsets.symmetric(

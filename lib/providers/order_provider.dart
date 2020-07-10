@@ -162,7 +162,7 @@ class OrderProvider with ChangeNotifier {
     return true;
   }
 
-  void createOrder(BuildContext ctx) {
+  void createOrder(BuildContext ctx, {Function callback}) {
     print(
         'measure_id: ${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}');
     // LogUtil.e({
@@ -220,7 +220,11 @@ class OrderProvider with ChangeNotifier {
       } else {
         CommonKit.showErrorInfo(response?.message ?? '');
       }
-    }).catchError((err) => err);
+      if (callback != null) callback();
+    }).catchError((err) {
+      if (callback != null) callback();
+      return err;
+    });
   }
 
   clear() {

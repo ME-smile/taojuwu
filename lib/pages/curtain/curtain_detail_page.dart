@@ -937,11 +937,13 @@ class BottomActionButtonBar extends StatelessWidget {
     cartParams.addAll({'wc_attr': jsonEncode(provider.getAttrArgs())});
     cartParams
         .addAll({'cart_detail': jsonEncode(getCartDetail(provider?.goods))});
-    print(cartParams);
+
     GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
     goodsProvider.saveMeasure(context, callback: () {
+      cartParams['measure_id'] = goodsProvider?.measureId;
+      print(cartParams);
       OTPService.addCart(params: cartParams).then((ZYResponse response) {
-        // CommonKit.toast(context, response.message ?? '');
+        CommonKit.showToast(response.message ?? '');
       }).catchError((err) => err);
     });
   }
@@ -1063,18 +1065,30 @@ class BottomActionButtonBar extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         InkWell(
-                          onTap: () async {
-                            if (!beforePurchase(goodsProvider, context)) return;
-                            setCartParams(goodsProvider);
-                            addCart(context, goodsProvider);
-                          },
+                          onTap: goodsProvider?.canAddToCart == true
+                              ? () {
+                                  if (!beforePurchase(goodsProvider, context))
+                                    return;
+                                  setCartParams(goodsProvider);
+                                  addCart(context, goodsProvider);
+                                }
+                              : null,
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 horizontal: UIKit.width(20),
                                 vertical: UIKit.height(10)),
-                            decoration:
-                                BoxDecoration(border: Border.all(width: 1)),
-                            child: Text('加入购物车'),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1,
+                                    color: goodsProvider?.canAddToCart == true
+                                        ? themeData.accentColor
+                                        : themeData.disabledColor)),
+                            child: Text(
+                              '加入购物车',
+                              style: goodsProvider?.canAddToCart == true
+                                  ? TextStyle()
+                                  : TextStyle(color: themeData.disabledColor),
+                            ),
                           ),
                         ),
                         InkWell(
