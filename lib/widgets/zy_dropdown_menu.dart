@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:taojuwu/utils/ui_kit.dart';
 
 // import 'colors.dart';
 // import 'icons.dart';
@@ -104,12 +103,8 @@ class ZYDropdownMenu extends StatefulWidget {
 
 class ZYDropdownMenuState extends State<ZYDropdownMenu>
     with SingleTickerProviderStateMixin {
-  static final Animatable<double> _easeOutTween =
-      CurveTween(curve: Curves.easeOut);
   static final Animatable<double> _easeInTween =
       CurveTween(curve: Curves.linear);
-  static final Animatable<double> _halfTween =
-      Tween<double>(begin: 0.0, end: 0.5);
 
   final ColorTween _borderColorTween = ColorTween();
 
@@ -117,10 +112,7 @@ class ZYDropdownMenuState extends State<ZYDropdownMenu>
   final ColorTween _backgroundColorTween = ColorTween();
 
   AnimationController _controller;
-  Animation<double> _iconTurns;
   Animation<double> _heightFactor;
-
-  Animation<Color> _backgroundColor;
 
   bool _isExpanded = false;
 
@@ -134,10 +126,6 @@ class ZYDropdownMenuState extends State<ZYDropdownMenu>
     _controller =
         AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     _heightFactor = _controller.drive(_easeInTween);
-    _iconTurns = _controller.drive(_halfTween.chain(_easeInTween));
-
-    _backgroundColor =
-        _controller.drive(_backgroundColorTween.chain(_easeOutTween));
 
     _isExpanded =
         PageStorage.of(context)?.readState(context) ?? widget.initiallyExpanded;
@@ -172,82 +160,44 @@ class ZYDropdownMenuState extends State<ZYDropdownMenu>
   Widget _buildChildren(BuildContext context, Widget child) {
     // final Color borderSideColor = _borderColor.value ?? Colors.transparent;
     ThemeData themeData = Theme.of(context);
-    TextTheme textTheme = themeData.textTheme;
+
     return Container(
       decoration: BoxDecoration(
-        color: _backgroundColor.value ?? Colors.transparent,
-      ),
+          // color: _backgroundColor.value ?? Colors.transparent,
+          color: themeData.primaryColor),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _isExpanded
-              ? Container(
-                  height: widget.height ?? UIKit.height(60),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Offstage(
-                        offstage: !_isExpanded,
-                        child: Container(
-                          color:
-                              !_isExpanded ? Colors.transparent : Colors.white,
-                          padding:
-                              EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                          child: Text(widget.title,
-                              style: textTheme.caption.copyWith(
-                                  backgroundColor: Colors.white,
-                                  fontSize: UIKit.sp(28))),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: _handleTap,
-                        child: Container(
-                          color: Colors.white,
-                          padding:
-                              EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                          child: RotationTransition(
-                            turns: _iconTurns,
-                            child: const Icon(Icons.expand_more),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : Container(
-                  height: widget.height ?? UIKit.height(60),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Offstage(
-                        offstage: !_isExpanded,
-                        child: Container(
-                          color:
-                              !_isExpanded ? Colors.transparent : Colors.white,
-                          padding:
-                              EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                          child: Text(widget.title,
-                              style: textTheme.caption.copyWith(
-                                  backgroundColor: Colors.white,
-                                  fontSize: UIKit.sp(28))),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: _handleTap,
-                        child: Container(
-                          color: Colors.white,
-                          padding:
-                              EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                          child: RotationTransition(
-                            turns: _iconTurns,
-                            child: const Icon(Icons.expand_more),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+          // height: widget.height ?? UIKit.height(60),
+          // child: Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: <Widget>[
+          // Offstage(
+          //   offstage: !_isExpanded,
+          //   child: Container(
+
+          //     color: !_isExpanded ? Colors.transparent : Colors.white,
+          //     padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+          //     child: Text(widget.title,
+          //         style: textTheme.caption.copyWith(
+          //             backgroundColor: Colors.white, fontSize: UIKit.sp(28))),
+          //   ),
+          // ),
+          //     InkWell(
+          //       onTap: _handleTap,
+          //       child: Container(
+          //         color: Colors.white,
+          //         padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+          //         child: RotationTransition(
+          //           turns: _iconTurns,
+          //           child: const Icon(Icons.expand_more),
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
+
           ClipRect(
             child: Align(
               heightFactor: _heightFactor.value,

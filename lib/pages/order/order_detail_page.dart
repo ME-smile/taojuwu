@@ -721,7 +721,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                       .copyWith(color: Color(0xFFD7D7D7)),
                                 ),
                                 TextSpan(
-                                  text: model?.installTime ?? '',
+                                  text: model?.isWaitingToInstall == true
+                                      ? model?.installTime ?? ''
+                                      : '',
                                   style: accentTextTheme.body1
                                       .copyWith(color: Color(0xFFD7D7D7)),
                                 ),
@@ -757,7 +759,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Text('${model?.acceptStation ?? ''}'),
+                                      Text(
+                                        '${model?.acceptStation ?? ''}',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                       Text(
                                         model?.acceptTime ?? '',
                                         style: textTheme.caption,

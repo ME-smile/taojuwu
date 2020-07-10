@@ -31,14 +31,15 @@ class OrderPage extends StatefulWidget {
   _OrderPageState createState() => _OrderPageState();
 }
 
-class _OrderPageState extends State<OrderPage>
-    with SingleTickerProviderStateMixin {
+class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
   List items = Constants.ORDER_STATUS_TAB_MAP.values.toList();
   List<String> tabs = Constants.ORDER_STATUS_TAB_LIST;
   TabController _tabController;
 
   List nums;
 
+  Animation<double> _iconTurns;
+  AnimationController _controller;
   List<List<OrderModelData>> modelList =
       List(Constants.ORDER_STATUS_TAB_LIST.length);
 
@@ -65,7 +66,7 @@ class _OrderPageState extends State<OrderPage>
       'page': 1,
     },
     {
-      'status': '4',
+      'status': '3,4',
       'page_size': PAGE_SIZE,
       'page': 1,
     },
@@ -156,9 +157,12 @@ class _OrderPageState extends State<OrderPage>
             children: List<Widget>.generate(timePeriodOptions?.length, (int i) {
               Map<String, dynamic> item = timePeriodOptions[i];
               return Expanded(
-                child: buildButtonChip(item['text'], () {
-                  checkTimePeriodOptions(i);
-                }, item['is_checked']),
+                child: AspectRatio(
+                  aspectRatio: 4,
+                  child: buildButtonChip(item['text'], () {
+                    checkTimePeriodOptions(i);
+                  }, item['is_checked']),
+                ),
               );
             }),
           ),
@@ -238,8 +242,8 @@ class _OrderPageState extends State<OrderPage>
         decoration: BoxDecoration(
             border:
                 Border.all(color: isActive ? Colors.black : Color(0xFFCBCBCB))),
-        margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-        padding: EdgeInsets.symmetric(vertical: UIKit.height(12)),
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        // padding: EdgeInsets.symmetric(vertical: 6),
         child: Text(
           text,
           style: TextStyle(color: isActive ? Colors.black : Color(0xFF464646)),
@@ -249,11 +253,27 @@ class _OrderPageState extends State<OrderPage>
     );
   }
 
+  double tabBarHeight = 0.0;
+  double tabBarDy = 0.0;
   @override
   void initState() {
     super.initState();
-
-    //对全部数据进行特殊处理
+    Animatable<double> _halfTween = Tween<double>(begin: 0.0, end: 0.5);
+    Animatable<double> _easeInTween = CurveTween(curve: Curves.linear);
+    _controller =
+        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
+    _iconTurns = _controller.drive(_halfTween.chain(_easeInTween));
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      RenderObject renderObject = tabBarKey.currentContext.findRenderObject();
+      Size size = renderObject.paintBounds.size;
+      var vector3 = renderObject.getTransformTo(null)?.getTranslation();
+      final double dy = vector3[1];
+      setState(() {
+        tabBarDy = dy;
+        tabBarHeight = size.height;
+      });
+    });
+    //对全部数据进行���殊处理
     if (mounted) {
       params?.first['client_uid'] = widget?.clientId;
       _tabController = TabController(length: tabs.length, vsync: this)
@@ -324,6 +344,7 @@ class _OrderPageState extends State<OrderPage>
   void dispose() {
     super.dispose();
     _tabController?.dispose();
+    _controller?.dispose();
   }
 
   String currentStatus = '';
@@ -338,8 +359,11 @@ class _OrderPageState extends State<OrderPage>
 
   bool showFilterHeader = false;
   GlobalKey<ZYDropdownMenuState> globalKey = GlobalKey<ZYDropdownMenuState>();
+  GlobalKey tabBarKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
     return Stack(
       children: <Widget>[
         Scaffold(
@@ -349,28 +373,25 @@ class _OrderPageState extends State<OrderPage>
               centerTitle: true,
               bottom: PreferredSize(
                   child: TabBar(
+                      key: tabBarKey,
                       controller: _tabController,
                       isScrollable: true,
                       unselectedLabelColor: Colors.grey,
-                      labelStyle: TextStyle(fontSize: UIKit.sp(28)),
-                      labelPadding: EdgeInsets.only(
-                          bottom: UIKit.height(10),
-                          left: UIKit.width(10),
-                          right: UIKit.width(10)),
+                      // labelStyle: TextStyle(fontSize: UIKit.sp(28)),
+                      labelPadding:
+                          EdgeInsets.only(bottom: 5, left: 5, right: 5),
                       tabs: List.generate(tabs.length, (int i) {
                         return Text(
                           '${tabs[i]}(${nums == null ? 0 : nums[i]})',
                           textDirection: TextDirection.ltr,
-                          style: TextStyle(fontSize: UIKit.sp(28)),
                         );
                       })),
-                  preferredSize: Size.fromHeight(UIKit.height(60))),
+                  preferredSize: Size.fromHeight(20)),
             ),
             body: TabBarView(
                 controller: _tabController,
                 children: List.generate(tabs.length ?? 0, (int i) {
                   params[i]['order_time'] = currentTimePeriodOption['index'];
-                  params[i] = currentParams;
                   return OrderTabView(
                     tab: i,
                     clientId: widget.clientId,
@@ -384,6 +405,13 @@ class _OrderPageState extends State<OrderPage>
             child: GestureDetector(
               onTap: () {
                 globalKey.currentState.handleTap();
+                _controller.reverse().then<void>((void value) {
+                  if (!mounted) return;
+                  setState(() {
+                    // Rebuild without widget.children.
+                    showFilterHeader = false;
+                  });
+                });
               },
               child: Container(
                 color: showFilterHeader
@@ -392,13 +420,71 @@ class _OrderPageState extends State<OrderPage>
               ),
             ),
           ),
-          top: 80,
+          top: tabBarDy + tabBarHeight,
           bottom: 0,
           left: 0,
           right: 0,
         ),
         Positioned(
-            top: 80,
+          top: tabBarDy,
+          left: 0,
+          child: Offstage(
+            offstage: !showFilterHeader,
+            child: Material(
+              child: Container(
+                height: 30,
+                alignment: Alignment.centerLeft,
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                color: Colors.white,
+                child: Text(
+                  '选择日期范围',
+                  style: textTheme.caption.copyWith(
+                      backgroundColor: Colors.white, fontSize: UIKit.sp(28)),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: tabBarDy,
+          right: 0,
+          child: GestureDetector(
+            onTap: () {
+              if (showFilterHeader == false) {
+                _controller
+                  ..reset()
+                  ..forward()?.then<void>((void value) {
+                    if (!mounted) return;
+                    setState(() {
+                      showFilterHeader = true;
+                    });
+                  });
+              } else {
+                _controller.reverse().then<void>((void value) {
+                  if (!mounted) return;
+                  setState(() {
+                    // Rebuild without widget.children.
+                    showFilterHeader = false;
+                  });
+                });
+              }
+
+              globalKey.currentState?.handleTap();
+            },
+            child: Container(
+              color: Colors.white,
+              height: tabBarHeight,
+              padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+              child: RotationTransition(
+                turns: _iconTurns,
+                child: const Icon(Icons.expand_more),
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+            top: tabBarDy + tabBarHeight,
             right: 0,
             child: Container(
               color: showFilterHeader ? Colors.white : Colors.transparent,
@@ -449,7 +535,7 @@ class OrderTabView extends StatefulWidget {
 
 class _OrderTabViewState extends State<OrderTabView>
     with AutomaticKeepAliveClientMixin {
-  Map<String, dynamic> params = {};
+  Map<String, dynamic> get params => widget.params;
   List<OrderModelData> get models => widget.models;
   int totalPage = 0;
 
@@ -484,16 +570,8 @@ class _OrderTabViewState extends State<OrderTabView>
     // WidgetsBinding.instance.addPostFrameCallback((callback))
   }
 
-  void formatParams(Map<String, dynamic> args) {
-    if (isRefresh) args['page'] = 1;
-    if (args['status'] != null || args['status']?.isNotEmpty != true)
-      args?.remove('status');
-  }
-
   void requestData(Map<String, dynamic> args) {
-    formatParams(args);
-    print(args);
-    OTPService.orderList(context, params: args)
+    OTPService.orderList(context, params: params)
         .then((OrderModelListResp response) {
       wrapper = response?.data;
       int count = wrapper?.totalCount;

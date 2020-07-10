@@ -360,7 +360,9 @@ class _ExpressOrderTrackLogItemState extends State<ExpressOrderTrackLogItem> {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     return Container(
+      alignment: Alignment.centerLeft,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           Container(
             width: 40,
@@ -404,36 +406,39 @@ class _ExpressOrderTrackLogItemState extends State<ExpressOrderTrackLogItem> {
           ),
           Expanded(
               child: Container(
+                  alignment: Alignment.topCenter,
                   child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox.fromSize(
-                size: Size.fromHeight(4),
-              ),
-              // Text.rich(TextSpan(text: model?.acceptStation ?? '--:--')),
-              Text.rich(TextSpan(
-                  text: titleIsEmpty ? '' : '${model?.title}\n',
-                  style: isFirst
-                      ? TextStyle(
-                          fontSize: UIKit.sp(28), color: Color(0xFF333333))
-                      : TextStyle(
-                          fontSize: UIKit.sp(28), color: Color(0xFF999999)),
-                  children: [
-                    TextSpan(
-                        text: model?.acceptStation ?? '',
-                        style: isFirst
-                            ? TextStyle(
-                                color: Color(0xFF333333),
-                                fontSize: UIKit.sp(24))
-                            : TextStyle(
-                                color: Color(0xFF999999),
-                                fontSize: UIKit.sp(24)))
-                  ])),
-              SizedBox.fromSize(
-                size: Size.fromHeight(4),
-              )
-            ],
-          )))
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      SizedBox.fromSize(
+                        size: Size.fromHeight(4),
+                      ),
+                      // Text.rich(TextSpan(text: model?.acceptStation ?? '--:--')),
+                      Text.rich(TextSpan(
+                          text: titleIsEmpty ? '' : '${model?.title}\n',
+                          style: isFirst
+                              ? TextStyle(
+                                  fontSize: UIKit.sp(28),
+                                  color: Color(0xFF333333))
+                              : TextStyle(
+                                  fontSize: UIKit.sp(28),
+                                  color: Color(0xFF999999)),
+                          children: [
+                            TextSpan(
+                                text: model?.acceptStation ?? '',
+                                style: isFirst
+                                    ? TextStyle(
+                                        color: Color(0xFF333333),
+                                        fontSize: UIKit.sp(24))
+                                    : TextStyle(
+                                        color: Color(0xFF999999),
+                                        fontSize: UIKit.sp(24)))
+                          ])),
+                      SizedBox.fromSize(
+                        size: Size.fromHeight(4),
+                      )
+                    ],
+                  )))
         ],
       ),
     );

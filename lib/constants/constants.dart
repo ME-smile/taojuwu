@@ -113,7 +113,7 @@ class Constants {
     },
     6: {
       'title': '商品已准备完毕',
-      'subtitle': '联系预约安装时间',
+      'subtitle': '待发货',
     },
     7: {
       'title': '已发货',

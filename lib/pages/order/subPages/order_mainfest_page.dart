@@ -25,7 +25,7 @@ class OrderMainfestPage extends StatelessWidget {
           Text(
             '客户: ${model?.clientName ?? ''}',
             style: textTheme.title
-                .copyWith(fontSize: UIKit.sp(32), fontWeight: FontWeight.w700),
+                .copyWith(fontSize: UIKit.sp(32), fontWeight: FontWeight.w600),
           ),
           Row(
             children: <Widget>[

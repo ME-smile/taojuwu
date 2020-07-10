@@ -34,6 +34,7 @@ class OrderAttrCard extends StatelessWidget {
           children: <Widget>[
             ZYPhotoView(
               UIKit.getNetworkImgPath(goods?.pictureInfo?.picCoverSmall ?? ''),
+              height: UIKit.width(200),
               width: UIKit.width(200),
               tag: CommonKit.getRandomStr(),
             ),
@@ -43,17 +44,18 @@ class OrderAttrCard extends StatelessWidget {
             // ),
             Expanded(
                 child: Container(
-              // height: UIKit.height(180),
+              height: UIKit.height(200),
               padding: EdgeInsets.only(left: UIKit.width(20)),
               child: Column(
+                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Text(goods?.goodsName ?? '' + ''),
+                      Text(goods?.goodsName ?? ''),
                       Text(
-                        model?.statusName ?? '',
+                        goods?.statusName ?? '',
                         style: TextStyle(
                             color: Color(0xFFFC5252),
                             fontSize: UIKit.sp(28),
