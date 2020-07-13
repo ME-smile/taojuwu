@@ -8,6 +8,7 @@ import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -305,6 +306,7 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                                         UIKit.getNetworkImgPath(
                                             measureData?.picture ?? ''),
                                         width: UIKit.width(200),
+                                        tag: CommonKit.getRandomStr(),
                                       )),
                                 ],
                               ),

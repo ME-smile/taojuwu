@@ -288,7 +288,7 @@ class MeasureOrderBeforePayCard extends StatelessWidget {
                               )
                             ],
                           ),
-                          Text('¥${model?.sizeTextDesc}'),
+                          Text('${model?.sizeTextDesc}'),
                           Text('${model?.style}', style: textTheme.caption),
                           Text(
                             '${model?.mode}',

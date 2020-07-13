@@ -844,7 +844,6 @@ class BottomActionButtonBar extends StatelessWidget {
     'goods_id': '',
     'vertical_ground_height': '',
     'data': {},
-    'goods_id': ''
   };
   void setParams(GoodsProvider provider) {
     params['dataId'] = '${provider?.windowPatternId ?? ''}';
@@ -942,9 +941,9 @@ class BottomActionButtonBar extends StatelessWidget {
     goodsProvider.saveMeasure(context, callback: () {
       cartParams['measure_id'] = goodsProvider?.measureId;
 
-      OTPService.addCart(params: cartParams).then((ZYResponse response) {
-        CommonKit.showToast(response.message ?? '');
-      }).catchError((err) => err);
+      OTPService.addCart(params: cartParams)
+          .then((ZYResponse response) {})
+          .catchError((err) => err);
     });
   }
 

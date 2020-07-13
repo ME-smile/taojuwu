@@ -69,7 +69,16 @@ import 'package:photo_view/photo_view.dart';
 class ZYPhotoView extends StatelessWidget {
   final String imgUrl;
   final double width;
-  const ZYPhotoView(this.imgUrl, {Key key, this.width: 120}) : super(key: key);
+  final double height;
+  final String tag;
+  final BoxFit fit;
+  const ZYPhotoView(this.imgUrl,
+      {Key key,
+      this.width: 120,
+      this.height: 120,
+      this.tag,
+      this.fit: BoxFit.fill})
+      : super(key: key);
 
   bool get isNetworkImg => imgUrl?.contains('http');
 
@@ -82,24 +91,28 @@ class ZYPhotoView extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ZYPhotoPreviewer(
-                  heroTag: 'X',
+                  heroTag: tag ?? imgUrl,
                   imageProvider:
                       isNetworkImg ? NetworkImage(imgUrl) : AssetImage(imgUrl)),
             ),
           );
         },
         child: Hero(
-            tag: 'X',
+            tag: tag ?? imgUrl,
             child: Container(
               alignment: Alignment.centerLeft,
               child: isNetworkImg
                   ? Image.network(
                       imgUrl,
                       width: width,
+                      fit: fit,
+                      height: height,
                     )
                   : Image.asset(
                       imgUrl,
                       width: width,
+                      height: height,
+                      fit: fit,
                     ),
             )),
       ),
@@ -127,8 +140,8 @@ class ZYPhotoPreviewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return Material(
+      child: Container(
         color: Colors.black,
         constraints: BoxConstraints.expand(
           height: MediaQuery.of(context).size.height,

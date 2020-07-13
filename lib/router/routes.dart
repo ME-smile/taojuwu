@@ -46,6 +46,8 @@ class Routes {
   static const String logistics = '/logistics';
 
   static const String refund = '/refund';
+
+  static const String orderEditLog = '/orderEditLog';
   static void configureRoutes(Router router) {
     router.notFoundHandler = new Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -93,5 +95,6 @@ class Routes {
     router.define(forgetPwd, handler: RouteHandler.forgetPwd);
     router.define(mainfest, handler: RouteHandler.mainfest);
     router.define(logistics, handler: RouteHandler.logistics);
+    router.define(orderEditLog, handler: RouteHandler.orderEditLog);
   }
 }

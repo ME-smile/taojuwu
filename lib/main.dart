@@ -17,7 +17,6 @@ void main() async {
   Routes.configureRoutes(router);
   Application.router = router;
   await Application.init();
-
   // 强制竖屏
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {

@@ -2,9 +2,11 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
+import 'package:taojuwu/pages/logistics/logistics_data_card.dart';
 import 'package:taojuwu/pages/order/utils/order_kit.dart';
 import 'package:taojuwu/pages/order/widgets/order_attr_card.dart';
 import 'package:taojuwu/providers/order_detail_provider.dart';
@@ -18,9 +20,9 @@ import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/copy_button.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
+import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 import 'package:taojuwu/widgets/zy_outline_button.dart';
-import 'package:taojuwu/widgets/zy_photo_view.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final int id;
@@ -37,6 +39,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   void initState() {
     super.initState();
     id = widget.id;
+    print(Application.sp.get('token'));
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData();
     });
@@ -149,63 +152,113 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
-  Widget _customerRequirementBar(String title, String desc) {
+  Widget buildTimeInfoBar(String title, String desc,
+      {bool isActive: false, int type: 1}) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[Text(title), Text(desc)],
+        children: <Widget>[
+          Text(title),
+          InkWell(
+            onTap: isActive
+                ? () {
+                    RouteHandler.goOrderEditLogPage(context, 823, type);
+                  }
+                : null,
+            child: Container(
+              child: Row(
+                children: <Widget>[
+                  Text(
+                    desc,
+                    style: TextStyle(color: Color(0xFF6D6D6D)),
+                  ),
+                  Offstage(
+                    offstage: !isActive,
+                    child: Icon(
+                      ZYIcon.next,
+                      size: UIKit.sp(32),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
 
   Widget buildinstallInfoTip(OrderDetailModel model) {
-    if (model?.isMeasureOrder == false) {
-      return Column(
-        children: <Widget>[
-          Offstage(
-            offstage: model?.hasMeasured == true,
-            child:
-                _customerRequirementBar('上门量尺意向时间', model?.measureTime ?? ''),
-          ),
-          _customerRequirementBar('客户意向安装时间', model?.installTime ?? ''),
-          _customerRequirementBar(
-              '备注',
-              model?.orderRemark == null || model?.orderRemark?.isEmpty == true
-                  ? '无'
-                  : model?.orderRemark)
-        ],
-      );
-    } else {
-      if (model?.isShowAllInfo == true) {
-        return Column(
-          children: <Widget>[
-            Offstage(
-              offstage: model?.hasMeasured == true,
-              child:
-                  _customerRequirementBar('上门量尺意向时间', model?.measureTime ?? ''),
-            ),
-            _customerRequirementBar('客户意向安装时间', model?.installTime ?? ''),
-            _customerRequirementBar('需测量窗数', '${model?.windowNum ?? 0}扇'),
-            _customerRequirementBar('定金', '￥${model?.orderEarnestMoney ?? 0}'),
-            _customerRequirementBar(
-                '备注',
-                model?.orderRemark == null ||
-                        model?.orderRemark?.isEmpty == true
-                    ? '无'
-                    : model?.orderRemark),
-          ],
-        );
-      }
-      return Column(children: <Widget>[
-        _customerRequirementBar('客户意向安装时间', model?.installTime ?? ''),
-        _customerRequirementBar(
-            '备注',
-            model?.orderRemark == null || model?.orderRemark?.isEmpty == true
-                ? '无'
-                : model?.orderRemark),
-      ]);
-    }
+    String measureTime =
+        model?.isSameYear == true && model.measureTime.length > 5
+            ? model?.measureTime?.substring(5)
+            : model?.measureTime;
+    return Column(
+      children: <Widget>[
+        buildTimeInfoBar(
+            '量尺预约时间',
+            model?.hasAdjustMeasureTime == true
+                ? '${measureTime ?? ''}(已调整)'
+                : '$measureTime',
+            isActive: model?.hasAdjustMeasureTime,
+            type: 1),
+        VSpacing(10),
+        buildTimeInfoBar(
+            '安装预约时间',
+            model?.hasAdjustInstallime == true
+                ? '${model?.installTime ?? ''}(已调整)'
+                : '${model?.installTime}',
+            isActive: model?.hasAdjustInstallime,
+            type: 2),
+      ],
+    );
+    // if (model?.isMeasureOrder == false) {
+    //   return Column(
+    //     children: <Widget>[
+    //       Offstage(
+    //         offstage: model?.hasMeasured == true,
+    //         child:
+    //             buildTimeInfoBar('上门量尺意向时间', model?.measureTime ?? ''),
+    //       ),
+    //       buildTimeInfoBar('客户意向安装时间', model?.installTime ?? ''),
+    //       buildTimeInfoBar(
+    //           '备注',
+    //           model?.orderRemark == null || model?.orderRemark?.isEmpty == true
+    //               ? '无'
+    //               : model?.orderRemark)
+    //     ],
+    //   );
+    // } else {
+    //   if (model?.isShowAllInfo == true) {
+    //     return Column(
+    //       children: <Widget>[
+    //         Offstage(
+    //           offstage: model?.hasMeasured == true,
+    //           child:
+    //               buildTimeInfoBar('上门量尺意向时间', model?.measureTime ?? ''),
+    //         ),
+    //         buildTimeInfoBar('客户意向安装时间', model?.installTime ?? ''),
+    //         buildTimeInfoBar('需��量窗数', '${model?.windowNum ?? 0}��'),
+    //         buildTimeInfoBar('定金', '�����������������������������������������������������������${model?.orderEarnestMoney ?? 0}'),
+    //         buildTimeInfoBar(
+    //             '备注',
+    //             model?.orderRemark == null ||
+    //                     model?.orderRemark?.isEmpty == true
+    //                 ? '无'
+    //                 : model?.orderRemark),
+    //       ],
+    //     );
+    //   }
+    //   return Column(children: <Widget>[
+    //     buildTimeInfoBar('客户意向安装时间', model?.installTime ?? ''),
+    //     buildTimeInfoBar(
+    //         '备注',
+    //         model?.orderRemark == null || model?.orderRemark?.isEmpty == true
+    //             ? '无'
+    //             : model?.orderRemark),
+    //   ]);
+    // }
   }
 
   Widget _measureManuscript(
@@ -222,48 +275,323 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text('测量手稿'),
-          ZYPhotoView(
-            UIKit.getNetworkImgPath(model?.measureManuscriptsPicture?.first),
-            width: UIKit.width(240),
-          )
-          // Container(
-          //   width: UIKit.width(240),
-          //   child: ExtendedImage.network(
-          //       UIKit.getNetworkImgPath(
-          //           model?.measureManuscriptsPicture?.first),
-          //       fit: BoxFit.contain,
-          //       //enableLoadState: false,
-          //       mode: ExtendedImageMode.gesture,
-          //       initGestureConfigHandler: (state) {
-          //     return GestureConfig(
-          //         minScale: 0.9,
-          //         animationMinScale: 0.7,
-          //         maxScale: 3.0,
-          //         animationMaxScale: 3.5,
-          //         speed: 1.0,
-          //         inertialSpeed: 100.0,
-          //         initialScale: 1.0,
-          //         inPageView: true);
-          //   }),
-          // ),
-          // ExtendedImageGesturePageView(),
-          // Image.network(
-          //   UIKit.getNetworkImgPath(model?.measureManuscriptsPicture?.first),
-          //   width: UIKit.width(240),
-          // )
+          Gallery(
+            imgList: model?.measureManuscriptsPicture
+                ?.map((item) => item?.toString())
+                ?.toList(),
+          ),
         ],
       ),
     );
   }
 
-  Widget _orderInfoBar(BuildContext context, String title, String text) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
-      child: Text(
-        '$title: $text',
-        style: Theme.of(context).textTheme.caption,
+  Widget buildOriginPriceNote(BuildContext context,
+      OrderDetailProvider provider, OrderDetailModel model) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            '原价:',
+            style: leadingTextStyle,
+          ),
+          Text('¥${model?.orderEstimatedPrice ?? 0.00}',
+              style: traillingTextStyle)
+        ],
       ),
     );
+  }
+
+  Widget buildDepositPriceNote(BuildContext context,
+      OrderDetailProvider provider, OrderDetailModel model) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            '定金:',
+            style: leadingTextStyle,
+          ),
+          Text('¥${model?.orderEarnestMoney ?? 0.00}',
+              style: traillingTextStyle)
+        ],
+      ),
+    );
+  }
+
+  Widget buildTailPriceNote(BuildContext context, OrderDetailProvider provider,
+      OrderDetailModel model) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            '尾款:',
+            style: leadingTextStyle,
+          ),
+          Text('¥${model?.tailMoney ?? 0.00}', style: traillingTextStyle)
+        ],
+      ),
+    );
+  }
+
+  Widget buildTotalPriceNote(BuildContext context, OrderDetailProvider provider,
+      OrderDetailModel model,
+      {String title: '合计', TextStyle textStyle}) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            '$title:',
+            style: leadingTextStyle,
+          ),
+          Text('¥${model?.realityPayMoney ?? 0.00}',
+              style: textStyle ?? emphasizeTextStyle)
+        ],
+      ),
+    );
+  }
+
+  Widget buildEditPriceNote(
+    BuildContext context,
+    OrderDetailProvider provider,
+    OrderDetailModel model,
+  ) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+      child: model?.isWaitingToPay == true
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  '修改:',
+                  style: leadingTextStyle,
+                ),
+                Text(
+                    '¥${provider?.deltaPrice ?? 0.00}${provider?.hasEditPrice == true ? "(" + provider?.changePriceRemark + ")" : ""}')
+              ],
+            )
+          : Offstage(
+              offstage: model?.hasModifyPrice == true,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    '修改:',
+                    style: leadingTextStyle,
+                  ),
+                  Text(
+                      '¥${model?.adjustMoney ?? 0.00}${model?.isAdjustPriceRemarkEmpty == true ? "(" + model?.adjustMoney + ")" : ""}')
+                ],
+              ),
+            ),
+    );
+  }
+
+  TextStyle get leadingTextStyle =>
+      TextStyle(fontWeight: FontWeight.normal, fontSize: UIKit.sp(28));
+
+  TextStyle get traillingTextStyle =>
+      TextStyle(fontWeight: FontWeight.w500, fontSize: UIKit.sp(28));
+
+  TextStyle get titleTextStyle =>
+      TextStyle(fontWeight: FontWeight.w500, fontSize: UIKit.sp(28));
+
+  TextStyle get emphasizeTextStyle => TextStyle(
+      color: Color(0xFFFC5252),
+      fontSize: UIKit.sp(36),
+      fontWeight: FontWeight.w500);
+
+  Widget buildOrderFootNote(BuildContext context, OrderDetailProvider provider,
+      OrderDetailModel model) {
+    // if (provider?.isMeasureOrder == true) {
+    //   return Container(
+    //     child: Row(
+    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //       children: <Widget>[
+    //         Text('定金:'),
+    //         Text(
+    //           '¥${model?.orderEarnestMoney ?? 0.00}',
+    //           style: TextStyle(
+    //               color: const Color(0xFFDE6D6C),
+    //               fontSize: UIKit.sp(32),
+    //               fontWeight: FontWeight.w600),
+    //         )
+    //       ],
+    //     ),
+    //   );
+    // }
+
+    if (model?.hasFinished == true || model?.isWaitingToInstall == true) {
+      return Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            buildDepositPriceNote(context, provider, model),
+            buildTailPriceNote(context, provider, model),
+            buildTotalPriceNote(context, provider, model, title: '预估总价'),
+          ],
+        ),
+      );
+    }
+
+    if (model?.isWaitingToShipOrReceive == true ||
+        model?.isProducting == true) {
+      return Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            buildDepositPriceNote(context, provider, model),
+            Offstage(
+              offstage: model?.hasModifyPrice == true,
+              child: buildOriginPriceNote(context, provider, model),
+            ),
+            buildEditPriceNote(context, provider, model),
+            buildTailPriceNote(context, provider, model),
+            buildTotalPriceNote(
+              context,
+              provider,
+              model,
+            ),
+          ],
+        ),
+      );
+    }
+    if (model?.isWaitingToPay == true) {
+      return Consumer(
+          builder: (BuildContext context, OrderDetailProvider provider, _) {
+        return Container(
+          child: Column(
+            children: <Widget>[
+              buildDepositPriceNote(context, provider, model),
+              Offstage(
+                offstage: provider?.hasEditPrice == false,
+                child: buildOriginPriceNote(context, provider, model),
+              ),
+              Offstage(
+                offstage: provider?.hasEditPrice == false,
+                child: buildEditPriceNote(context, provider, model),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
+                child: buildTotalPriceNote(context, provider, model,
+                    textStyle: traillingTextStyle),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      '尾款:',
+                      style: leadingTextStyle,
+                    ),
+                    Container(
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            '¥${provider?.afterChangeTailMoney?.toStringAsFixed(2) ?? 0.00}',
+                            style: emphasizeTextStyle,
+                          ),
+                          Offstage(
+                            offstage: model?.canEditPrice == false,
+                            child: InkWell(
+                              onTap: () {
+                                provider?.editPrict(context);
+                              },
+                              child: Row(
+                                children: <Widget>[
+                                  Text('修改'),
+                                  Icon(
+                                    ZYIcon.edit,
+                                    size: 14,
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      });
+    }
+
+    if (model?.isMeasureOrder == true) {
+      if (model?.hasAudited == false) {
+        return Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[buildDepositPriceNote(context, provider, model)],
+          ),
+        );
+      }
+      return Container(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: <Widget>[
+            buildDepositPriceNote(context, provider, model),
+            buildTailPriceNote(context, provider, model),
+            buildTotalPriceNote(context, provider, model, title: '预估价格'),
+          ],
+        ),
+      );
+    }
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          buildDepositPriceNote(context, provider, model),
+          buildTailPriceNote(context, provider, model),
+          buildTotalPriceNote(context, provider, model, title: '预估价格'),
+        ],
+      ),
+    );
+  }
+
+  Widget buildOrderInfoBar(BuildContext context, String title, String text,
+      {bool showCopyButton: false}) {
+    return Padding(
+        padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text(
+              '$title:',
+              style:
+                  TextStyle(fontSize: UIKit.sp(24), color: Color(0xFF333333)),
+            ),
+            Container(
+              child: Row(
+                children: <Widget>[
+                  Offstage(
+                    offstage: !showCopyButton,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                      child: CopyButton(text),
+                    ),
+                  ),
+                  Text(
+                    '$text',
+                    style: TextStyle(
+                        fontSize: UIKit.sp(22), color: Color(0xFF333333)),
+                  )
+                ],
+              ),
+            )
+          ],
+        ));
   }
 
   Widget _orderGoodsDetail(
@@ -271,7 +599,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     OrderDetailModel model,
   ) {
     ThemeData themeData = Theme.of(context);
-    TextTheme textTheme = themeData.textTheme;
+    // TextTheme textTheme = themeData.textTheme;
     return Consumer<OrderDetailProvider>(
       builder: (BuildContext context, OrderDetailProvider provider, _) {
         return Container(
@@ -296,60 +624,33 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 ),
               ),
               Divider(),
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
-                  child: Text(
-                      '${model?.isMeasureOrder == true ? '已付定金' : '定金'}:   ¥${model?.orderEarnestMoney}')),
+              buildOrderFootNote(context, provider, model),
               Offstage(
-                offstage: model?.canEditPrice == false,
-                child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
-                    child: Text(
-                        '原价: ¥${provider?.originPrice?.toStringAsFixed(2)}')),
-              ),
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Text(
-                          '合计:   ¥${(double.parse(model?.orderEstimatedPrice ?? '0') + provider?.deltaPrice).toStringAsFixed(2)}'),
-                      Offstage(
-                        offstage: model?.canEditPrice == false,
-                        child: InkWell(
-                          onTap: () {
-                            provider?.editPrict(context);
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Text('修改'),
-                              Icon(
-                                ZYIcon.edit,
-                                size: 14,
-                              )
-                            ],
-                          ),
+                offstage: model?.isMeasureOrder == true &&
+                    model?.hasMeasured == false,
+                child: InkWell(
+                  child: Container(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          '${model?.goodsNumDescText},',
+                          style: TextStyle(
+                              color: Color(0xFF999999), fontSize: UIKit.sp(24)),
                         ),
-                      ),
-                    ],
-                  )),
-              provider.showDeltaPrice
-                  ? Padding(
-                      padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
-                      child: Text(
-                          '修改: ${provider?.isMinus == false ? '+' : ''}¥${provider?.deltaPrice?.toStringAsFixed(2)} ${provider?.hasRemark == true ? "(${provider?.changePriceRemark})" : ''}'))
-                  : Container(),
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
-                  child: Text.rich(TextSpan(
-                      text: '尾款:',
-                      style: textTheme.title.copyWith(fontSize: UIKit.sp(28)),
-                      children: [
-                        TextSpan(
-                            text:
-                                '  ¥${provider?.afterChangeTailMoney?.toStringAsFixed(2)}',
-                            style: TextStyle(color: const Color(0xFFE02020)))
-                      ]))),
+                        Text(
+                          '查看商品清单',
+                          style: TextStyle(fontSize: UIKit.sp(24)),
+                        ),
+                        Icon(ZYIcon.next)
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    RouteHandler.goOrderMainfestPage(context, model?.orderId);
+                  },
+                ),
+              )
             ],
           ),
         );
@@ -377,6 +678,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     ThemeData themeData = Theme.of(context);
 
     TextTheme accentTextTheme = themeData.accentTextTheme;
+    TextTheme textTheme = themeData.textTheme;
     return isLoading
         ? LoadingCircle()
         : ChangeNotifierProvider<OrderDetailProvider>(
@@ -404,18 +706,83 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           padding:
                               EdgeInsets.symmetric(horizontal: UIKit.width(20)),
                           height: UIKit.height(220),
-                          color: themeData.accentColor,
+                          color: Color(0xFF18181A),
                           child: Text.rich(TextSpan(
                               text:
                                   '${Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['title']}\n\n',
-                              style: accentTextTheme.title
-                                  .copyWith(fontSize: UIKit.sp(24)),
+                              style: accentTextTheme.title.copyWith(
+                                  fontSize: UIKit.sp(28),
+                                  fontWeight: FontWeight.bold),
                               children: [
                                 TextSpan(
-                                    text: Constants.ORDER_STATUS_TIP_MAP[
-                                        model?.orderStatus ?? 0]['subtitle'],
-                                    style: accentTextTheme.body1)
+                                  text: Constants.ORDER_STATUS_TIP_MAP[
+                                      model?.orderStatus ?? 0]['subtitle'],
+                                  style: accentTextTheme.body1
+                                      .copyWith(color: Color(0xFFD7D7D7)),
+                                ),
+                                TextSpan(
+                                  text: model?.isWaitingToInstall == true
+                                      ? model?.installTime ?? ''
+                                      : '',
+                                  style: accentTextTheme.body1
+                                      .copyWith(color: Color(0xFFD7D7D7)),
+                                ),
+                                TextSpan(
+                                    text: model?.autoSignTime,
+                                    style: accentTextTheme.body1
+                                        .copyWith(color: Color(0xFFD7D7D7))),
                               ])),
+                        ),
+                        Offstage(
+                          offstage: model?.displayDeliveryInfo == false,
+                          child: InkWell(
+                            onTap: () {
+                              RouteHandler.goLogisticsPage(context, id);
+                            },
+                            child: Container(
+                              color: themeData.primaryColor,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: UIKit.width(20),
+                                  vertical: UIKit.height(24)),
+                              child: Row(
+                                children: <Widget>[
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.only(right: UIKit.width(20)),
+                                    child: ZYAssetImage(
+                                      'ship@2x.png',
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        '${model?.acceptStation ?? ''}',
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        model?.acceptTime ?? '',
+                                        style: textTheme.caption,
+                                      ),
+                                    ],
+                                  )),
+                                  Container(
+                                    child: Icon(ZYIcon.next),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          indent: UIKit.width(20),
+                          endIndent: UIKit.width(20),
+                          thickness: .5,
+                          height: .5,
                         ),
                         Container(
                           color: themeData.primaryColor,
@@ -424,9 +791,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               vertical: UIKit.height(20)),
                           child: Row(
                             children: <Widget>[
-                              Icon(
-                                ZYIcon.add,
-                                color: const Color(0xFF171717),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(right: UIKit.width(20)),
+                                child: Icon(
+                                  ZYIcon.add,
+                                  color: const Color(0xFF171717),
+                                ),
                               ),
                               Expanded(
                                   child: Column(
@@ -435,13 +806,21 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 children: <Widget>[
                                   Text(
                                       '收货人: ${model?.clientName ?? ''}  ${model?.receiverMobile ?? ''}'),
-                                  Text(model?.address ?? '')
+                                  Text(
+                                    model?.address ?? '',
+                                    style: textTheme.caption,
+                                  )
                                 ],
                               )),
                             ],
                           ),
                         ),
-                        VSpacing(20),
+                        Divider(
+                          indent: UIKit.width(20),
+                          endIndent: UIKit.width(20),
+                          thickness: .5,
+                          height: .5,
+                        ),
                         Container(
                           color: themeData.primaryColor,
                           padding: EdgeInsets.symmetric(
@@ -465,33 +844,48 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(
-                                '订单信息',
-                              ),
                               Row(
                                 children: <Widget>[
-                                  _orderInfoBar(
-                                      context, '订单编号', model?.orderNo ?? ''),
-                                  CopyButton(model?.orderNo ?? ''),
+                                  Container(
+                                    width: 5,
+                                    height: 20,
+                                    color: Colors.black,
+                                    margin:
+                                        EdgeInsets.only(right: UIKit.width(20)),
+                                  ),
+                                  Text(
+                                    '订单信息',
+                                    style: TextStyle(fontSize: UIKit.sp(28)),
+                                  ),
                                 ],
                               ),
-                              _orderInfoBar(context, '创建时间',
+                              VSpacing(20),
+                              buildOrderInfoBar(
+                                  context,
+                                  '订单备注',
+                                  model?.orderRemark?.isEmpty == true
+                                      ? '无备注'
+                                      : model?.orderRemark),
+                              buildOrderInfoBar(
+                                  context, '订单编号', model?.orderNo ?? '',
+                                  showCopyButton: true),
+                              buildOrderInfoBar(context, '创建时间',
                                   getTimeStr(model?.createTime)),
                               Offstage(
                                 offstage: model?.hasMeasured == false,
-                                child: _orderInfoBar(context, '测量时间',
+                                child: buildOrderInfoBar(context, '测量时间',
                                     getTimeStr(model?.realityMeasureTime)),
                               ),
                               // Offstage(
                               //   offstage: model?.hasInstalled == false,
-                              //   child: _orderInfoBar(context, '安装时间',
+                              //   child: buildOrderInfoBar(context, '安装时间',
                               //       getTimeStr(model?.realityInstallTime)),
                               // ),
-                              _orderInfoBar(
+                              buildOrderInfoBar(
                                   context, '下单人', model?.userName ?? ''),
-                              _orderInfoBar(
+                              buildOrderInfoBar(
                                   context, '客户名', model?.clientName ?? ''),
-                              _orderInfoBar(
+                              buildOrderInfoBar(
                                   context, '下单门店', model?.shopName ?? ''),
                             ],
                           ),

@@ -27,12 +27,18 @@ class _LogisticsPageState extends State<LogisticsPage> {
     fetchData();
   }
 
+  @override
+  void dispose() {
+    _refreshController?.dispose();
+    super.dispose();
+  }
+
   LogisticsDataModelWrapper wrapper;
   List<GoodsPacketModel> packetList;
   void fetchData() {
-    OTPService.logistics(context, params: {'order_id': 1})
+    OTPService.logistics(context, params: {'order_id': id})
         .then((LogisticsDataModelResp response) {
-      if (response.valid) {
+      if (response?.valid == true) {
         isLoading = false;
         wrapper = response?.data;
         packetList = wrapper?.goodsPacketList;
@@ -40,7 +46,11 @@ class _LogisticsPageState extends State<LogisticsPage> {
         if (mounted) setState(() {});
       }
     }).catchError((err) {
-      _refreshController?.loadFailed();
+      setState(() {
+        isLoading = false;
+        _refreshController?.loadFailed();
+      });
+
       return err;
     });
   }

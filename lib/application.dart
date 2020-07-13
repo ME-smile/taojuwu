@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:device_info/device_info.dart';
 import 'package:fluro/fluro.dart';
+import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -8,8 +10,10 @@ import 'package:taojuwu/utils/common_kit.dart';
 class Application {
   static Router router;
   static SharedPreferences sp;
+  static String deviceInfo;
   static init() async {
     sp = await SharedPreferences.getInstance();
+    deviceInfo = await getAppInfo();
   }
 
   static Future<double> _getTotalSizeOfFilesInDir(
@@ -71,5 +75,28 @@ class Application {
       }
     }
     await file.delete();
+  }
+
+  static Future<String> getAppInfo() async {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+    List<String> list = [];
+
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo appInfo = await deviceInfo.androidInfo;
+      list.add('Android');
+      list.add(version);
+      list.add('${appInfo.model}');
+      list.add(appInfo.version.release);
+    }
+    if (Platform.isIOS) {
+      IosDeviceInfo appInfo = await deviceInfo.iosInfo;
+      list.add('IOS');
+      list.add(version);
+      list.add('${appInfo.utsname.machine}');
+      list.add(appInfo.systemVersion);
+    }
+    return list.join(',');
   }
 }
