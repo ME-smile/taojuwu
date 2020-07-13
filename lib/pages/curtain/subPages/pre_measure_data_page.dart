@@ -321,7 +321,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                               children: <Widget>[
                                 Padding(
                                   padding:
-                                      EdgeInsets.only(right: UIKit.width(30)),
+                                      EdgeInsets.only(right: UIKit.width(25)),
                                   child: Text(
                                     '宽   (cm):',
                                     style: textTheme.caption,
@@ -343,6 +343,8 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                   width: UIKit.width(160),
                                   height: UIKit.height(50),
                                   decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(4)),
                                       border: Border.all(color: Colors.grey)),
                                 )
                               ],
@@ -355,7 +357,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                               children: <Widget>[
                                 Padding(
                                   padding:
-                                      EdgeInsets.only(right: UIKit.width(30)),
+                                      EdgeInsets.only(right: UIKit.width(25)),
                                   child: Text(
                                     '高   (cm):',
                                     style: textTheme.caption,
@@ -377,6 +379,8 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                   width: UIKit.width(160),
                                   height: UIKit.height(50),
                                   decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(4)),
                                       border: Border.all(color: Colors.grey)),
                                 ),
                               ],
@@ -391,7 +395,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                         child: Row(
                           children: <Widget>[
                             Padding(
-                              padding: EdgeInsets.only(right: UIKit.width(30)),
+                              padding: EdgeInsets.only(right: UIKit.width(25)),
                               child: Text(
                                 '离地距离:',
                                 style: textTheme.caption,
@@ -414,6 +418,8 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                               width: UIKit.width(160),
                               height: UIKit.height(50),
                               decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(4)),
                                   border: Border.all(color: Colors.grey)),
                             ),
                           ],

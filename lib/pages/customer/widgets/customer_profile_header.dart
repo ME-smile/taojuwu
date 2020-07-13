@@ -58,11 +58,13 @@ class CustomerProfileHeader extends StatelessWidget {
                 style: textTheme.subtitle,
               ),
               address != null && address.isNotEmpty
-                  ? Text.rich(
-                      TextSpan(text: '', children: [
-                        WidgetSpan(child: Icon(Icons.add_location)),
-                        TextSpan(text: '  $address', style: textTheme.caption)
-                      ]),
+                  ? Row(
+                      children: <Widget>[
+                        Icon(Icons.add_location),
+                        Expanded(
+                            child: Text('${address ?? ''}',
+                                style: textTheme.caption))
+                      ],
                     )
                   : SizedBox(),
             ],

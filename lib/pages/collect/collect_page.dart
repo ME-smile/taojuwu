@@ -192,6 +192,8 @@ class _CollectPageState extends State<CollectPage>
               bottom: PreferredSize(
                   child: TabBar(
                       controller: tabController,
+                      labelPadding:
+                          EdgeInsets.only(bottom: 5, left: 5, right: 5),
                       indicatorSize: TabBarIndicatorSize.label,
                       tabs: List.generate(tabs.length, (int i) {
                         return Text('${tabs[i]}($count)');

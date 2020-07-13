@@ -56,8 +56,13 @@ class CustomerTablePage extends StatelessWidget {
         }
       },
       child: Padding(
-        child: Center(child: Text('$text' ?? '-')),
-        padding: EdgeInsets.symmetric(vertical: UIKit.height(30)),
+        child: Center(
+            child: Text(
+          '$text' ?? '-',
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+        )),
+        padding: EdgeInsets.symmetric(vertical: UIKit.height(20)),
       ),
     ));
   }
@@ -125,6 +130,7 @@ class CustomerTablePage extends StatelessWidget {
                               decoration: BoxDecoration(
                                   border: Border(
                                       bottom: BorderSide(
+                                          width: .5,
                                           color: themeData.dividerColor))),
                               children: [
                                 _tableCell(

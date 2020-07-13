@@ -89,7 +89,6 @@ class GoodsMainfestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    TextTheme textTheme = themeData.textTheme;
     return Container(
       color: themeData.primaryColor,
       child: Column(
@@ -105,13 +104,26 @@ class GoodsMainfestCard extends StatelessWidget {
             padding: EdgeInsets.symmetric(
                 vertical: UIKit.height(20), horizontal: UIKit.width(20)),
             alignment: Alignment.centerRight,
-            child: Text.rich(
-                TextSpan(text: '共${mainfest?.count ?? 0}件,小计：', children: [
-              TextSpan(
-                  text: '￥${mainfest?.price ?? ''}',
-                  style: textTheme.title.copyWith(
-                      fontWeight: FontWeight.w700, fontSize: UIKit.sp(28)))
-            ])),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  '${mainfest?.statusName ?? ''}',
+                  style: TextStyle(
+                      color: Color(0xFFFC5252),
+                      fontSize: UIKit.sp(28),
+                      fontWeight: FontWeight.w500),
+                ),
+                Text.rich(
+                    TextSpan(text: '共${mainfest?.count ?? 0}件,小计：', children: [
+                  TextSpan(
+                    text: '￥${mainfest?.price ?? ''}',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500, fontSize: UIKit.sp(32)),
+                  )
+                ]))
+              ],
+            ),
           ),
         ],
       ),

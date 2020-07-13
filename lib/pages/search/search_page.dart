@@ -198,40 +198,44 @@ class _SearchPageState extends State<SearchPage> {
                   constraints: BoxConstraints(
                     maxHeight: 40,
                   ),
-                  child: TextField(
-                    controller: inputController,
-                    // enableInteractiveSelection: false,
-                    // textAlignVertical: TextAlignVertical(y: .5),
-                    onSubmitted: (String text) {
-                      if (text?.trim()?.isEmpty == true) {
-                        return CommonKit.showInfo('请输入关键字');
-                      }
-                      addHistory(text);
-                      jumpTo(text);
-                    },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    child: TextField(
+                      controller: inputController,
+                      // enableInteractiveSelection: false,
+                      // textAlignVertical: TextAlignVertical(y: .5),
+                      onSubmitted: (String text) {
+                        if (text?.trim()?.isEmpty == true) {
+                          return CommonKit.showInfo('请输入关键字');
+                        }
+                        addHistory(text);
+                        jumpTo(text);
+                      },
 
-                    decoration: InputDecoration(
-                        // fillColor: Colors.grey,
-                        filled: true,
-                        fillColor: Color(0xFFEDEFF1),
-                        prefixIcon: Container(
-                          child: Icon(
-                            ZYIcon.search,
-                            color: const Color(0xFF979797),
+                      decoration: InputDecoration(
+                          // fillColor: Colors.grey,
+
+                          filled: true,
+                          fillColor: Color(0xFFEDEFF1),
+                          prefixIcon: Container(
+                            child: Icon(
+                              ZYIcon.search,
+                              color: const Color(0xFF979797),
+                            ),
                           ),
-                        ),
-                        suffixIcon: InkWell(
-                          child: Icon(
-                            ZYIcon.clear,
-                            color: const Color(0xFF979797),
-                            size: 16,
+                          suffixIcon: InkWell(
+                            child: Icon(
+                              ZYIcon.clear,
+                              color: const Color(0xFF979797),
+                              size: 16,
+                            ),
+                            onTap: () {
+                              inputController?.text = ' ';
+                            },
                           ),
-                          onTap: () {
-                            inputController?.text = ' ';
-                          },
-                        ),
-                        contentPadding: EdgeInsets.all(10),
-                        hintText: HINT_TEXT_MAP[type]),
+                          contentPadding: EdgeInsets.all(10),
+                          hintText: HINT_TEXT_MAP[type]),
+                    ),
                   ),
                 )),
                 InkWell(
