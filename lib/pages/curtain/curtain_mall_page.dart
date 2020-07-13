@@ -17,10 +17,12 @@ import 'package:taojuwu/singleton/target_route.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
+
 import 'package:taojuwu/widgets/no_data.dart';
 
 import 'package:taojuwu/widgets/scan_button.dart';
 import 'package:taojuwu/widgets/search_button.dart';
+
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'widgets/curtain_list_view.dart';
 import 'widgets/goods_filter_header.dart';
