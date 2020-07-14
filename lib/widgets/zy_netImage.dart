@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 // import 'package:taojuwu/widgets/loading.dart';
-import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 class ZYNetImage extends StatelessWidget {
   final String imgPath;
@@ -25,62 +24,16 @@ class ZYNetImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: callback,
-      child: ExtendedImage.network(
-        UIKit.getNetworkImgPath(imgPath),
-        cache: isCache,
-        fit: fit,
-        width: width,
-        height: height,
-        loadStateChanged: (ExtendedImageState state) {
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              {
-                return ZYAssetImage(
-                  'goods_placeholder.png',
-                  callback: callback,
-                  width: width,
-                  height: height,
-                  fit: fit,
-                );
-              }
-            case LoadState.completed:
-              {
-                return FadeInImage(
-                    width: width,
-                    height: height,
-                    fit: fit,
-                    placeholder: AssetImage(UIKit.getAssetsImagePath(
-                      'goods_placeholder.png',
-                    )),
-                    image: ExtendedNetworkImageProvider(
-                        UIKit.getNetworkImgPath(imgPath),
-                        cache: true));
-              }
-            case LoadState.failed:
-              {
-                return ZYAssetImage(
-                  'goods_placeholder.png',
-                  callback: callback,
-                  width: width,
-                  height: height,
-                  fit: fit,
-                );
-              }
-            default:
-              {
-                // return LoadingCircle();
-                return ZYAssetImage(
-                  'goods_placeholder.png',
-                  callback: callback,
-                  width: width,
-                  height: height,
-                  fit: fit,
-                );
-              }
-          }
-        },
-      ),
-    );
+        onTap: callback,
+        child: FadeInImage(
+            width: width,
+            height: height,
+            fadeInDuration: Duration(milliseconds: 500),
+            placeholder: AssetImage(UIKit.getAssetsImagePath(
+              'goods_placeholder.png',
+            )),
+            image: ExtendedNetworkImageProvider(
+                UIKit.getNetworkImgPath(imgPath),
+                cache: true)));
   }
 }

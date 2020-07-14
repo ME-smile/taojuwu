@@ -506,10 +506,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               },
                               child: Row(
                                 children: <Widget>[
-                                  Text('修改'),
+                                  Text(
+                                    '修改',
+                                    style: TextStyle(fontSize: UIKit.sp(24)),
+                                  ),
                                   Icon(
                                     ZYIcon.edit,
-                                    size: 14,
+                                    size: 12,
                                   )
                                 ],
                               ),
@@ -569,7 +572,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             Text(
               '$title:',
               style:
-                  TextStyle(fontSize: UIKit.sp(24), color: Color(0xFF333333)),
+                  TextStyle(fontSize: UIKit.sp(28), color: Color(0xFF333333)),
             ),
             Container(
               child: Row(
@@ -585,7 +588,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   Text(
                     '$text',
                     style: TextStyle(
-                        fontSize: UIKit.sp(22), color: Color(0xFF333333)),
+                        fontSize: UIKit.sp(28), color: Color(0xFF333333)),
                   )
                 ],
               ),
@@ -642,7 +645,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           '查看商品清单',
                           style: TextStyle(fontSize: UIKit.sp(24)),
                         ),
-                        Icon(ZYIcon.next)
+                        Icon(
+                          ZYIcon.next,
+                          size: UIKit.sp(24),
+                        )
                       ],
                     ),
                   ),
@@ -705,7 +711,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           alignment: Alignment.centerLeft,
                           padding:
                               EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                          height: UIKit.height(220),
+                          height: UIKit.height(200),
                           color: Color(0xFF18181A),
                           child: Text.rich(TextSpan(
                               text:
@@ -718,14 +724,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                   text: Constants.ORDER_STATUS_TIP_MAP[
                                       model?.orderStatus ?? 0]['subtitle'],
                                   style: accentTextTheme.body1
-                                      .copyWith(color: Color(0xFFD7D7D7)),
+                                      .copyWith(color: Colors.white),
                                 ),
                                 TextSpan(
                                   text: model?.isWaitingToInstall == true
                                       ? model?.installTime ?? ''
                                       : '',
                                   style: accentTextTheme.body1
-                                      .copyWith(color: Color(0xFFD7D7D7)),
+                                      .copyWith(color: Colors.white),
                                 ),
                                 TextSpan(
                                     text: model?.autoSignTime,
@@ -764,6 +770,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),
+                                      VSpacing(10),
                                       Text(
                                         model?.acceptTime ?? '',
                                         style: textTheme.caption,
@@ -847,15 +854,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               Row(
                                 children: <Widget>[
                                   Container(
-                                    width: 5,
+                                    width: 2,
                                     height: 20,
                                     color: Colors.black,
                                     margin:
-                                        EdgeInsets.only(right: UIKit.width(20)),
+                                        EdgeInsets.only(right: UIKit.width(10)),
                                   ),
                                   Text(
                                     '订单信息',
-                                    style: TextStyle(fontSize: UIKit.sp(28)),
+                                    style: TextStyle(fontSize: UIKit.sp(32)),
                                   ),
                                 ],
                               ),

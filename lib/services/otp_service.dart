@@ -21,6 +21,7 @@ import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
 // import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
+import 'package:taojuwu/models/shop/tag_model.dart';
 import 'package:taojuwu/models/user/category_customer_model.dart';
 import 'package:taojuwu/models/user/customer_detail_model.dart';
 import 'package:taojuwu/models/user/customer_model.dart';
@@ -41,10 +42,16 @@ class OTPService {
     return CurtainProductListResp.fromMap(response.data);
   }
 
-  static Future<TagListResp> tagList(BuildContext context,
+  static Future<TagListResp> tag(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response = await xhr.get(context, ApiPath.tag, params: params);
     return TagListResp.fromMap(response.data);
+  }
+
+  static Future<TagModelListResp> tagList(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response = await xhr.get(context, ApiPath.tagList, params: params);
+    return TagModelListResp.fromMap(response.data);
   }
 
   static Future mallData(BuildContext context,

@@ -408,9 +408,11 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   hintText: '单位(cm)',
+                                  alignLabelWithHint: true,
+                                  hintStyle: TextStyle(fontSize: UIKit.sp(24)),
                                   isDense: true,
                                   contentPadding:
-                                      EdgeInsets.symmetric(vertical: 2.5),
+                                      EdgeInsets.symmetric(vertical: 3),
                                 ),
                               ),
                               margin: EdgeInsets.symmetric(

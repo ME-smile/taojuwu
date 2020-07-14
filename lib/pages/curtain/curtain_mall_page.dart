@@ -1,12 +1,17 @@
 // import 'package:animations/animations.dart';
+
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
-import 'package:taojuwu/models/shop/product_tag_model.dart';
+
+import 'package:taojuwu/models/shop/tag_model.dart';
 // import 'package:taojuwu/pages/order/measure_order_page.dart';
 import 'package:taojuwu/router/handlers.dart';
 
@@ -59,17 +64,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     // 'stock': '',
     'order': 'sales',
     'sort': 'desc',
-    // 'brand_name': '',
-    // 'min_price': '',
-    // 'max_price': '',
-    // 'province_id': '',
-    // 'province_name': '',
-    // 'attr': '',
-    // 'spec': '',
     'page_size': PAGE_SIZE,
     'page_index': 1,
-    'category_id': '',
-    'tag_id': ''
 
     // 'shippingFee': 0,
     // 'type': 0
@@ -117,7 +113,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   bool isGridMode = true;
   double width;
   bool get hasMoreData => params['page_index'] < totalPage;
-  TagBeanWrapper tagWrapper;
+  TagFilterWrapper tagWrapper;
+  bool showFloatingButton = true;
   Widget _buildFilter1() {
     return ZYAssetImage(
       isGridMode ? 'ic_grid_h.png' : 'ic_grid.png',
@@ -175,8 +172,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           ScaffoldState state = _scaffoldKey.currentState;
           if (!state.isEndDrawerOpen) {
             state.openEndDrawer();
+            showFloatingButton = false;
           } else {
             closeEndDrawer();
+            showFloatingButton = true;
           }
           // hideFilterView = !hideFilterView;
         });
@@ -195,148 +194,257 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         duration: Duration(milliseconds: 300), curve: Curves.bounceInOut);
   }
 
-// type参数代表系列
-  void checkTag(List<TagBean> tags, int type, int i) {
-    isRefresh = true;
-    TagBean bean = tags[i];
-    params['page_index'] = 1;
+// // type参数代表系列
+//   void checkTag(List<TagBean> tags, int type, int i) {
+//     isRefresh = true;
+//     TagBean bean = tags[i];
+//     params['page_index'] = 1;
 
-    if (bean?.isChecked == true) {
-      bean?.isChecked = false;
+//     if (bean?.isChecked == true) {
+//       bean?.isChecked = false;
 
-      if (type == 1) {
-        params['category_id'] = '';
-        Navigator.of(context).pop();
-        return;
-      }
-      if (type == 2) {
-        params['tag_id'] = '';
-        Navigator.of(context).pop();
-        return;
-      }
+//       if (type == 1) {
+//         params['category_id'] = '';
+//         Navigator.of(context).pop();
+//         return;
+//       }
+//       if (type == 2) {
+//         params['tag_id'] = '';
+//         Navigator.of(context).pop();
+//         return;
+//       }
+//     }
+//     for (int m = 0; m < tags?.length; m++) {
+//       TagBean tag = tags[m];
+//       if (i == m) {
+//         tag.isChecked = true;
+//         if (type == 1) {
+//           params['category_id'] = tag?.id;
+//         }
+//         if (type == 2) {
+//           params['tag_id'] = tag?.id;
+//         }
+//       }
+//       tag.isChecked = i == m ? true : false;
+//     }
+
+//     Navigator.of(context).pop();
+//     scrollToTop();
+//   }
+
+  void checkTag(
+      TagFilter filter, List<TagFilterOption> options, TagFilterOption bean) {
+    if (filter?.isMulti == true) {
+      setState(() {
+        bean?.isChecked = !bean.isChecked;
+      });
+    } else {
+      options?.forEach((item) {
+        item?.isChecked = item == bean;
+      });
+      setState(() {});
     }
-    for (int m = 0; m < tags?.length; m++) {
-      TagBean tag = tags[m];
-      if (i == m) {
-        tag.isChecked = true;
-        if (type == 1) {
-          params['category_id'] = tag?.id;
-        }
-        if (type == 2) {
-          params['tag_id'] = tag?.id;
-        }
-      }
-      tag.isChecked = i == m ? true : false;
-    }
-
-    Navigator.of(context).pop();
-    scrollToTop();
   }
 
   Widget endDrawer(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
+    // ThemeData themeData = Theme.of(context);
 
+    List<TagFilter> filters = tagWrapper?.filterList ?? [];
     return Container(
-      width: 200,
-      color: Colors.white,
+      width: 240,
       height: double.infinity,
-      padding: EdgeInsets.symmetric(
-          horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-      child: Column(
-        children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
-            decoration: BoxDecoration(
-                border: Border(
-                    left: BorderSide(color: themeData.accentColor, width: 5))),
-            child: Text('品类'),
+      color: Colors.white,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Container(
+          padding: EdgeInsets.symmetric(
+              horizontal: UIKit.width(20), vertical: UIKit.height(10)),
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemBuilder: (BuildContext context, int index) {
+              TagFilter bean = filters[index];
+              List<TagFilterOption> options = bean?.filterValue;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: Text('${bean?.showName ?? ''}'),
+                  ),
+                  Wrap(
+                    runSpacing: 10,
+                    spacing: 10,
+                    children:
+                        List<Widget>.generate(options?.length ?? 0, (int i) {
+                      TagFilterOption option = options[i];
+                      return Container(
+                        height: 24,
+                        child: AspectRatio(
+                          aspectRatio: 3.6,
+                          child: TagBeanActionChip(
+                            bean: option,
+                            callback: () {
+                              checkTag(bean, options, option);
+                            },
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              );
+            },
+            itemCount: filters?.length ?? 0,
           ),
-          ListBody(
-            children: List.generate(tagWrapper?.category?.length ?? 0, (int i) {
-              TagBean item = tagWrapper?.category[i];
-              return InkWell(
+        ),
+        bottomNavigationBar: Container(
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                  child: InkWell(
                 onTap: () {
-                  setState(() {
-                    checkTag(tagWrapper?.category, 1, i);
-                    requestGoodsData();
-                  });
+                  tagWrapper?.reset();
+                  isRefresh = true;
+                  requestGoodsData();
                 },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: UIKit.width(20), vertical: UIKit.height(10)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(item?.name ?? ''),
-                      item?.isChecked == true
-                          ? Icon(
-                              ZYIcon.check,
-                              color: const Color(0xFF050505),
-                            )
-                          : SizedBox(
-                              width: 24,
-                              height: 24,
-                            )
-                    ],
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Color(0xFF979797))),
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    '重置',
+                    textAlign: TextAlign.center,
                   ),
                 ),
-              );
-            }),
-          ),
-          Divider(),
-          Container(
-            alignment: Alignment.centerLeft,
-            padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
-            decoration: BoxDecoration(
-                border: Border(
-                    left: BorderSide(color: themeData.accentColor, width: 5))),
-            child: Text('系列'),
-          ),
-          ListBody(
-            children: List.generate(tagWrapper?.tag?.length ?? 0, (int i) {
-              TagBean item = tagWrapper?.tag[i];
-              return InkWell(
+              )),
+              Expanded(
+                  child: InkWell(
                 onTap: () {
-                  setState(() {
-                    checkTag(tagWrapper?.tag, 2, i);
-
-                    // params['tag_id'] = item?.id;
-
-                    requestGoodsData();
-                  });
+                  params?.addAll(tagWrapper?.args);
+                  print(params);
+                  isRefresh = true;
+                  requestGoodsData();
                 },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: UIKit.width(20), vertical: UIKit.height(10)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(item?.name),
-                      item?.isChecked == true
-                          ? Icon(
-                              ZYIcon.check,
-                              color: const Color(0xFF050505),
-                            )
-                          : SizedBox(
-                              width: 24,
-                              height: 24,
-                            )
-                    ],
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    border: Border.all(width: 1, color: Colors.black),
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Text(
+                    '确认',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
                   ),
                 ),
-              );
-            }),
+              )),
+            ],
           ),
-        ],
+        ),
       ),
     );
+
+    // return Container(
+    //   width: 200,
+    //   color: Colors.white,
+    //   height: double.infinity,
+    //   padding: EdgeInsets.symmetric(
+    //       horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+    //   child: Column(
+    //     children: [
+    //       Container(
+    //         alignment: Alignment.centerLeft,
+    //         padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
+    //         decoration: BoxDecoration(
+    //             border: Border(
+    //                 left: BorderSide(color: themeData.accentColor, width: 5))),
+    //         child: Text('品类'),
+    //       ),
+    //       ListBody(
+    //         children: List.generate(tagWrapper?.category?.length ?? 0, (int i) {
+    //           TagBean item = tagWrapper?.category[i];
+    //           return InkWell(
+    //             onTap: () {
+    //               setState(() {
+    //                 checkTag(tagWrapper?.category, 1, i);
+    //                 requestGoodsData();
+    //               });
+    //             },
+    //             child: Padding(
+    //               padding: EdgeInsets.symmetric(
+    //                   horizontal: UIKit.width(20), vertical: UIKit.height(10)),
+    //               child: Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: <Widget>[
+    //                   Text(item?.name ?? ''),
+    //                   item?.isChecked == true
+    //                       ? Icon(
+    //                           ZYIcon.check,
+    //                           color: const Color(0xFF050505),
+    //                         )
+    //                       : SizedBox(
+    //                           width: 24,
+    //                           height: 24,
+    //                         )
+    //                 ],
+    //               ),
+    //             ),
+    //           );
+    //         }),
+    //       ),
+    //       Divider(),
+    //       Container(
+    //         alignment: Alignment.centerLeft,
+    //         padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
+    //         decoration: BoxDecoration(
+    //             border: Border(
+    //                 left: BorderSide(color: themeData.accentColor, width: 5))),
+    //         child: Text('系列'),
+    //       ),
+    //       ListBody(
+    //         children: List.generate(tagWrapper?.tag?.length ?? 0, (int i) {
+    //           TagBean item = tagWrapper?.tag[i];
+    //           return InkWell(
+    //             onTap: () {
+    //               setState(() {
+    //                 checkTag(tagWrapper?.tag, 2, i);
+
+    //                 // params['tag_id'] = item?.id;
+
+    //                 requestGoodsData();
+    //               });
+    //             },
+    //             child: Padding(
+    //               padding: EdgeInsets.symmetric(
+    //                   horizontal: UIKit.width(20), vertical: UIKit.height(10)),
+    //               child: Row(
+    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                 children: <Widget>[
+    //                   Text(item?.name),
+    //                   item?.isChecked == true
+    //                       ? Icon(
+    //                           ZYIcon.check,
+    //                           color: const Color(0xFF050505),
+    //                         )
+    //                       : SizedBox(
+    //                           width: 24,
+    //                           height: 24,
+    //                         )
+    //                 ],
+    //               ),
+    //             ),
+    //           );
+    //         }),
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   void fetchData() {
     OTPService.mallData(context, params: params).then((data) {
       CurtainProductListResp curtainProductListResp = data[0];
-      TagListResp tagListResp = data[1];
+      TagModelListResp tagListResp = data[1];
 
       if (mounted) {
         setState(() {
@@ -360,8 +468,14 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   }
 
   void requestGoodsData() {
+    if (isRefresh)
+      setState(() {
+        isLoading = true;
+      });
+
     OTPService.curtainGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
+      print(Application.sp.get('token'));
       _refreshController?.resetNoData();
       beanData = curtainProductListResp?.data;
       wrapper = beanData?.goodsList;
@@ -369,6 +483,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
       int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
       totalPage = mod > 0 ? pages + 1 : pages;
+      isLoading = false;
+
       if (isRefresh) {
         setState(() {
           goodsList = wrapper?.data;
@@ -388,12 +504,15 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           });
         }
       }
+      if (showFloatingButton == false) Navigator.pop(context);
     }).catchError((err) {
       if (isRefresh) {
         _refreshController?.refreshFailed();
       } else {
         _refreshController?.loadFailed();
       }
+      isLoading = false;
+      setState(() {});
     });
   }
 
@@ -450,18 +569,21 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     width = MediaQuery.of(context).size.width;
     return WillPopScope(
         child: Scaffold(
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              RouteHandler.goMeasureOrderPage(context);
-            },
-            backgroundColor: themeData.primaryColor,
-            child: ZYAssetImage(
-              'create_measure_order@2x.png',
-              width: UIKit.width(60),
-              height: UIKit.width(60),
-              callback: () {
+          floatingActionButton: Visibility(
+            visible: showFloatingButton,
+            child: FloatingActionButton(
+              onPressed: () {
                 RouteHandler.goMeasureOrderPage(context);
               },
+              backgroundColor: themeData.primaryColor,
+              child: ZYAssetImage(
+                'create_measure_order@2x.png',
+                width: UIKit.width(60),
+                height: UIKit.width(60),
+                callback: () {
+                  RouteHandler.goMeasureOrderPage(context);
+                },
+              ),
             ),
           ),
           // floatingActionButton: OpenContainer(
@@ -625,5 +747,46 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           clear();
           return Future.value(false);
         });
+  }
+}
+
+class TagBeanActionChip extends StatefulWidget {
+  final TagFilterOption bean;
+  final Function callback;
+  TagBeanActionChip({Key key, this.bean, this.callback}) : super(key: key);
+
+  @override
+  _TagBeanActionChipState createState() => _TagBeanActionChipState();
+}
+
+class _TagBeanActionChipState extends State<TagBeanActionChip> {
+  TagFilterOption get bean => widget.bean;
+  bool get isChecked => bean?.isChecked;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: widget.callback,
+      child: Container(
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+            color: Colors.black,
+            borderRadius: BorderRadius.all(Radius.circular(2)),
+            border: Border.all(
+                color: isChecked == true ? Colors.black : Color(0xFFCBCBCB))),
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(isChecked ? 7.2 : 0))),
+          child: Text(
+            bean?.name ?? '',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: isChecked == true ? Colors.black : Color(0xFF333333)),
+          ),
+        ),
+      ),
+    );
   }
 }

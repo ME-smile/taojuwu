@@ -27,6 +27,8 @@ class ApiPath {
 
   static const String tag = '/api/order/tag';
 
+  static const String tagList = '/api/goods/filtrateTag';
+
   static const String collect = '/api/member/addCollection';
 
   static const String cancelCollect = '/api/member/cancelCollection';

@@ -208,7 +208,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                     children: <Widget>[
                       ConstrainedBox(
                         constraints: BoxConstraints(
-                          maxHeight: 40,
+                          maxHeight: 36,
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -219,7 +219,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                 filled: true,
                                 hintText: '请输入宽（cm）',
                                 fillColor: const Color(0xFFF2F2F2),
-                                contentPadding: EdgeInsets.all(10)),
+                                contentPadding: EdgeInsets.all(8)),
                           ),
                         ),
                       ),
@@ -358,7 +358,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                       children: <Widget>[
                         ConstrainedBox(
                           constraints: BoxConstraints(
-                            maxHeight: 40,
+                            maxHeight: 36,
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -369,7 +369,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                   filled: true,
                                   hintText: '请输入离地距离（cm）',
                                   fillColor: const Color(0xFFF2F2F2),
-                                  contentPadding: EdgeInsets.all(10)),
+                                  contentPadding: EdgeInsets.all(8)),
                             ),
                           ),
                         ),
@@ -678,20 +678,24 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                   child: Container(
                                     color: themeData.primaryColor,
                                     padding: EdgeInsets.symmetric(
-                                        horizontal: UIKit.width(20),
-                                        vertical: UIKit.height(20)),
+                                      horizontal: UIKit.width(20),
+                                    ),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
+                                        VSpacing(20),
                                         Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: <Widget>[
                                             Text.rich(TextSpan(
                                                 text:
-                                                    '${bean?.goodsName}      ' ??
-                                                        '',
+                                                    '${bean?.goodsName} ' ?? '',
+                                                style: TextStyle(
+                                                    fontSize: UIKit.sp(28),
+                                                    fontWeight:
+                                                        FontWeight.w400),
                                                 children: [
                                                   TextSpan(
                                                       text:
@@ -707,22 +711,27 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                                       builder:
                                                           (BuildContext context,
                                                               bool isLiked, _) {
-                                                        return IconButton(
-                                                            icon: Icon(
+                                                        return InkWell(
+                                                            child: Icon(
                                                               ZYIcon.like,
+                                                              size: 18,
                                                               color: isLiked
                                                                   ? Colors.red
                                                                   : const Color(
                                                                       0xFFCCCCCC),
                                                             ),
-                                                            onPressed: () {
+                                                            onTap: () {
                                                               collect(context);
                                                             });
                                                       })),
                                               WidgetSpan(
-                                                  child: IconButton(
-                                                      icon: Icon(ZYIcon.cart),
-                                                      onPressed: () {
+                                                  child: SizedBox(
+                                                      width: UIKit.width(30))),
+                                              WidgetSpan(
+                                                  child: InkWell(
+                                                      child: Icon(ZYIcon.cart,
+                                                          size: 18),
+                                                      onTap: () {
                                                         if (targetClient
                                                                 .hasSelectedClient ==
                                                             false) {
@@ -742,8 +751,10 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                         VSpacing(20),
                                         Text.rich(TextSpan(
                                             text: '¥${bean?.price ?? 0.00}',
+                                            style: TextStyle(
+                                                fontSize: UIKit.sp(32),
+                                                fontWeight: FontWeight.w500),
                                             children: [
-                                              TextSpan(text: ' '),
                                               TextSpan(
                                                   text: goodsProvider?.unit,
                                                   style: textTheme.caption),
@@ -766,6 +777,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                                 child: OnSaleTag(),
                                               ))
                                             ])),
+                                        VSpacing(20),
                                       ],
                                     ),
                                   ),
@@ -1059,43 +1071,60 @@ class BottomActionButtonBar extends StatelessWidget {
                     Text.rich(TextSpan(text: '预计:\n', children: [
                       TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
                     ])),
-                    Row(
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () async {
-                            if (!beforePurchase(goodsProvider, context)) return;
-                            setCartParams(goodsProvider);
-                            addCart(context, goodsProvider);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: UIKit.width(20),
-                                vertical: UIKit.height(10)),
-                            decoration:
-                                BoxDecoration(border: Border.all(width: 1)),
-                            child: Text('加入购物车'),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            createOrder(context);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: UIKit.width(20),
-                                vertical: UIKit.height(10)),
-                            decoration: BoxDecoration(
-                                color: themeData.accentColor,
-                                border:
-                                    Border.all(color: themeData.accentColor)),
-                            child: Text(
-                              '立即购买',
-                              style: themeData.accentTextTheme.button,
-                            ),
-                          ),
-                        )
-                      ],
+                    Spacer(
+                      flex: 2,
                     ),
+                    Expanded(
+                        flex: 3,
+                        child: Container(
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () async {
+                                    if (!beforePurchase(goodsProvider, context))
+                                      return;
+                                    setCartParams(goodsProvider);
+                                    addCart(context, goodsProvider);
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: UIKit.width(20),
+                                        vertical: UIKit.height(10)),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(width: 1)),
+                                    child: Text(
+                                      '加入购物车',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                                flex: 1,
+                              ),
+                              Expanded(
+                                  child: InkWell(
+                                    onTap: () {
+                                      createOrder(context);
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: UIKit.width(20),
+                                          vertical: UIKit.height(10)),
+                                      decoration: BoxDecoration(
+                                          color: themeData.accentColor,
+                                          border: Border.all(
+                                              color: themeData.accentColor)),
+                                      child: Text(
+                                        '立即购买',
+                                        style: themeData.accentTextTheme.button,
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                  flex: 1),
+                            ],
+                          ),
+                        ))
                   ],
                 ),
               );

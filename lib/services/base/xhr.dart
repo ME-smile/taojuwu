@@ -47,7 +47,7 @@ class Xhr {
   }) async {
     try {
       dio.options.queryParameters['token'] = Application.sp.getString('token');
-      print(dio.options.headers);
+
       return await dio.get(url,
           queryParameters: params, options: options, cancelToken: cancelToken);
     } on DioError catch (e) {

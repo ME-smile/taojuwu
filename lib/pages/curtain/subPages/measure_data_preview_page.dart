@@ -49,7 +49,7 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                 children: <Widget>[
                   ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxHeight: 40,
+                      maxHeight: 36,
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -57,12 +57,13 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                         onChanged: (String text) {
                           tmp = text;
                         },
+                        autofocus: true,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             filled: true,
                             hintText: '请输入离地距离（cm）',
                             fillColor: const Color(0xFFF2F2F2),
-                            contentPadding: EdgeInsets.all(10)),
+                            contentPadding: EdgeInsets.all(8)),
                       ),
                     ),
                   ),
@@ -101,6 +102,7 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                     onChanged: (String text) {
                       tmp = text;
                     },
+                    autofocus: true,
                   ),
                 ],
               ),

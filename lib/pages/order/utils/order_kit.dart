@@ -336,6 +336,7 @@ class OrderKit {
                                         onChanged: (String text) {
                                           deltaMoney = text;
                                         },
+                                        autofocus: true,
                                         keyboardType: TextInputType.number,
                                         decoration: InputDecoration(
                                           isDense: true,
