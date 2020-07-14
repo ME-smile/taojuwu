@@ -10,6 +10,9 @@ class Constants {
   static const String ORDER_STATUS_TO_SELECT = '待选品';
   static const String ORDER_STATUS_PAY_TAIL = '付尾款';
   static const String ORDER_STATUS_PRODUCTING = '生产中';
+
+  static const String ORDER_STATUS_TO_SHIP = '待发货';
+  static const String ORDER_STATUS_TO_RECEIVE = '待收货';
   static const String ORDER_STATUS_TO_INSTALL = '待安装';
   static const String ORDER_STATUS_FINISHED = '已完成';
 
@@ -35,6 +38,18 @@ class Constants {
     '7': ORDER_STATUS_FINISHED,
   };
 
+  static const List<String> ORDER_STATUS_TAB_LIST = [
+    ORDER_STATUS_ALL,
+    ORDER_STATUS_TO_AUDIT,
+    ORDER_STATUS_TO_MEASURE,
+    ORDER_STATUS_TO_SELECT,
+    ORDER_STATUS_PAY_TAIL,
+    ORDER_STATUS_PRODUCTING,
+    ORDER_STATUS_TO_SHIP,
+    ORDER_STATUS_TO_RECEIVE,
+    ORDER_STATUS_TO_INSTALL,
+    ORDER_STATUS_FINISHED,
+  ];
   static const Map ORDER_STATUS_MAP = {
     '': ORDER_STATUS_ALL,
     '1': ORDER_STATUS_ALL,
@@ -98,7 +113,7 @@ class Constants {
     },
     6: {
       'title': '商品已准备完毕',
-      'subtitle': '联系预约安装时间',
+      'subtitle': '待发货',
     },
     7: {
       'title': '已发货',
@@ -109,7 +124,7 @@ class Constants {
     10: {'title': '售后问题已提交', 'subtitle': '我们将尽快为您解决'},
     11: {'title': '交易完成', 'subtitle': '售后问题已处理'},
     14: {'title': '已完成测量', 'subtitle': '请根据房型选择商品'},
-    15: {'title': '已完成测量', 'subtitle': '请根据房型选择商品'},
+    15: {'title': '订单已发货', 'subtitle': ''},
     // ORDER_STATUS_PRODUCTED: {'title': '交易成功', 'subtitle': ''},
   };
 
@@ -201,7 +216,7 @@ class Constants {
 
 二、账户安全规范
 
-2.1您的账户为您自行设置并由您保管，淘居屋任何时候均不会主动要求您提供您的账户密码。因此，建议您务必保管好您的账户，并确保您在每个上网时段结束时退出登录并以正确步骤离开淘居屋。账户因您主动泄露或因您遭受他人攻击、诈骗等行为导致的损失及后果，淘居屋并不承担责任，您应通过司法、行政等救济途径向侵权行为人追偿。
+2.1您的账户���您自行设置并由您保管，淘居屋任何时候均不会主动要求您提供您的账户密码。因此，建议���务必保管好您的账户，并确保您在每个上网时段结束时退出登录并以正确步骤离开淘居屋。账户因您主动泄露或因您遭受他人攻击、诈骗等行为导致的损失及后果，淘居屋并不承担责任，您应通过司法、行政等救济途径向侵权行为人追偿。
 
  
 
@@ -375,11 +390,11 @@ c) 应法律法规要求需公示的企业名称等相关工商注册信息以�
 
  
 
-5.52.根据法律法规的规定或行政或司法机构的要求。
+5.52.根据法律法规的规定或行政或司法机构���要求。
 
  
 
-5.53.向淘居屋的关联方分享您的个人信息。
+5.53.向淘居屋的关联方分享��的个人信息。
 
  
 
@@ -387,7 +402,7 @@ c) 应法律法规要求需公示的企业名称等相关工商注册信息以�
 
  
 
-5.55.如您是适格的知识产权投诉人并已提起投诉，应被投诉人要求，向被投诉人披露，以便双方处理可能的权利纠纷。
+5.55.如您是适格的知识产权投诉人并已��起投诉，应被投诉人要求，向被投诉人披露，以便双方处理可能的权利纠纷。
 
  
 

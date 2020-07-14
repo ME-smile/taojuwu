@@ -51,6 +51,8 @@ class OptionView extends StatelessWidget {
               child: Text(
                 text,
                 textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 style: showBorder
                     ? textTheme.body1.copyWith(fontSize: 12)
                     : textTheme.caption,

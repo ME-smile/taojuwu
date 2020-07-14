@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'dart:ui' as ui show PlaceholderAlignment;
 
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -34,22 +33,23 @@ class AttrOptionsBar extends StatelessWidget {
           children: <Widget>[
             Text(
               title,
-              style: textTheme.caption,
+              style: textTheme.caption.copyWith(
+                  color: const Color(0xFF6D6D6D), fontSize: UIKit.sp(24)),
             ),
-            Text.rich(
-              TextSpan(
-                text: trailingText,
-                children: [
-                  showNext
-                      ? WidgetSpan(
-                          child: Icon(ZYIcon.next),
-                          alignment: ui.PlaceholderAlignment.middle,
-                        )
-                      : TextSpan()
-                ],
-              ),
-              textAlign: TextAlign.center,
-            )
+            Row(
+              children: <Widget>[
+                Text(
+                  trailingText,
+                  style: TextStyle(fontSize: UIKit.sp(24)),
+                ),
+                showNext
+                    ? Icon(
+                        ZYIcon.next,
+                        size: 20,
+                      )
+                    : Container()
+              ],
+            ),
           ],
         ),
       ),

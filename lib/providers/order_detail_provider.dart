@@ -23,6 +23,8 @@ class OrderDetailProvider with ChangeNotifier {
 
   bool get hasRemark => changePriceRemark?.isNotEmpty == true;
   bool get isWaitingToInstall => model?.isWaitingToInstall;
+
+  bool get isWaitingToShipOrReceive => model?.isWaitingToShipOrReceive;
   double get afterChangeTailMoney {
     if (_deltaPrice == null) {
       return tailPrice;
@@ -45,6 +47,8 @@ class OrderDetailProvider with ChangeNotifier {
       ? double.parse(model?.orderEarnestMoney)
       : 0.0;
   double get deltaPrice => _deltaPrice ?? adjustMoney;
+
+  bool get hasEditPrice => deltaPrice != 0;
   double get adjustMoney =>
       model?.adjustMoney != null ? double.parse(model?.adjustMoney) : 0.0;
   bool get isMeasureOrder => model?.isMeasureOrder ?? false;

@@ -215,7 +215,6 @@ class OrderProvider with ChangeNotifier {
     ).then((ZYResponse response) {
       if (response.valid) {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid);
-
         clear();
       } else {
         CommonKit.showErrorInfo(response?.message ?? '');

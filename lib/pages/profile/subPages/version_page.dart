@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 
@@ -26,7 +27,7 @@ class VersionPage extends StatelessWidget {
               height: 120,
             ),
             VSpacing(20),
-            Text('当前版本： 1.0.0')
+            Text('当前版本： ${Application.versionInfo}')
           ],
         ),
       ),

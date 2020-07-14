@@ -15,6 +15,7 @@ class Xhr {
   static Dio dio = dio = Dio(BaseOptions(
       headers: {
         "ACCEPT": 'application/json',
+        'equipment': Application.deviceInfo
       },
       queryParameters: {
         'token': Application.sp.getString('token'),
@@ -46,6 +47,7 @@ class Xhr {
   }) async {
     try {
       dio.options.queryParameters['token'] = Application.sp.getString('token');
+
       return await dio.get(url,
           queryParameters: params, options: options, cancelToken: cancelToken);
     } on DioError catch (e) {
@@ -75,6 +77,8 @@ class Xhr {
 
     try {
       // CommonKit.showLoading();
+      dio.options.queryParameters['token'] = Application.sp.getString('token');
+
       response = await dio.post(url,
           queryParameters: data,
           data: formdata,

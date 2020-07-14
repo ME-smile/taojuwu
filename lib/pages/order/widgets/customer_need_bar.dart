@@ -63,7 +63,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                 children: <Widget>[
                   ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxHeight: 40,
+                      maxHeight: 36,
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -74,7 +74,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                             filled: true,
                             hintText: '请填写备注',
                             fillColor: const Color(0xFFF2F2F2),
-                            contentPadding: EdgeInsets.all(10)),
+                            contentPadding: EdgeInsets.all(8)),
                       ),
                     ),
                   ),
@@ -149,7 +149,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                 children: <Widget>[
                   ConstrainedBox(
                     constraints: BoxConstraints(
-                      maxHeight: 40,
+                      maxHeight: 36,
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -315,14 +315,14 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                 ),
               ),
               OptBar(
-                title: '定金:'.padLeft(25),
+                title: '定金:'.padLeft(26),
                 text: '${provider?.deposit ?? '请输入'}',
                 callback: () {
                   deposit(provider);
                 },
               ),
               OptBar(
-                title: '订单备注:'.padLeft(19),
+                title: '订单备注:'.padLeft(20),
                 text: '${provider?.orderMark ?? '选填'}',
                 callback: () {
                   note(provider);

@@ -27,6 +27,7 @@ class OrderMainfestModel {
 class GoodsMainfest {
   int count;
   String price;
+  String statusName;
   List<GoodsMainfestAttr> list;
 
   GoodsMainfest.fromJson(Map<String, dynamic> json) {
@@ -36,6 +37,7 @@ class GoodsMainfest {
         list.add(new GoodsMainfestAttr.fromJson(v));
       });
     }
+    statusName = json['status_name'];
     count = json['count'];
     price = json['price'];
   }

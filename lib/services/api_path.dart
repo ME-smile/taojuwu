@@ -1,5 +1,5 @@
 class ApiPath {
-  static const HOST = "http://106.14.219.213:80";
+  static const HOST = "http://106.14.219.213:8001";
 
   static const String curtainMall = '/api/goods/goodsListByConditions';
 
@@ -26,6 +26,8 @@ class ApiPath {
   static const String orderDetail = '/api/order/orderDetail';
 
   static const String tag = '/api/order/tag';
+
+  static const String tagList = '/api/goods/filtrateTag';
 
   static const String collect = '/api/member/addCollection';
 
@@ -80,4 +82,6 @@ class ApiPath {
   static const String mainfest = '/api/order/productList';
 
   static const String logistics = '/api/order/orderExpressList';
+
+  static const String orderEditLog = '/api/order/getMeasureInstallRecords';
 }

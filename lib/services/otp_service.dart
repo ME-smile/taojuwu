@@ -4,6 +4,7 @@ import 'package:taojuwu/models/logistics/logistics_data_model.dart';
 import 'package:taojuwu/models/order/measure_data_model.dart';
 
 import 'package:taojuwu/models/order/order_detail_model.dart';
+import 'package:taojuwu/models/order/order_edit_log_model.dart';
 import 'package:taojuwu/models/order/order_mainfest_model.dart';
 
 import 'package:taojuwu/models/order/order_model.dart';
@@ -20,6 +21,7 @@ import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
 // import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
+import 'package:taojuwu/models/shop/tag_model.dart';
 import 'package:taojuwu/models/user/category_customer_model.dart';
 import 'package:taojuwu/models/user/customer_detail_model.dart';
 import 'package:taojuwu/models/user/customer_model.dart';
@@ -40,10 +42,16 @@ class OTPService {
     return CurtainProductListResp.fromMap(response.data);
   }
 
-  static Future<TagListResp> tagList(BuildContext context,
+  static Future<TagListResp> tag(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response = await xhr.get(context, ApiPath.tag, params: params);
     return TagListResp.fromMap(response.data);
+  }
+
+  static Future<TagModelListResp> tagList(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response = await xhr.get(context, ApiPath.tagList, params: params);
+    return TagModelListResp.fromMap(response.data);
   }
 
   static Future mallData(BuildContext context,
@@ -490,291 +498,17 @@ class OTPService {
   }
 
   static Future<LogisticsDataModelResp> logistics(context,
-      {Map<String, dynamic> params}) {
-    Map<String, dynamic> map = {
-      "code": 0,
-      "message": "success",
-      "data": {
-        "goods_packet_list": [
-          {
-            "packet_name": "包裹1",
-            "express_status_name": "已签收",
-            "express_name": "德邦",
-            "express_code": "DPK210009684857",
-            "order_goods_num": 5,
-            "order_goods_picture": [
-              "upload\/system\/2020022202384395844_THUMB.jpg",
-              "upload\/system\/2020022202400491376_THUMB.jpg",
-              "upload\/system\/2020022202355955775_THUMB.jpg",
-              "upload\/system\/2020022202334320274_THUMB.jpg",
-              "upload\/system\/2020022202334320274_THUMB.jpg"
-            ],
-            "express_message": [
-              {
-                "AcceptTime": "06-12 11:05",
-                "AcceptStation": "已签收，签收人类型：同事",
-                "title": "已签收"
-              },
-              {
-                "AcceptTime": "06-12 11:03",
-                "AcceptStation":
-                    "派送中。小哥今日体温正常，将佩戴口罩为您配送，也可联系小哥将包裹放置指定地点，祝您身体健康。,派送人：王进前,电话:15688832292",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-12 07:55",
-                "AcceptStation": "运输中，到达济南历城区盖世物流中心快递分部",
-                "title": "运输中"
-              },
-              {
-                "AcceptTime": "06-12 06:21",
-                "AcceptStation": "运输中，离开【济南转运场】，下一部门【济南历城区盖世物流中心快递分部】",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-11 20:17",
-                "AcceptStation": "运输中，到达济南转运场",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-11 05:23",
-                "AcceptStation": "运输中，离开【杭州枢纽中心】，下一部门【济南转运场】",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-10 19:42",
-                "AcceptStation": "运输中，到达杭州枢纽中心",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-10 18:30",
-                "AcceptStation": "您的订单已被收件员揽收,【杭州余杭区汇贤街快递分部】库存中",
-                "title": "已揽件"
-              },
-              {
-                "AcceptTime": "06-02 15:14",
-                "AcceptStation": "您的订单已发货",
-                "title": "已发货"
-              },
-              {
-                "AcceptTime": "05-12 15:12",
-                "AcceptStation": "您的订单已支付完成，请等待卖家发货",
-                "title": ""
-              },
-              {
-                "AcceptTime": "05-05 10:14",
-                "AcceptStation": "您的订单已提交，请尽快完成支付",
-                "title": ""
-              }
-            ]
-          },
-          {
-            "packet_name": "包裹2",
-            "express_status_name": "已签收",
-            "express_name": "德邦",
-            "express_code": "DPK210009684857",
-            "order_goods_num": 5,
-            "order_goods_picture": [
-              "upload\/system\/2020022202384395844_THUMB.jpg",
-              "upload\/system\/2020022202400491376_THUMB.jpg",
-              "upload\/system\/2020022202355955775_THUMB.jpg",
-              "upload\/system\/2020022202334320274_THUMB.jpg",
-              "upload\/system\/2020022202334320274_THUMB.jpg"
-            ],
-            "express_message": [
-              {
-                "AcceptTime": "06-12 11:05",
-                "AcceptStation": "已签收，签收人类型：同事",
-                "title": "已签收"
-              },
-              {
-                "AcceptTime": "06-12 11:03",
-                "AcceptStation":
-                    "派送中。小哥今日体温正常，将佩戴口罩为您配送，也可联系小哥将包裹放置指定地点，祝您身体健康。,派送人：王进前,电话:15688832292",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-12 07:55",
-                "AcceptStation": "运输中，到达济南历城区盖世物流中心快递分部",
-                "title": "运输中"
-              },
-              {
-                "AcceptTime": "06-12 06:21",
-                "AcceptStation": "运输中，离开【济南转运场】，下一部门【济南历城区盖世物流中心快递分部】",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-11 20:17",
-                "AcceptStation": "运输中，到达济南转运场",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-11 05:23",
-                "AcceptStation": "运输中，离开【杭州枢纽中心】，下一部门【济南转运场】",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-10 19:42",
-                "AcceptStation": "运输中，到达杭州枢纽中心",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-10 18:30",
-                "AcceptStation": "您的订单已被收件员揽收,【杭州余杭区汇贤街快递分部】库存中",
-                "title": "已揽件"
-              },
-              {
-                "AcceptTime": "06-02 15:14",
-                "AcceptStation": "您的订单已发货",
-                "title": "已发货"
-              },
-              {
-                "AcceptTime": "05-12 15:12",
-                "AcceptStation": "您的订单已支付完成，请等待卖家发货",
-                "title": ""
-              },
-              {
-                "AcceptTime": "05-05 10:14",
-                "AcceptStation": "您的订单已提交，请尽快完成支付",
-                "title": ""
-              }
-            ]
-          },
-          {
-            "packet_name": "包裹3",
-            "express_status_name": "已签收",
-            "express_name": "德邦",
-            "express_code": "DPK210009684857",
-            "order_goods_num": 5,
-            "order_goods_picture": [
-              "upload\/system\/2020022202384395844_THUMB.jpg",
-              "upload\/system\/2020022202400491376_THUMB.jpg",
-              "upload\/system\/2020022202355955775_THUMB.jpg",
-              "upload\/system\/2020022202334320274_THUMB.jpg",
-              "upload\/system\/2020022202334320274_THUMB.jpg"
-            ],
-            "express_message": [
-              {
-                "AcceptTime": "06-12 11:05",
-                "AcceptStation": "已签收，签收人类型：同事",
-                "title": "已签收"
-              },
-              {
-                "AcceptTime": "06-12 11:03",
-                "AcceptStation":
-                    "派送中。小哥今日体温正常，将佩戴口罩为您配送，也可联系小哥将包裹放置指定地点，祝您身体健康。,派送人：王进前,电话:15688832292",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-12 07:55",
-                "AcceptStation": "运输中，到达济南历城区盖世物流中心快递分部",
-                "title": "运输中"
-              },
-              {
-                "AcceptTime": "06-12 06:21",
-                "AcceptStation": "运输中，离开【济南转运场】，下一部门【济南历城区盖世物流中心快递分部】",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-11 20:17",
-                "AcceptStation": "运输中，到达济南转运场",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-11 05:23",
-                "AcceptStation": "运输中，离开【杭州枢纽中心】，下一部门【济南转运场】",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-10 19:42",
-                "AcceptStation": "运输中，到达杭州枢纽中心",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-10 18:30",
-                "AcceptStation": "您的订单已被收件员揽收,【杭州余杭区汇贤街快递分部】库存中",
-                "title": "已揽件"
-              },
-              {
-                "AcceptTime": "06-02 15:14",
-                "AcceptStation": "您的订单已发货",
-                "title": "已发货"
-              },
-              {
-                "AcceptTime": "05-12 15:12",
-                "AcceptStation": "您的订单已支付完成，请等待卖家发货",
-                "title": ""
-              },
-              {
-                "AcceptTime": "05-05 10:14",
-                "AcceptStation": "您的订单已提交，请尽快完成支付",
-                "title": ""
-              }
-            ]
-          },
-          {
-            "packet_name": "包裹4",
-            "express_status_name": "已签收",
-            "express_name": "德邦",
-            "express_code": "DPK210009684857",
-            "order_goods_num": 5,
-            "order_goods_picture": [
-              "upload\/system\/2020022202384395844_THUMB.jpg",
-              "upload\/system\/2020022202400491376_THUMB.jpg",
-              "upload\/system\/2020022202355955775_THUMB.jpg",
-              "upload\/system\/2020022202334320274_THUMB.jpg",
-              "upload\/system\/2020022202334320274_THUMB.jpg"
-            ],
-            "express_message": [
-              {
-                "AcceptTime": "06-12 11:05",
-                "AcceptStation": "已签收，签收人类型：同事",
-                "title": "未签收"
-              },
-              {
-                "AcceptTime": "06-12 11:03",
-                "AcceptStation":
-                    "派送中。小哥今日体温正常，将佩戴口罩为您配送，也可联系小哥将包裹放置指定地点，祝您身体健康。,派送人：王进前,电话:15688832292",
-                "title": ""
-              },
-              {
-                "AcceptTime": "06-12 07:55",
-                "AcceptStation": "运输中，到达济南历城区盖世物流中心快递分部",
-                "title": "运输中"
-              }
-            ]
-          },
-          {
-            "packet_name": "无需物流",
-            "express_status_name": "",
-            "express_name": "",
-            "express_code": "",
-            "order_goods_num": 2,
-            "order_goods_picture": [
-              "upload\/system\/2020022202384395844_THUMB.jpg",
-              "upload\/system\/2020022202400491376_THUMB.jpg"
-            ],
-            "express_message": []
-          },
-          {
-            "packet_name": "未发货",
-            "express_status_name": "",
-            "express_name": "",
-            "express_code": "",
-            "order_goods_num": 3,
-            "order_goods_picture": [
-              "upload\/system\/2020022202384395844_THUMB.jpg",
-              "upload\/system\/2020022202400491376_THUMB.jpg"
-            ],
-            "express_message": []
-          }
-        ]
-      },
-      "title": "订单包裹物流信息"
-    };
-    // Response response =
-    //     await xhr.get(context, ApiPath.logistics, params: params);
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.logistics, params: params);
 
-    return Future.value(LogisticsDataModelResp.fromJson(map));
+    return LogisticsDataModelResp.fromJson(response.data);
+  }
+
+  static Future<OrderEditLogModelResp> orderEditLog(context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.orderEditLog, params: params);
+    return OrderEditLogModelResp.fromJson(response.data);
   }
 }

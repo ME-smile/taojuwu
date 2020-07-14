@@ -13,11 +13,10 @@ class ThemeProvider with ChangeNotifier {
     // ),
     primaryColor: Colors.white,
 
-    // fontFamily: UIKit.quickFont,
     scaffoldBackgroundColor: TaojuwuColors.SCAFFOLD_BG_COLOR,
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
-    fontFamily: FONT_FAMILY,
+    // fontFamily: FONT_FAMILY,
     indicatorColor: TaojuwuColors.INDICATOR_COLOR,
     toggleableActiveColor: TaojuwuColors.TOGGLE_ACTIVE_COLOR,
     iconTheme: IconThemeData(color: TaojuwuColors.ICON_COLOR),

@@ -6,6 +6,7 @@ import 'package:taojuwu/pages/curtain/widgets/onsale_tag.dart';
 import 'package:taojuwu/router/handlers.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/v_spacing.dart';
 
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -135,6 +136,7 @@ class GridCard extends StatelessWidget {
                   // TextSpan(text: '\n'),
                   // TextSpan(text: '11324'),
                 ]))),
+            VSpacing(20),
           ],
         ),
       ),
@@ -153,11 +155,12 @@ class GoodsGridView extends StatelessWidget {
     return GridView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        padding: EdgeInsets.all(5),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: .8,
-          crossAxisSpacing: 10,
-        ),
+            crossAxisCount: 2,
+            childAspectRatio: 1.0,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 8),
         itemCount:
             goodsList != null && goodsList.isNotEmpty ? goodsList.length : 0,
         itemBuilder: (BuildContext context, int i) {

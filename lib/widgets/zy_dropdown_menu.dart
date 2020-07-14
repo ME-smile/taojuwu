@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 /// This widget is typically used with [ListView] to create an
 /// "expand / collapse" list entry. When used with scrolling widgets like
 /// [ListView], a unique [PageStorageKey] must be specified to enable the
-/// [ZYExpansionPanel] to save and restore its expanded state when it is scrolled
+/// [ZYDropdownMenu] to save and restore its expanded state when it is scrolled
 /// in and out of view.
 ///
 /// See also:
@@ -32,24 +32,26 @@ enum DividerDisplayTime {
   never //不显示
 }
 
-class ZYExpansionPanel extends StatefulWidget {
+class ZYDropdownMenu extends StatefulWidget {
   /// Creates a single-line [ListTile] with a trailing button that expands or collapses
   /// the tile to reveal or hide the [children]. The [initiallyExpanded] property must
   /// be non-null.
-  const ZYExpansionPanel({
-    Key key,
-    this.leading,
-    @required this.title,
-    this.backgroundColor,
-    this.dividerColor,
-    this.iconColor,
-    this.dividerDisplayTime,
-    this.onExpansionChanged,
-    this.children = const <Widget>[],
-    this.trailing,
-    this.bottomAction,
-    this.initiallyExpanded = false,
-  })  : assert(initiallyExpanded != null),
+  const ZYDropdownMenu(
+      {Key key,
+      this.leading,
+      @required this.title,
+      this.backgroundColor,
+      this.dividerColor,
+      this.iconColor,
+      this.dividerDisplayTime,
+      this.onExpansionChanged,
+      this.children = const <Widget>[],
+      this.trailing,
+      this.initiallyExpanded = false,
+      this.height,
+      this.showPanel = false,
+      this.callbackWhenClosed})
+      : assert(initiallyExpanded != null),
         super(key: key);
 
   /// A widget to display before the title.
@@ -57,11 +59,16 @@ class ZYExpansionPanel extends StatefulWidget {
   /// Typically a [CircleAvatar] widget.
   final Widget leading;
 
+  final Function callbackWhenClosed;
+
   /// The primary content of the list item.
   ///
   /// Typically a [Text] widget.
-  final Widget title;
-  final Widget bottomAction;
+  final String title;
+
+  final double height;
+
+  final bool showPanel;
 
   /// Called when the tile expands or collapses.
   ///
@@ -91,32 +98,27 @@ class ZYExpansionPanel extends StatefulWidget {
   final Color iconColor;
 
   @override
-  _ZYExpansionPanelState createState() => _ZYExpansionPanelState();
+  ZYDropdownMenuState createState() => ZYDropdownMenuState();
 }
 
-class _ZYExpansionPanelState extends State<ZYExpansionPanel>
+class ZYDropdownMenuState extends State<ZYDropdownMenu>
     with SingleTickerProviderStateMixin {
-  // static final Animatable<double> _easeOutTween =
-  //     CurveTween(curve: Curves.easeOut);
   static final Animatable<double> _easeInTween =
       CurveTween(curve: Curves.linear);
-  // static final Animatable<double> _halfTween =
-  //     Tween<double>(begin: 0.0, end: 0.5);
 
   final ColorTween _borderColorTween = ColorTween();
-  final ColorTween _headerColorTween = ColorTween();
+
   final ColorTween _iconColorTween = ColorTween();
   final ColorTween _backgroundColorTween = ColorTween();
 
   AnimationController _controller;
-  // Animation<double> _iconTurns;
   Animation<double> _heightFactor;
-  // Animation<Color> _borderColor;
-  Animation<Color> _headerColor;
-  Animation<Color> _iconColor;
-  // Animation<Color> _backgroundColor;
 
   bool _isExpanded = false;
+
+  handleTap() {
+    _handleTap();
+  }
 
   @override
   void initState() {
@@ -124,12 +126,6 @@ class _ZYExpansionPanelState extends State<ZYExpansionPanel>
     _controller =
         AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     _heightFactor = _controller.drive(_easeInTween);
-    // _iconTurns = _controller.drive(_halfTween.chain(_easeInTween));
-    // _borderColor = _controller.drive(_borderColorTween.chain(_easeOutTween));
-    _headerColor = _controller.drive(_headerColorTween.chain(_easeInTween));
-    _iconColor = _controller.drive(_iconColorTween.chain(_easeInTween));
-    // _backgroundColor =
-    //     _controller.drive(_backgroundColorTween.chain(_easeOutTween));
 
     _isExpanded =
         PageStorage.of(context)?.readState(context) ?? widget.initiallyExpanded;
@@ -163,50 +159,51 @@ class _ZYExpansionPanelState extends State<ZYExpansionPanel>
 
   Widget _buildChildren(BuildContext context, Widget child) {
     // final Color borderSideColor = _borderColor.value ?? Colors.transparent;
+    ThemeData themeData = Theme.of(context);
 
     return Container(
-      // decoration: BoxDecoration(
-      //   color: _backgroundColor.value ?? Colors.transparent,
-      //   // border: Border(
-      //   //   bottom: BorderSide(color: borderSideColor),
-      //   // ),
-      // ),
+      decoration: BoxDecoration(
+          // color: _backgroundColor.value ?? Colors.transparent,
+          color: themeData.primaryColor),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ListTileTheme.merge(
-            iconColor: _iconColor.value,
-            textColor: _headerColor.value,
-            child: Offstage(
-              offstage: _isExpanded,
-              child: InkWell(
-                child: widget.title,
-                onTap: _handleTap,
-              ),
-              // child: ListTile(
-              //   onTap: _handleTap,
-              //   leading: widget.leading,
-              //   title: widget.title,
-              //   trailing: Text(''),
-              //   // trailing: widget.trailing ??
-              // RotationTransition(
-              //   turns: _iconTurns,
-              //   child: const Icon(Icons.expand_more),
-              // ),
-              // ),
-            ),
-          ),
+          // height: widget.height ?? UIKit.height(60),
+          // child: Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: <Widget>[
+          // Offstage(
+          //   offstage: !_isExpanded,
+          //   child: Container(
+
+          //     color: !_isExpanded ? Colors.transparent : Colors.white,
+          //     padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+          //     child: Text(widget.title,
+          //         style: textTheme.caption.copyWith(
+          //             backgroundColor: Colors.white, fontSize: UIKit.sp(28))),
+          //   ),
+          // ),
+          //     InkWell(
+          //       onTap: _handleTap,
+          //       child: Container(
+          //         color: Colors.white,
+          //         padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+          //         child: RotationTransition(
+          //           turns: _iconTurns,
+          //           child: const Icon(Icons.expand_more),
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
+
           ClipRect(
             child: Align(
               heightFactor: _heightFactor.value,
               child: child,
             ),
           ),
-          InkWell(
-            onTap: _handleTap,
-            child: widget.bottomAction ?? Container(),
-          )
         ],
       ),
     );

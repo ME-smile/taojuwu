@@ -34,7 +34,7 @@ class CartPage extends StatefulWidget {
 class _CartPageState extends State<CartPage>
     with SingleTickerProviderStateMixin {
   final List<String> tabs = ['窗帘'];
-
+  ScrollController scrollController;
   TabController tabController;
   CartListWrapper wrapper;
   List<CartModel> models;
@@ -43,6 +43,7 @@ class _CartPageState extends State<CartPage>
   @override
   void initState() {
     super.initState();
+    scrollController = ScrollController();
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData();
     });
@@ -251,6 +252,8 @@ class _CartPageState extends State<CartPage>
                         child: TabBar(
                             controller: tabController,
                             indicatorSize: TabBarIndicatorSize.label,
+                            labelPadding:
+                                EdgeInsets.only(bottom: 5, left: 5, right: 5),
                             tabs: List.generate(tabs.length, (int i) {
                               return Text('${tabs[i]}($count)');
                             })),
