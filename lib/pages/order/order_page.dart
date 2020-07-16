@@ -17,6 +17,7 @@ import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/search_button.dart';
 
 import 'package:taojuwu/widgets/v_spacing.dart';
+import 'package:taojuwu/widgets/zy_action_chip.dart';
 import 'package:taojuwu/widgets/zy_dropdown_menu.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
 
@@ -162,9 +163,18 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               return Expanded(
                 child: AspectRatio(
                   aspectRatio: 4,
-                  child: buildButtonChip(item['text'], () {
-                    checkTimePeriodOptions(i);
-                  }, item['is_checked']),
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    child: ZYActionChip(
+                      bean: ActionBean.fromJson(item),
+                      callback: () {
+                        checkTimePeriodOptions(i);
+                      },
+                    ),
+                  ),
+                  // child: buildButtonChip(item['text'], () {
+                  //   checkTimePeriodOptions(i);
+                  // }, item['is_checked']),
                 ),
               );
             }),
@@ -190,11 +200,19 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                 statusOptions.length,
                 (int i) {
                   Map<String, dynamic> item = statusOptions[i];
-
-                  return buildButtonChip('${item['text']}(${item['count']})',
-                      () {
-                    checkStatusOptions(i);
-                  }, item['is_checked']);
+                  return Container(
+                    margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    child: ZYActionChip(
+                      bean: ActionBean.fromJson(item),
+                      callback: () {
+                        checkStatusOptions(i);
+                      },
+                    ),
+                  );
+                  // return buildButtonChip('${item['text']}(${item['count']})',
+                  //     () {
+                  //   checkStatusOptions(i);
+                  // }, item['is_checked']);
                 },
               ),
             ),

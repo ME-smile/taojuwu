@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:taojuwu/icon/ZYIcon.dart';
 
 class CommonKit {
   static Function debounce(Function callback, [int delay = 300]) {
@@ -39,22 +37,10 @@ class CommonKit {
   }
 
   static void showSuccessDIYInfo(String msg) {
-    EasyLoading.instance
-      ..successWidget = Icon(
-        ZYIcon.check,
-        color: Colors.white,
-        size: 40,
-      );
     EasyLoading.showSuccess(msg);
   }
 
   static void showInfo(String msg) {
-    EasyLoading.instance
-      ..infoWidget = Icon(
-        ZYIcon.exclamation_point,
-        color: Colors.white,
-        size: 30,
-      );
     EasyLoading.showInfo(msg);
   }
 

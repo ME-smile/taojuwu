@@ -143,6 +143,7 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
     }).catchError((err) => err);
   }
 
+  bool hasChangeEnterTime = false;
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -159,6 +160,7 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
                   _bar(context, '入店时间', () {
                     int tmp = 0;
                     DateTime now = DateTime.now();
+
                     DatePicker.showDatePicker(context,
                         showTitleActions: true,
                         theme: DatePickerTheme(
@@ -168,8 +170,11 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
                             itemStyle: UIKit.OPTION_ITEM_STYLE,
                             containerHeight: UIKit.BOTTOM_PICKER_HEIGHT),
                         onChanged: (DateTime date) {
+                      hasChangeEnterTime = true;
                       tmp = date?.millisecondsSinceEpoch;
                     }, onConfirm: (date) {
+                      if (hasChangeEnterTime == false)
+                        tmp = now.millisecondsSinceEpoch;
                       params['enter_timer'] = '${tmp ~/ 1000}';
                       setState(() {
                         enterTime = DateUtil.formatDateMs(tmp,

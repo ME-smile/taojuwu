@@ -835,6 +835,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                         bottomNavigationBar: BottomActionButtonBar()),
                     onWillPop: () {
                       Navigator.of(context).pop();
+                      TargetOrderGoods.instance.clear();
                       TargetOrderGoods.instance.goodsProvider.release();
                       return Future.value(false);
                     });

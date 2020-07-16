@@ -366,7 +366,7 @@ class OTPService {
     );
     ZYResponse resp = ZYResponse<dynamic>.fromJsonWithData(response.data);
     if (resp?.valid == true) {
-      CommonKit.showSuccessDIYInfo('提交成功');
+      CommonKit.showSuccessDIYInfo('提醒成功');
     } else {
       CommonKit.showErrorInfo(resp?.message);
     }

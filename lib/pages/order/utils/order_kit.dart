@@ -545,11 +545,11 @@ class OrderKit {
         );
       }
     }
-    if (model?.hasAudited == true && model?.hasMeasured == false) {
-      return RemindButton('提醒测量', () {
-        remindOrder(context, '是否提醒测量', model?.orderId ?? -1, 2);
-      });
-    }
+    // if (model?.hasAudited == true && model?.hasMeasured == false) {
+    //   return RemindButton('提醒测量', () {
+    //     remindOrder(context, '是否提醒测量', model?.orderId ?? -1, 2);
+    //   });
+    // }
     // if (model?.hasAudited == false) {
     //   return RemindButton('提醒审核', () {
     //     remindOrder(context, '是否提醒审核', model?.orderId ?? -1, 1);
@@ -647,6 +647,16 @@ class OrderKit {
         PreviewDeliveryInfoButton(orderId: provider?.model?.orderId),
         SizedBox(width: 20),
         AfterSaleButton(),
+      ];
+    }
+
+    if (provider?.isWaitingToInstall == true) {
+      return [
+        RemindButton('提醒安装', () {
+          remindOrder(context, '是否提醒安装', provider?.model?.orderId ?? -1, 2);
+        }),
+        SizedBox(width: 20),
+        PreviewDeliveryInfoButton(orderId: provider?.model?.orderId),
       ];
     }
 

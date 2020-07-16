@@ -28,6 +28,7 @@ import 'package:taojuwu/widgets/no_data.dart';
 
 import 'package:taojuwu/widgets/scan_button.dart';
 import 'package:taojuwu/widgets/search_button.dart';
+import 'package:taojuwu/widgets/zy_action_chip.dart';
 
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'widgets/curtain_list_view.dart';
@@ -374,12 +375,20 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                                   itemCount: options?.length ?? 0,
                                   itemBuilder: (BuildContext context, int i) {
                                     TagFilterOption item = options[i];
-                                    return TagBeanActionChip(
-                                      bean: options[i],
-                                      callback: () {
-                                        checkTag(bean, options, item);
-                                      },
-                                    );
+                                    return ZYActionChip(
+                                        bean: ActionBean.fromJson({
+                                          'text': item?.name ?? '',
+                                          'is_checked': item?.isChecked
+                                        }),
+                                        callback: () {
+                                          checkTag(bean, options, item);
+                                        });
+                                    // return TagBeanActionChip(
+                                    //   bean: options[i],
+                                    // callback: () {
+                                    //   checkTag(bean, options, item);
+                                    // }
+                                    // );
                                   }),
                             ),
                           ],
