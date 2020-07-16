@@ -9,8 +9,10 @@ import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderModelData orderModelData;
-  final int tab;
-  const OrderCard(this.orderModelData, {Key key, this.tab}) : super(key: key);
+  final bool canClick;
+
+  const OrderCard(this.orderModelData, {Key key, this.canClick: false})
+      : super(key: key);
 
   String get createTimeStr {
     var createTime = orderModelData?.createTime;
@@ -69,6 +71,7 @@ class OrderCard extends StatelessWidget {
               return OrderItemView(models[i],
                   name: orderModelData?.clientName,
                   orderNo: orderModelData?.orderNo,
+                  canClick: canClick,
                   id: orderModelData?.orderId);
             }),
           ),
@@ -102,18 +105,22 @@ class OrderItemView extends StatelessWidget {
   final String name;
   final String orderNo;
   final int id;
+  final bool canClick;
   const OrderItemView(this.model,
-      {Key key, this.orderNo: '', this.name: '', this.id})
+      {Key key, this.orderNo: '', this.name: '', this.id, this.canClick: false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
+
     return InkWell(
-      onTap: () {
-        RouteHandler.goOrderDetailPage(context, id);
-      },
+      onTap: canClick
+          ? () {
+              RouteHandler.goOrderDetailPage(context, id);
+            }
+          : null,
       child: Container(
         padding: EdgeInsets.symmetric(
             horizontal: UIKit.width(20), vertical: UIKit.height(20)),

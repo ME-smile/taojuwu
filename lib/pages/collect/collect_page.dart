@@ -1,12 +1,14 @@
 import 'dart:io';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 import 'package:taojuwu/models/shop/collect_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 import 'package:taojuwu/models/zy_response.dart';
-
+import 'package:taojuwu/pages/curtain/curtain_detail_page.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
@@ -131,6 +133,23 @@ class _CollectPageState extends State<CollectPage>
     }
   }
 
+  Widget buildOpenContainer(ProductBean bean, int index) {
+    return GestureDetector(
+      onLongPress: () {
+        remove(context, bean);
+      },
+      child: OpenContainer(
+        closedBuilder: (BuildContext context, VoidCallback _) {
+          TargetClient.instance.saveInfo(widget.id, widget?.name);
+          return CurtainDetailPage(bean?.goodsId);
+        },
+        openBuilder: (BuildContext context, VoidCallback _) {
+          return buildCollectCard(context, bean, index);
+        },
+      ),
+    );
+  }
+
   Widget buildCollectCard(BuildContext context, ProductBean bean, int index) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
@@ -138,44 +157,46 @@ class _CollectPageState extends State<CollectPage>
       onLongPress: () {
         remove(context, bean);
       },
-      onTap: () {
-        TargetClient.instance.saveInfo(widget.id, widget?.name);
-
-        RouteHandler.goCurtainDetailPage(
-          context,
-          bean?.goodsId ?? -1,
-        );
-      },
-      child: Container(
-        child: Row(
-          children: <Widget>[
-            ZYNetImage(
-              imgPath: bean?.picCoverMicro,
-              isCache: false,
-              height: UIKit.height(180),
-            ),
-            Expanded(
-                child: Container(
-              margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-              height: UIKit.height(180),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Text(
-                    bean?.goodsName ?? '',
-                    style: textTheme.title,
-                  ),
-                  Text(
-                    bean?.categoryName ?? '',
-                    style: textTheme.caption.copyWith(fontSize: UIKit.sp(28)),
-                  ),
-                  Text('￥${bean?.price ?? ''}')
-                ],
+      child: InkWell(
+        onTap: () {
+          RouteHandler.goCurtainDetailPage(context, bean?.goodsId ?? -1);
+        },
+        child: Container(
+          child: Row(
+            children: <Widget>[
+              ZYNetImage(
+                imgPath: bean?.picCoverMicro,
+                isCache: false,
+                height: UIKit.height(180),
+                callback: () {
+                  RouteHandler.goCurtainDetailPage(
+                      context, bean?.goodsId ?? -1);
+                },
               ),
-            ))
-          ],
+              Expanded(
+                  child: Container(
+                margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                height: UIKit.height(180),
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text(
+                      bean?.goodsName ?? '',
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                    ),
+                    Text(
+                      bean?.categoryName ?? '',
+                      style: textTheme.caption.copyWith(fontSize: UIKit.sp(28)),
+                    ),
+                    Text('￥${bean?.price ?? ''}')
+                  ],
+                ),
+              ))
+            ],
+          ),
         ),
       ),
     );
@@ -207,7 +228,16 @@ class _CollectPageState extends State<CollectPage>
                     ? NoData()
                     : ListView.separated(
                         itemBuilder: (BuildContext context, int i) {
-                          return buildCollectCard(context, beanList[i], i);
+                          return AnimationConfiguration.staggeredList(
+                              position: i,
+                              duration: const Duration(milliseconds: 375),
+                              child: SlideAnimation(
+                                  verticalOffset: 50.0,
+                                  child: FadeInAnimation(
+                                    child: buildCollectCard(
+                                        context, beanList[i], i),
+                                  )));
+                          // return buildCollectCard(context, beanList[i], i);
                         },
                         separatorBuilder: (BuildContext context, int i) {
                           return Divider();

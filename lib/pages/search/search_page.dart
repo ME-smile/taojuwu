@@ -196,7 +196,7 @@ class _SearchPageState extends State<SearchPage> {
                 Expanded(
                     child: ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxHeight: 38,
+                    maxHeight: 36,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -233,7 +233,7 @@ class _SearchPageState extends State<SearchPage> {
                               inputController?.text = ' ';
                             },
                           ),
-                          contentPadding: EdgeInsets.only(top: 0),
+                          contentPadding: EdgeInsets.all(10),
                           hintText: HINT_TEXT_MAP[type]),
                     ),
                   ),

@@ -69,12 +69,13 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                       borderRadius: BorderRadius.all(Radius.circular(5)),
                       child: TextField(
                         controller: markInput,
+                        autofocus: true,
                         // keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                             filled: true,
                             hintText: '请填写备注',
                             fillColor: const Color(0xFFF2F2F2),
-                            contentPadding: EdgeInsets.all(8)),
+                            contentPadding: EdgeInsets.all(10)),
                       ),
                     ),
                   ),
@@ -156,6 +157,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                       child: TextField(
                         controller: depositInput,
                         keyboardType: TextInputType.number,
+                        autofocus: true,
                         decoration: InputDecoration(
                             filled: true,
                             hintText: '元',
@@ -195,6 +197,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                     controller: depositInput,
                     keyboardType: TextInputType.number,
                     placeholder: '元',
+                    autofocus: true,
                   ),
                 ],
               ),
@@ -360,7 +363,10 @@ class OptBar extends StatelessWidget {
               text,
               style: textTheme.caption,
             )),
-            Icon(ZYIcon.next)
+            Icon(
+              ZYIcon.next,
+              size: 18,
+            )
           ],
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/user/customer_model.dart';
 
@@ -161,27 +162,35 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
   Widget _buildListItem(CustomerModelBean model) {
     String susTag = model.getSuspensionTag();
     susTag = (susTag == "★" ? "热门城市" : susTag);
-    return Column(
-      children: <Widget>[
-        Offstage(
-          offstage: model?.isShowSuspension != true,
-          child: _buildSusWidget(susTag),
-        ),
-        SizedBox(
-            height: _itemHeight.toDouble(),
-            child: ListTile(
-              title: Text(model?.clientName),
-              onTap: () {
-                // Navigator.pop(context, model);
-                if (widget.flag == 1) {
-                  saveInfoToTargetClient(model);
-                  Navigator.of(context).pop();
-                } else {
-                  RouteHandler.goCustomerDetailPage(context, model?.id);
-                }
-              },
-            ))
-      ],
+    return AnimationConfiguration.staggeredList(
+      position: model?.index,
+      duration: const Duration(milliseconds: 375),
+      child: SlideAnimation(
+        verticalOffset: 50.0,
+        child: FadeInAnimation(
+            child: Column(
+          children: <Widget>[
+            Offstage(
+              offstage: model?.isShowSuspension != true,
+              child: _buildSusWidget(susTag),
+            ),
+            SizedBox(
+                height: _itemHeight.toDouble(),
+                child: ListTile(
+                  title: Text(model?.clientName),
+                  onTap: () {
+                    // Navigator.pop(context, model);
+                    if (widget.flag == 1) {
+                      saveInfoToTargetClient(model);
+                      Navigator.of(context).pop();
+                    } else {
+                      RouteHandler.goCustomerDetailPage(context, model?.id);
+                    }
+                  },
+                ))
+          ],
+        )),
+      ),
     );
   }
 
@@ -194,7 +203,6 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('build方法');
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -209,7 +217,8 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
       body: isLoading
           ? LoadingCircle()
           : Container(
-              child: AzListView(
+              child: AnimationLimiter(
+                  child: AzListView(
               data: beans,
               topData: hotBeans,
               header: AzListViewHeader(
@@ -244,7 +253,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
               suspensionHeight: _suspensionHeight,
               onSusTagChanged: _onSusTagChanged,
               // showCenterTip: false,
-            )),
+            ))),
     );
   }
 }

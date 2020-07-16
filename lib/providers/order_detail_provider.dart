@@ -58,6 +58,7 @@ class OrderDetailProvider with ChangeNotifier {
   bool get hasInstalled => model?.hasInstalled ?? false;
   bool get hasProducted => model?.hasProducted ?? false;
   bool get hasScheduled => model?.hasScheduled ?? false;
+
   bool get showSelectedProductButton =>
       hasMeasured &&
       isMeasureOrder &&
@@ -67,7 +68,10 @@ class OrderDetailProvider with ChangeNotifier {
   bool get canEditPrice => model?.orderStatus == 4;
   bool get hasFinished => model?.hasFinished ?? false;
   bool get hasCanceled => model?.hasCanceled;
-  bool get showButton => [1, 2, 3, 6, 7, 8, 14].contains(model?.orderStatus);
+  bool get showButton =>
+      [1, 2, 3, 6, 7, 8, 14, 15].contains(model?.orderStatus);
+  bool get isWaitingToship => model?.isWaitingToship;
+  bool get hasShipped => model?.hasShipped;
   set deltaPrice(double price) {
     _deltaPrice = price;
     notifyListeners();

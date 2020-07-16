@@ -184,7 +184,8 @@ class OrderDetailModel {
   bool get haNotsSelectedProduct => orderStatus == 14;
   bool get hasAudited => orderStatus > 1;
   bool get hasMeasured => orderStatus > 2;
-  bool get hasInstalled => orderStatus >= 7;
+  bool get hasInstalled =>
+      orderStatus >= 7 && orderStatus != 14 && orderStatus != 15;
   bool get hasProducted => orderStatus > 5;
   bool get canEditPrice => orderStatus == 3;
   bool get hasScheduled => orderStatus > 3;
@@ -193,6 +194,7 @@ class OrderDetailModel {
   bool get hasCanceled => orderStatus == 9;
 
   bool get isProducting => orderStatus == 5;
+  bool get isWaitingToship => orderStatus == 6;
   bool get isWaitingToShipOrReceive => orderStatus == 6 || orderStatus == 15;
   bool get isWaitingToInstall => orderStatus == 7;
   bool get isWaitingToSelectProduct => orderStatus == 14;
@@ -200,7 +202,7 @@ class OrderDetailModel {
   bool get hasFinished =>
       orderStatus >= 8 && [14, 9, 15].contains(orderStatus) == false;
   bool get hasPaid => orderStatus > 4;
-
+  bool get hasShipped => [15, 7, 8].contains(orderStatus);
   bool get isAdjustPriceRemarkEmpty =>
       adjustMoneyRemark == null || adjustMoneyRemark?.isNotEmpty == false;
 

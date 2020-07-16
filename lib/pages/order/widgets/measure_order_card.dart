@@ -8,7 +8,9 @@ import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class MeasureOrderCard extends StatelessWidget {
   final OrderModelData orderModelData;
-  const MeasureOrderCard({Key key, this.orderModelData}) : super(key: key);
+  final bool canClick;
+  const MeasureOrderCard({Key key, this.orderModelData, this.canClick: false})
+      : super(key: key);
 
   String get orderEarnestMoneyStr {
     var createTime = orderModelData?.createTime;
@@ -37,23 +39,33 @@ class MeasureOrderCard extends StatelessWidget {
           ListBody(
             children: List.generate(models?.length ?? 0, (int i) {
               OrderModel item = models[i];
-              return item?.hasAudit == false
-                  ? MeasureOrderHasNotAuditCard(
-                      orderModelData: orderModelData,
-                      model: item,
-                    )
-                  : orderModelData?.hasNotsSelectedProduct == true
-                      ? MeasureOrderBeforePayCard(
-                          model: item,
+              return InkWell(
+                onTap: canClick
+                    ? () {
+                        RouteHandler.goOrderDetailPage(
+                            context, orderModelData?.orderId);
+                      }
+                    : null,
+                child: Container(
+                  child: item?.hasAudit == false
+                      ? MeasureOrderHasNotAuditCard(
                           orderModelData: orderModelData,
+                          model: item,
                         )
-                      : item?.hasSelectedGoods == true
-                          ? MeasureOrderHasSelectedProductCard(
-                              model: item, id: orderModelData?.orderId)
-                          : MeasureOrderHasNotSelectedProductCard(
+                      : orderModelData?.hasNotsSelectedProduct == true
+                          ? MeasureOrderBeforePayCard(
                               model: item,
                               orderModelData: orderModelData,
-                            );
+                            )
+                          : item?.hasSelectedGoods == true
+                              ? MeasureOrderHasSelectedProductCard(
+                                  model: item, id: orderModelData?.orderId)
+                              : MeasureOrderHasNotSelectedProductCard(
+                                  model: item,
+                                  orderModelData: orderModelData,
+                                ),
+                ),
+              );
             }),
           ),
           OrderKit.buildOrderInfoText(context, orderModelData),
@@ -75,51 +87,45 @@ class MeasureOrderHasSelectedProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return InkWell(
-      onTap: () {
-        RouteHandler.goOrderDetailPage(context, id);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ZYNetImage(
-              imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
-              height: UIKit.height(180),
-            ),
-            Expanded(
-                child: Container(
-                    height: UIKit.height(180),
-                    padding: EdgeInsets.only(left: UIKit.width(20)),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(model?.goodsName),
-                              Text(
-                                model?.statusName ?? '未知状态',
-                                style:
-                                    TextStyle(color: const Color(0xFFDE6D6C)),
-                              )
-                            ],
-                          ),
-                          Text(
-                            '￥${model?.price ?? '0.00'}${model?.unit}',
-                            style: textTheme.caption,
-                          ),
-                          Text('空间:${model?.roomName ?? ''}',
-                              style: textTheme.caption),
-                          Text(model?.sizeTextDesc ?? '',
-                              style: textTheme.caption),
-                        ]))),
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          ZYNetImage(
+            imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+            height: UIKit.height(180),
+          ),
+          Expanded(
+              child: Container(
+                  height: UIKit.height(180),
+                  padding: EdgeInsets.only(left: UIKit.width(20)),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(model?.goodsName),
+                            Text(
+                              model?.statusName ?? '未知状态',
+                              style: TextStyle(color: const Color(0xFFDE6D6C)),
+                            )
+                          ],
+                        ),
+                        Text(
+                          '￥${model?.price ?? '0.00'}${model?.unit}',
+                          style: textTheme.caption,
+                        ),
+                        Text('空间:${model?.roomName ?? ''}',
+                            style: textTheme.caption),
+                        Text(model?.sizeTextDesc ?? '',
+                            style: textTheme.caption),
+                      ]))),
+        ],
       ),
     );
   }
@@ -136,48 +142,42 @@ class MeasureOrderHasNotAuditCard extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return InkWell(
-      onTap: () {
-        RouteHandler.goOrderDetailPage(context, orderModelData?.orderId);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ZYNetImage(
-              imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
-              height: UIKit.height(180),
-            ),
-            Expanded(
-                child: Container(
-                    height: UIKit.height(180),
-                    padding: EdgeInsets.only(left: UIKit.width(20)),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(orderModelData?.orderTypeName ?? ''),
-                              Text(
-                                model?.statusName ?? '未知状态',
-                                style:
-                                    TextStyle(color: const Color(0xFFDE6D6C)),
-                              )
-                            ],
-                          ),
-                          Text('${orderModelData?.orderWindowNum ?? 0}扇'),
-                          Text('客户:${orderModelData?.clientName}',
-                              style: textTheme.caption),
-                          Text('订单编号:${orderModelData?.orderNo ?? ''}',
-                              style: textTheme.caption)
-                        ]))),
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          ZYNetImage(
+            imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+            height: UIKit.height(180),
+          ),
+          Expanded(
+              child: Container(
+                  height: UIKit.height(180),
+                  padding: EdgeInsets.only(left: UIKit.width(20)),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(orderModelData?.orderTypeName ?? ''),
+                            Text(
+                              model?.statusName ?? '未知状态',
+                              style: TextStyle(color: const Color(0xFFDE6D6C)),
+                            )
+                          ],
+                        ),
+                        Text('${orderModelData?.orderWindowNum ?? 0}扇'),
+                        Text('客户:${orderModelData?.clientName}',
+                            style: textTheme.caption),
+                        Text('订单编号:${orderModelData?.orderNo ?? ''}',
+                            style: textTheme.caption)
+                      ]))),
+        ],
       ),
     );
   }
@@ -194,51 +194,45 @@ class MeasureOrderHasNotSelectedProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return InkWell(
-      onTap: () {
-        RouteHandler.goOrderDetailPage(context, orderModelData?.orderId);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ZYNetImage(
-              imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
-              height: UIKit.height(180),
-            ),
-            Expanded(
-                child: Container(
-                    height: UIKit.height(180),
-                    padding: EdgeInsets.only(left: UIKit.width(20)),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(model?.goodsName ?? ''),
-                              Text(
-                                model?.statusName ?? '未知状态',
-                                style:
-                                    TextStyle(color: const Color(0xFFDE6D6C)),
-                              )
-                            ],
-                          ),
-                          Text(
-                              '¥${model?.price?.toStringAsFixed(2)}${model?.unit}'),
-                          Text('客户:${orderModelData?.clientName}',
-                              style: textTheme.caption),
-                          Text('订单编号:${orderModelData?.orderNo}',
-                              style: textTheme.caption),
-                          // Text(model?.sizeTextDesc ?? '',
-                          //     style: textTheme.caption),
-                        ]))),
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          ZYNetImage(
+            imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+            height: UIKit.height(180),
+          ),
+          Expanded(
+              child: Container(
+                  height: UIKit.height(180),
+                  padding: EdgeInsets.only(left: UIKit.width(20)),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(model?.goodsName ?? ''),
+                            Text(
+                              model?.statusName ?? '未知状态',
+                              style: TextStyle(color: const Color(0xFFDE6D6C)),
+                            )
+                          ],
+                        ),
+                        Text(
+                            '¥${model?.price?.toStringAsFixed(2)}${model?.unit}'),
+                        Text('客户:${orderModelData?.clientName}',
+                            style: textTheme.caption),
+                        Text('订单编号:${orderModelData?.orderNo}',
+                            style: textTheme.caption),
+                        // Text(model?.sizeTextDesc ?? '',
+                        //     style: textTheme.caption),
+                      ]))),
+        ],
       ),
     );
   }
@@ -254,52 +248,46 @@ class MeasureOrderBeforePayCard extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return InkWell(
-      onTap: () {
-        RouteHandler.goOrderDetailPage(context, orderModelData?.orderId);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-            horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ZYNetImage(
-              imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
-              height: UIKit.height(180),
-            ),
-            Expanded(
-                child: Container(
-                    height: UIKit.height(180),
-                    padding: EdgeInsets.only(left: UIKit.width(20)),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(model?.roomName ?? ''),
-                              Text(
-                                model?.statusName ?? '未知状态',
-                                style:
-                                    TextStyle(color: const Color(0xFFDE6D6C)),
-                              )
-                            ],
-                          ),
-                          Text('${model?.sizeTextDesc}'),
-                          Text('${model?.style}', style: textTheme.caption),
-                          Text(
-                            '${model?.mode}',
-                            style: textTheme.caption,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          // Text(model?.sizeTextDesc ?? '',
-                          //     style: textTheme.caption),
-                        ]))),
-          ],
-        ),
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          ZYNetImage(
+            imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+            height: UIKit.height(180),
+          ),
+          Expanded(
+              child: Container(
+                  height: UIKit.height(180),
+                  padding: EdgeInsets.only(left: UIKit.width(20)),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(model?.roomName ?? ''),
+                            Text(
+                              model?.statusName ?? '未知状态',
+                              style: TextStyle(color: const Color(0xFFDE6D6C)),
+                            )
+                          ],
+                        ),
+                        Text('${model?.sizeTextDesc}'),
+                        Text('${model?.style}', style: textTheme.caption),
+                        Text(
+                          '${model?.mode}',
+                          style: textTheme.caption,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        // Text(model?.sizeTextDesc ?? '',
+                        //     style: textTheme.caption),
+                      ]))),
+        ],
       ),
     );
   }

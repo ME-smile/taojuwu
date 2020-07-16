@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/order/order_model.dart';
+import 'package:taojuwu/pages/order/order_detail_page.dart';
 import 'package:taojuwu/pages/order/widgets/measure_order_card.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -372,20 +375,25 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               actions: <Widget>[SearchButton(type: 3)],
               centerTitle: true,
               bottom: PreferredSize(
-                  child: TabBar(
-                      key: tabBarKey,
-                      controller: _tabController,
-                      isScrollable: true,
-                      unselectedLabelColor: Colors.grey,
-                      // labelStyle: TextStyle(fontSize: UIKit.sp(28)),
-                      labelPadding:
-                          EdgeInsets.only(bottom: 5, left: 5, right: 5),
-                      tabs: List.generate(tabs.length, (int i) {
-                        return Text(
-                          '${tabs[i]}(${nums == null ? 0 : nums[i]})',
-                          textDirection: TextDirection.ltr,
-                        );
-                      })),
+                  child: Container(
+                    margin: EdgeInsets.only(right: 40),
+                    child: TabBar(
+                        key: tabBarKey,
+                        controller: _tabController,
+                        isScrollable: true,
+                        unselectedLabelColor: Colors.grey,
+                        indicatorSize: TabBarIndicatorSize.label,
+
+                        // labelStyle: TextStyle(fontSize: UIKit.sp(28)),
+                        labelPadding:
+                            EdgeInsets.only(bottom: 5, left: 10, right: 10),
+                        tabs: List.generate(tabs.length, (int i) {
+                          return Text(
+                            '${tabs[i]}(${nums == null ? 0 : nums[i]})',
+                            textDirection: TextDirection.ltr,
+                          );
+                        })),
+                  ),
                   preferredSize: Size.fromHeight(20)),
             ),
             body: TabBarView(
@@ -473,12 +481,28 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               globalKey.currentState?.handleTap();
             },
             child: Container(
-              color: Colors.white,
               height: tabBarHeight,
-              padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-              child: RotationTransition(
-                turns: _iconTurns,
-                child: const Icon(Icons.expand_more),
+              color: Colors.white,
+              width: 40,
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    width: 1,
+                    // height: tabBarHeight - 10,
+                    color: showFilterHeader
+                        ? Colors.transparent
+                        : Color(0xFFD4D4D4),
+                    // padding: EdgeInsets.symmetric(vertical: 10),
+                    margin: EdgeInsets.only(top: 4, bottom: 4),
+                  ),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: RotationTransition(
+                      turns: _iconTurns,
+                      child: const Icon(Icons.expand_more),
+                    ),
+                  )
+                ],
               ),
             ),
           ),
@@ -562,9 +586,11 @@ class _OrderTabViewState extends State<OrderTabView>
     _refreshController = RefreshController(initialRefresh: false);
     isLoading = true;
     Future.delayed(Duration(milliseconds: 800), () {
-      setState(() {
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     });
 
     // WidgetsBinding.instance.addPostFrameCallback((callback))
@@ -614,36 +640,70 @@ class _OrderTabViewState extends State<OrderTabView>
 
     return isLoading
         ? LoadingCircle()
-        : SmartRefresher(
-            controller: _refreshController,
-            enablePullDown: true,
-            enablePullUp: true,
-            onRefresh: () {
-              params['page'] = 1;
-              isRefresh = true;
-              requestData(params);
-            },
-            onLoading: () {
-              params['page']++;
-              isRefresh = false;
-              requestData(params);
-            },
-            child: models?.isEmpty == true
-                ? NoData()
-                : ListView.separated(
+        : models?.isEmpty == true
+            ? NoData()
+            : AnimationLimiter(
+                child: SmartRefresher(
+                controller: _refreshController,
+                enablePullDown: true,
+                enablePullUp: true,
+                onRefresh: () {
+                  params['page'] = 1;
+                  isRefresh = true;
+                  requestData(params);
+                },
+                onLoading: () {
+                  params['page']++;
+                  isRefresh = false;
+                  requestData(params);
+                },
+                child: ListView.separated(
                     itemBuilder: (BuildContext context, int i) {
                       OrderModelData item = models[i];
-                      return item?.isMeasureOrder == true
-                          ? MeasureOrderCard(
-                              orderModelData: item,
-                            )
-                          : OrderCard(item);
+                      Widget child;
+                      if (item?.hasMoreThanTwoItems == true) {
+                        child = item?.isMeasureOrder == true
+                            ? MeasureOrderCard(
+                                orderModelData: item,
+                                canClick: true,
+                              )
+                            : OrderCard(
+                                item,
+                                canClick: true,
+                              );
+                      } else {
+                        child = OpenContainer<bool>(
+                          transitionDuration: Constants.TRANSITION_DURATION,
+                          closedBuilder:
+                              (BuildContext context, VoidCallback _) {
+                            return item?.isMeasureOrder == true
+                                ? MeasureOrderCard(
+                                    orderModelData: item,
+                                  )
+                                : OrderCard(item);
+                          },
+                          closedElevation: 0,
+                          openElevation: 0,
+                          openBuilder: (BuildContext context, VoidCallback _) {
+                            return OrderDetailPage(
+                              id: item?.orderId,
+                            );
+                          },
+                        );
+                      }
+                      return AnimationConfiguration.staggeredList(
+                          duration: const Duration(milliseconds: 375),
+                          position: i,
+                          child: SlideAnimation(
+                            verticalOffset: 100.0,
+                            child: FadeInAnimation(child: child),
+                          ));
                     },
                     separatorBuilder: (BuildContext context, int i) {
                       return VSpacing(20);
                     },
                     itemCount: models?.length ?? 0),
-          );
+              ));
   }
 
   @override

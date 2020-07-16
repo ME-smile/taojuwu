@@ -63,7 +63,7 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                             filled: true,
                             hintText: '请输入离地距离（cm）',
                             fillColor: const Color(0xFFF2F2F2),
-                            contentPadding: EdgeInsets.all(8)),
+                            contentPadding: EdgeInsets.all(10)),
                       ),
                     ),
                   ),

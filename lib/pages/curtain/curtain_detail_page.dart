@@ -215,18 +215,19 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                           child: TextField(
                             controller: widthInputController,
                             keyboardType: TextInputType.number,
+                            autofocus: true,
                             decoration: InputDecoration(
                                 filled: true,
                                 hintText: '请输入宽（cm）',
                                 fillColor: const Color(0xFFF2F2F2),
-                                contentPadding: EdgeInsets.all(8)),
+                                contentPadding: EdgeInsets.all(10)),
                           ),
                         ),
                       ),
                       VSpacing(5),
                       ConstrainedBox(
                         constraints: BoxConstraints(
-                          maxHeight: 40,
+                          maxHeight: 36,
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -364,12 +365,13 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             child: TextField(
                               controller: dyInputController,
+                              autofocus: true,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                   filled: true,
                                   hintText: '请输入离地距离（cm）',
                                   fillColor: const Color(0xFFF2F2F2),
-                                  contentPadding: EdgeInsets.all(8)),
+                                  contentPadding: EdgeInsets.all(10)),
                             ),
                           ),
                         ),
@@ -409,6 +411,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                       children: <Widget>[
                         CupertinoTextField(
                           controller: dyInputController,
+                          autofocus: true,
                           keyboardType: TextInputType.number,
                           placeholder: '请输入离地距离（cm）',
                         ),
@@ -657,6 +660,9 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                   pinned: true,
                                   flexibleSpace: FlexibleSpaceBar(
                                     background: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: UIKit.width(50),
+                                            vertical: UIKit.height(20)),
                                         margin: EdgeInsets.only(top: 80),
                                         child: ZYNetImage(
                                           imgPath: bean?.picCoverMid,
@@ -950,6 +956,7 @@ class BottomActionButtonBar extends StatelessWidget {
         .addAll({'cart_detail': jsonEncode(getCartDetail(provider?.goods))});
 
     GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
+    goodsProvider?.canAddToCart = false;
     goodsProvider.saveMeasure(context, callback: () {
       cartParams['measure_id'] = goodsProvider?.measureId;
 
@@ -1027,7 +1034,8 @@ class BottomActionButtonBar extends StatelessWidget {
             ? Container(
                 color: themeData.primaryColor,
                 padding: EdgeInsets.symmetric(
-                    horizontal: UIKit.width(20), vertical: UIKit.height(10)),
+                  horizontal: UIKit.width(20),
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
@@ -1070,11 +1078,14 @@ class BottomActionButtonBar extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text.rich(TextSpan(text: '预计:\n', children: [
-                      TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
-                    ])),
-                    Spacer(
+                    Expanded(
                       flex: 2,
+                      child: Text.rich(TextSpan(text: '预计:\n', children: [
+                        TextSpan(
+                            text: '¥${goodsProvider?.totalPrice ?? 0.00}',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w500)),
+                      ])),
                     ),
                     Expanded(
                         flex: 3,
@@ -1094,7 +1105,7 @@ class BottomActionButtonBar extends StatelessWidget {
                                   child: Container(
                                     padding: EdgeInsets.symmetric(
                                         horizontal: UIKit.width(20),
-                                        vertical: UIKit.height(10)),
+                                        vertical: UIKit.height(11)),
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                             width: 1,
@@ -1105,6 +1116,7 @@ class BottomActionButtonBar extends StatelessWidget {
                                                     : themeData.disabledColor)),
                                     child: Text(
                                       '加入购物车',
+                                      textAlign: TextAlign.center,
                                       style: goodsProvider?.canAddToCart == true
                                           ? TextStyle()
                                           : TextStyle(
@@ -1117,12 +1129,13 @@ class BottomActionButtonBar extends StatelessWidget {
                               Expanded(
                                   child: InkWell(
                                     onTap: () {
+                                      if (!beforePurchase(
+                                          goodsProvider, context)) return;
                                       createOrder(context);
                                     },
                                     child: Container(
                                       padding: EdgeInsets.symmetric(
-                                          horizontal: UIKit.width(20),
-                                          vertical: UIKit.height(10)),
+                                          vertical: UIKit.height(11)),
                                       decoration: BoxDecoration(
                                           color: themeData.accentColor,
                                           border: Border.all(
@@ -1130,6 +1143,7 @@ class BottomActionButtonBar extends StatelessWidget {
                                       child: Text(
                                         '立即购买',
                                         style: themeData.accentTextTheme.button,
+                                        textAlign: TextAlign.center,
                                       ),
                                     ),
                                   ),

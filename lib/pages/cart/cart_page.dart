@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
 // import 'package:taojuwu/models/order/order_model.dart';
@@ -202,7 +203,9 @@ class _CartPageState extends State<CartPage>
                           child: Text(
                             cartModel?.goodsAttrStr ?? '',
                             softWrap: true,
-                            style: textTheme.caption,
+                            style: textTheme.caption.copyWith(fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 5,
                           ),
                         ),
                         Text.rich(TextSpan(
@@ -264,20 +267,41 @@ class _CartPageState extends State<CartPage>
                       children: List.generate(tabs.length, (int i) {
                         return (models == null || models?.isEmpty == true)
                             ? NoData()
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: models?.length ?? 0,
-                                itemBuilder: (BuildContext context, int i) {
-                                  return buildCartCard(
-                                    models[i],
-                                  );
-                                });
+                            : AnimationLimiter(
+                                child: ListView.separated(
+                                  itemBuilder: (BuildContext context, int i) {
+                                    return AnimationConfiguration.staggeredList(
+                                        position: i,
+                                        duration:
+                                            const Duration(milliseconds: 375),
+                                        child: SlideAnimation(
+                                            verticalOffset: 50.0,
+                                            child: FadeInAnimation(
+                                              child: buildCartCard(
+                                                models[i],
+                                              ),
+                                            )));
+                                    // return buildCollectCard(context, beanList[i], i);
+                                  },
+                                  separatorBuilder:
+                                      (BuildContext context, int i) {
+                                    return Divider();
+                                  },
+                                  itemCount: models?.length ?? 0,
+                                ),
+                              );
+                        // : ListView.builder(
+                        //     shrinkWrap: true,
+                        //     itemCount: models?.length ?? 0,
+                        //     itemBuilder: (BuildContext context, int i) {
+                        //       return buildCartCard(
+                        //         models[i],
+                        //       );
+                        //     });
                       })),
                   bottomNavigationBar: provider?.hasModels == false
                       ? SizedBox.shrink()
                       : Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: UIKit.height(15)),
                           decoration: BoxDecoration(
                               color: themeData.primaryColor,
                               border: Border(

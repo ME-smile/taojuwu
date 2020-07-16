@@ -21,7 +21,7 @@ class CartListWrapper {
       ..addAll(
           (json['cart_list'] as List ?? []).map((o) => CartModel.fromJson(o)));
     goodsLadderPreferential = json['goods_ladder_preferential'];
-    Map dict = json['category'].isNotEmpty ? json['category'] : {};
+    Map dict = json['category'] != null ? json['category'] : {};
     categories = [];
     dict.forEach((key, val) {
       Map<String, dynamic> tmp = {};

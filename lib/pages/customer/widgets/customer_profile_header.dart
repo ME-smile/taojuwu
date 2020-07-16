@@ -60,10 +60,16 @@ class CustomerProfileHeader extends StatelessWidget {
               address != null && address.isNotEmpty
                   ? Row(
                       children: <Widget>[
-                        Icon(Icons.add_location),
+                        Icon(
+                          Icons.add_location,
+                          size: 16,
+                        ),
                         Expanded(
                             child: Text('${address ?? ''}',
-                                style: textTheme.caption))
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style:
+                                    textTheme.caption.copyWith(fontSize: 13)))
                       ],
                     )
                   : SizedBox(),

@@ -856,7 +856,6 @@ class GoodsProvider with ChangeNotifier {
   }
 
   Future saveMeasure(BuildContext context, {Function callback}) async {
-    canAddToCart = false;
     OTPService.saveMeasure(context, params: getSaveMeasureParams())
         .then((ZYResponse response) {
       if (response?.valid == true) {

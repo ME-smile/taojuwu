@@ -7,8 +7,6 @@ import 'package:taojuwu/providers/order_detail_provider.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/copy_button.dart';
-import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
 import 'package:taojuwu/widgets/zy_photo_view.dart';
 
@@ -44,7 +42,7 @@ class OrderAttrCard extends StatelessWidget {
             // ),
             Expanded(
                 child: Container(
-              height: UIKit.height(200),
+              height: UIKit.height(210),
               padding: EdgeInsets.only(left: UIKit.width(20)),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
@@ -53,59 +51,77 @@ class OrderAttrCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Text(goods?.goodsName ?? ''),
+                      Text(
+                        goods?.goodsName ?? '',
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w500),
+                      ),
                       Text(
                         goods?.statusName ?? '',
                         style: TextStyle(
                             color: Color(0xFFFC5252),
-                            fontSize: UIKit.sp(28),
-                            fontWeight: FontWeight.w500),
+                            fontSize: 15,
+                            fontWeight: FontWeight.w400),
                       ),
                     ],
                   ),
-                  Row(
-                    children: <Widget>[
-                      Text('¥ ${goods?.price ?? 0.00}${goods?.unit}'),
-                    ],
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
+                    child: Text(
+                      '¥ ${goods?.price ?? 0.00}${goods?.unit}',
+                      style: TextStyle(fontSize: 14),
+                    ),
                   ),
-                  Text(
-                    goods?.goodsAttrStr ?? '',
-                    style: textTheme.caption.copyWith(fontSize: UIKit.sp(22)),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(bottom: UIKit.height(10)),
+                    child: Text(
+                      goods?.goodsAttrStr ?? '',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      style: textTheme.caption.copyWith(fontSize: 12),
+                    ),
                   ),
-                  VSpacing(10),
                 ],
               ),
             )),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Offstage(
-              offstage: goods?.showExpressInfo == false,
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
-                child: Text.rich(TextSpan(
-                    text: '物流编号:${goods?.expressInfo?.expressNo ?? ''}',
-                    style: textTheme.caption,
-                    children: [
-                      TextSpan(text: '  '),
-                      WidgetSpan(
-                        child: CopyButton(goods?.expressInfo?.expressNo ?? ''),
-                      )
-                    ])),
-              ),
-            ),
-            Text.rich(TextSpan(
-                text: '小计 ',
-                style: textTheme.caption.copyWith(fontSize: UIKit.sp(20)),
-                children: [
-                  TextSpan(
-                      text: '¥${goods?.estimatedPrice ?? 0.00}',
-                      style: textTheme.body1.copyWith(fontSize: UIKit.sp(24))),
-                ]))
-          ],
+        Container(
+          child: Text(
+            '小计：¥${goods?.estimatedPrice ?? 0.00}',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
         ),
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        //   children: <Widget>[
+        //     Offstage(
+        //       offstage: goods?.showExpressInfo == false,
+        //       child: Padding(
+        //         padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+        //         child: Text.rich(TextSpan(
+        //             text: '物流编号:${goods?.expressInfo?.expressNo ?? ''}',
+        //             style: textTheme.caption,
+        //             children: [
+        //               TextSpan(text: '  '),
+        //               WidgetSpan(
+        //                 child: CopyButton(goods?.expressInfo?.expressNo ?? ''),
+        //               )
+        //             ])),
+        //       ),
+        //     ),
+        //     Text.rich(TextSpan(
+        //         text: '小计 ',
+        //         style: textTheme.caption.copyWith(fontSize: UIKit.sp(20)),
+        //         children: [
+        //           TextSpan(
+        //               text: '¥${goods?.estimatedPrice ?? 0.00}',
+        //               style: textTheme.body1.copyWith(fontSize: UIKit.sp(24))),
+        //         ]))
+        //   ],
+        // ),
         showCancelButton
             ? Consumer<OrderDetailProvider>(
                 builder:

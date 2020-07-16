@@ -11,6 +11,7 @@ import 'package:taojuwu/pages/order/order_detail_page.dart';
 import 'package:taojuwu/pages/order/widgets/aftersale_button.dart';
 import 'package:taojuwu/pages/order/widgets/cancel_order_button.dart';
 import 'package:taojuwu/pages/order/widgets/cancel_order_goods_button.dart';
+import 'package:taojuwu/pages/order/widgets/preview_delivery_info_button.dart';
 import 'package:taojuwu/pages/order/widgets/remind_button.dart';
 import 'package:taojuwu/pages/order/widgets/select_product_button.dart';
 
@@ -327,9 +328,11 @@ class OrderKit {
                               children: <Widget>[
                                 SignSymbol(ctx),
                                 Container(
+                                    decoration: BoxDecoration(
+                                        color: const Color(0xFFF2F2F2),
+                                        borderRadius: BorderRadius.circular(5)),
                                     margin: EdgeInsets.symmetric(
                                         horizontal: UIKit.width(10)),
-                                    color: const Color(0xFFF2F2F2),
                                     width: UIKit.width(160),
                                     height: UIKit.height(60),
                                     child: TextField(
@@ -351,7 +354,9 @@ class OrderKit {
                                 child: Container(
                               margin: EdgeInsets.symmetric(
                                   horizontal: UIKit.width(10)),
-                              color: const Color(0xFFF2F2F2),
+                              decoration: BoxDecoration(
+                                  color: const Color(0xFFF2F2F2),
+                                  borderRadius: BorderRadius.circular(5)),
                               width: UIKit.width(330),
                               height: UIKit.height(60),
                               child: TextField(
@@ -521,17 +526,17 @@ class OrderKit {
       return AfterSaleButton();
     }
 
-    if (model?.hasProducted == true && model?.hasInstalled == false) {
-      return RemindButton('提醒安装', () {
-        remindOrder(context, '是否提醒安装', model?.orderId ?? -1, 3);
-      });
-    }
+    // if (model?.hasProducted == true && model?.hasInstalled == false) {
+    //   return RemindButton('提醒安装', () {
+    //     remindOrder(context, '是否提醒安装', model?.orderId ?? -1, 3);
+    //   });
+    // }
     if (model?.isMeasureOrder == true) {
-      if (model?.hasAudited == false) {
-        return RemindButton('提醒审核', () {
-          remindOrder(context, '是否提醒审核', model?.orderId ?? -1, 3);
-        });
-      }
+      // if (model?.hasAudited == false) {
+      //   return RemindButton('提醒审核', () {
+      //     remindOrder(context, '是否提醒审核', model?.orderId ?? -1, 3);
+      //   });
+      // }
       if (model?.hasNotsSelectedProduct == true) {
         return SelectedProductButton(
           callback: callback,
@@ -543,11 +548,11 @@ class OrderKit {
         remindOrder(context, '是否提醒测量', model?.orderId ?? -1, 2);
       });
     }
-    if (model?.hasAudited == false) {
-      return RemindButton('提醒审核', () {
-        remindOrder(context, '是否提醒审核', model?.orderId ?? -1, 1);
-      });
-    }
+    // if (model?.hasAudited == false) {
+    //   return RemindButton('提醒审核', () {
+    //     remindOrder(context, '是否提醒审核', model?.orderId ?? -1, 1);
+    //   });
+    // }
     return VSpacing(20);
   }
 
@@ -642,18 +647,17 @@ class OrderKit {
 
     if (provider?.hasFinished == true) {
       return [
+        PreviewDeliveryInfoButton(orderId: provider?.model?.orderId),
+        SizedBox(width: 20),
         AfterSaleButton(),
       ];
     }
-    if (provider?.isWaitingToInstall == true) {
-      return [];
+
+    if (provider?.hasShipped == true) {
+      return [PreviewDeliveryInfoButton(orderId: provider?.model?.orderId)];
     }
-    if (provider?.hasProducted == true && provider?.hasInstalled == false) {
-      return [
-        RemindButton('提醒安装', () {
-          remindOrder(context, '是否提醒安装', provider?.model?.orderId ?? -1, 3);
-        })
-      ];
+    if (provider?.isWaitingToship == true) {
+      return [];
     }
 
     if (provider?.hasMeasured == true) {
@@ -691,6 +695,13 @@ class OrderKit {
         ),
       ];
     }
+    if (provider?.hasProducted == true && provider?.hasInstalled == false) {
+      return [
+        RemindButton('提醒安装', () {
+          remindOrder(context, '是否提醒安装', provider?.model?.orderId ?? -1, 3);
+        })
+      ];
+    }
     if (provider?.hasAudited == true && provider?.hasMeasured == false) {
       return [
         CancelOrderButton(
@@ -714,10 +725,10 @@ class OrderKit {
           },
           isActive: provider?.canCancelOrder,
         ),
-        SizedBox(width: 20),
-        RemindButton('提醒审核', () {
-          remindOrder(context, '是否提醒审核', provider?.model?.orderId ?? -1, 1);
-        })
+        // SizedBox(width: 20),
+        // RemindButton('提醒审核', () {
+        //   remindOrder(context, '是否提醒审核', provider?.model?.orderId ?? -1, 1);
+        // })
       ];
     }
     return [Container()];

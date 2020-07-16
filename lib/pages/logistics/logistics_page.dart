@@ -56,7 +56,7 @@ class _LogisticsPageState extends State<LogisticsPage> {
   }
 
   int get hasDeliveredPacketCount => wrapper?.hasDeliveredPacketCount ?? 0;
-
+  bool get showBanner => hasDeliveredPacketCount > 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,17 +64,19 @@ class _LogisticsPageState extends State<LogisticsPage> {
         title: Text('订单跟踪'),
         centerTitle: true,
         bottom: PreferredSize(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.symmetric(
-                  horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-              color: Color(0xFFF5F5F5),
-              child: Text(
-                '订单分包裹邮寄，其中$hasDeliveredPacketCount个已寄出',
-                style: TextStyle(fontSize: UIKit.sp(28)),
-              ),
-            ),
-            preferredSize: Size.fromHeight(UIKit.height(90))),
+            child: Visibility(
+                visible: showBanner,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+                  color: Color(0xFFF5F5F5),
+                  child: Text(
+                    '订单分包裹邮寄，其中$hasDeliveredPacketCount个已寄出',
+                    style: TextStyle(fontSize: UIKit.sp(28)),
+                  ),
+                )),
+            preferredSize: Size.fromHeight(showBanner ? UIKit.height(90) : 0)),
       ),
       body: isLoading
           ? LoadingCircle()

@@ -9,7 +9,7 @@ class CustomerModelListResp extends ZYResponse<CustomerModelWrapper> {
 }
 
 class CustomerModelWrapper {
-   int totalCount;
+  int totalCount;
   int pageCount;
   int status0;
   int status1;
@@ -25,8 +25,8 @@ class CustomerModelWrapper {
       this.status2,
       this.status3,
       this.data});
-  CustomerModelWrapper.fromJson(Map<String, dynamic> json){
-     totalCount = json['total_count'];
+  CustomerModelWrapper.fromJson(Map<String, dynamic> json) {
+    totalCount = json['total_count'];
     pageCount = json['page_count'];
     status0 = json['status_0'];
     status1 = json['status_1'];
@@ -34,24 +34,34 @@ class CustomerModelWrapper {
     status3 = json['status_3'];
     if (json['list'] != null) {
       data = new List<CustomerModelBean>();
+      int index = 0;
       json['list'].forEach((v) {
+        v['index'] = index;
         data.add(new CustomerModelBean.fromJson(v));
+        index++;
       });
     }
   }
 }
 
 class CustomerModelBean extends ISuspensionBean {
+  int index;
   int id;
   String clientName;
   String headWord;
   String namePinyin;
-  CustomerModelBean({this.id, this.clientName, this.headWord,this.namePinyin:''});
+  CustomerModelBean(
+      {this.index,
+      this.id,
+      this.clientName,
+      this.headWord,
+      this.namePinyin: ''});
 
   CustomerModelBean.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     clientName = json['client_name'];
     headWord = json['head_word'];
+    index = json['index'];
   }
 
   @override

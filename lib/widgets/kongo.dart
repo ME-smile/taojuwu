@@ -22,6 +22,7 @@ class Kongo extends StatelessWidget {
                 iconPath,
                 width: UIKit.width(80),
                 height: UIKit.height(50),
+                callback: callback,
                 // height: UIKit.height(80),
               ),
               VSpacing(10),

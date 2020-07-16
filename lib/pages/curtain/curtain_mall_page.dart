@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:taojuwu/application.dart';
@@ -120,7 +121,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   Widget _buildFilter1() {
     return ZYAssetImage(
       isGridMode ? 'ic_grid_h.png' : 'ic_grid.png',
+      width: 12,
+      height: 12,
       callback: () {
+        scrollToTop();
         if (isGridMode) return;
         setState(() {
           params['page_index'] = 1;
@@ -133,7 +137,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   Widget _buildFilter2() {
     return ZYAssetImage(
       isGridMode ? 'ic_list.png' : 'ic_list_h.png',
+      width: 12.5,
+      height: 12.5,
       callback: () {
+        scrollToTop();
         if (!isGridMode) return;
         setState(() {
           params['page_index'] = 1;
@@ -150,44 +157,104 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     return;
   }
 
+  bool showSortPanel = false;
+
+  void sort() {
+    setState(() {
+      showSortPanel = !showSortPanel;
+      menuController?.show(0);
+      closeEndDrawer();
+    });
+  }
+
   Widget _buildFilter3() {
     return InkWell(
-      onTap: () {
-        setState(() {
-          menuController?.show(0);
-          closeEndDrawer();
-        });
-      },
-      child: Text.rich(TextSpan(
-          text: SORT_TYPES[currentSortType],
-          children: [WidgetSpan(child: Icon(ZYIcon.drop_down))])),
+      onTap: sort,
+      child: Row(
+        children: <Widget>[
+          Text(
+            SORT_TYPES[currentSortType],
+            style: TextStyle(fontSize: 13),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 1, left: 5),
+            child: ZYAssetImage(
+              showSortPanel == false ? 'dropdown@2x.png' : 'dropup@2x.png',
+              width: 12,
+              height: 12,
+              callback: sort,
+            ),
+          ),
+        ],
+      ),
     );
+    // return InkWell(
+    //   onTap: () {
+    //     setState(() {
+    //       menuController?.show(0);
+    //       closeEndDrawer();
+    //     });
+    //   },
+    //   child: Text.rich(TextSpan(text: SORT_TYPES[currentSortType], children: [
+    //     WidgetSpan(
+    //       child: Icon(
+    //         ZYIcon.drop_down,
+    //         size: 16,
+    //       ),
+    //     )
+    //   ])),
+    // );
+  }
+
+  void filter() {
+    setState(() {
+      if (menuController?.isShow == true) {
+        menuController?.hide();
+      }
+      ScaffoldState state = _scaffoldKey.currentState;
+      if (!state.isEndDrawerOpen) {
+        state.openEndDrawer();
+        showFloatingButton = false;
+      } else {
+        closeEndDrawer();
+        showFloatingButton = true;
+      }
+      // hideFilterView = !hideFilterView;
+    });
   }
 
   Widget _buildFilter4() {
     return InkWell(
-      onTap: () {
-        setState(() {
-          if (menuController?.isShow == true) {
-            menuController?.hide();
-          }
-          ScaffoldState state = _scaffoldKey.currentState;
-          if (!state.isEndDrawerOpen) {
-            state.openEndDrawer();
-            showFloatingButton = false;
-          } else {
-            closeEndDrawer();
-            showFloatingButton = true;
-          }
-          // hideFilterView = !hideFilterView;
-        });
-      },
-      child: Text.rich(TextSpan(text: '筛选', children: [
-        WidgetSpan(
-            child: Icon(
-          ZYIcon.filter,
-        ))
-      ])),
+      onTap: filter,
+      child: Container(
+        alignment: Alignment.center,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '筛选',
+              style: TextStyle(fontSize: 13),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 5, top: 1),
+              child: ZYAssetImage(
+                'filter@2x.png',
+                width: 12,
+                height: 12,
+                callback: filter,
+              ),
+            )
+          ],
+        ),
+      ),
+      // child: Text.rich(TextSpan(text: '筛选', children: [
+      //   WidgetSpan(
+      //       child: ZYAssetImage(
+      //     'filter@2x.png',
+      //     width: 12,
+      //   ))
+      // ])),
     );
   }
 
@@ -236,70 +303,95 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
   void checkTag(
       TagFilter filter, List<TagFilterOption> options, TagFilterOption bean) {
-    if (filter?.isMulti == true) {
-      setState(() {
-        bean?.isChecked = !bean.isChecked;
-      });
-    } else {
+    bean?.isChecked = !bean.isChecked;
+    if (filter?.isMulti == false) {
       options?.forEach((item) {
-        item?.isChecked = item == bean;
+        if (item != bean) {
+          item?.isChecked = false;
+        }
       });
-      setState(() {});
     }
+    setState(() {});
   }
 
   Widget endDrawer(BuildContext context) {
     // ThemeData themeData = Theme.of(context);
 
     List<TagFilter> filters = tagWrapper?.filterList ?? [];
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
     return Container(
-      width: 240,
+      width: width * 2 / 3,
       height: double.infinity,
       color: Colors.white,
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Container(
-          padding: EdgeInsets.symmetric(
-              horizontal: UIKit.width(20), vertical: UIKit.height(10)),
-          child: ListView.builder(
+          height: height,
+          padding: EdgeInsets.only(
+              top: UIKit.height(10),
+              bottom: UIKit.height(10),
+              right: UIKit.width(24),
+              left: UIKit.width(24)),
+          child: AnimationLimiter(
+              child: ListView.separated(
             shrinkWrap: true,
+            separatorBuilder: (BuildContext context, int i) {
+              return SizedBox(
+                height: 12,
+              );
+            },
+            physics: BouncingScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
               TagFilter bean = filters[index];
               List<TagFilterOption> options = bean?.filterValue;
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10),
-                    child: Text('${bean?.showName ?? ''}'),
-                  ),
-                  Wrap(
-                    runSpacing: 10,
-                    spacing: 10,
-                    children:
-                        List<Widget>.generate(options?.length ?? 0, (int i) {
-                      TagFilterOption option = options[i];
-                      return Container(
-                        height: 24,
-                        child: AspectRatio(
-                          aspectRatio: 3.6,
-                          child: TagBeanActionChip(
-                            bean: option,
-                            callback: () {
-                              checkTag(bean, options, option);
-                            },
-                          ),
+
+              return AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: const Duration(milliseconds: 375),
+                  child: SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: FadeInAnimation(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Text('${bean?.showName ?? ''}'),
+                            ),
+                            Container(
+                              child: GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          childAspectRatio: 2.8,
+                                          crossAxisCount: 3,
+                                          crossAxisSpacing: UIKit.width(24),
+                                          mainAxisSpacing: UIKit.height(24)),
+                                  itemCount: options?.length ?? 0,
+                                  itemBuilder: (BuildContext context, int i) {
+                                    TagFilterOption item = options[i];
+                                    return TagBeanActionChip(
+                                      bean: options[i],
+                                      callback: () {
+                                        checkTag(bean, options, item);
+                                      },
+                                    );
+                                  }),
+                            ),
+                          ],
                         ),
-                      );
-                    }),
-                  ),
-                ],
-              );
+                      )));
             },
             itemCount: filters?.length ?? 0,
-          ),
+          )),
         ),
         bottomNavigationBar: Container(
+          margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+          padding: EdgeInsets.symmetric(vertical: UIKit.height(11)),
           child: Row(
             children: <Widget>[
               Expanded(
@@ -307,7 +399,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                 onTap: () {
                   tagWrapper?.reset();
                   isRefresh = true;
-                  requestGoodsData();
+                  setState(() {});
+                  params?.addAll(tagWrapper?.args);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -323,9 +416,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   child: InkWell(
                 onTap: () {
                   params?.addAll(tagWrapper?.args);
-                  print(params);
                   isRefresh = true;
-                  requestGoodsData();
+                  requestGoodsData().whenComplete(() {
+                    Navigator.of(context).pop();
+                  });
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -469,7 +563,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     });
   }
 
-  void requestGoodsData() {
+  Future requestGoodsData() async {
     if (isRefresh)
       setState(() {
         isLoading = true;
@@ -506,7 +600,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           });
         }
       }
-      if (showFloatingButton == false) Navigator.pop(context);
     }).catchError((err) {
       if (isRefresh) {
         _refreshController?.refreshFailed();
@@ -539,7 +632,16 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         itemCount:
             goodsList != null && goodsList.isNotEmpty ? goodsList.length : 0,
         itemBuilder: (BuildContext context, int i) {
-          return GridCard(goodsList[i]);
+          return AnimationConfiguration.staggeredGrid(
+            columnCount: goodsList == null ? 0 : (goodsList.length ~/ 2) + 1,
+            position: i,
+            duration: Duration(milliseconds: 600),
+            child: SlideAnimation(
+                verticalOffset: 200.0,
+                child: FadeInAnimation(
+                  child: GridCard(goodsList[i]),
+                )),
+          );
         });
   }
 
@@ -550,7 +652,15 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         itemCount:
             goodsList != null && goodsList.isNotEmpty ? goodsList?.length : 0,
         itemBuilder: (BuildContext context, int i) {
-          return ListCard(goodsList[i]);
+          return AnimationConfiguration.staggeredList(
+            position: i,
+            duration: Duration(milliseconds: 700),
+            child: SlideAnimation(
+                verticalOffset: 200.0,
+                child: FadeInAnimation(
+                  child: ListCard(goodsList[i]),
+                )),
+          );
         });
   }
 
@@ -639,7 +749,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   filter3: _buildFilter3(),
                   filter4: _buildFilter4(),
                 ),
-                preferredSize: Size.fromHeight(48)),
+                preferredSize: Size.fromHeight(30)),
           ),
           body: Scaffold(
             key: _scaffoldKey,
@@ -650,39 +760,43 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                 // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
                 child: Stack(
                   children: <Widget>[
-                    SmartRefresher(
-                      enablePullDown: true,
-                      enablePullUp: true,
-                      primary: false,
-                      onRefresh: () async {
-                        params['page_index'] = 1;
-                        isRefresh = true;
-                        requestGoodsData();
-                      },
-                      onLoading: () async {
-                        params['page_index']++;
+                    isLoading
+                        ? Center(
+                            child: LoadingCircle(),
+                          )
+                        : AnimationLimiter(
+                            child: SmartRefresher(
+                              enablePullDown: true,
+                              enablePullUp: true,
+                              primary: false,
+                              onRefresh: () async {
+                                params['page_index'] = 1;
+                                isRefresh = true;
+                                requestGoodsData();
+                              },
+                              onLoading: () async {
+                                params['page_index']++;
 
-                        isRefresh = false;
-                        requestGoodsData();
-                      },
-                      controller: _refreshController,
-                      scrollController: scrollController,
-                      child: isLoading
-                          ? Center(
-                              child: LoadingCircle(),
-                            )
-                          : goodsList?.isEmpty == true
-                              ? NoData(
-                                  isFromSearch: isFromSearch,
-                                )
-                              : isGridMode ? buildGridView() : buildListView(),
-                    ),
+                                isRefresh = false;
+                                requestGoodsData();
+                              },
+                              controller: _refreshController,
+                              scrollController: scrollController,
+                              child: goodsList?.isEmpty == true
+                                  ? NoData(
+                                      isFromSearch: isFromSearch,
+                                    )
+                                  : isGridMode
+                                      ? buildGridView()
+                                      : buildListView(),
+                            ),
+                          ),
                     GZXDropDownMenu(
                         controller: menuController,
                         animationMilliseconds: 400,
                         menus: [
                           GZXDropdownMenuBuilder(
-                              dropDownHeight: 40.0 * SORT_TYPES.length,
+                              dropDownHeight: 30.0 * SORT_TYPES.length,
                               dropDownWidget: Column(
                                 children:
                                     List.generate(SORT_TYPES.length, (int i) {
@@ -772,8 +886,9 @@ class _TagBeanActionChipState extends State<TagBeanActionChip> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
             color: Colors.black,
-            borderRadius: BorderRadius.all(Radius.circular(2)),
+            // borderRadius: BorderRadius.all(Radius.circular(2)),
             border: Border.all(
+                width: .5,
                 color: isChecked == true ? Colors.black : Color(0xFFCBCBCB))),
         child: Container(
           alignment: Alignment.center,
@@ -784,7 +899,9 @@ class _TagBeanActionChipState extends State<TagBeanActionChip> {
           child: Text(
             bean?.name ?? '',
             textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
+                fontSize: 12,
                 color: isChecked == true ? Colors.black : Color(0xFF333333)),
           ),
         ),

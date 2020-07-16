@@ -238,7 +238,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     //           child:
     //               buildTimeInfoBar('上门量尺意向时间', model?.measureTime ?? ''),
     //         ),
-    //         buildTimeInfoBar('客户意向安装时间', model?.installTime ?? ''),
+    //         buildTimeInfoBar('客户意向安装时���', model?.installTime ?? ''),
     //         buildTimeInfoBar('需��量窗数', '${model?.windowNum ?? 0}��'),
     //         buildTimeInfoBar('定金', '�����������������������������������������������������������${model?.orderEarnestMoney ?? 0}'),
     //         buildTimeInfoBar(
@@ -394,18 +394,16 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   TextStyle get leadingTextStyle =>
-      TextStyle(fontWeight: FontWeight.normal, fontSize: UIKit.sp(28));
+      TextStyle(fontWeight: FontWeight.normal, fontSize: 14);
 
   TextStyle get traillingTextStyle =>
-      TextStyle(fontWeight: FontWeight.w500, fontSize: UIKit.sp(28));
+      TextStyle(fontWeight: FontWeight.w500, fontSize: 14);
 
   TextStyle get titleTextStyle =>
-      TextStyle(fontWeight: FontWeight.w500, fontSize: UIKit.sp(28));
+      TextStyle(fontWeight: FontWeight.w500, fontSize: 14);
 
   TextStyle get emphasizeTextStyle => TextStyle(
-      color: Color(0xFFFC5252),
-      fontSize: UIKit.sp(36),
-      fontWeight: FontWeight.w500);
+      color: Color(0xFFFC5252), fontSize: 18, fontWeight: FontWeight.w500);
 
   Widget buildOrderFootNote(BuildContext context, OrderDetailProvider provider,
       OrderDetailModel model) {
@@ -506,12 +504,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                               },
                               child: Row(
                                 children: <Widget>[
-                                  Text(
-                                    '修改',
-                                    style: TextStyle(fontSize: UIKit.sp(24)),
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 2, left: 5),
+                                    child: Text(
+                                      '修改',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
                                   ),
                                   Icon(
-                                    ZYIcon.edit,
+                                    ZYIcon.next,
                                     size: 12,
                                   )
                                 ],
@@ -633,6 +634,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     model?.hasMeasured == false,
                 child: InkWell(
                   child: Container(
+                    padding: EdgeInsets.only(top: UIKit.height(10)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
@@ -641,9 +643,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           style: TextStyle(
                               color: Color(0xFF999999), fontSize: UIKit.sp(24)),
                         ),
-                        Text(
-                          '查看商品清单',
-                          style: TextStyle(fontSize: UIKit.sp(24)),
+                        Padding(
+                          padding: EdgeInsets.only(right: 2),
+                          child: Text(
+                            '查看商品清单',
+                            style: TextStyle(fontSize: 12),
+                          ),
                         ),
                         Icon(
                           ZYIcon.next,
@@ -813,9 +818,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 children: <Widget>[
                                   Text(
                                       '收货人: ${model?.clientName ?? ''}  ${model?.receiverMobile ?? ''}'),
-                                  Text(
-                                    model?.address ?? '',
-                                    style: textTheme.caption,
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 4),
+                                    child: Text(
+                                      model?.address ?? '',
+                                      style: textTheme.caption,
+                                      maxLines: 2,
+                                    ),
                                   )
                                 ],
                               )),
@@ -855,7 +864,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 children: <Widget>[
                                   Container(
                                     width: 2,
-                                    height: 20,
+                                    height: 16,
                                     color: Colors.black,
                                     margin:
                                         EdgeInsets.only(right: UIKit.width(10)),
@@ -882,6 +891,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                 offstage: model?.hasMeasured == false,
                                 child: buildOrderInfoBar(context, '测量时间',
                                     getTimeStr(model?.realityMeasureTime)),
+                              ),
+                              Offstage(
+                                offstage: model?.hasFinished == false,
+                                child: buildOrderInfoBar(context, '安装时间',
+                                    getTimeStr(model?.realityInstallTime)),
                               ),
                               // Offstage(
                               //   offstage: model?.hasInstalled == false,

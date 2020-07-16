@@ -118,6 +118,7 @@ class _HasDeliveredGoodsPacketCardState
               return ExpressOrderTrackLogItem(
                 expressOrderModels[index],
                 isFirst: index == 0,
+                isOnlyOne: len == 1,
                 isLast: index == 2 && hasOpen == false,
               );
             },
@@ -167,6 +168,7 @@ class _HasDeliveredGoodsPacketCardState
                   return ExpressOrderTrackLogItem(
                     item,
                     isFirst: false,
+                    // isOnlyOne: len == 1,
                     isLast: i == hiddenList.length - 1,
                   );
                 })),
@@ -325,8 +327,9 @@ class ExpressOrderTrackLogItem extends StatefulWidget {
   final ExpressOrderModel model;
   final bool isFirst;
   final bool isLast;
+  final bool isOnlyOne;
   ExpressOrderTrackLogItem(this.model,
-      {Key key, this.isFirst: false, this.isLast: false})
+      {Key key, this.isFirst: false, this.isLast: false, this.isOnlyOne: false})
       : super(key: key);
 
   @override
@@ -340,7 +343,7 @@ class _ExpressOrderTrackLogItemState extends State<ExpressOrderTrackLogItem> {
   String get time => model?.acceptTime?.split(' ')?.last;
   bool get isFirst => widget.isFirst;
   bool get isLast => widget.isLast;
-
+  bool get isOnlyOne => widget.isOnlyOne;
   bool get titleIsEmpty =>
       model?.title == null || model?.title?.isEmpty == true;
   double height = 0;
@@ -400,7 +403,9 @@ class _ExpressOrderTrackLogItemState extends State<ExpressOrderTrackLogItem> {
               Container(
                 width: 1,
                 height: height,
-                color: isLast ? Colors.transparent : Color(0xFFD3D3D3),
+                color: isLast || isOnlyOne
+                    ? Colors.transparent
+                    : Color(0xFFD3D3D3),
               ),
             ],
           ),

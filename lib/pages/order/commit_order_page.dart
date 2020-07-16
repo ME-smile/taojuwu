@@ -45,6 +45,7 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
   }
 
   bool canClick = true;
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -101,18 +102,44 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
                           alignment: Alignment.centerRight,
                           color: themeData.primaryColor,
                           width: double.infinity,
-                          child: Text.rich(TextSpan(text: '小计:', children: [
-                            TextSpan(
-                                text:
-                                    '￥${provider?.totalPrice?.toStringAsFixed(2)}\n'),
-                            WidgetSpan(
-                              child: Icon(
-                                Icons.warning,
-                                size: UIKit.sp(24),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: UIKit.height(10)),
+                                child: Text(
+                                  '小计: ￥${provider?.totalPrice?.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
+                                ),
                               ),
-                            ),
-                            TextSpan(text: '预估价格')
-                          ])),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Icon(Icons.warning, size: 16),
+                                  Text(
+                                    '预估价格',
+                                    style: textTheme.caption,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                          // child: Text.rich(TextSpan(text: '小计:', children: [
+                          //   TextSpan(
+                          //       text:
+                          //           '￥${provider?.totalPrice?.toStringAsFixed(2)}\n'),
+                          //   WidgetSpan(
+                          //     child: Icon(
+                          //       Icons.warning,
+                          //       size: UIKit.sp(24),
+                          //     ),
+                          //   ),
+                          //   TextSpan(text: '预估价格')
+                          // ])),
                         );
                       }),
                       Container(
@@ -129,9 +156,7 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
                 bottomNavigationBar: Consumer(
                     builder: (BuildContext context, OrderProvider provider, _) {
                   return Container(
-                    padding: EdgeInsets.symmetric(
-                        vertical: UIKit.height(15),
-                        horizontal: UIKit.width(20)),
+                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
                     decoration: BoxDecoration(
                         color: themeData.primaryColor,
                         border: Border(
@@ -153,10 +178,11 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
                         ZYRaisedButton(
                           '提交订单',
                           () {
-                            setState(() {
-                              canClick = false;
-                            });
-                            provider?.createOrder(context, callback: () {
+                            provider?.createOrder(context, beforeCallback: () {
+                              setState(() {
+                                canClick = false;
+                              });
+                            }, afterCallback: () {
                               setState(() {
                                 canClick = true;
                               });

@@ -56,10 +56,13 @@ class OrderModelData {
   bool get hasMeasured => orderStatus > 2;
   bool get hasInstalled => orderStatus >= 7;
   bool get hasProducted => orderStatus > 5;
-  bool get hasFinished => orderStatus >= 8 && orderStatus != 14;
+  bool get hasFinished =>
+      orderStatus >= 8 && [14, 15].contains(orderStatus) == false;
   String get orderEarnestMoneyStr {
     return orderEarnestMoney.toStringAsFixed(2);
   }
+
+  bool get hasMoreThanTwoItems => models.length > 2 ?? false;
 
   OrderModelData.fromJson(Map<String, dynamic> json) {
     orderId = int.parse('${json['order_id']}');

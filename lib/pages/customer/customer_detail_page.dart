@@ -40,7 +40,7 @@ class CustomerDetailPage extends StatelessWidget {
                   name: bean?.clientName,
                   type: bean?.clientType,
                   age: bean?.clientAge,
-                  address: bean?.detailAddress,
+                  address: bean?.address,
                   gender: bean?.clientSex,
                 ),
                 KongoBar(

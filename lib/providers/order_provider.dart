@@ -138,7 +138,7 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool beforeCreateOrder(BuildContext context) {
+  bool beforeCreateOrder(BuildContext context, {Function callback}) {
     if (TargetClient.instance?.hasSelectedClient == false) {
       CommonKit.showInfo('请选择客户');
       return false;
@@ -162,7 +162,8 @@ class OrderProvider with ChangeNotifier {
     return true;
   }
 
-  void createOrder(BuildContext ctx, {Function callback}) {
+  void createOrder(BuildContext ctx,
+      {Function beforeCallback, Function afterCallback}) {
     print(
         'measure_id: ${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}');
     // LogUtil.e({
@@ -188,6 +189,9 @@ class OrderProvider with ChangeNotifier {
     //     }'''
     // });
     if (!beforeCreateOrder(ctx)) return;
+    if (beforeCallback != null) {
+      beforeCallback();
+    }
     OTPService.createOrder(
       params: {
         'order_earnest_money': deposit,
@@ -219,9 +223,9 @@ class OrderProvider with ChangeNotifier {
       } else {
         CommonKit.showErrorInfo(response?.message ?? '');
       }
-      if (callback != null) callback();
+      if (afterCallback != null) afterCallback();
     }).catchError((err) {
-      if (callback != null) callback();
+      if (afterCallback != null) afterCallback();
       return err;
     });
   }

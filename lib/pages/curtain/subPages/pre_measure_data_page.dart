@@ -334,14 +334,14 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                     keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                       isDense: true,
-                                      contentPadding:
-                                          EdgeInsets.symmetric(vertical: 2.5),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 3, horizontal: 2),
                                     ),
                                   ),
                                   margin: EdgeInsets.symmetric(
                                       horizontal: UIKit.width(20)),
                                   width: UIKit.width(160),
-                                  height: UIKit.height(50),
+                                  height: 28,
                                   decoration: BoxDecoration(
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(4)),
@@ -370,14 +370,14 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                     keyboardType: TextInputType.number,
                                     decoration: InputDecoration(
                                       isDense: true,
-                                      contentPadding:
-                                          EdgeInsets.symmetric(vertical: 2.5),
+                                      contentPadding: EdgeInsets.symmetric(
+                                          vertical: 3, horizontal: 2),
                                     ),
                                   ),
                                   margin: EdgeInsets.symmetric(
                                       horizontal: UIKit.width(20)),
                                   width: UIKit.width(160),
-                                  height: UIKit.height(50),
+                                  height: 28,
                                   decoration: BoxDecoration(
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(4)),
@@ -411,14 +411,14 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                   alignLabelWithHint: true,
                                   hintStyle: TextStyle(fontSize: UIKit.sp(24)),
                                   isDense: true,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(vertical: 3),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 3, horizontal: 2),
                                 ),
                               ),
                               margin: EdgeInsets.symmetric(
                                   horizontal: UIKit.width(20)),
                               width: UIKit.width(160),
-                              height: UIKit.height(50),
+                              height: 28,
                               decoration: BoxDecoration(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(4)),
