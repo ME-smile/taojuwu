@@ -34,11 +34,17 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
   String districtName;
   Map<String, String> params;
 
+  String get address =>
+      '${provinceName ?? ''}${cityName ?? ''}${districtName ?? ''}';
+
   @override
   void initState() {
     super.initState();
     model = widget.model;
     params = widget.params;
+    provinceName = model?.provinceName;
+    cityName = model?.cityName;
+    districtName = model?.districtName;
     if (model == null) {
       enterTime = DateUtil.formatDateMs(DateTime.now().millisecondsSinceEpoch,
           format: 'yyyy-MM-dd HH:mm:ss');
@@ -204,10 +210,7 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
                         districtName = result?.areaName;
                       });
                     }).catchError((err) => err);
-                  },
-                      trailText:
-                          '${provinceName ?? ''}${cityName ?? ''}${districtName ?? ''}' ??
-                              ''),
+                  }, trailText: address),
                   Divider(),
                   TextField(
                     controller: addressInput,
