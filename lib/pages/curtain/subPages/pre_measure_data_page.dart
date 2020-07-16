@@ -516,7 +516,7 @@ class __RoomAttrCheckWrapperState extends State<RoomAttrCheckWrapper> {
             ),
             callback: () {
               provider?.curRoomAttrBean = tmp;
-              // print(provider?.curRoomAttrBean?.name);
+
               Navigator.of(context).pop();
             },
           );

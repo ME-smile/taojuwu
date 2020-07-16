@@ -2,7 +2,6 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
@@ -39,7 +38,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   void initState() {
     super.initState();
     id = widget.id;
-    print(Application.sp.get('token'));
+
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData();
     });
@@ -190,17 +189,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   Widget buildinstallInfoTip(OrderDetailModel model) {
-    String measureTime =
-        model?.isSameYear == true && model.measureTime.length > 5
-            ? model?.measureTime?.substring(5)
-            : model?.measureTime;
     return Column(
       children: <Widget>[
         buildTimeInfoBar(
             '量尺预约时间',
             model?.hasAdjustMeasureTime == true
-                ? '${measureTime ?? ''}(已调整)'
-                : '$measureTime',
+                ? '${model?.measureTime ?? ''}(已调整)'
+                : '${model?.measureTime}',
             isActive: model?.hasAdjustMeasureTime,
             type: 1),
         VSpacing(10),
@@ -240,7 +235,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     //         ),
     //         buildTimeInfoBar('客户意向安装时���', model?.installTime ?? ''),
     //         buildTimeInfoBar('需��量窗数', '${model?.windowNum ?? 0}��'),
-    //         buildTimeInfoBar('定金', '�����������������������������������������������������������${model?.orderEarnestMoney ?? 0}'),
+    //         buildTimeInfoBar('定金', '�������������������������������������������������������������${model?.orderEarnestMoney ?? 0}'),
     //         buildTimeInfoBar(
     //             '备注',
     //             model?.orderRemark == null ||

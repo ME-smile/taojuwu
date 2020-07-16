@@ -52,8 +52,12 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
     return true;
   }
 
+  bool canClick = true;
   void resetPwd() {
     if (beforeSendData() == false) return;
+    setState(() {
+      canClick = false;
+    });
     OTPService.resetPwd(
             params: {'old_password': oldPwd, 'new_password': newPwd})
         .then((ZYResponse response) {
@@ -63,7 +67,13 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
       } else {
         CommonKit.showInfo(response?.message ?? '');
       }
-    }).catchError((err) => err);
+    }).catchError((err) {
+      return err;
+    }).whenComplete(() {
+      setState(() {
+        canClick = true;
+      });
+    });
   }
 
   bool _isOldPwdCypher = true;
@@ -143,9 +153,13 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
                 ),
               ),
               VSpacing(40),
-              ZYSubmitButton('重置密码', () {
-                resetPwd();
-              }),
+              ZYSubmitButton(
+                '重置密码',
+                () {
+                  resetPwd();
+                },
+                isActive: canClick,
+              ),
             ],
           ),
         ),

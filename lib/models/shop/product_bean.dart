@@ -291,8 +291,6 @@ class ProductBean {
     if (this.specList == null) return [];
 
     for (var item in this.specList) {
-      print('item:' + name);
-      print(item.toJson());
       if (name == item.specName) {
         return item.value;
       }

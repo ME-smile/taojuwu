@@ -168,8 +168,7 @@ class _AfterSaleServicePageState extends State<AfterSaleServicePage> {
 
   Future getImageFromCamera() async {
     // image = await ImagePicker.pickImage(source: ImageSource.camera);
-    print('allalalalalllalalalalalalalala');
-    print(image);
+
     setState(() {
       imgList.add(image);
     });

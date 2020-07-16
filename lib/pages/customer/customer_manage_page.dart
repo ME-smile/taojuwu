@@ -39,11 +39,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
     });
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       // RenderObject renderObject = headerBuildContext.findRenderObject();
-      setState(() {
-        print('啦啦啦啦啦');
-        // height = renderObject.semanticBounds.size.height;
-        print(height);
-      });
+      setState(() {});
     });
   }
 

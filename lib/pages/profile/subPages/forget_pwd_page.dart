@@ -18,15 +18,12 @@ class ForgetPwdPage extends StatefulWidget {
 class _ForgetPwdPageState extends State<ForgetPwdPage> {
   TextEditingController telInput;
   TextEditingController smsInput;
-  FocusNode telInputFocusNode;
-  FocusNode smsInputFocusNode;
+
   @override
   void initState() {
     super.initState();
     smsInput = TextEditingController();
     smsInput = TextEditingController();
-    telInputFocusNode = FocusNode();
-    smsInputFocusNode = FocusNode();
   }
 
   @override
@@ -34,8 +31,6 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
     super.dispose();
     telInput?.dispose();
     smsInput?.dispose();
-    telInputFocusNode?.dispose();
-    smsInputFocusNode?.dispose();
   }
 
   @override
@@ -67,7 +62,6 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
               VSpacing(30),
               TextField(
                 controller: telInput,
-                focusNode: telInputFocusNode,
                 decoration: InputDecoration(
                     hintText: '请输入手机号',
                     enabledBorder: UnderlineInputBorder(
@@ -88,7 +82,6 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
               VSpacing(10),
               TextField(
                 controller: smsInput,
-                focusNode: smsInputFocusNode,
                 decoration: InputDecoration(
                   hintText: '请输入验证码',
                   suffixIcon: SendSmsButton(

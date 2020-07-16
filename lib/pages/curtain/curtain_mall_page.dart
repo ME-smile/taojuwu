@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:taojuwu/application.dart';
+
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
@@ -417,7 +417,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                 onTap: () {
                   params?.addAll(tagWrapper?.args);
                   isRefresh = true;
-                  print(params);
+
                   requestGoodsData().whenComplete(() {
                     Navigator.of(context).pop();
                   });
@@ -572,7 +572,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
     OTPService.curtainGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
-      print(Application.sp.get('token'));
       _refreshController?.resetNoData();
       beanData = curtainProductListResp?.data;
       wrapper = beanData?.goodsList;

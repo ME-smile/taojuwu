@@ -7,6 +7,7 @@ import 'package:taojuwu/application.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
@@ -109,6 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
     Navigator.of(context).pop();
     UserProvider user = Provider.of<UserProvider>(context, listen: false);
     user.logOut();
+    TargetClient.instance.clear();
     RouteHandler.goLoginPage(context);
   }
 

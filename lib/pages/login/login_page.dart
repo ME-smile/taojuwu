@@ -129,19 +129,22 @@ class _LoginPageState extends State<LoginPage> {
     });
     OTPService.loginByPwd(context, {'username': tel, 'password': pwd})
         .then((ZYResponse response) {
-      if (response.valid) {
-        // CommonKit.toast(context, '登录成功');
-        _phoneController.text = '';
-        _pwdController.text = '';
-        afterLogin(response.data);
-        RouteHandler.goHomePage(context);
-        setState(() {
-          canClick = true;
+          if (response.valid) {
+            // CommonKit.toast(context, '登录成功');
+            _phoneController.text = '';
+            _pwdController.text = '';
+            afterLogin(response.data);
+            RouteHandler.goHomePage(context);
+          } else {
+            // CommonKit.toast(context, '${response.message ?? "登录失败"}');
+          }
+        })
+        .catchError((err) => err)
+        .whenComplete(() {
+          setState(() {
+            canClick = true;
+          });
         });
-      } else {
-        // CommonKit.toast(context, '${response.message ?? "登录失败"}');
-      }
-    }).catchError((err) => err);
   }
 
   @override

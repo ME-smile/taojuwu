@@ -211,8 +211,6 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                 CupertinoDialogAction(
                   child: Text('确定'),
                   onPressed: () {
-                    // closeSizeDialog();
-                    // print(depositInput?.text);
                     provider?.deposit = depositInput?.text;
                     Navigator.of(context).pop();
                   },

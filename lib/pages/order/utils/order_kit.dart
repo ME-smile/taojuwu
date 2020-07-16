@@ -416,12 +416,14 @@ class OrderKit {
   static void sendOrderRemindRequest(
       BuildContext context, Map<String, dynamic> params,
       {Function callback}) {
-    OTPService.orderRemind(params: params).then((ZYResponse response) {
+    OTPService.orderRemind(params: params)
+        .then((ZYResponse response) {})
+        .catchError((err) => err)
+        .whenComplete(() {
       if (callback != null) {
         callback();
       }
-      print(response);
-    }).catchError((err) => err);
+    });
   }
 
   static void goAfterSaleServicePage(BuildContext context, int id) {
@@ -612,14 +614,9 @@ class OrderKit {
                   CupertinoDialogAction(
                     child: Text('确定'),
                     onPressed: () async {
-                      // print();
                       await confirmToSelect(
                           context, {'order_id': provider?.model?.orderId ?? -1},
-                          callback: () {
-                        // provider?.refresh();
-
-                        // provider?.globalKey?.currentState?.initState();
-                      });
+                          callback: () {});
 
                       Navigator.of(context).pop();
                     },

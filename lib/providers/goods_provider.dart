@@ -860,13 +860,11 @@ class GoodsProvider with ChangeNotifier {
         .then((ZYResponse response) {
       if (response?.valid == true) {
         measureId = response?.data;
-        if (callback != null) callback();
       }
-      canAddToCart = true;
     }).catchError((err) {
-      if (callback != null) callback();
-      canAddToCart = true;
       return err;
+    }).whenComplete(() {
+      if (callback != null) callback();
     });
   }
 

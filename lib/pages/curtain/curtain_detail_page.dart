@@ -16,11 +16,11 @@ import 'package:taojuwu/pages/curtain/subPages/pre_measure_data_page.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
 
 import 'package:taojuwu/router/handlers.dart';
-import 'package:taojuwu/router/routes.dart';
+
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
-import 'package:taojuwu/singleton/target_route.dart';
+
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -301,8 +301,6 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                       CupertinoDialogAction(
                         child: Text('确定'),
                         onPressed: () {
-                          // closeSizeDialog();
-                          // print(depositInput?.text);
                           saveSize(goodsProvider);
                         },
                       )
@@ -427,9 +425,6 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                       CupertinoDialogAction(
                         child: Text('确定'),
                         onPressed: () {
-                          // closeSizeDialog();
-                          // print(depositInput?.text);
-
                           saveDy(goodsProvider);
                         },
                       )
@@ -962,7 +957,10 @@ class BottomActionButtonBar extends StatelessWidget {
 
       OTPService.addCart(params: cartParams)
           .then((ZYResponse response) {})
-          .catchError((err) => err);
+          .catchError((err) => err)
+          .whenComplete(() {
+        goodsProvider?.canAddToCart = true;
+      });
     });
   }
 
@@ -1012,10 +1010,11 @@ class BottomActionButtonBar extends StatelessWidget {
         GoodsProvider goodsProvider =
             Provider.of<GoodsProvider>(context, listen: false);
         goodsProvider?.clearGoodsInfo();
-        TargetRoute.instance.setRoute(
-            '${Routes.orderDetail}?id=${TargetOrderGoods.instance.orderId}');
-        Navigator.of(context)
-            .popUntil(ModalRoute.withName(TargetRoute.instance.route));
+        Navigator.of(context)..pop()..pop();
+        // TargetRoute.instance.setRoute(
+        //     '${Routes.orderDetail}?id=${TargetOrderGoods.instance.orderId}');
+        // Navigator.of(context)
+        //     .popUntil(ModalRoute.withName(TargetRoute.instance.route));
       } else {
         CommonKit.showInfo(response?.message ?? '');
       }

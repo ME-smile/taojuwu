@@ -164,8 +164,6 @@ class OrderProvider with ChangeNotifier {
 
   void createOrder(BuildContext ctx,
       {Function beforeCallback, Function afterCallback}) {
-    print(
-        'measure_id: ${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}');
     // LogUtil.e({
     //   'order_earnest_money': deposit,
     //   'client_uid': clientUid,
@@ -223,10 +221,10 @@ class OrderProvider with ChangeNotifier {
       } else {
         CommonKit.showErrorInfo(response?.message ?? '');
       }
-      if (afterCallback != null) afterCallback();
     }).catchError((err) {
-      if (afterCallback != null) afterCallback();
       return err;
+    }).whenComplete(() {
+      if (afterCallback != null) afterCallback();
     });
   }
 
