@@ -398,7 +398,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   child: InkWell(
                 onTap: () {
                   tagWrapper?.reset();
-                  isRefresh = true;
+
                   setState(() {});
                   params?.addAll(tagWrapper?.args);
                 },
@@ -417,6 +417,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                 onTap: () {
                   params?.addAll(tagWrapper?.args);
                   isRefresh = true;
+                  print(params);
                   requestGoodsData().whenComplete(() {
                     Navigator.of(context).pop();
                   });

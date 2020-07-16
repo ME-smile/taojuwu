@@ -220,20 +220,23 @@ class _SearchPageState extends State<SearchPage> {
                           prefixIcon: Container(
                             child: Icon(
                               ZYIcon.search,
-                              color: const Color(0xFF979797),
+                              size: 18,
+                              color: const Color(
+                                0xFF979797,
+                              ),
                             ),
                           ),
                           suffixIcon: InkWell(
                             child: Icon(
                               ZYIcon.clear,
                               color: const Color(0xFF979797),
-                              size: 16,
+                              size: 14,
                             ),
                             onTap: () {
                               inputController?.text = ' ';
                             },
                           ),
-                          contentPadding: EdgeInsets.all(10),
+                          contentPadding: EdgeInsets.all(9),
                           hintText: HINT_TEXT_MAP[type]),
                     ),
                   ),

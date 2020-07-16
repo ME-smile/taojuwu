@@ -44,15 +44,25 @@ class CustomerProfileHeader extends StatelessWidget {
               child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text.rich(TextSpan(
-                  text: '${name ?? ""}',
-                  style: textTheme.title,
-                  children: [
-                    TextSpan(text: '  '),
-                    TextSpan(
-                        text: Constants.CUSTOMER_TYPE_MAP[type],
-                        style: textTheme.caption)
-                  ])),
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(
+                      right: 10,
+                    ),
+                    child: Text(
+                      '${name ?? ""}',
+                      style: textTheme.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    Constants.CUSTOMER_TYPE_MAP[type],
+                    style: textTheme.caption,
+                  )
+                ],
+              ),
               Text(
                 '${Constants.GENDER_MAP[gender]}  $age岁',
                 style: textTheme.subtitle,

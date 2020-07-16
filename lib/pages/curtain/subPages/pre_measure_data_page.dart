@@ -323,7 +323,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                   padding:
                                       EdgeInsets.only(right: UIKit.width(25)),
                                   child: Text(
-                                    '宽   (cm):',
+                                    '宽    (cm):',
                                     style: textTheme.caption,
                                   ),
                                 ),
@@ -359,7 +359,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                   padding:
                                       EdgeInsets.only(right: UIKit.width(25)),
                                   child: Text(
-                                    '高   (cm):',
+                                    '高    (cm):',
                                     style: textTheme.caption,
                                   ),
                                 ),

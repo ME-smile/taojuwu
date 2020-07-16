@@ -18,24 +18,20 @@ class ResetPwdPage extends StatefulWidget {
 class _ResetPwdPageState extends State<ResetPwdPage> {
   TextEditingController oldPwdInput;
   TextEditingController newPwdInput;
-  FocusNode oldPwdFocusNode;
-  FocusNode newPwdFocusNode;
+
   @override
   void initState() {
     super.initState();
     oldPwdInput = TextEditingController();
     newPwdInput = TextEditingController();
-    oldPwdFocusNode = FocusNode();
-    newPwdFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     super.dispose();
     oldPwdInput?.dispose();
-    oldPwdFocusNode?.dispose();
+
     newPwdInput?.dispose();
-    newPwdFocusNode?.dispose();
   }
 
   String oldPwd;
@@ -104,7 +100,6 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
               TextField(
                 controller: oldPwdInput,
                 obscureText: _isOldPwdCypher,
-                focusNode: oldPwdFocusNode,
                 decoration: InputDecoration(
                   hintText: '请输入旧密码',
                   suffixIcon: IconButton(
@@ -128,7 +123,6 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
               TextField(
                 controller: newPwdInput,
                 obscureText: _isNewPwdCypher,
-                focusNode: newPwdFocusNode,
                 decoration: InputDecoration(
                   hintText: '请输入新密码',
                   suffixIcon: IconButton(

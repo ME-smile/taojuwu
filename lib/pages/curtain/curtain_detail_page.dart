@@ -385,7 +385,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                               width: 40,
                             ),
                             ZYRaisedButton('确定', () {
-                              saveSize(goodsProvider);
+                              saveDy(goodsProvider);
                             })
                           ],
                         )

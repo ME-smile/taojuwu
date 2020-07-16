@@ -4,11 +4,9 @@ import 'package:taojuwu/utils/ui_kit.dart';
 class ZYSubmitButton extends StatelessWidget {
   final String text;
   final Function callback;
-  const ZYSubmitButton(
-    this.text,
-    this.callback, {
-    Key key,
-  }) : super(key: key);
+  final bool isActive;
+  const ZYSubmitButton(this.text, this.callback, {Key key, this.isActive: true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +15,7 @@ class ZYSubmitButton extends StatelessWidget {
       margin: EdgeInsets.symmetric(
           horizontal: UIKit.width(50), vertical: UIKit.height(20)),
       child: RaisedButton(
-        onPressed: callback,
+        onPressed: isActive ? callback : null,
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: UIKit.height(20)),
           child: Text(

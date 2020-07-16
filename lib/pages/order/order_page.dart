@@ -243,6 +243,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(2)),
             border:
                 Border.all(color: isActive ? Colors.black : Color(0xFFCBCBCB))),
         margin: EdgeInsets.symmetric(horizontal: 10),
@@ -481,6 +482,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               globalKey.currentState?.handleTap();
             },
             child: Container(
+              alignment: Alignment.center,
               height: tabBarHeight,
               color: Colors.white,
               width: 40,
@@ -493,10 +495,10 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                         ? Colors.transparent
                         : Color(0xFFD4D4D4),
                     // padding: EdgeInsets.symmetric(vertical: 10),
-                    margin: EdgeInsets.only(top: 4, bottom: 4),
+                    margin: EdgeInsets.only(bottom: 9, top: 3),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    padding: EdgeInsets.only(left: 5, right: 5, bottom: 9),
                     child: RotationTransition(
                       turns: _iconTurns,
                       child: const Icon(Icons.expand_more),

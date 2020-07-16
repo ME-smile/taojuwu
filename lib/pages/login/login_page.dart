@@ -110,6 +110,7 @@ class _LoginPageState extends State<LoginPage> {
     }).catchError((err) => err);
   }
 
+  bool canClick = true;
   void loginByPwd(BuildContext context) {
     String tel = _phoneController.text;
     String pwd = _pwdController.text;
@@ -123,6 +124,9 @@ class _LoginPageState extends State<LoginPage> {
     if (pwd.trim().isEmpty) {
       return CommonKit.showInfo('密码不能为空哦');
     }
+    setState(() {
+      canClick = false;
+    });
     OTPService.loginByPwd(context, {'username': tel, 'password': pwd})
         .then((ZYResponse response) {
       if (response.valid) {
@@ -131,6 +135,9 @@ class _LoginPageState extends State<LoginPage> {
         _pwdController.text = '';
         afterLogin(response.data);
         RouteHandler.goHomePage(context);
+        setState(() {
+          canClick = true;
+        });
       } else {
         // CommonKit.toast(context, '${response.message ?? "登录失败"}');
       }
@@ -277,16 +284,20 @@ class _LoginPageState extends State<LoginPage> {
           ),
           VSpacing(50),
           // ZYRaisedButton(text, callback)
-          ZYSubmitButton('登录', () {
-            CommonKit.debounce(() {
-              // if(_isPwdMode){
-              //   loginBySms(context);
-              // }else{
+          ZYSubmitButton(
+            '登录',
+            () {
+              CommonKit.debounce(() {
+                // if(_isPwdMode){
+                //   loginBySms(context);
+                // }else{
 
-              // }
-              loginByPwd(context);
-            }, 500);
-          }),
+                // }
+                loginByPwd(context);
+              }, 500);
+            },
+            isActive: canClick,
+          ),
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: UIKit.width(50)),

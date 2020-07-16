@@ -17,12 +17,10 @@ class BaseInfoSegment extends StatefulWidget {
 
 class _BaseInfoSegmentState extends State<BaseInfoSegment> {
   TextEditingController nameInput;
-  FocusNode nameFocusNode;
 
   TextEditingController telInput;
-  FocusNode telFocusNode;
+
   TextEditingController weChatInput;
-  FocusNode weChatFocusNode;
 
   CustomerDetailModel model;
   Map<String, String> params;
@@ -33,9 +31,7 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
   int age = 0;
   String get genderStr => GENDER_OPTIONS[gender];
   void unFocus() {
-    nameFocusNode?.unfocus();
-    telFocusNode?.unfocus();
-    weChatFocusNode?.unfocus();
+    FocusManager.instance.primaryFocus.unfocus();
   }
 
   static const List<String> GENDER_OPTIONS = ['未知', '男', '女'];
@@ -49,9 +45,6 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
     weChatInput = TextEditingController(text: model?.clientWx);
     gender = model?.clientSex ?? 0;
     age = model?.clientAge ?? 0;
-    nameFocusNode = FocusNode();
-    telFocusNode = FocusNode();
-    weChatFocusNode = FocusNode();
 
     genderController =
         FixedExtentScrollController(initialItem: model?.clientSex ?? 0);
@@ -62,11 +55,11 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
   void dispose() {
     super.dispose();
     nameInput?.dispose();
-    nameFocusNode?.dispose();
+
     telInput?.dispose();
-    telFocusNode?.dispose();
+
     weChatInput?.dispose();
-    weChatFocusNode?.dispose();
+
     genderController?.dispose();
     ageController?.dispose();
   }
@@ -190,7 +183,6 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
               children: <Widget>[
                 TextField(
                   controller: nameInput,
-                  focusNode: nameFocusNode,
                   onChanged: (String text) {
                     params['client_name'] = nameInput?.text;
                   },
@@ -217,7 +209,6 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
                 Divider(),
                 TextField(
                   controller: telInput,
-                  focusNode: telFocusNode,
                   onChanged: (String text) {
                     params['client_mobile'] = text;
                   },
@@ -229,7 +220,6 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
                 Divider(),
                 TextField(
                   controller: weChatInput,
-                  focusNode: weChatFocusNode,
                   onChanged: (String text) {
                     params['client_wx'] = text;
                   },

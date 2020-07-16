@@ -61,8 +61,12 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
         actions: <Widget>[
           FlatButton(
               onPressed: () {
-                if (params['client_name'].trim().isEmpty) {
+                String name = params['client_name'] ?? '';
+                if (name == null || name.trim().isEmpty) {
                   return CommonKit.showInfo('用户名不能为空哦');
+                }
+                if (name.length > 12 || name.length < 2) {
+                  return CommonKit.showInfo('用户名在2-12个字符之间哟');
                 }
                 if (!RegexUtil.isMobileSimple(params['client_mobile'].trim())) {
                   return CommonKit.showInfo('请输入正确的手机号');

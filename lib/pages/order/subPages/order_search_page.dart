@@ -30,7 +30,10 @@ class OrderSearchPage extends StatelessWidget {
                   )
                 : ListView.separated(
                     itemBuilder: (BuildContext context, int i) {
-                      return OrderCard(wrapper.data[i]);
+                      return OrderCard(
+                        wrapper.data[i],
+                        canClick: true,
+                      );
                     },
                     separatorBuilder: (BuildContext context, int i) {
                       return VSpacing(20);

@@ -319,28 +319,40 @@ class _CartPageState extends State<CartPage>
                               Spacer(),
                               Text(
                                   '总价: ￥${provider?.totalAmount?.toStringAsFixed(2) ?? 0.00}元'),
-                              InkWell(
-                                onTap: () {
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: UIKit.width(20)),
+                                child: ZYRaisedButton(
+                                    '结算(${provider?.totalCount ?? 0})', () {
                                   TargetClient.instance.clientId =
                                       provider?.clientId;
                                   RouteHandler.goCommitOrderPage(context,
                                       params: jsonEncode(
                                           {'data': provider?.checkedModels}));
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: UIKit.width(20),
-                                      vertical: UIKit.height(20)),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: UIKit.width(40),
-                                      vertical: UIKit.height(15)),
-                                  child: Text(
-                                    '结算(${provider?.totalCount ?? 0})',
-                                    style: themeData.accentTextTheme.button,
-                                  ),
-                                  color: themeData.accentColor,
-                                ),
-                              )
+                                }),
+                              ),
+                              // InkWell(
+                              //   onTap: () {
+                              //     TargetClient.instance.clientId =
+                              //         provider?.clientId;
+                              //     RouteHandler.goCommitOrderPage(context,
+                              //         params: jsonEncode(
+                              //             {'data': provider?.checkedModels}));
+                              //   },
+                              //   child: Container(
+                              //     margin: EdgeInsets.symmetric(
+                              //         horizontal: UIKit.width(20),
+                              //         vertical: UIKit.height(20)),
+                              //     padding: EdgeInsets.symmetric(
+                              //         horizontal: UIKit.width(40),
+                              //         vertical: UIKit.height(15)),
+                              //     child: Text(
+                              //       '结算(${provider?.totalCount ?? 0})',
+                              //       style: themeData.accentTextTheme.button,
+                              //     ),
+                              //     color: themeData.accentColor,
+                              //   ),
+                              // )
                             ],
                           ),
                         ),

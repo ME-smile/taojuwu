@@ -39,6 +39,12 @@ class CommonKit {
   }
 
   static void showSuccessDIYInfo(String msg) {
+    EasyLoading.instance
+      ..successWidget = Icon(
+        ZYIcon.check,
+        color: Colors.white,
+        size: 40,
+      );
     EasyLoading.showSuccess(msg);
   }
 

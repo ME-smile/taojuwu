@@ -38,7 +38,7 @@ class CurtainProductListResp extends ZYResponse<CurtainProductListDataBean> {
 class CurtainProductListDataBean {
   String attrStr;
   String specStr;
-  List<dynamic> attrArray;
+  var attrArray;
   String order;
   String sort;
   String categoryId;

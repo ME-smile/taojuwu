@@ -22,7 +22,7 @@ class FeatureInfoSegment extends StatefulWidget {
 class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
   TextEditingController addressInput;
   CustomerDetailModel model;
-  FocusNode addressFocusNode;
+
   String provinceId;
   String cityId;
   String districtId;
@@ -48,14 +48,12 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
     }
 
     addressInput = TextEditingController(text: model?.detailAddress);
-    addressFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     super.dispose();
     addressInput?.dispose();
-    addressFocusNode?.dispose();
   }
 
   Widget _title(BuildContext context, String title) {
@@ -208,7 +206,6 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
                   Divider(),
                   TextField(
                     controller: addressInput,
-                    focusNode: addressFocusNode,
                     onChanged: (String text) {
                       params['detail_address'] = text;
                     },
