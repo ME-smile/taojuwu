@@ -107,6 +107,7 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
         'list': provider?.accessoryAttr?.data ?? [],
         'tap': (AccessoryAttrBean bean) {
           provider?.checkAccessoryAttrBean(bean);
+          setState(() {});
         },
         'confirm': () {}
       },

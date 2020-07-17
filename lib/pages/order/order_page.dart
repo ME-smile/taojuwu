@@ -246,6 +246,27 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
     setState(() {});
   }
 
+  void displayMenu() {
+    if (showFilterHeader == false) {
+      _controller
+        ..reset()
+        ..forward()?.then<void>((void value) {
+          if (!mounted) return;
+          setState(() {
+            showFilterHeader = true;
+          });
+        });
+    } else {
+      _controller.reverse().then<void>((void value) {
+        if (!mounted) return;
+        setState(() {
+          // Rebuild without widget.children.
+          showFilterHeader = false;
+        });
+      });
+    }
+  }
+
   void closePanel() {
     currentStatus = currentStatusOption['status'];
     currentOrderTime = currentTimePeriodOption['index'];
@@ -253,6 +274,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
       _tabController?.animateTo(currentStatusOption['index']);
     });
     fetchData();
+    displayMenu();
     globalKey.currentState.handleTap();
   }
 
@@ -478,24 +500,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
           right: 0,
           child: GestureDetector(
             onTap: () {
-              if (showFilterHeader == false) {
-                _controller
-                  ..reset()
-                  ..forward()?.then<void>((void value) {
-                    if (!mounted) return;
-                    setState(() {
-                      showFilterHeader = true;
-                    });
-                  });
-              } else {
-                _controller.reverse().then<void>((void value) {
-                  if (!mounted) return;
-                  setState(() {
-                    // Rebuild without widget.children.
-                    showFilterHeader = false;
-                  });
-                });
-              }
+              displayMenu();
 
               globalKey.currentState?.handleTap();
             },

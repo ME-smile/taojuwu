@@ -256,6 +256,7 @@ class GoodsProvider with ChangeNotifier {
         _canopyAttr?.data?.isNotEmpty == true ? _canopyAttr?.data?.first : null;
     _curRoomAttrBean =
         _roomAttr?.data?.isNotEmpty == true ? _roomAttr?.data?.first : null;
+
     if (measureData != null) {
       initMeasureData();
     }
