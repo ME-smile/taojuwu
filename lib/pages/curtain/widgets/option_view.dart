@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/zy_netImage.dart';
+import 'package:taojuwu/widgets/triangle_clipper.dart';
+// import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class OptionView extends StatelessWidget {
   final String img;
@@ -24,7 +25,7 @@ class OptionView extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return InkWell(
+    return GestureDetector(
       onTap: callback,
       child: Container(
         width: width / 5,
@@ -34,18 +35,21 @@ class OptionView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: showBorder
-                            ? Theme.of(context).accentColor
-                            : Colors.transparent,
-                        width: 1.2)),
-                child: ZYNetImage(
-                  imgPath: img,
-                  callback: callback,
-                  width: UIKit.width(150),
-                  height: UIKit.width(150),
-                )),
+              width: UIKit.width(150),
+              height: UIKit.width(150),
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: NetworkImage(UIKit.getNetworkImgPath(img))),
+                  border: Border.all(
+                      color: showBorder
+                          ? Theme.of(context).accentColor
+                          : Colors.transparent,
+                      width: 1.2)),
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: showBorder ? TriAngle() : Container(),
+              ),
+            ),
             Padding(
               padding: EdgeInsets.only(top: UIKit.height(10)),
               child: Text(
@@ -55,7 +59,7 @@ class OptionView extends StatelessWidget {
                 maxLines: 1,
                 style: showBorder
                     ? textTheme.body1.copyWith(fontSize: 12)
-                    : textTheme.caption,
+                    : textTheme.caption.copyWith(fontSize: 12),
               ),
             ),
             Offstage(
@@ -67,7 +71,7 @@ class OptionView extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: showBorder
                       ? textTheme.body1.copyWith(fontSize: 12)
-                      : textTheme.caption,
+                      : textTheme.caption.copyWith(fontSize: 12),
                 ),
               ),
             ),

@@ -236,7 +236,7 @@ class _SearchPageState extends State<SearchPage> {
                               inputController?.text = ' ';
                             },
                           ),
-                          contentPadding: EdgeInsets.all(9),
+                          contentPadding: EdgeInsets.all(10),
                           hintText: HINT_TEXT_MAP[type]),
                     ),
                   ),

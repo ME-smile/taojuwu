@@ -74,7 +74,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
           child: Row(
             children: <Widget>[
               Container(
-                  margin: EdgeInsets.only(right: UIKit.width(30)),
+                  margin: EdgeInsets.only(right: UIKit.width(45)),
                   child: Text(
                     '安装选项',
                     style: textTheme.caption,
@@ -120,7 +120,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
           child: Row(
             children: <Widget>[
               Container(
-                  margin: EdgeInsets.only(right: UIKit.width(30)),
+                  margin: EdgeInsets.only(right: UIKit.width(45)),
                   child: Text(
                     '打开方式',
                     style: textTheme.caption,
@@ -131,7 +131,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                     List.generate(provider?.openOptions?.length ?? 0, (int i) {
                   Map<String, dynamic> item = provider?.openOptions[i];
                   return Container(
-                      margin: EdgeInsets.symmetric(horizontal: UIKit.width(10)),
+                      margin: EdgeInsets.symmetric(horizontal: UIKit.width(6)),
                       child: item['is_checked'] == true
                           ? ZYRaisedButton(
                               item['text'],
@@ -492,7 +492,7 @@ class __RoomAttrCheckWrapperState extends State<RoomAttrCheckWrapper> {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
                             color: tmpId == beans[i].id
                                 ? themeData.accentColor
                                 : const Color(0xFFEDEDED)),

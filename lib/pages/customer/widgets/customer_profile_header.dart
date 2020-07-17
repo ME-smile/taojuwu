@@ -52,7 +52,8 @@ class CustomerProfileHeader extends StatelessWidget {
                     ),
                     child: Text(
                       '${name ?? ""}',
-                      style: textTheme.title,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
