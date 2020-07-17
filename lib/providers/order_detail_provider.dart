@@ -40,6 +40,7 @@ class OrderDetailProvider with ChangeNotifier {
   }
 
   String get changePriceRemark => model?.adjustMoneyRemark;
+
   double get originPrice => model?.orderEstimatedPrice != null
       ? double.parse(model?.orderEstimatedPrice)
       : 0.0;

@@ -311,7 +311,11 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                       //   WindowPatternAttr.openModes,
                       // ),
                       // _buildOpenOptionBar(),
-                      Divider(),
+                      Offstage(
+                        offstage: provider?.openSubOptions?.isEmpty,
+                        child: Divider(),
+                      ),
+
                       Column(
                         children: <Widget>[
                           Container(

@@ -357,7 +357,7 @@ class OrderKit {
                               decoration: BoxDecoration(
                                   color: const Color(0xFFF2F2F2),
                                   borderRadius: BorderRadius.circular(5)),
-                              width: UIKit.width(360),
+                              width: UIKit.width(380),
                               height: UIKit.height(60),
                               child: TextField(
                                 onChanged: (String text) {

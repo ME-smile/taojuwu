@@ -1067,6 +1067,7 @@ class BottomActionButtonBar extends StatelessWidget {
                         'wc_attr': jsonEncode(goodsProvider.getAttrArgs()),
                         'order_goods_id': targetOrderGoods?.orderGoodsId,
                       };
+                      TargetOrderGoods.instance.clear();
                       selectProduct(context, params: params);
                     })
                   ],
