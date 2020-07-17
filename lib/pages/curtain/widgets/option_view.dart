@@ -58,7 +58,7 @@ class OptionView extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: showBorder
-                    ? textTheme.body1.copyWith(fontSize: 12)
+                    ? textTheme.bodyText2.copyWith(fontSize: 12)
                     : textTheme.caption.copyWith(fontSize: 12),
               ),
             ),
@@ -70,7 +70,7 @@ class OptionView extends StatelessWidget {
                   '¥$price',
                   textAlign: TextAlign.center,
                   style: showBorder
-                      ? textTheme.body1.copyWith(fontSize: 12)
+                      ? textTheme.bodyText2.copyWith(fontSize: 12)
                       : textTheme.caption.copyWith(fontSize: 12),
                 ),
               ),

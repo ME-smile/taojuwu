@@ -24,7 +24,7 @@ class OrderMainfestPage extends StatelessWidget {
         children: <Widget>[
           Text(
             '客户: ${model?.clientName ?? ''}',
-            style: textTheme.title
+            style: textTheme.headline6
                 .copyWith(fontSize: UIKit.sp(32), fontWeight: FontWeight.w600),
           ),
           Row(
@@ -144,12 +144,12 @@ class GoodsMainfestCard extends StatelessWidget {
             children: <Widget>[
               Text(
                 '${attr?.goodsName ?? ''}',
-                style: textTheme.title.copyWith(
+                style: textTheme.headline6.copyWith(
                     fontSize: UIKit.sp(28), fontWeight: FontWeight.w500),
               ),
               Text(
                 '￥${attr?.price ?? ''}',
-                style: textTheme.title.copyWith(
+                style: textTheme.headline6.copyWith(
                     fontSize: UIKit.sp(28), fontWeight: FontWeight.w500),
               ),
             ],

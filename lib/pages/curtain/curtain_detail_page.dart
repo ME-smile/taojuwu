@@ -199,7 +199,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                     TextSpan(text: '请输入尺寸（cm)\n', children: [
                       TextSpan(
                           text: '不足1㎡按1㎡计算',
-                          style: Theme.of(context).textTheme.body1),
+                          style: Theme.of(context).textTheme.bodyText2),
                     ]),
                     textAlign: TextAlign.center,
                   ),
@@ -275,7 +275,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                     title: Text.rich(TextSpan(text: '请输入尺寸（cm)\n', children: [
                       TextSpan(
                           text: '不足1㎡按1㎡计算',
-                          style: Theme.of(context).textTheme.body1),
+                          style: Theme.of(context).textTheme.bodyText2),
                     ])),
                     content: Column(
                       children: <Widget>[
@@ -1188,7 +1188,7 @@ class MeasureDataTipBar extends StatelessWidget {
                                       true
                                   ? '已确认测装数据'
                                   : '请确认测装数据',
-                              style: textTheme.body1),
+                              style: textTheme.bodyText2),
                         ]),
                   ),
                   Spacer(),
@@ -1217,7 +1217,7 @@ class MeasureDataTipBar extends StatelessWidget {
                               text: goodsProvider?.hasSetSize == true
                                   ? '已预填测装数据'
                                   : '请预填测装数据',
-                              style: textTheme.body1),
+                              style: textTheme.bodyText2),
                         ]),
                   ),
                   Spacer(),

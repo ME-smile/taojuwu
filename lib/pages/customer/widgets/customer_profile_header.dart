@@ -66,7 +66,7 @@ class CustomerProfileHeader extends StatelessWidget {
               ),
               Text(
                 '${Constants.GENDER_MAP[gender]}  $age岁',
-                style: textTheme.subtitle,
+                style: textTheme.subtitle2,
               ),
               address != null && address.isNotEmpty
                   ? Row(

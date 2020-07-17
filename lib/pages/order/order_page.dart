@@ -364,23 +364,18 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
     OTPService.orderList(context, params: args)
         .then((OrderModelListResp response) {
       nums = response?.data?.statusNum?.values?.toList();
-
       modelList[_tabController?.index] = response?.data?.data;
       for (int i = 0; i < nums.length - 1; i++) {
         statusOptions[i]['count'] = nums[i];
       }
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-        });
-      }
     }).catchError((err) {
+      return err;
+    }).whenComplete(() {
       if (mounted) {
         setState(() {
           isLoading = false;
         });
       }
-      return err;
     });
   }
 

@@ -26,7 +26,7 @@ class EditOpenModePage extends StatelessWidget {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     TextTheme accentTextTheme = themeData.accentTextTheme;
-    return isCurrentOption ? accentTextTheme.body1 : textTheme.body1;
+    return isCurrentOption ? accentTextTheme.bodyText2 : textTheme.bodyText2;
   }
 
   @override

@@ -196,7 +196,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             model?.hasAdjustMeasureTime == true
                 ? '${model?.measureTime ?? ''}(已调整)'
                 : '${model?.measureTime}',
-            isActive: model?.hasAdjustMeasureTime,
+            isActive: model?.hasAdjustMeasureTime ?? false,
             type: 1),
         VSpacing(10),
         buildTimeInfoBar(
@@ -204,7 +204,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             model?.hasAdjustInstallime == true
                 ? '${model?.installTime ?? ''}(已调整)'
                 : '${model?.installTime}',
-            isActive: model?.hasAdjustInstallime,
+            isActive: model?.hasAdjustInstallime ?? false,
             type: 2),
       ],
     );
@@ -716,26 +716,26 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           child: Text.rich(TextSpan(
                               text:
                                   '${Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['title']}\n\n',
-                              style: accentTextTheme.title.copyWith(
+                              style: accentTextTheme.headline6.copyWith(
                                   fontSize: UIKit.sp(28),
                                   fontWeight: FontWeight.bold),
                               children: [
                                 TextSpan(
                                   text: Constants.ORDER_STATUS_TIP_MAP[
                                       model?.orderStatus ?? 0]['subtitle'],
-                                  style: accentTextTheme.body1
+                                  style: accentTextTheme.bodyText2
                                       .copyWith(color: Colors.white),
                                 ),
                                 TextSpan(
                                   text: model?.isWaitingToInstall == true
                                       ? model?.installTime ?? ''
                                       : '',
-                                  style: accentTextTheme.body1
+                                  style: accentTextTheme.bodyText2
                                       .copyWith(color: Colors.white),
                                 ),
                                 TextSpan(
                                     text: model?.autoSignTime,
-                                    style: accentTextTheme.body1
+                                    style: accentTextTheme.bodyText2
                                         .copyWith(color: Color(0xFFD7D7D7))),
                               ])),
                         ),

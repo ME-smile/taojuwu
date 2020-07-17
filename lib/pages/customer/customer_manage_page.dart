@@ -173,7 +173,12 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
             SizedBox(
                 height: _itemHeight.toDouble(),
                 child: ListTile(
-                  title: Text(model?.clientName),
+                  isThreeLine: false,
+                  dense: true,
+                  title: Text(
+                    model?.clientName,
+                    style: TextStyle(fontSize: 16),
+                  ),
                   onTap: () {
                     // Navigator.pop(context, model);
                     if (widget.flag == 1) {

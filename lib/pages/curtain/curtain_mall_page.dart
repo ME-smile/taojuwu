@@ -836,7 +836,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                                                 text: SORT_TYPES[i],
                                                 style: TextStyle(
                                                     color: isCurrentOption
-                                                        ? textTheme.body1.color
+                                                        ? textTheme
+                                                            .bodyText2.color
                                                         : Colors.grey),
                                                 children: [
                                                   WidgetSpan(

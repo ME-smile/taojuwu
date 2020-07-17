@@ -111,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
     UserProvider user = Provider.of<UserProvider>(context, listen: false);
     user.logOut();
     TargetClient.instance.clear();
-    RouteHandler.goLoginPage(context);
+    RouteHandler.goLoginPage(context, clearStack: true);
   }
 
   void logout() {
@@ -309,7 +309,7 @@ class ProfileHeader extends StatelessWidget {
                         TextSpan(text: '  '),
                         TextSpan(
                             text: provider?.userInfo?.userTel ?? "暂无联系方式",
-                            style: textTheme.body1)
+                            style: textTheme.bodyText2)
                       ])),
                   Text(
                     provider?.userInfo?.shopName ?? '',

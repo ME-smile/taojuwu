@@ -57,7 +57,8 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
               VSpacing(80),
               Text(
                 '找回密码',
-                style: textTheme.title.copyWith(fontWeight: FontWeight.w700),
+                style:
+                    textTheme.headline6.copyWith(fontWeight: FontWeight.w700),
               ),
               VSpacing(30),
               TextField(

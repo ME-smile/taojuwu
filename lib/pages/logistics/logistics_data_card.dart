@@ -68,7 +68,7 @@ class _HasDeliveredGoodsPacketCardState
             children: <Widget>[
               Text(
                 model?.packetName ?? '',
-                style: textTheme.body1.copyWith(
+                style: textTheme.bodyText2.copyWith(
                     fontSize: UIKit.sp(28),
                     color: Color(0xFF333333),
                     fontWeight: FontWeight.bold),
@@ -202,7 +202,7 @@ class NoDelierveGoodsPacketCard extends StatelessWidget {
             children: <Widget>[
               Text(
                 model?.packetName ?? '',
-                style: textTheme.body1.copyWith(
+                style: textTheme.bodyText2.copyWith(
                     fontSize: UIKit.sp(28),
                     color: Color(0xFF333333),
                     fontWeight: FontWeight.bold),
@@ -251,7 +251,7 @@ class HasNotDelierveGoodsPacketCard extends StatelessWidget {
             children: <Widget>[
               Text(
                 model?.packetName ?? '',
-                style: textTheme.body1.copyWith(
+                style: textTheme.bodyText2.copyWith(
                     fontSize: UIKit.sp(28),
                     color: Color(0xFF333333),
                     fontWeight: FontWeight.bold),

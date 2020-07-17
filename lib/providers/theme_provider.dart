@@ -38,9 +38,9 @@ class ThemeProvider with ChangeNotifier {
       ),
     ),
     accentTextTheme: TextTheme(
-      body1: const TextStyle(color: TaojuwuColors.ACCENT_TEXT_COLOR),
-      title: const TextStyle(color: TaojuwuColors.ACCENT_TEXT_COLOR),
-      subtitle: const TextStyle(color: TaojuwuColors.ACCENT_TEXT_COLOR),
+      bodyText2: const TextStyle(color: TaojuwuColors.ACCENT_TEXT_COLOR),
+      headline6: const TextStyle(color: TaojuwuColors.ACCENT_TEXT_COLOR),
+      subtitle2: const TextStyle(color: TaojuwuColors.ACCENT_TEXT_COLOR),
       caption: const TextStyle(color: TaojuwuColors.ACCENT_TEXT_COLOR),
     ),
     disabledColor: TaojuwuColors.DISABLED_COLOR,
@@ -56,14 +56,14 @@ class ThemeProvider with ChangeNotifier {
     // cupertinoOverrideTheme: CupertinoThemeData(primaryColor: Colors.white),
     brightness: Brightness.light,
     textTheme: TextTheme(
-        headline: TextStyle(
+        headline5: TextStyle(
             color: TaojuwuColors.HEADLINE_COLOR, fontWeight: FontWeight.w600),
-        title: TextStyle(color: TaojuwuColors.TITLE_COLOR),
-        subtitle: TextStyle(color: TaojuwuColors.SUBTITLE_COLOR),
+        headline6: TextStyle(color: TaojuwuColors.TITLE_COLOR),
+        subtitle2: TextStyle(color: TaojuwuColors.SUBTITLE_COLOR),
         button: TextStyle(color: TaojuwuColors.BUTTON_COLOR),
-        subhead: TextStyle(color: TaojuwuColors.SUBHEAD_COLOR),
-        body1: TextStyle(color: TaojuwuColors.BODY1_COLOR),
-        body2: TextStyle(color: TaojuwuColors.BODY2_COLOR),
+        subtitle1: TextStyle(color: TaojuwuColors.SUBHEAD_COLOR),
+        bodyText2: TextStyle(color: TaojuwuColors.BODY1_COLOR),
+        bodyText1: TextStyle(color: TaojuwuColors.BODY2_COLOR),
         caption: TextStyle(color: TaojuwuColors.CAPTION_COLOR)),
   );
 }

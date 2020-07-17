@@ -29,7 +29,7 @@ class SellerInfoBar extends StatelessWidget {
             alignment: Alignment.center,
             child: Text(
               '售',
-              style: textTheme.title.copyWith(fontSize: UIKit.sp(36)),
+              style: textTheme.headline6.copyWith(fontSize: UIKit.sp(36)),
             ),
             width: UIKit.sp(120),
             height: UIKit.sp(120),

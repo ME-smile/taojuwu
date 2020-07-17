@@ -56,7 +56,7 @@ class CommitOrderCard extends StatelessWidget {
                             children: [
                               TextSpan(text: '  型号', style: textTheme.caption)
                             ],
-                            style: textTheme.title.copyWith(
+                            style: textTheme.headline6.copyWith(
                               fontSize: UIKit.sp(24),
                             ),
                           )),

@@ -21,7 +21,7 @@ class SwitchAccountPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             VSpacing(200),
-            Text('轻触头像以切换账号', style: textTheme.title),
+            Text('轻触头像以切换账号', style: textTheme.headline6),
             VSpacing(50),
             Divider(
               indent: UIKit.width(200),
@@ -46,7 +46,7 @@ class SwitchAccountPage extends StatelessWidget {
                         VSpacing(10),
                         Text(
                           '张爽',
-                          style: textTheme.subhead,
+                          style: textTheme.subtitle2,
                         ),
                         Row(
                           children: <Widget>[
