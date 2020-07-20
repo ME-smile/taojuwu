@@ -5,6 +5,12 @@ import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
 
+class CartCategoryResp extends ZYResponse<CartCategoryListWrapper> {
+  CartCategoryResp.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    this.data = this.valid ? CartCategoryListWrapper.fromJson(json) : null;
+  }
+}
+
 class CartListResp extends ZYResponse<CartListWrapper> {
   CartListResp.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     this.data = this.valid ? CartListWrapper.fromJson(json['data']) : null;
@@ -14,33 +20,35 @@ class CartListResp extends ZYResponse<CartListWrapper> {
 class CartListWrapper {
   List<CartModel> data;
   String goodsLadderPreferential;
-  List<Category> categories;
 
   CartListWrapper.fromJson(Map<String, dynamic> json) {
     data = List()
       ..addAll(
           (json['cart_list'] as List ?? []).map((o) => CartModel.fromJson(o)));
     goodsLadderPreferential = json['goods_ladder_preferential'];
-    Map dict = json['category'] != null ? json['category'] : {};
-    categories = [];
-    dict.forEach((key, val) {
-      Map<String, dynamic> tmp = {};
-      tmp['tag'] = key;
-      tmp['id'] = val['id'];
-      tmp['count'] = val['num'];
-      categories.add(Category.fromJson(tmp));
-    });
   }
 }
 
-class Category {
-  String tag;
+class CartCategoryListWrapper {
+  List<CartCategory> data = [];
+
+  CartCategoryListWrapper.fromJson(Map<String, dynamic> json) {
+    if (json['data'] != null && json['data'] is List) {
+      json['data']?.forEach((item) {
+        data.add(CartCategory.fromJson(item));
+      });
+    }
+  }
+}
+
+class CartCategory {
+  String name;
   int id;
   int count;
-  Category.fromJson(Map<String, dynamic> json) {
-    tag = json['tag'];
+  CartCategory.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
     id = json['id'];
-    count = json['count'];
+    count = json['num'];
   }
 }
 
@@ -57,11 +65,12 @@ class CartModel {
   int skuId;
   String skuName;
   int price;
-  int count;
+  int count = 1;
   int goodsPicture;
   int goodsType;
   int blId;
   int isShade;
+
   String estimatedPrice;
   String measureId;
   int stock;
@@ -75,8 +84,11 @@ class CartModel {
   Map attr;
   List<OrderProductAttrWrapper> wcAttr;
   PictureInfo pictureInfo;
-
+  List<CartGoodsAttr> attrs;
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
+  bool get isProduct => !isCustomizedProduct; //等于0时表示成品
+  bool get isCustomizedProduct => goodsType == 1;
+  double get totalPrice => price * count * 1.0;
   CartModel.fromJson(Map<String, dynamic> json) {
     cartId = json['cart_id'];
     clientId = json['client_id'];
@@ -123,6 +135,13 @@ class CartModel {
         : null;
 
     attr = json['wc_attr'];
+
+    if (json['goods_accessory'] != null) {
+      attrs = [];
+      json['goods_accessory']?.forEach((item) {
+        attrs.add((CartGoodsAttr.fromJson(item)));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() => {
@@ -146,5 +165,15 @@ class CartModel {
   @override
   String toString() {
     return jsonEncode(toJson());
+  }
+}
+
+class CartGoodsAttr {
+  String name;
+  String value;
+
+  CartGoodsAttr.fromJson(Map<String, dynamic> json) {
+    name = json['attr_category'];
+    value = json['attr_name'];
   }
 }

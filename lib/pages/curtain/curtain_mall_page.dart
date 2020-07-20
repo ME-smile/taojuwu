@@ -1,7 +1,7 @@
 // import 'package:animations/animations.dart';
 
+import 'dart:async';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -27,7 +27,7 @@ import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
 
 import 'package:taojuwu/widgets/scan_button.dart';
-import 'package:taojuwu/widgets/search_button.dart';
+import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_action_chip.dart';
 
 import 'package:taojuwu/widgets/zy_assetImage.dart';
@@ -48,7 +48,7 @@ class CurtainMallPage extends StatefulWidget {
 }
 
 class _CurtainMallPageState extends State<CurtainMallPage>
-    with TickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   List tabs = [
     '成品定制',
   ];
@@ -61,7 +61,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
   bool isLoading = true;
   int totalPage = 0;
-  static const int PAGE_SIZE = 10;
+  static const int PAGE_SIZE = 20;
 
   Map<String, dynamic> params = {
     // 'keyword': '',
@@ -74,16 +74,23 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     // 'shippingFee': 0,
     // 'type': 0
   };
+
+  //定时器 用于判断是否停止滚动
+
+  double offsetY = 0;
+
   bool isFromSearch = false;
+  double lastOffsetY = 0.0;
+
   @override
   void initState() {
     super.initState();
     TargetRoute.instance.context = context;
     tabController = TabController(length: tabs.length, vsync: this);
-    scrollController = ScrollController();
+
     params['keyword'] = widget.keyword;
     isFromSearch = widget.keyword.isNotEmpty;
-
+    scrollController = ScrollController();
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData();
     });
@@ -683,6 +690,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     super.deactivate();
   }
 
+  bool get showCartButton => TargetClient.instance.hasSelectedClient;
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -690,40 +698,115 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     width = MediaQuery.of(context).size.width;
     return WillPopScope(
         child: Scaffold(
-          floatingActionButton: Visibility(
-            visible: showFloatingButton,
-            child: FloatingActionButton(
-              onPressed: () {
-                RouteHandler.goMeasureOrderPage(context);
-              },
-              backgroundColor: themeData.primaryColor,
-              child: ZYAssetImage(
-                'create_measure_order@2x.png',
-                width: UIKit.width(60),
-                height: UIKit.width(60),
-                callback: () {
-                  RouteHandler.goMeasureOrderPage(context);
-                },
-              ),
+          floatingActionButton: AnimatedOpacity(
+            opacity: showFloatingButton ? 1.0 : 0.0,
+            duration: Duration(milliseconds: 300),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                FloatingActionButton(
+                  heroTag: 'FloatingButtonCart',
+                  onPressed: () {
+                    RouteHandler.goMeasureOrderPage(context);
+                  },
+                  backgroundColor: themeData.primaryColor,
+                  child: Container(
+                    width: UIKit.width(60),
+                    height: UIKit.width(60),
+                    alignment: Alignment(1.2, -1.5),
+                    child: Container(
+                      width: 16,
+                      height: 16,
+                      child: Text(
+                        '3',
+                        textAlign: TextAlign.center,
+                      ),
+                      decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                    ),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage(UIKit.getAssetsImagePath(
+                                'cart_button@2x.png')))),
+                  ),
+                ),
+                VSpacing(20),
+                FloatingActionButton(
+                  heroTag: 'FloatingButtonMeasureOrder',
+                  onPressed: () {
+                    RouteHandler.goMeasureOrderPage(context);
+                  },
+                  backgroundColor: themeData.primaryColor,
+                  child: ZYAssetImage(
+                    'create_measure_order@2x.png',
+                    width: UIKit.width(60),
+                    height: UIKit.width(60),
+                    callback: () {
+                      RouteHandler.goMeasureOrderPage(context);
+                    },
+                  ),
+                )
+              ],
             ),
           ),
           appBar: AppBar(
             centerTitle: true,
-            actions: <Widget>[
-              SearchButton(
-                type: 1,
+            actions: <Widget>[ScanButton()],
+            title: Container(
+              height: 30,
+              width: double.infinity,
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    child: Icon(
+                      ZYIcon.search,
+                      color: Color(0xFF9F9FA5),
+                      size: 16,
+                    ),
+                  ),
+                  Text(
+                    '搜索款号或关键词',
+                    style: TextStyle(color: Color(0xFF9F9FA5), fontSize: 14),
+                  )
+                ],
               ),
-              ScanButton()
-            ],
-            title: Center(
-              child: TabBar(
-                  controller: tabController,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  labelPadding:
-                      EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                  tabs: List.generate(tabs.length, (int i) {
-                    return Text(tabs[i]);
-                  })),
+              decoration: BoxDecoration(
+                color: Color(0xFFEDEFF1),
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+              ),
+              // child: ClipRRect(
+              //   borderRadius: BorderRadius.all(Radius.circular(5)),
+              //   child: TextField(
+              //     onTap: () {
+              //       setState(() {
+              //         showFloatingButton = false;
+              //       });
+
+              //     },
+
+              //     // enableInteractiveSelection: false,
+              //     // textAlignVertical: TextAlignVertical(y: .5),
+              //     decoration: InputDecoration(
+              //       // fillColor: Colors.grey,
+              //       filled: true,
+              //       fillColor: Color(0xFFEDEFF1),
+              //       prefixIcon: Container(
+              //         width: 18,
+              //         height: 18,
+              //         child: Icon(
+              //           ZYIcon.search,
+              //           size: 18,
+              //           color: const Color(
+              //             0xFF979797,
+              //           ),
+              //         ),
+              //       ),
+              //       contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+              //     ),
+              //   ),
+              // ),
             ),
             bottom: PreferredSize(
                 child: GoodsFilterHeader(
@@ -751,29 +834,71 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                             ? NoData(
                                 isFromSearch: isFromSearch,
                               )
-                            : AnimationLimiter(
-                                child: SmartRefresher(
-                                  enablePullDown: true,
-                                  enablePullUp: true,
-                                  primary: false,
-                                  onRefresh: () async {
-                                    params['page_index'] = 1;
-                                    isRefresh = true;
-                                    requestGoodsData();
-                                  },
-                                  onLoading: () async {
-                                    params['page_index']++;
+                            : NotificationListener<ScrollNotification>(
+                                onNotification:
+                                    (ScrollNotification scrollNotification) {
+                                  print(
+                                      '$offsetY============${scrollNotification?.metrics?.pixels}');
+                                  print(
+                                      '${offsetY == scrollNotification?.metrics?.pixels}');
 
-                                    isRefresh = false;
-                                    requestGoodsData();
-                                  },
-                                  controller: _refreshController,
-                                  scrollController: scrollController,
-                                  child: isGridMode
-                                      ? buildGridView()
-                                      : buildListView(),
-                                ),
-                              ),
+                                  if (offsetY ==
+                                      scrollNotification?.metrics?.pixels) {
+                                    print('停止滚动');
+                                    //停止滚动
+
+                                    showFloatingButton = true;
+                                  } else {
+                                    //滚动
+                                    showFloatingButton = false;
+                                  }
+                                  // if (timer == null) {
+                                  //   timer = Timer.periodic(Duration(seconds: 1),
+                                  //       (timer) {
+                                  //     if (offsetY ==
+                                  //         scrollNotification?.metrics?.pixels) {
+                                  //       timer?.cancel();
+
+                                  //       timer = null;
+                                  //       if (isAnimationRunningForwardsOrComplete) {
+                                  //         animationController?.reverse();
+                                  //       } else {
+                                  //         animationController?.forward();
+                                  //       }
+                                  //       print('停止滚动');
+                                  //     }
+                                  //   });
+                                  // }
+                                  offsetY = scrollNotification?.metrics?.pixels;
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((timeStamp) {
+                                    setState(() {});
+                                  });
+                                  return true;
+                                },
+                                child: AnimationLimiter(
+                                  child: SmartRefresher(
+                                    enablePullDown: true,
+                                    enablePullUp: true,
+                                    primary: false,
+                                    onRefresh: () async {
+                                      params['page_index'] = 1;
+                                      isRefresh = true;
+                                      requestGoodsData();
+                                    },
+                                    onLoading: () async {
+                                      params['page_index']++;
+
+                                      isRefresh = false;
+                                      requestGoodsData();
+                                    },
+                                    controller: _refreshController,
+                                    scrollController: scrollController,
+                                    child: isGridMode
+                                        ? buildGridView()
+                                        : buildListView(),
+                                  ),
+                                )),
                     GZXDropDownMenu(
                         controller: menuController,
                         animationMilliseconds: 400,

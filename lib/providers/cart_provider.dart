@@ -17,7 +17,7 @@ class CartProvider with ChangeNotifier {
     isAllChecked = isSelected;
     models?.forEach((item) {
       item.isChecked = isAllChecked;
-      totalAmount += double.parse(item.estimatedPrice ?? 0.00);
+      totalAmount += item?.totalPrice;
       totalCount++;
     });
     if (!isSelected) {
@@ -32,10 +32,10 @@ class CartProvider with ChangeNotifier {
     model?.isChecked = isSelected;
     if (isSelected) {
       totalCount++;
-      totalAmount += double.parse(model?.estimatedPrice ?? '0.00');
+      totalAmount += model?.totalPrice;
     } else {
       totalCount--;
-      totalAmount -= double.parse(model?.estimatedPrice ?? '0.00');
+      totalAmount -= model?.totalPrice;
     }
     totalCount = totalCount < 0 ? 0 : totalCount;
     totalAmount = totalAmount < 0.00 ? 0.00 : totalAmount;

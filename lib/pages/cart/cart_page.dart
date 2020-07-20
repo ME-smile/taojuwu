@@ -20,6 +20,7 @@ import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
+import 'package:taojuwu/widgets/step_counter.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
@@ -34,13 +35,12 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage>
     with SingleTickerProviderStateMixin {
-  final List<String> tabs = ['窗帘'];
   ScrollController scrollController;
   TabController tabController;
   CartListWrapper wrapper;
   List<CartModel> models;
   bool isLoading = true;
-  int get count => models?.length ?? 0;
+  List<CartCategory> categoryList = [];
   @override
   void initState() {
     super.initState();
@@ -51,22 +51,27 @@ class _CartPageState extends State<CartPage>
   }
 
   void fetchData() {
-    OTPService.cartList(context, params: {'client_uid': widget?.clientId})
-        .then((CartListResp response) {
-      tabController = TabController(length: tabs?.length, vsync: this);
-      isLoading = false;
-      if (response?.valid == true) {
-        wrapper = response?.data;
+    OTPService.fetchCartData(context, params: {'client_uid': widget?.clientId})
+        .then((List<ZYResponse> responses) {
+      CartCategoryResp resp0 = responses?.first;
+      CartListResp resp1 = responses?.last;
+      if (resp0?.valid == true) {
+        categoryList = resp0?.data?.data;
+        tabController =
+            TabController(length: categoryList?.length ?? 0, vsync: this);
+      }
+      if (resp1?.valid == true) {
+        wrapper = resp1?.data;
         models = wrapper?.data;
       }
-      if (mounted) {
-        setState(() {});
-      }
     }).catchError((err) {
-      if (mounted) {
-        setState(() {});
-      }
       return err;
+    }).whenComplete(() {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     });
   }
 
@@ -150,15 +155,39 @@ class _CartPageState extends State<CartPage>
     }
   }
 
-  Widget buildCartCard(CartModel cartModel) {
+  Widget buildAttrDescCard(List<CartGoodsAttr> attrs) {
+    if (attrs?.isEmpty == true) return Container();
+    return Container(
+      margin: EdgeInsets.only(top: 10, bottom: 16, left: 48),
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      decoration: BoxDecoration(color: Color(0xFFF5F5F9)),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.all(0),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 0,
+            crossAxisSpacing: 0,
+            childAspectRatio: 8),
+        itemBuilder: (BuildContext context, int index) {
+          CartGoodsAttr bean = attrs[index];
+          return Container(
+            child: Text(
+              '${bean?.name ?? ''}:${bean?.value ?? ''}',
+              style: TextStyle(color: Color(0xFF6D6D6D), fontSize: 12),
+            ),
+          );
+        },
+        itemCount: attrs?.length ?? 0,
+      ),
+    );
+  }
+
+  Widget buildProductCard(CartModel cartModel) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    // List<OrderProductAttrWrapper> attrs = cartModel.wcAttr;
-    // String attrsText = '';
-    // attrs.forEach((OrderProductAttrWrapper item) {
-    //   attrsText +=
-    //       '${item.attrName}: ${item.attrs.map((item) => item.name).toList().join('')}  ';
-    // });
+
     return Consumer<CartProvider>(
         builder: (BuildContext context, CartProvider provider, _) {
       return GestureDetector(
@@ -172,6 +201,85 @@ class _CartPageState extends State<CartPage>
               horizontal: UIKit.width(20), vertical: UIKit.height(20)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Checkbox(
+                      value: cartModel?.isChecked,
+                      onChanged: (bool isSelected) {
+                        provider?.checkGoods(cartModel, isSelected);
+                      }),
+                  ZYNetImage(
+                    imgPath: cartModel?.pictureInfo?.picCoverSmall,
+                    isCache: false,
+                    width: UIKit.width(180),
+                  ),
+                  Expanded(
+                      child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    height: UIKit.height(190),
+                    // width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              cartModel?.goodsName ?? '',
+                              style: textTheme.headline6
+                                  .copyWith(fontSize: UIKit.sp(28)),
+                            ),
+                            Text.rich(TextSpan(
+                                text: '￥' + '${cartModel?.price}' ?? '',
+                                children: [TextSpan(text: cartModel?.unit)])),
+                          ],
+                        ),
+                        Expanded(
+                          child: Text(
+                            cartModel?.goodsAttrStr ?? '',
+                            softWrap: true,
+                            style: textTheme.caption.copyWith(fontSize: 12),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 5,
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.bottomRight,
+                          child: StepCounter(),
+                        )
+                      ],
+                    ),
+                  ))
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
+  Widget buildCustomizedProductCard(CartModel cartModel) {
+    ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
+    return Consumer<CartProvider>(
+        builder: (BuildContext context, CartProvider provider, _) {
+      return GestureDetector(
+        onLongPress: () {
+          remove(provider, cartModel);
+        },
+        child: Container(
+          color: themeData.primaryColor,
+          margin: EdgeInsets.only(top: UIKit.height(20)),
+          padding: EdgeInsets.symmetric(
+              horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Row(
                 children: <Widget>[
@@ -194,10 +302,18 @@ class _CartPageState extends State<CartPage>
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(
-                          cartModel?.goodsName ?? '',
-                          style: textTheme.headline6
-                              .copyWith(fontSize: UIKit.sp(28)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              cartModel?.goodsName ?? '',
+                              style: textTheme.headline6
+                                  .copyWith(fontSize: UIKit.sp(28)),
+                            ),
+                            Text.rich(TextSpan(
+                                text: '￥' + '${cartModel?.price}' ?? '',
+                                children: [TextSpan(text: cartModel?.unit)])),
+                          ],
                         ),
                         Expanded(
                           child: Text(
@@ -208,14 +324,12 @@ class _CartPageState extends State<CartPage>
                             maxLines: 5,
                           ),
                         ),
-                        Text.rich(TextSpan(
-                            text: '￥' + '${cartModel?.price}' ?? '',
-                            children: [TextSpan(text: cartModel?.unit)])),
                       ],
                     ),
                   ))
                 ],
               ),
+              buildAttrDescCard(cartModel?.attrs),
               Text.rich(
                 TextSpan(text: '预计总金额', children: [
                   TextSpan(
@@ -223,7 +337,9 @@ class _CartPageState extends State<CartPage>
                               (double.parse(
                                       cartModel?.estimatedPrice ?? '0.00'))
                                   .toStringAsFixed(2) ??
-                          '')
+                          '',
+                      style: TextStyle(
+                          fontSize: UIKit.sp(32), fontWeight: FontWeight.w500))
                 ]),
                 textAlign: TextAlign.end,
               ),
@@ -232,6 +348,12 @@ class _CartPageState extends State<CartPage>
         ),
       );
     });
+  }
+
+  Widget buildCartCard(CartModel cartModel) {
+    return cartModel?.isCustomizedProduct == true
+        ? buildCustomizedProductCard(cartModel)
+        : buildProductCard(cartModel);
   }
 
   @override
@@ -252,23 +374,29 @@ class _CartPageState extends State<CartPage>
                     title: Text('购物车'),
                     centerTitle: true,
                     bottom: PreferredSize(
-                        child: TabBar(
-                            controller: tabController,
-                            indicatorSize: TabBarIndicatorSize.label,
-                            labelPadding:
-                                EdgeInsets.only(bottom: 5, left: 5, right: 5),
-                            tabs: List.generate(tabs.length, (int i) {
-                              return Text('${tabs[i]}($count)');
-                            })),
+                        child: isLoading
+                            ? Container()
+                            : TabBar(
+                                controller: tabController,
+                                indicatorSize: TabBarIndicatorSize.label,
+                                labelPadding: EdgeInsets.only(
+                                    bottom: 5, left: 5, right: 5),
+                                tabs: List.generate(categoryList?.length ?? 0,
+                                    (int i) {
+                                  CartCategory bean = categoryList[i];
+                                  return Text('${bean?.name}(${bean?.count})');
+                                })),
                         preferredSize: Size.fromHeight(20)),
                   ),
                   body: TabBarView(
                       controller: tabController,
-                      children: List.generate(tabs.length, (int i) {
+                      children:
+                          List.generate(categoryList?.length ?? 0, (int i) {
                         return (models == null || models?.isEmpty == true)
                             ? NoData()
                             : AnimationLimiter(
                                 child: ListView.separated(
+                                  shrinkWrap: true,
                                   itemBuilder: (BuildContext context, int i) {
                                     return AnimationConfiguration.staggeredList(
                                         position: i,
@@ -285,19 +413,13 @@ class _CartPageState extends State<CartPage>
                                   },
                                   separatorBuilder:
                                       (BuildContext context, int i) {
-                                    return Divider();
+                                    return Divider(
+                                      height: 1,
+                                    );
                                   },
                                   itemCount: models?.length ?? 0,
                                 ),
                               );
-                        // : ListView.builder(
-                        //     shrinkWrap: true,
-                        //     itemCount: models?.length ?? 0,
-                        //     itemBuilder: (BuildContext context, int i) {
-                        //       return buildCartCard(
-                        //         models[i],
-                        //       );
-                        //     });
                       })),
                   bottomNavigationBar: provider?.hasModels == false
                       ? SizedBox.shrink()

@@ -51,9 +51,12 @@ class ScanButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
+        padding: EdgeInsets.only(right: UIKit.width(15)),
         child: IconButton(
-          icon: Icon(ZYIcon.scan),
+          icon: Icon(
+            ZYIcon.scan,
+            size: 18,
+          ),
           onPressed: () {
             scan(context);
           },

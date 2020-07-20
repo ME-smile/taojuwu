@@ -35,6 +35,8 @@ class ApiPath {
 
   static const String addCart = '/api/goods/addCart';
 
+  static const String cartCategoryList = '/api/goods/cartCategoryList';
+
   static const String cartList = '/api/goods/cartList';
 
   static const String delCart = '/api/goods/deleteCart';

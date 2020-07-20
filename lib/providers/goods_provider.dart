@@ -260,6 +260,9 @@ class GoodsProvider with ChangeNotifier {
     if (measureData != null) {
       initMeasureData();
     }
+    if (TargetOrderGoods.instance.goodsProvider != null) {
+      _hasSetSize = TargetOrderGoods.instance.goodsProvider.hasSetSize;
+    }
   }
 
   int get goodsType => goods?.goodsSpecialType;

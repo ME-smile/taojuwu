@@ -308,12 +308,37 @@ class OTPService {
     return resp;
   }
 
+  static Future<CartCategoryResp> cartCategory(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.cartCategoryList, params: params);
+
+    return CartCategoryResp.fromJson(response.data);
+  }
+
   static Future<CartListResp> cartList(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.cartList, params: params);
 
     return CartListResp.fromJson(response.data);
+  }
+
+  static Future<List<ZYResponse>> fetchCartData(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    params = params ?? {};
+
+    List<Future<ZYResponse>> list = [
+      cartCategory(context, params: params),
+      cartList(context, params: params),
+    ];
+
+    list.forEach((v) {
+      v.catchError((err) => err);
+    });
+    List<ZYResponse> result = await Future.wait(list);
+
+    return result;
   }
 
   static Future<ZYResponse> delCart({Map<String, dynamic> params}) async {

@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
+
+import 'zy_outline_button.dart';
 
 class SendSmsButton extends StatefulWidget {
   final Function callback;
@@ -35,39 +38,50 @@ class _SendSmsButtonState extends State<SendSmsButton> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    TextTheme accentTextTheme = themeData.accentTextTheme;
+    // ThemeData themeData = Theme.of(context);
+    // TextTheme accentTextTheme = themeData.accentTextTheme;
     return ValueListenableBuilder(
         valueListenable: hasSend,
         builder: (BuildContext context, bool _hasSend, _) {
           return _hasSend == false
-              ? RaisedButton(
-                  padding: EdgeInsets.all(0),
-                  child: Text(
-                    '获取验证码',
-                    style: accentTextTheme.button,
-                  ),
-                  onPressed: widget.isActive
-                      ? () {
-                          // hasSend?.value = true;
-                          // timer = Timer.periodic(const Duration(seconds: 1),
-                          //     (Timer timer) {
-                          //   if (countDown.value <= 0) {
-                          //     hasSend?.value = false;
-                          //     countDown.value = 120;
-                          //   } else {
-                          //     countDown.value--;
-                          //   }
-                          // });
-                          widget.callback();
-                        }
-                      : null,
+              ? ZYRaisedButton(
+                  '获取验证码',
+                  widget.callback,
+                  horizontalPadding: 4,
+                  isActive: widget.isActive ?? false,
                 )
+
+              // RaisedButton(
+              //     padding: EdgeInsets.all(0),
+              //     child: Text(
+              //       '获取验证码',
+              //       style: accentTextTheme.button,
+              //     ),
+              //     onPressed: widget.isActive
+              //         ? () {
+              //             // hasSend?.value = true;
+              //             // timer = Timer.periodic(const Duration(seconds: 1),
+              //             //     (Timer timer) {
+              //             //   if (countDown.value <= 0) {
+              //             //     hasSend?.value = false;
+              //             //     countDown.value = 120;
+              //             //   } else {
+              //             //     countDown.value--;
+              //             //   }
+              //             // });
+              //             widget.callback();
+              //           }
+              //         : null,
+              //   )
               : ValueListenableBuilder(
                   valueListenable: countDown,
                   builder: (BuildContext context, int secs, _) {
-                    return FlatButton(
-                        onPressed: null, child: Text('${secs}s后重新发送'));
+                    return ZYOutlineButton(
+                      '${secs}s后重新发送',
+                      null,
+                      isActive: false,
+                      horizontalPadding: 4,
+                    );
                   });
         });
   }

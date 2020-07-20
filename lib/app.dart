@@ -63,7 +63,6 @@ class App extends StatelessWidget {
                   title: '淘居屋',
                   // initialRoute: userProvider?.isLogin == true ? Routes.home : null,
                   debugShowCheckedModeBanner: false,
-                  
                   onGenerateRoute: Application.router.generator,
                   darkTheme: ThemeProvider.lightTheme,
                   theme: ThemeProvider.lightTheme,
