@@ -225,6 +225,7 @@ class _LoginPageState extends State<LoginPage> {
               children: <Widget>[
                 TextField(
                   controller: _phoneController,
+                  keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                       hintText: '请输入手机号',
                       enabledBorder: UnderlineInputBorder(

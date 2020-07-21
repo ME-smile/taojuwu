@@ -21,7 +21,11 @@ class SkuBean {
   int createDate;
   int updateDate;
   int fxGet;
+  SkuBeanImgBucket imgBucket;
 
+  String get bigPicUrl => imgBucket?.bigPicUrl;
+  String get midPicUrl => imgBucket?.midPicUrl;
+  String get coverUrl => imgBucket?.cover;
   SkuBean(
       {this.skuName,
       this.attrValueItems,
@@ -69,6 +73,9 @@ class SkuBean {
     this.createDate = json['create_date'];
     this.updateDate = json['update_date'];
     this.fxGet = json['fx_get'];
+    this.imgBucket = json['sku_img_main'] == null
+        ? null
+        : SkuBeanImgBucket.fromJson(json['sku_img_main']);
   }
 
   Map<String, dynamic> toJson() {
@@ -96,5 +103,20 @@ class SkuBean {
     data['update_date'] = this.updateDate;
     data['fx_get'] = this.fxGet;
     return data;
+  }
+}
+
+class SkuBeanImgBucket {
+  String picName;
+  String bigPicUrl;
+  String midPicUrl;
+  String smallPicUrl;
+  String cover;
+  SkuBeanImgBucket.fromJson(Map<String, dynamic> json) {
+    picName = json['pic_name'];
+    bigPicUrl = json['pic_cover_big'];
+    midPicUrl = json['pic_cover_mid'];
+    smallPicUrl = json['pic_cover_small'];
+    cover = json['pic_cover'];
   }
 }

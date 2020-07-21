@@ -1,3 +1,4 @@
+import 'package:taojuwu/models/base/count_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
 
 import 'sku_bean.dart';
@@ -169,7 +170,7 @@ class PromotionDetailComboDataBean {
       };
 }
 
-class ProductBean {
+class ProductBean extends CountModel {
   int goodsId;
   String goodsName;
   var measureId;
@@ -281,7 +282,7 @@ class ProductBean {
   int skuPicture;
   String picCoverMicro;
   String categoryName;
-
+  int count = 1;
   bool get isPromotionGoods => !(marketPrice == price && marketPrice != 0);
   String get picCoverMid {
     return imgList?.isEmpty == true ? '' : imgList?.first?.picCover;

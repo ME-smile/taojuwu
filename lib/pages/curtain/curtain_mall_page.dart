@@ -56,7 +56,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   CurtainProductListDataBean beanData;
   CurtainGoodsListWrapper wrapper;
   ScrollController scrollController;
-  List<CurtainGoodItemBean> goodsList = [];
+  List<GoodsItemBean> goodsList = [];
   bool isRefresh = false;
 
   bool isLoading = true;
@@ -456,122 +456,22 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         ),
       ),
     );
-
-    // return Container(
-    //   width: 200,
-    //   color: Colors.white,
-    //   height: double.infinity,
-    //   padding: EdgeInsets.symmetric(
-    //       horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-    //   child: Column(
-    //     children: [
-    //       Container(
-    //         alignment: Alignment.centerLeft,
-    //         padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
-    //         decoration: BoxDecoration(
-    //             border: Border(
-    //                 left: BorderSide(color: themeData.accentColor, width: 5))),
-    //         child: Text('品类'),
-    //       ),
-    //       ListBody(
-    //         children: List.generate(tagWrapper?.category?.length ?? 0, (int i) {
-    //           TagBean item = tagWrapper?.category[i];
-    //           return InkWell(
-    //             onTap: () {
-    //               setState(() {
-    //                 checkTag(tagWrapper?.category, 1, i);
-    //                 requestGoodsData();
-    //               });
-    //             },
-    //             child: Padding(
-    //               padding: EdgeInsets.symmetric(
-    //                   horizontal: UIKit.width(20), vertical: UIKit.height(10)),
-    //               child: Row(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                 children: <Widget>[
-    //                   Text(item?.name ?? ''),
-    //                   item?.isChecked == true
-    //                       ? Icon(
-    //                           ZYIcon.check,
-    //                           color: const Color(0xFF050505),
-    //                         )
-    //                       : SizedBox(
-    //                           width: 24,
-    //                           height: 24,
-    //                         )
-    //                 ],
-    //               ),
-    //             ),
-    //           );
-    //         }),
-    //       ),
-    //       Divider(),
-    //       Container(
-    //         alignment: Alignment.centerLeft,
-    //         padding: EdgeInsets.symmetric(horizontal: UIKit.width(15)),
-    //         decoration: BoxDecoration(
-    //             border: Border(
-    //                 left: BorderSide(color: themeData.accentColor, width: 5))),
-    //         child: Text('系列'),
-    //       ),
-    //       ListBody(
-    //         children: List.generate(tagWrapper?.tag?.length ?? 0, (int i) {
-    //           TagBean item = tagWrapper?.tag[i];
-    //           return InkWell(
-    //             onTap: () {
-    //               setState(() {
-    //                 checkTag(tagWrapper?.tag, 2, i);
-
-    //                 // params['tag_id'] = item?.id;
-
-    //                 requestGoodsData();
-    //               });
-    //             },
-    //             child: Padding(
-    //               padding: EdgeInsets.symmetric(
-    //                   horizontal: UIKit.width(20), vertical: UIKit.height(10)),
-    //               child: Row(
-    //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //                 children: <Widget>[
-    //                   Text(item?.name),
-    //                   item?.isChecked == true
-    //                       ? Icon(
-    //                           ZYIcon.check,
-    //                           color: const Color(0xFF050505),
-    //                         )
-    //                       : SizedBox(
-    //                           width: 24,
-    //                           height: 24,
-    //                         )
-    //                 ],
-    //               ),
-    //             ),
-    //           );
-    //         }),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   void fetchData() {
     OTPService.mallData(context, params: params).then((data) {
       CurtainProductListResp curtainProductListResp = data[0];
       TagModelListResp tagListResp = data[1];
-
-      if (mounted) {
-        setState(() {
-          beanData = curtainProductListResp?.data;
-          wrapper = beanData?.goodsList;
-          goodsList = wrapper?.data;
-          tagWrapper = tagListResp?.data;
-          isLoading = false;
-          int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
-          int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
-          totalPage = mod > 0 ? pages + 1 : pages;
-        });
-      }
+      beanData = curtainProductListResp?.data;
+      wrapper = beanData?.goodsList;
+      goodsList = wrapper?.data;
+      tagWrapper = tagListResp?.data;
+      int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
+      int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
+      totalPage = mod > 0 ? pages + 1 : pages;
     }).catchError((err) {
+      return err;
+    }).whenComplete(() {
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -586,12 +486,12 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         isLoading = true;
       });
 
-    OTPService.curtainGoodsList(context, params: params)
+    OTPService.productGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
       _refreshController?.resetNoData();
       beanData = curtainProductListResp?.data;
       wrapper = beanData?.goodsList;
-      List<CurtainGoodItemBean> beans = wrapper?.data ?? [];
+      List<GoodsItemBean> beans = wrapper?.data ?? [];
       int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
       int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
       totalPage = mod > 0 ? pages + 1 : pages;
@@ -815,7 +715,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   filter3: _buildFilter3(),
                   filter4: _buildFilter4(),
                 ),
-                preferredSize: Size.fromHeight(30)),
+                preferredSize: Size.fromHeight(20)),
           ),
           body: Scaffold(
             key: _scaffoldKey,

@@ -1,9 +1,9 @@
 class ApiPath {
   static const HOST = 'http://106.14.219.213:8001';
 
-  static const String curtainMall = '/api/goods/goodsListByConditions';
+  static const String productMall = '/api/goods/goodsListByConditions';
 
-  static const String curtainDetail = '/api/goods/goodsDetail';
+  static const String productDetail = '/api/goods/goodsDetail';
 
   static const String sms = '/api/login/sendRegisterMobileCode';
 

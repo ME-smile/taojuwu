@@ -138,7 +138,7 @@ class CurtainCurrentCategoryBean {
 /// page_count : 1
 
 class CurtainGoodsListWrapper {
-  List<CurtainGoodItemBean> data;
+  List<GoodsItemBean> data;
   int totalCount;
   int pageCount;
 
@@ -146,8 +146,8 @@ class CurtainGoodsListWrapper {
     if (map == null) return null;
     CurtainGoodsListWrapper goodsListBean = CurtainGoodsListWrapper();
     goodsListBean.data = List()
-      ..addAll((map['data'] as List ?? [])
-          .map((o) => CurtainGoodItemBean.fromMap(o)));
+      ..addAll(
+          (map['data'] as List ?? []).map((o) => GoodsItemBean.fromMap(o)));
     goodsListBean.totalCount = map['total_count'];
     goodsListBean.pageCount = map['page_count'];
     return goodsListBean;
@@ -185,7 +185,7 @@ class CurtainGoodsListWrapper {
 /// display_price : "￥0.00"
 /// group_name : ""
 
-class CurtainGoodItemBean {
+class GoodsItemBean {
   int goodsId;
   String goodsName;
   dynamic picCoverMid;
@@ -210,12 +210,16 @@ class CurtainGoodItemBean {
   String introduction;
   double displayPrice;
   String groupName;
-
+  int goodsSpecialType;
   bool get isPromotionGoods =>
       !(marketPrice == displayPrice && marketPrice != 0);
-  static CurtainGoodItemBean fromMap(Map<String, dynamic> map) {
+
+  bool get isProduct => goodsSpecialType == 0;
+
+  bool get isCustomizedProduct => !isProduct;
+  static GoodsItemBean fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-    CurtainGoodItemBean dataBean = CurtainGoodItemBean();
+    GoodsItemBean dataBean = GoodsItemBean();
     dataBean.goodsId = map['goods_id'];
     dataBean.goodsName = map['goods_name'];
     dataBean.picCoverMid = map['pic_cover_mid'];
@@ -244,6 +248,7 @@ class CurtainGoodItemBean {
         ? map['display_price']
         : double.parse(map['display_price']);
     dataBean.groupName = map['group_name'];
+    dataBean.goodsSpecialType = map['goods_special_type'];
     return dataBean;
   }
 

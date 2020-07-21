@@ -11,7 +11,7 @@ import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class GridCard extends StatelessWidget {
-  final CurtainGoodItemBean bean;
+  final GoodsItemBean bean;
   const GridCard(this.bean, {Key key}) : super(key: key);
 
   Widget buildContent(BuildContext context) {
@@ -75,13 +75,19 @@ class GridCard extends StatelessWidget {
     );
   }
 
+  void jump(BuildContext context) {
+    if (bean?.isCustomizedProduct == true)
+      return RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+    return RouteHandler.goEndProductDetail(context, bean?.goodsId);
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     double width = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: () {
-        RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+        jump(context);
       },
       child: Container(
         alignment: Alignment.center,
@@ -96,7 +102,7 @@ class GridCard extends StatelessWidget {
               height: (width - 20) / 2,
               fit: BoxFit.cover,
               callback: () {
-                RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+                jump(context);
               },
             ),
             Expanded(
@@ -145,7 +151,7 @@ class GridCard extends StatelessWidget {
 }
 
 class GoodsGridView extends StatelessWidget {
-  final List<CurtainGoodItemBean> goodsList;
+  final List<GoodsItemBean> goodsList;
 
   const GoodsGridView(this.goodsList, {Key key}) : super(key: key);
 

@@ -28,6 +28,7 @@ class ZYRaisedButton extends StatelessWidget {
               ? accentTextTheme.button.copyWith(fontSize: 16)
               : accentTextTheme.button
                   .copyWith(fontSize: 16, color: Colors.white70),
+          textAlign: TextAlign.center,
         ),
         decoration: BoxDecoration(
             color: isActive ? themeData.accentColor : themeData.disabledColor,

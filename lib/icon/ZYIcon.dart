@@ -12,6 +12,8 @@ class ZYIcon {
   static const IconData plus_full = ZYIconData(0xe6bd);
   static const IconData sub_blank = ZYIconData(0xe67a);
   static const IconData sub_full = ZYIconData(0xe678);
+  static const IconData plus_no_outline = ZYIconData(0xe6a3);
+  static const IconData sub_no_outline = ZYIconData(0xe684);
   static const IconData search = ZYIconData(0xe64a);
   static const IconData add = ZYIconData(0xe64d);
   static const IconData plus = ZYIconData(0xe602);
@@ -41,6 +43,8 @@ class ZYIcon {
   static const IconData dot = ZYIconData(0xe63f);
   static const IconData exclamation_point = ZYIconData(0xe670);
   static const IconData exclamation_point_fill = ZYIconData(0xe860);
+
+  static const IconData three_dot = ZYIconData(0xe601);
 }
 
 class ZYIconData extends IconData {

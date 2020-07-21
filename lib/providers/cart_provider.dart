@@ -6,47 +6,26 @@ import 'package:taojuwu/models/shop/cart_list_model.dart';
 
 class CartProvider with ChangeNotifier {
   List<CartModel> models;
-  double totalAmount = 0.00;
-  int totalCount = 0;
-  bool isAllChecked = false;
+
+  bool get isAllChecked =>
+      models?.every((element) => element?.isChecked) ?? false;
   bool get hasModels => models?.isNotEmpty;
   int get clientId => hasModels ? models?.first?.clientId : null;
-  CartProvider({this.models});
+  bool _isEditting = false;
+  bool get isEditting => _isEditting;
 
-  void checkAll(bool isSelected) {
-    isAllChecked = isSelected;
-    models?.forEach((item) {
-      item.isChecked = isAllChecked;
-      totalAmount += item?.totalPrice;
-      totalCount++;
-    });
-    if (!isSelected) {
-      totalAmount = 0.00;
-      totalCount = 0;
-    }
-
-    notifyListeners();
+  set isEditting(bool flag) {
+    _isEditting = flag;
+    checkAll(false);
   }
 
-  void checkGoods(CartModel model, bool isSelected) {
-    model?.isChecked = isSelected;
-    if (isSelected) {
-      totalCount++;
-      totalAmount += model?.totalPrice;
-    } else {
-      totalCount--;
-      totalAmount -= model?.totalPrice;
-    }
-    totalCount = totalCount < 0 ? 0 : totalCount;
-    totalAmount = totalAmount < 0.00 ? 0.00 : totalAmount;
-    if (totalCount != models?.length) {
-      isAllChecked = false;
-    } else {
-      isAllChecked = true;
-    }
-    notifyListeners();
-  }
-
+  List<CartModel> get selectedModels =>
+      models
+          ?.where((item) => item.isChecked == true)
+          ?.toList()
+          ?.reversed
+          ?.toList() ??
+      [];
   List<Map> get checkedModels {
     final selectedModels =
         models?.where((item) => item.isChecked == true)?.toList()?.reversed;
@@ -57,13 +36,43 @@ class CartProvider with ChangeNotifier {
         ?.toList();
   }
 
+  int get totalCount => hasModels ? selectedModels?.length ?? 0 : 0;
+
+  bool get hasSelectedModels => totalCount > 0;
+  double get totalAmount {
+    if (!hasModels) return 0.0;
+    double sum = 0.0;
+    selectedModels?.forEach((element) {
+      sum += element?.totalPrice;
+    });
+    return sum;
+  }
+
+  CartProvider({this.models});
+
+  void checkAll(bool isSelected) {
+    models?.forEach((item) {
+      item.isChecked = isSelected;
+    });
+    notifyListeners();
+  }
+
+  void checkGoods(CartModel model, bool isSelected) {
+    model?.isChecked = isSelected;
+
+    notifyListeners();
+  }
+
   void removeGoods(int id) {
     int i = models?.indexWhere((model) => model?.cartId == id);
     if (i != -1) {
       models?.removeAt(i);
-      totalCount--;
     }
-    totalCount = totalCount < 0 ? 0 : totalCount;
+    notifyListeners();
+  }
+
+  void batchRemoveGoods() {
+    models?.removeWhere((element) => element?.isChecked);
     notifyListeners();
   }
 }

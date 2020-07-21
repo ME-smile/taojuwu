@@ -21,6 +21,7 @@ import 'package:taojuwu/pages/customer/subPages/customer_search_page.dart';
 
 import 'package:taojuwu/pages/data_center/data_center_page.dart';
 import 'package:taojuwu/pages/edit_address/edit_address_page.dart';
+import 'package:taojuwu/pages/end_product/end_product_detail.dart';
 import 'package:taojuwu/pages/login/login_page.dart';
 import 'package:taojuwu/pages/logistics/logistics_page.dart';
 import 'package:taojuwu/pages/order/commit_order_page.dart';
@@ -527,5 +528,15 @@ class RouteHandler {
   });
   static goOrderEditLogPage(BuildContext context, int id, int type) {
     _jumpTo(context, '${Routes.orderEditLog}?id=$id&type=$type');
+  }
+
+  static Handler endProductDetail = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int id = int.parse(params['id']?.first);
+
+    return EndProductDetailPage(id: id);
+  });
+  static goEndProductDetail(BuildContext context, int id) {
+    _jumpTo(context, '${Routes.endProductDetail}?id=$id');
   }
 }

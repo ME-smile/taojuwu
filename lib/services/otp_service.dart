@@ -35,10 +35,10 @@ import 'base/xhr.dart';
 
 class OTPService {
   static Xhr xhr = Xhr.instance;
-  static Future<CurtainProductListResp> curtainGoodsList(BuildContext context,
+  static Future<CurtainProductListResp> productGoodsList(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.get(context, ApiPath.curtainMall, params: params ?? {});
+        await xhr.get(context, ApiPath.productMall, params: params ?? {});
     return CurtainProductListResp.fromMap(response.data);
   }
 
@@ -57,7 +57,7 @@ class OTPService {
   static Future mallData(BuildContext context,
       {Map<String, dynamic> params}) async {
     List<Future> list = [
-      curtainGoodsList(context, params: params),
+      productGoodsList(context, params: params),
       tagList(context),
     ];
 
@@ -168,10 +168,10 @@ class OTPService {
     return AccessoryAttr.fromJson(response.data);
   }
 
-  static Future<ProductBeanRes> curtainProductDetail(BuildContext context,
+  static Future<ProductBeanRes> productDetail(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.get(context, ApiPath.curtainDetail, params: params ?? {});
+        await xhr.get(context, ApiPath.productDetail, params: params ?? {});
     return ProductBeanRes.fromJson(response.data);
   }
 
@@ -215,7 +215,7 @@ class OTPService {
     int clientId = TargetClient.instance.clientId;
     params.addAll({'client_uid': clientId, 'parts_type': partsType});
     List<Future> list = [
-      curtainProductDetail(context, params: params),
+      productDetail(context, params: params),
       windowGauzeAttr(context, params: params),
       craftAttr(context, params: params),
       partAttr(context, params: params),

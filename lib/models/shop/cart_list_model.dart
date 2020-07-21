@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/models/base/count_model.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
@@ -52,7 +53,7 @@ class CartCategory {
   }
 }
 
-class CartModel {
+class CartModel extends CountModel {
   bool isChecked = false;
   String goodsAttrStr;
   int cartId;
@@ -64,7 +65,7 @@ class CartModel {
   String goodsName;
   int skuId;
   String skuName;
-  int price;
+  double price;
   int count = 1;
   int goodsPicture;
   int goodsType;
@@ -88,7 +89,7 @@ class CartModel {
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
   bool get isProduct => !isCustomizedProduct; //等于0时表示成品
   bool get isCustomizedProduct => goodsType == 1;
-  double get totalPrice => price * count * 1.0;
+  double get totalPrice => price * count;
   CartModel.fromJson(Map<String, dynamic> json) {
     cartId = json['cart_id'];
     clientId = json['client_id'];
@@ -99,7 +100,7 @@ class CartModel {
     goodsName = json['goods_name'];
     skuId = json['sku_id'];
     skuName = json['sku_name'];
-    price = json['price'];
+    price = json['price'] * 1.0;
     count = json['num'];
     goodsPicture = json['goods_picture'];
     blId = json['bl_id'];

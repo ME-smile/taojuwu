@@ -11,7 +11,7 @@ import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class ListCard extends StatelessWidget {
-  final CurtainGoodItemBean bean;
+  final GoodsItemBean bean;
   const ListCard(this.bean, {Key key}) : super(key: key);
 
   Widget buildContent(BuildContext context) {
@@ -40,6 +40,12 @@ class ListCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void jump(BuildContext context) {
+    if (bean?.isCustomizedProduct == true)
+      return RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+    return RouteHandler.goEndProductDetail(context, bean?.goodsId);
   }
 
   @override
@@ -87,7 +93,7 @@ class ListCard extends StatelessWidget {
     // );
     return InkWell(
       onTap: () {
-        RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+        jump(context);
       },
       child: Container(
         width: double.infinity,
@@ -99,7 +105,7 @@ class ListCard extends StatelessWidget {
                 bean?.picCoverMid,
               ),
               callback: () {
-                RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+                jump(context);
               },
               fit: BoxFit.fill,
               width: width - 2 * UIKit.width(20),
@@ -118,7 +124,7 @@ class ListCard extends StatelessWidget {
 }
 
 class GoodsListView extends StatelessWidget {
-  final List<CurtainGoodItemBean> goodsList;
+  final List<GoodsItemBean> goodsList;
 
   const GoodsListView(this.goodsList, {Key key}) : super(key: key);
 

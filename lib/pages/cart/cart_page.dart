@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/icon/ZYIcon.dart';
 // import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
@@ -79,6 +80,24 @@ class _CartPageState extends State<CartPage>
   void dispose() {
     super.dispose();
     tabController?.dispose();
+  }
+
+  void batchDelCart(CartProvider provider) {
+    List<int> idList =
+        provider?.selectedModels?.map((e) => e?.cartId)?.toList();
+    String idStr = idList?.join(',');
+    OTPService.delCart(params: {'cart_id_array': '$idStr'})
+        .then((ZYResponse response) {
+          if (response.valid) {
+            provider?.batchRemoveGoods();
+          } else {
+            CommonKit.showToast(response?.message ?? '');
+          }
+        })
+        .catchError((err) => err)
+        .whenComplete(() {
+          provider?.isEditting = false;
+        });
   }
 
   void delCart(CartProvider provider, int id) {
@@ -161,25 +180,36 @@ class _CartPageState extends State<CartPage>
       margin: EdgeInsets.only(top: 10, bottom: 16, left: 48),
       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(color: Color(0xFFF5F5F9)),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.all(0),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 0,
-            crossAxisSpacing: 0,
-            childAspectRatio: 8),
-        itemBuilder: (BuildContext context, int index) {
-          CartGoodsAttr bean = attrs[index];
-          return Container(
-            child: Text(
-              '${bean?.name ?? ''}:${bean?.value ?? ''}',
-              style: TextStyle(color: Color(0xFF6D6D6D), fontSize: 12),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+              child: GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.all(0),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
+                childAspectRatio: 8),
+            itemBuilder: (BuildContext context, int index) {
+              CartGoodsAttr bean = attrs[index];
+              return Container(
+                child: Text(
+                  '${bean?.name ?? ''}:${bean?.value ?? ''}',
+                  style: TextStyle(color: Color(0xFF6D6D6D), fontSize: 12),
+                ),
+              );
+            },
+            itemCount: attrs?.length ?? 0,
+          )),
+          Container(
+            child: Icon(
+              ZYIcon.next,
+              size: 18,
             ),
-          );
-        },
-        itemCount: attrs?.length ?? 0,
+          )
+        ],
       ),
     );
   }
@@ -249,7 +279,13 @@ class _CartPageState extends State<CartPage>
                         ),
                         Container(
                           alignment: Alignment.bottomRight,
-                          child: StepCounter(),
+                          child: StepCounter(
+                            count: cartModel?.count ?? 0,
+                            model: cartModel,
+                            callback: () {
+                              setState(() {});
+                            },
+                          ),
                         )
                       ],
                     ),
@@ -351,9 +387,10 @@ class _CartPageState extends State<CartPage>
   }
 
   Widget buildCartCard(CartModel cartModel) {
-    return cartModel?.isCustomizedProduct == true
-        ? buildCustomizedProductCard(cartModel)
-        : buildProductCard(cartModel);
+    return SlideAnimation(
+        child: cartModel?.isCustomizedProduct == true
+            ? buildCustomizedProductCard(cartModel)
+            : buildProductCard(cartModel));
   }
 
   @override
@@ -373,12 +410,26 @@ class _CartPageState extends State<CartPage>
                   appBar: AppBar(
                     title: Text('购物车'),
                     centerTitle: true,
+                    actions: <Widget>[
+                      FlatButton(
+                          onPressed: () {
+                            provider?.isEditting = !provider.isEditting;
+                          },
+                          child:
+                              Text(provider?.isEditting == true ? '完成' : '编辑'))
+                    ],
                     bottom: PreferredSize(
                         child: isLoading
                             ? Container()
                             : TabBar(
                                 controller: tabController,
                                 indicatorSize: TabBarIndicatorSize.label,
+                                unselectedLabelStyle: TextStyle(
+                                    color: Color(0xFF333333), fontSize: 14),
+                                labelStyle: TextStyle(
+                                    color: Color(0xFF1B1B1B),
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500),
                                 labelPadding: EdgeInsets.only(
                                     bottom: 5, left: 5, right: 5),
                                 tabs: List.generate(categoryList?.length ?? 0,
@@ -444,14 +495,23 @@ class _CartPageState extends State<CartPage>
                               Container(
                                 margin: EdgeInsets.symmetric(
                                     horizontal: UIKit.width(20)),
-                                child: ZYRaisedButton(
-                                    '结算(${provider?.totalCount ?? 0})', () {
-                                  TargetClient.instance.clientId =
-                                      provider?.clientId;
-                                  RouteHandler.goCommitOrderPage(context,
-                                      params: jsonEncode(
-                                          {'data': provider?.checkedModels}));
-                                }),
+                                child: provider?.isEditting == true
+                                    ? ZYRaisedButton(
+                                        '删除所选',
+                                        () {
+                                          batchDelCart(provider);
+                                        },
+                                        isActive: provider?.hasSelectedModels,
+                                      )
+                                    : ZYRaisedButton(
+                                        '结算(${provider?.totalCount ?? 0})', () {
+                                        TargetClient.instance.clientId =
+                                            provider?.clientId;
+                                        RouteHandler.goCommitOrderPage(context,
+                                            params: jsonEncode({
+                                              'data': provider?.checkedModels
+                                            }));
+                                      }),
                               ),
                               // InkWell(
                               //   onTap: () {
