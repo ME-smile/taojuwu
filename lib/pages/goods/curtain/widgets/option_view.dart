@@ -34,20 +34,24 @@ class OptionView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              width: UIKit.width(150),
-              height: UIKit.width(150),
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: NetworkImage(UIKit.getNetworkImgPath(img))),
-                  border: Border.all(
-                      color: showBorder
-                          ? Theme.of(context).accentColor
-                          : Colors.transparent,
-                      width: 1.2)),
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: showBorder ? TriAngle() : Container(),
+            AnimatedOpacity(
+              opacity: 1,
+              duration: Duration(microseconds: 500),
+              child: Container(
+                width: UIKit.width(150),
+                height: UIKit.width(150),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: NetworkImage(UIKit.getNetworkImgPath(img))),
+                    border: Border.all(
+                        color: showBorder
+                            ? Theme.of(context).accentColor
+                            : Colors.transparent,
+                        width: 1.2)),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: showBorder ? TriAngle() : Container(),
+                ),
               ),
             ),
             Padding(

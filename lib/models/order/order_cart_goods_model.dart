@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/models/base/count_model.dart';
+import 'package:taojuwu/models/base/goods_attr.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 
-class OrderCartGoods {
+class OrderCartGoods extends CountModel {
   String tag;
   String img;
   List<OrderProductAttrWrapper> wcAttr;
@@ -15,10 +17,13 @@ class OrderCartGoods {
   String isShade;
   String totalPrice;
   String attr;
-  String count;
+  int count;
   String cartId;
   String dy;
   int goodsType;
+  bool isEndproduct;
+  String desc;
+  List<GoodsAttr> attrs;
   OrderCartGoods.fromJson(Map<String, dynamic> json) {
     tag = json['tag'];
     img = json['img'];
@@ -38,9 +43,13 @@ class OrderCartGoods {
     isShade = '${json['is_shade'] ?? '0'}';
     totalPrice = json['total_price'] != null ? '${json['total_price']}' : '0';
     attr = json['attr'];
-    count = '${json['count'] ?? 1}';
+    count = int.parse('${json['count'] ?? 1}');
     dy = '${json['dy']}';
     goodsType = json['goods_type'] ?? 1;
+    isEndproduct = json['is_endproduct'] ?? false;
+    desc = json['desc'] ?? '';
+    List list = jsonDecode(json['goods_attrs']);
+    attrs = list?.map((e) => GoodsAttr.fromJson(e))?.toList();
   }
 
   String get unitPrice => goodsType == 2 ? '元/平方米' : '元/米';

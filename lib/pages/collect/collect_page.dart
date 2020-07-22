@@ -8,7 +8,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:taojuwu/models/shop/collect_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 import 'package:taojuwu/models/zy_response.dart';
-import 'package:taojuwu/pages/curtain/curtain_detail_page.dart';
+import 'package:taojuwu/pages/goods/curtain/curtain_detail_page.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';

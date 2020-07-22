@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/base/count_model.dart';
+import 'package:taojuwu/models/base/goods_attr.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
@@ -85,7 +86,7 @@ class CartModel extends CountModel {
   Map attr;
   List<OrderProductAttrWrapper> wcAttr;
   PictureInfo pictureInfo;
-  List<CartGoodsAttr> attrs;
+  List<GoodsAttr> attrs;
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
   bool get isProduct => !isCustomizedProduct; //等于0时表示成品
   bool get isCustomizedProduct => goodsType == 1;
@@ -140,7 +141,7 @@ class CartModel extends CountModel {
     if (json['goods_accessory'] != null) {
       attrs = [];
       json['goods_accessory']?.forEach((item) {
-        attrs.add((CartGoodsAttr.fromJson(item)));
+        attrs.add((GoodsAttr.fromJson(item)));
       });
     }
   }
@@ -169,12 +170,8 @@ class CartModel extends CountModel {
   }
 }
 
-class CartGoodsAttr {
-  String name;
-  String value;
-
-  CartGoodsAttr.fromJson(Map<String, dynamic> json) {
-    name = json['attr_category'];
-    value = json['attr_name'];
+class CartCountResp extends ZYResponse<int> {
+  CartCountResp.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    this.data = this.valid ? json['data'] : null;
   }
 }

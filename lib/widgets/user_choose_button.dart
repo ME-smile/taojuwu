@@ -11,6 +11,7 @@ class UserChooseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TargetClient targetClient = TargetClient.instance;
+
     return InkWell(
         onTap: () {
           RouteHandler.goCustomerPage(context, isForSelectedClient: 1);
@@ -22,7 +23,7 @@ class UserChooseButton extends StatelessWidget {
             ),
             Padding(
                 padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                child: Text(targetClient?.clientName != null &&
+                child: Text(TargetClient.instance?.clientName != null &&
                         targetClient?.clientName?.isNotEmpty == true
                     ? targetClient?.clientName
                     : '请选择'))

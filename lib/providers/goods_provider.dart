@@ -12,8 +12,11 @@ import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
 import 'package:taojuwu/models/zy_response.dart';
+import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 class GoodsProvider with ChangeNotifier {
   bool get isMeasureOrderGoods =>
@@ -45,6 +48,25 @@ class GoodsProvider with ChangeNotifier {
   String _width = '0.0';
   String _height = '0.0';
   String _dy = '0.0';
+  int _cartCount = 0;
+  int get cartCount => _cartCount;
+
+  Map<String, dynamic> get cartDetail {
+    return {
+      'sku_id': '${goods?.skuId}' ?? '',
+      'goods_id': '${goods?.goodsId}' ?? '',
+      'goods_name': '${goods?.goodsName}' ?? '',
+      'shop_id': '${goods?.shopId}' ?? '',
+      'price': '${goods?.price}' ?? '',
+      'picture': '${goods?.picture}' ?? '',
+      'num': '1'
+    };
+  }
+
+  set cartCount(int count) {
+    _cartCount = count;
+    notifyListeners();
+  }
 
   String get curInstallMode {
     List list = WindowPatternAttr.installOptionMap[windowPatternStr];
@@ -380,6 +402,34 @@ class GoodsProvider with ChangeNotifier {
     return [curOpenMode];
   }
 
+  void like(
+    int goodsId,
+  ) {
+    if (!TargetClient.instance.hasSelectedClient) {
+      CommonKit.showInfo('请选择客户');
+      return;
+    }
+    Map<String, dynamic> collectParams = {
+      // 'fav_type':'goods',
+      'fav_id': goodsId,
+      'client_uid': TargetClient.instance.clientId
+    };
+    if (hasLike == false) {
+      OTPService.collect(params: collectParams).then((ZYResponse response) {
+        if (response?.valid == true) {
+          hasLike = true;
+        }
+      }).catchError((err) => err);
+    } else {
+      OTPService.cancelCollect(params: collectParams)
+          .then((ZYResponse response) {
+        if (response?.valid == true) {
+          hasLike = false;
+        }
+      }).catchError((err) => err);
+    }
+  }
+
   Map get checkedSubOption {
     Map tmp = {};
     for (int i = 0; i < openSubOptions?.length; i++) {
@@ -391,7 +441,20 @@ class GoodsProvider with ChangeNotifier {
         }
       }
     }
+
     return tmp;
+  }
+
+  String get checkedSubOptionStr {
+    print(checkedSubOption);
+    List list = [];
+    checkedSubOption?.forEach((key, value) {
+      String tmp = '${key[0]}${value?.first[0]}';
+      print(tmp);
+      list.add(tmp);
+    });
+
+    return list?.join('');
   }
 
   setWindowPatternByName(String pattern) {
@@ -423,6 +486,11 @@ class GoodsProvider with ChangeNotifier {
   bool _hasSetSize = false;
   bool get hasSetSize => _hasSetSize;
   bool get hasLike => goods?.isCollect == 1;
+
+  set hasLike(bool flag) {
+    goods?.isCollect = flag ? 1 : 0;
+    notifyListeners();
+  }
 
   bool get hasWindowGauze =>
       curWindowGauzeAttrBean?.name?.contains('不要窗纱') == false;
@@ -759,7 +827,7 @@ class GoodsProvider with ChangeNotifier {
     };
   }
 
-  Map<String, dynamic> getAttrArgs() {
+  Map<String, dynamic> get attrArgs {
     return isWindowGauze == true
         ? getWindowGauzeAttrArgs()
         : isWindowRoller == true
@@ -875,4 +943,166 @@ class GoodsProvider with ChangeNotifier {
 
   bool get hasModifyOpenMode =>
       measureData?.openType != measureData?.newOpenType;
+
+  bool get isValidateData {
+    String w = widthCMStr ?? '0.00';
+    String h = heightCMStr ?? '0.00';
+    if (w?.trim()?.isEmpty == true) {
+      CommonKit?.showInfo('请填写宽度');
+      return false;
+    }
+    if (double.parse(w) == 0) {
+      CommonKit?.showInfo('宽度不能为0哦');
+      return false;
+    }
+    if (h?.trim()?.isEmpty == true) {
+      CommonKit?.showInfo('请填写高度');
+      return false;
+    }
+    if (double.parse(h) == 0) {
+      CommonKit?.showInfo('高度不能为0哦');
+      return false;
+    }
+    if (double.parse(h) > 350) {
+      CommonKit.showInfo('暂不支持3.5m以上定制');
+      h = '350';
+      return false;
+    }
+    return true;
+  }
+
+  bool beforePurchase(BuildContext context) {
+    // setParams(goodsProvider);
+
+    if (TargetClient.instance.hasSelectedClient == false) {
+      CommonKit.showInfo('请选择客户');
+      return false;
+    }
+    if (hasSetSize != true) {
+      CommonKit.showInfo('请先填写尺寸');
+      return false;
+    }
+    // if (isValidateData == false) {
+    //   return false;
+    // }
+    return true;
+  }
+
+  void addCart(
+    BuildContext context,
+  ) {
+    if (!beforePurchase(context)) return;
+
+    canAddToCart = false;
+
+    saveMeasure(context, callback: () {
+      Map<String, dynamic> cartParams = {
+        'client_uid': TargetClient.instance.clientId,
+        'wc_attr': jsonEncode(attrArgs),
+        'cart_detail': jsonEncode(cartDetail),
+        'measure_id': measureId,
+        'estimated_price': totalPrice,
+        'is_shade': isShade == true ? 1 : 0
+      };
+      OTPService.addCart(params: cartParams)
+          .then((ZYResponse response) {
+            print(cartParams);
+            if (response?.valid == true) {
+              cartCount = response?.data;
+            }
+          })
+          .catchError((err) => err)
+          .whenComplete(() {
+            canAddToCart = true;
+          });
+    });
+  }
+
+  Future createOrder(BuildContext context) async {
+    if (!beforePurchase(context)) return;
+    await saveMeasure(context, callback: () {
+      purchase(context);
+    });
+  }
+
+  String get attrDesc {
+    return '宽:${widthMStr ?? ''}米 高:${heightMStr ?? ''}米、${_curRoomAttrBean?.name ?? ''}、${windowPatternStr ?? ''}、${curInstallMode ?? ''}、${curOpenMode ?? ''}、${checkedSubOptionStr ?? ''}、${_curCraftAttrBean?.name ?? ''}、离地距离:${dyCMStr?.isEmpty == true ? '未知' : dyCMStr + 'cm'}';
+  }
+
+  Future purchase(BuildContext context) async {
+    RouteHandler.goCommitOrderPage(context,
+        params: jsonEncode({
+          'data': [
+            {
+              'tag': curRoomAttrBean?.name ?? '',
+              'img': goods?.picCoverMid ?? '',
+              'goods_name': goods?.goodsName,
+              'price': goods?.price,
+              'desc': attrDesc,
+              'measure_id': measureId ?? '',
+              'sku_id': goods?.skuId,
+              'goods_id': goods?.goodsId ?? '',
+              'total_price': totalPrice ?? 0.0,
+              'goods_type': goodsType,
+              'goods_attrs': jsonEncode([
+                {
+                  'attr_category': '窗纱',
+                  'attr_name': _curwindowGauzeAttrBean?.name,
+                },
+                {
+                  'attr_category': '型材',
+                  'attr_name': _curPartAttrBean?.name,
+                },
+                {
+                  'attr_category': '里布',
+                  'attr_name': _curWindowShadeAttrBean?.name
+                },
+                {'attr_category': '幔头', 'attr_name': _curCanopyAttrBean?.name},
+                {
+                  'attr_category': '配饰',
+                  'attr_name': curAccessoryAttrBeans
+                      ?.map((e) => e?.name)
+                      ?.toList()
+                      ?.join(',')
+                }
+              ])
+            }
+          ]
+        }));
+  }
+
+  void selectProduct(
+    BuildContext context,
+  ) {
+    TargetOrderGoods targetOrderGoods = TargetOrderGoods.instance;
+    if (targetOrderGoods?.hasConfirmMeasureData == false &&
+        isWindowRoller == false) {
+      return CommonKit.showInfo('请先确认测装数据');
+    }
+    Map<String, dynamic> data = {
+      'num': 1,
+      'goods_id': goodsId,
+      '安装选项': ['${curInstallMode ?? ''}'],
+      '打开方式': openModeParams
+    };
+    Map<String, dynamic> params = {
+      'vertical_ground_height': dyCMStr,
+      'data': jsonEncode(data),
+      'wc_attr': jsonEncode(attrArgs),
+      'order_goods_id': TargetOrderGoods.instance?.orderGoodsId,
+    };
+    OTPService.selectProduct(params: params).then((ZYResponse response) {
+      if (response.valid) {
+        clearGoodsInfo();
+        TargetOrderGoods.instance.clear();
+        Navigator.of(context)..pop()..pop();
+        // TargetRoute.instance.setRoute(
+        //     '${Routes.orderDetail}?id=${TargetOrderGoods.instance.orderId}');
+        // Navigator.of(context)
+        //     .popUntil(ModalRoute.withName(TargetRoute.instance.route));
+      } else {
+        CommonKit.showInfo(response?.message ?? '');
+      }
+    }).catchError((err) => err);
+  }
 }

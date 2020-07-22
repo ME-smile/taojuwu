@@ -1,4 +1,6 @@
-class SkuBean {
+import 'package:taojuwu/models/base/count_model.dart';
+
+class SkuBean extends CountModel {
   String skuName;
   String attrValueItems;
   String attrValueItemsFormat;
@@ -22,6 +24,8 @@ class SkuBean {
   int updateDate;
   int fxGet;
   SkuBeanImgBucket imgBucket;
+
+  int count = 1;
 
   String get bigPicUrl => imgBucket?.bigPicUrl;
   String get midPicUrl => imgBucket?.midPicUrl;

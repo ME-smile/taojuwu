@@ -5,13 +5,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
-import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 
 import 'package:taojuwu/models/zy_response.dart';
-import 'package:taojuwu/pages/curtain/subPages/pre_measure_data_page.dart';
+import 'package:taojuwu/pages/goods/base/bottom_action_bar.dart';
+import 'package:taojuwu/pages/goods/base/cart_button.dart';
+import 'package:taojuwu/pages/goods/base/like_button.dart';
+import 'package:taojuwu/pages/goods/curtain/subPages/pre_measure_data_page.dart';
 
 import 'package:taojuwu/providers/goods_provider.dart';
 
@@ -33,7 +36,7 @@ import 'package:taojuwu/widgets/zy_outline_button.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 import 'widgets/attr_options_bar.dart';
-import 'widgets/onsale_tag.dart';
+import '../base/onsale_tag.dart';
 import 'widgets/zy_dialog.dart';
 
 class CurtainDetailPage extends StatefulWidget {
@@ -48,9 +51,8 @@ class CurtainDetailPage extends StatefulWidget {
   _CurtainDetailPageState createState() => _CurtainDetailPageState();
 }
 
-class _CurtainDetailPageState extends State<CurtainDetailPage> {
+class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
   Map<String, dynamic> cartParams = {};
-  Map<String, dynamic> collectParams = {};
 
   TextEditingController widthInputController;
   TextEditingController heightInputController;
@@ -58,14 +60,13 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
 
   int id;
   String partType;
-  ValueNotifier<bool> hasCollected;
 
   TargetClient targetClient = TargetClient.instance;
 
   @override
   void dispose() {
     super.dispose();
-    hasCollected?.dispose();
+
     widthInputController?.dispose();
     heightInputController?.dispose();
     dyInputController?.dispose();
@@ -79,44 +80,25 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
     widthInputController = TextEditingController();
     heightInputController = TextEditingController();
     dyInputController = TextEditingController();
-    hasCollected = ValueNotifier<bool>(false);
+  }
+
+  @override
+  void didPopNext() {
+    setState(() {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    Application.routeObserver.subscribe(this, ModalRoute.of(context));
+    super.didChangeDependencies();
   }
 
   void setCartParams(GoodsProvider goodsProvider) {
     cartParams['is_shade'] = goodsProvider?.isShade == true ? 1 : 0;
     cartParams['estimated_price'] = goodsProvider?.totalPrice;
     cartParams['measure_id'] = goodsProvider?.measureId;
-    cartParams['wc_attr'] = '${goodsProvider.getAttrArgs()}';
+    cartParams['wc_attr'] = '${goodsProvider.attrArgs}';
     cartParams['client_uid'] = TargetClient.instance.clientId;
-  }
-
-  collect(
-    BuildContext context,
-  ) {
-    // final Completer<bool> completer = new Completer<bool>();
-    if (!TargetClient.instance.hasSelectedClient) {
-      CommonKit.showInfo('请选择客户');
-      return;
-    }
-    collectParams = {
-      // 'fav_type':'goods',
-      'fav_id': widget.id,
-      'client_uid': TargetClient.instance.clientId
-    };
-    if (hasCollected?.value == false) {
-      OTPService.collect(params: collectParams).then((ZYResponse response) {
-        if (response?.valid == true) {
-          hasCollected.value = true;
-        }
-      }).catchError((err) => err);
-    } else {
-      OTPService.cancelCollect(params: collectParams)
-          .then((ZYResponse response) {
-        if (response?.valid == true) {
-          hasCollected.value = false;
-        }
-      }).catchError((err) => err);
-    }
   }
 
   Map<String, dynamic> getCartDetail(ProductBean bean) {
@@ -576,7 +558,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
   }
 
   void addCart(BuildContext ctx, GoodsProvider provider) {
-    cartParams.addAll({'wc_attr': jsonEncode(provider.getAttrArgs())});
+    cartParams.addAll({'wc_attr': jsonEncode(provider.attrArgs)});
     cartParams
         .addAll({'cart_detail': jsonEncode(getCartDetail(provider?.goods))});
     OTPService.addCart(params: cartParams)
@@ -615,7 +597,6 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
       roomAttr: data[8],
     );
     setCartParams(goodsProvider);
-    hasCollected?.value = goodsProvider?.hasLike;
   }
 
   @override
@@ -703,50 +684,88 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
                                                           bean?.goodsName ?? '',
                                                       style: textTheme.caption)
                                                 ])),
-                                            Text.rich(
-                                                TextSpan(text: '', children: [
-                                              WidgetSpan(
-                                                  child: ValueListenableBuilder(
-                                                      valueListenable:
-                                                          hasCollected,
-                                                      builder:
-                                                          (BuildContext context,
-                                                              bool isLiked, _) {
-                                                        return InkWell(
-                                                            child: Icon(
-                                                              ZYIcon.like,
-                                                              size: 18,
-                                                              color: isLiked
-                                                                  ? Colors.red
-                                                                  : const Color(
-                                                                      0xFFCCCCCC),
-                                                            ),
-                                                            onTap: () {
-                                                              collect(context);
-                                                            });
-                                                      })),
-                                              WidgetSpan(
-                                                  child: SizedBox(
-                                                      width: UIKit.width(30))),
-                                              WidgetSpan(
-                                                  child: InkWell(
-                                                      child: Icon(ZYIcon.cart,
-                                                          size: 18),
-                                                      onTap: () {
-                                                        if (targetClient
-                                                                .hasSelectedClient ==
-                                                            false) {
-                                                          return CommonKit
-                                                              .showInfo(
-                                                                  '请选择客户');
-                                                        }
-                                                        RouteHandler.goCartPage(
+                                            Container(
+                                              child: Row(
+                                                children: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal:
+                                                                UIKit.width(
+                                                                    20)),
+                                                    child: LikeButton(
+                                                      hasLiked: goodsProvider
+                                                          ?.hasLike,
+                                                      callback: () {
+                                                        goodsProvider
+                                                            ?.like(widget.id);
+                                                      },
+                                                    ),
+                                                  ),
+                                                  CartButton(
+                                                    count: goodsProvider
+                                                        ?.cartCount,
+                                                    callback: () {
+                                                      if (TargetClient.instance
+                                                              .hasSelectedClient ==
+                                                          false) {
+                                                        return CommonKit
+                                                            .showInfo('请选择客户');
+                                                      }
+                                                      RouteHandler.goCartPage(
                                                           context,
-                                                          clientId: targetClient
-                                                              .clientId,
-                                                        );
-                                                      }))
-                                            ]))
+                                                          clientId: TargetClient
+                                                              .instance
+                                                              .clientId);
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                            // Text.rich(
+                                            //     TextSpan(text: '', children: [
+                                            //   WidgetSpan(
+                                            //       child: ValueListenableBuilder(
+                                            //           valueListenable:
+                                            //               hasCollected,
+                                            //           builder:
+                                            //               (BuildContext context,
+                                            //                   bool isLiked, _) {
+                                            //             return InkWell(
+                                            //                 child: Icon(
+                                            //                   ZYIcon.like,
+                                            //                   size: 18,
+                                            //                   color: isLiked
+                                            //                       ? Colors.red
+                                            //                       : const Color(
+                                            //                           0xFFCCCCCC),
+                                            //                 ),
+                                            //                 onTap: () {
+                                            //                   collect(context);
+                                            //                 });
+                                            //           })),
+                                            //   WidgetSpan(
+                                            //       child: SizedBox(
+                                            //           width: UIKit.width(30))),
+                                            //   WidgetSpan(
+                                            //       child: InkWell(
+                                            //           child: Icon(ZYIcon.cart,
+                                            //               size: 18),
+                                            //           onTap: () {
+                                            //             if (targetClient
+                                            //                     .hasSelectedClient ==
+                                            //                 false) {
+                                            //               return CommonKit
+                                            //                   .showInfo(
+                                            //                       '请选择客户');
+                                            //             }
+                                            //             RouteHandler.goCartPage(
+                                            //               context,
+                                            //               clientId: targetClient
+                                            //                   .clientId,
+                                            //             );
+                                            //           }))
+                                            // ]))
                                           ],
                                         ),
                                         VSpacing(20),
@@ -849,187 +868,32 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> {
 class BottomActionButtonBar extends StatelessWidget {
   const BottomActionButtonBar({Key key}) : super(key: key);
 
-  static Map<String, dynamic> data = {};
-  static Map<String, dynamic> params = {
-    'dataId': '',
-    'width': '',
-    'height': '',
-    'install_room': '',
-    'goods_id': '',
-    'vertical_ground_height': '',
-    'data': {},
-  };
-  void setParams(GoodsProvider provider) {
-    params['dataId'] = '${provider?.windowPatternId ?? ''}';
-    params['width'] = '${provider?.widthCMStr ?? ''}';
-    params['height'] = '${provider?.heightCMStr ?? ''}';
-    params['vertical_ground_height'] = '${provider?.dy ?? ''}';
-    params['goods_id'] = '${provider?.goodsId ?? ''}';
-    params['install_room'] = '${provider?.curRoomAttrBean?.id ?? ''}';
-    data.clear();
-    data['${provider?.windowPatternId ?? ''}'] = {
-      'name': '${provider?.windowPatternStr ?? ''}',
-      'selected': {
-        '安装选项': ['${provider?.curInstallMode ?? ''}'],
-        '打开方式': provider?.openModeParams
-      }
-    };
+  // void setParams(GoodsProvider provider) {
+  //   params['dataId'] = '${provider?.windowPatternId ?? ''}';
+  //   params['width'] = '${provider?.widthCMStr ?? ''}';
+  //   params['height'] = '${provider?.heightCMStr ?? ''}';
+  //   params['vertical_ground_height'] = '${provider?.dy ?? ''}';
+  //   params['goods_id'] = '${provider?.goodsId ?? ''}';
+  //   params['install_room'] = '${provider?.curRoomAttrBean?.id ?? ''}';
+  //   data.clear();
+  //   data['${provider?.windowPatternId ?? ''}'] = {
+  //     'name': '${provider?.windowPatternStr ?? ''}',
+  //     'selected': {
+  //       '安装选项': ['${provider?.curInstallMode ?? ''}'],
+  //       '打开方式': provider?.openModeParams
+  //     }
+  //   };
 
-    params['data'] = jsonEncode(data);
-  }
-
-  bool validateData(GoodsProvider provider) {
-    String w = provider?.widthCMStr ?? '0.00';
-    String h = provider?.heightCMStr ?? '0.00';
-    if (w?.trim()?.isEmpty == true) {
-      CommonKit?.showInfo('请填写宽度');
-      return false;
-    }
-    if (double.parse(w) == 0) {
-      CommonKit?.showInfo('宽度不能为0哦');
-      return false;
-    }
-    if (h?.trim()?.isEmpty == true) {
-      CommonKit?.showInfo('请填写高度');
-      return false;
-    }
-    if (double.parse(h) == 0) {
-      CommonKit?.showInfo('高度不能为0哦');
-      return false;
-    }
-    if (double.parse(h) > 350) {
-      CommonKit.showInfo('暂不支持3.5m以上定制');
-      h = '350';
-      return false;
-    }
-    return true;
-  }
-
-  bool beforePurchase(GoodsProvider goodsProvider, BuildContext context) {
-    setParams(goodsProvider);
-
-    if (TargetClient.instance.hasSelectedClient == false) {
-      CommonKit.showInfo('请选择客户');
-      return false;
-    }
-    if (goodsProvider?.hasSetSize != true) {
-      CommonKit.showInfo('请先填写尺寸');
-      return false;
-    }
-    return true;
-  }
-
-  Map<String, dynamic> getCartDetail(ProductBean bean) {
-    return {
-      'sku_id': '${bean?.skuId}' ?? '',
-      'goods_id': '${bean?.goodsId}' ?? '',
-      'goods_name': '${bean?.goodsName}' ?? '',
-      'shop_id': '${bean?.shopId}' ?? '',
-      'price': '${bean?.price}' ?? '',
-      'picture': '${bean?.picture}' ?? '',
-      'num': '1'
-    };
-  }
-
-  void setCartParams(GoodsProvider goodsProvider) {
-    cartParams['is_shade'] = goodsProvider?.isShade == true ? 1 : 0;
-    cartParams['estimated_price'] = goodsProvider?.totalPrice;
-    cartParams['measure_id'] = goodsProvider?.measureId;
-    cartParams['wc_attr'] = '${goodsProvider.getAttrArgs()}';
-  }
-
-  static Map<String, dynamic> cartParams = {
-    // 'fav_type':'goods',
-    'client_uid': '',
-  };
-
-  addCart(
-    BuildContext context,
-    GoodsProvider provider,
-  ) {
-    cartParams.addAll({'wc_attr': jsonEncode(provider.getAttrArgs())});
-    cartParams
-        .addAll({'cart_detail': jsonEncode(getCartDetail(provider?.goods))});
-
-    GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
-    goodsProvider?.canAddToCart = false;
-    goodsProvider.saveMeasure(context, callback: () {
-      cartParams['measure_id'] = goodsProvider?.measureId;
-
-      OTPService.addCart(params: cartParams)
-          .then((ZYResponse response) {})
-          .catchError((err) => err)
-          .whenComplete(() {
-        goodsProvider?.canAddToCart = true;
-      });
-    });
-  }
-
-  Future createOrder(BuildContext context) async {
-    GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
-    await goodsProvider?.saveMeasure(context, callback: () {
-      purchase(context);
-    });
-  }
-
-  Future purchase(BuildContext context) async {
-    GoodsProvider goodsProvider = TargetOrderGoods.instance.goodsProvider;
-    if (!beforePurchase(goodsProvider, context)) return;
-
-    Map map = goodsProvider.getAttrArgs();
-    List wrapper = [];
-    map.forEach((key, val) {
-      Map<String, dynamic> tmp = {};
-      tmp['attr_name'] = Constants.ATTR_MAP[int.parse('$key')];
-      tmp['attr'] = val is List ? val ?? [] : [val];
-      wrapper.add(jsonEncode(tmp));
-    });
-    RouteHandler.goCommitOrderPage(context,
-        params: jsonEncode({
-          'data': [
-            {
-              'tag': goodsProvider?.curRoomAttrBean?.name ?? '',
-              'img': goodsProvider?.goods?.picCoverMid ?? '',
-              'goods_name': goodsProvider?.goods?.goodsName,
-              'price': goodsProvider?.goods?.price,
-              'wc_attr': wrapper,
-              'attr': jsonEncode(map),
-              'dy': goodsProvider?.dy,
-              'measure_id': goodsProvider?.measureId ?? '',
-              'sku_id': goodsProvider?.goods?.skuId,
-              'goods_id': goodsProvider?.goods?.goodsId ?? '',
-              'total_price': goodsProvider?.totalPrice ?? 0.0,
-              'goods_type': goodsProvider?.goodsType
-            }
-          ],
-        }));
-  }
-
-  void selectProduct(BuildContext context, {Map<String, dynamic> params}) {
-    OTPService.selectProduct(params: params).then((ZYResponse response) {
-      if (response.valid) {
-        GoodsProvider goodsProvider =
-            Provider.of<GoodsProvider>(context, listen: false);
-        goodsProvider?.clearGoodsInfo();
-        Navigator.of(context)..pop()..pop();
-        // TargetRoute.instance.setRoute(
-        //     '${Routes.orderDetail}?id=${TargetOrderGoods.instance.orderId}');
-        // Navigator.of(context)
-        //     .popUntil(ModalRoute.withName(TargetRoute.instance.route));
-      } else {
-        CommonKit.showInfo(response?.message ?? '');
-      }
-    }).catchError((err) => err);
-  }
+  //   params['data'] = jsonEncode(data);
+  // }
 
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     // TextTheme textTheme = themeData.textTheme;
-    TargetOrderGoods targetOrderGoods = TargetOrderGoods.instance;
+
     return Consumer<GoodsProvider>(
       builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-        cartParams['client_uid'] = TargetClient.instance.clientId;
         return TargetOrderGoods.instance.isMeasureOrder
             ? Container(
                 color: themeData.primaryColor,
@@ -1043,117 +907,19 @@ class BottomActionButtonBar extends StatelessWidget {
                       TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
                     ])),
                     ZYRaisedButton('确认选品', () {
-                      if (targetOrderGoods?.hasConfirmMeasureData == false &&
-                          goodsProvider?.isWindowRoller == false) {
-                        return CommonKit.showInfo('请先确认测装数据');
-                      }
-                      Map<String, dynamic> data = {
-                        'num': 1,
-                        'goods_id': goodsProvider?.goodsId,
-                        '安装选项': ['${goodsProvider?.curInstallMode ?? ''}'],
-                        '打开方式': goodsProvider?.openModeParams
-                      };
-
-                      // data['${goodsProvider?.windowPatternId ?? ''}'] = {
-                      //   'name': '${goodsProvider?.windowPatternStr ?? ''}',
-                      //   'selected': {
-                      //     '安装选项': ['${goodsProvider?.curInstallMode ?? ''}'],
-                      //     '打开方式': goodsProvider?.openModeParams
-                      //   }
-                      // };
-                      Map<String, dynamic> params = {
-                        'vertical_ground_height': goodsProvider?.dyCMStr,
-                        'data': jsonEncode(data),
-                        'wc_attr': jsonEncode(goodsProvider.getAttrArgs()),
-                        'order_goods_id': targetOrderGoods?.orderGoodsId,
-                      };
-                      TargetOrderGoods.instance.clear();
-                      selectProduct(context, params: params);
+                      goodsProvider?.selectProduct(context);
                     })
                   ],
                 ))
-            : Container(
-                color: themeData.primaryColor,
-                padding: EdgeInsets.symmetric(
-                    horizontal: UIKit.width(20), vertical: UIKit.height(10)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 2,
-                      child: Text.rich(TextSpan(text: '预计:\n', children: [
-                        TextSpan(
-                            text: '¥${goodsProvider?.totalPrice ?? 0.00}',
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w500)),
-                      ])),
-                    ),
-                    Expanded(
-                        flex: 3,
-                        child: Container(
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: InkWell(
-                                  onTap: goodsProvider?.canAddToCart == true
-                                      ? () {
-                                          if (!beforePurchase(
-                                              goodsProvider, context)) return;
-                                          setCartParams(goodsProvider);
-                                          addCart(context, goodsProvider);
-                                        }
-                                      : null,
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: UIKit.width(20),
-                                        vertical: UIKit.height(11)),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1,
-                                            color:
-                                                goodsProvider?.canAddToCart ==
-                                                        true
-                                                    ? themeData.accentColor
-                                                    : themeData.disabledColor)),
-                                    child: Text(
-                                      '加入购物车',
-                                      textAlign: TextAlign.center,
-                                      style: goodsProvider?.canAddToCart == true
-                                          ? TextStyle()
-                                          : TextStyle(
-                                              color: themeData.disabledColor),
-                                    ),
-                                  ),
-                                ),
-                                flex: 1,
-                              ),
-                              Expanded(
-                                  child: InkWell(
-                                    onTap: () {
-                                      if (!beforePurchase(
-                                          goodsProvider, context)) return;
-                                      createOrder(context);
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: UIKit.height(11)),
-                                      decoration: BoxDecoration(
-                                          color: themeData.accentColor,
-                                          border: Border.all(
-                                              color: themeData.accentColor)),
-                                      child: Text(
-                                        '立即购买',
-                                        style: themeData.accentTextTheme.button,
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                  flex: 1),
-                            ],
-                          ),
-                        ))
-                  ],
-                ),
+            : PurchaseActionBar(
+                totalPrice: goodsProvider?.totalPrice ?? '0.00',
+                addToCartFunc: () {
+                  goodsProvider?.addCart(context);
+                },
+                canAddToCart: goodsProvider?.canAddToCart,
+                purchaseFunc: () {
+                  goodsProvider?.createOrder(context);
+                },
               );
       },
     );

@@ -8,11 +8,12 @@ import 'package:taojuwu/pages/after_sale_service/after_sale_service_page.dart';
 
 import 'package:taojuwu/pages/cart/cart_page.dart';
 import 'package:taojuwu/pages/collect/collect_page.dart';
-import 'package:taojuwu/pages/curtain/curtain_detail_page.dart';
-import 'package:taojuwu/pages/curtain/curtain_mall_page.dart';
-import 'package:taojuwu/pages/curtain/subPages/edit_open_mode_page.dart';
-import 'package:taojuwu/pages/curtain/subPages/measure_data_preview_page.dart';
-import 'package:taojuwu/pages/curtain/subPages/pre_measure_data_page.dart';
+import 'package:taojuwu/pages/edit_goods_attr/edit_goods_attr_page.dart';
+import 'package:taojuwu/pages/goods/curtain/curtain_detail_page.dart';
+import 'package:taojuwu/pages/goods/curtain/curtain_mall_page.dart';
+import 'package:taojuwu/pages/goods/curtain/subPages/edit_open_mode_page.dart';
+import 'package:taojuwu/pages/goods/curtain/subPages/measure_data_preview_page.dart';
+import 'package:taojuwu/pages/goods/curtain/subPages/pre_measure_data_page.dart';
 import 'package:taojuwu/pages/customer/customer_detail_page.dart';
 import 'package:taojuwu/pages/customer/customer_edit_page.dart';
 import 'package:taojuwu/pages/customer/customer_manage_page.dart';
@@ -21,7 +22,7 @@ import 'package:taojuwu/pages/customer/subPages/customer_search_page.dart';
 
 import 'package:taojuwu/pages/data_center/data_center_page.dart';
 import 'package:taojuwu/pages/edit_address/edit_address_page.dart';
-import 'package:taojuwu/pages/end_product/end_product_detail.dart';
+import 'package:taojuwu/pages/goods/end_product/end_product_detail.dart';
 import 'package:taojuwu/pages/login/login_page.dart';
 import 'package:taojuwu/pages/logistics/logistics_page.dart';
 import 'package:taojuwu/pages/order/commit_order_page.dart';
@@ -538,5 +539,15 @@ class RouteHandler {
   });
   static goEndProductDetail(BuildContext context, int id) {
     _jumpTo(context, '${Routes.endProductDetail}?id=$id');
+  }
+
+  static Handler editGoodsAttr = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int id = int.parse(params['id']?.first);
+
+    return EditGoodsAttrPage(id: id);
+  });
+  static goEditGoodsAttrPage(BuildContext context, int id) {
+    _jumpTo(context, '${Routes.editGoodsAttr}?id=$id');
   }
 }

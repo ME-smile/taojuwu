@@ -223,6 +223,7 @@ class OTPService {
       canopyAttr(context, params: params),
       accessoryAttr(context, params: params),
       roomAttr(context, params: params),
+      cartCount(context, params: params),
     ];
 
     list.forEach((v) {
@@ -299,7 +300,7 @@ class OTPService {
       ApiPath.addCart,
       data: params,
     );
-    ZYResponse resp = ZYResponse.fromJson(response.data);
+    ZYResponse resp = ZYResponse.fromJsonWithData(response.data);
     if (resp?.valid == true) {
       CommonKit.showSuccessDIYInfo('加入购物车成功');
     } else {
@@ -534,5 +535,12 @@ class OTPService {
     Response response =
         await xhr.get(context, ApiPath.orderEditLog, params: params);
     return OrderEditLogModelResp.fromJson(response.data);
+  }
+
+  static Future<CartCountResp> cartCount(context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.cartCount, params: params);
+    return CartCountResp.fromJson(response.data);
   }
 }

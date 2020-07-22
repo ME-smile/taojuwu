@@ -1,4 +1,3 @@
-import 'package:taojuwu/models/base/count_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
 
 import 'sku_bean.dart';
@@ -170,7 +169,7 @@ class PromotionDetailComboDataBean {
       };
 }
 
-class ProductBean extends CountModel {
+class ProductBean {
   int goodsId;
   String goodsName;
   var measureId;

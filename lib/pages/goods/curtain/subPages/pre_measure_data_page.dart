@@ -6,9 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
 
-import 'package:taojuwu/pages/curtain/widgets/attr_options_bar.dart';
-import 'package:taojuwu/pages/curtain/widgets/sku_attr_picker.dart';
-import 'package:taojuwu/pages/curtain/widgets/window_pattern_view.dart';
+import 'package:taojuwu/pages/goods/curtain/widgets/attr_options_bar.dart';
+import 'package:taojuwu/pages/goods/curtain/widgets/sku_attr_picker.dart';
+import 'package:taojuwu/pages/goods/curtain/widgets/window_pattern_view.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/common_kit.dart';

@@ -49,6 +49,7 @@ class Routes {
 
   static const String orderEditLog = '/orderEditLog';
   static const String endProductDetail = '/endProductDetail';
+  static const String editGoodsAttr = '/editGoodsAttr';
   static void configureRoutes(Router router) {
     router.notFoundHandler = new Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -97,7 +98,7 @@ class Routes {
     router.define(mainfest, handler: RouteHandler.mainfest);
     router.define(logistics, handler: RouteHandler.logistics);
     router.define(orderEditLog, handler: RouteHandler.orderEditLog);
-
     router.define(endProductDetail, handler: RouteHandler.endProductDetail);
+    router.define(editGoodsAttr, handler: RouteHandler.editGoodsAttr);
   }
 }

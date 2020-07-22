@@ -135,7 +135,7 @@ class OrderModel {
             ? json['wc_attr'].values.toList()
             : [];
     attrs = list.map((item) => OrderProductAttr.fromJson(item)).toList();
-    if (json['wc_attr'] != null) {
+    if (json['wc_attr'] != null && json['wc_attr'] is Map) {
       roomName = json['wc_attr']['1'] == null
           ? ''
           : json['wc_attr']['1']['name'] ?? '';

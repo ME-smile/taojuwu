@@ -86,4 +86,6 @@ class ApiPath {
   static const String logistics = '/api/order/orderExpressList';
 
   static const String orderEditLog = '/api/order/getMeasureInstallRecords';
+
+  static const String cartCount = '/api/goods/cartCount';
 }

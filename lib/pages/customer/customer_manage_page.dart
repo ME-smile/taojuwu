@@ -150,9 +150,7 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
   }
 
   void saveInfoToTargetClient(CustomerModelBean model) {
-    TargetClient targetClient = TargetClient.instance;
-    targetClient.setClientName(model?.clientName);
-    targetClient.setClientId(model?.id);
+    TargetClient.instance.saveInfo(model?.id, model?.clientName);
   }
 
   Widget _buildListItem(CustomerModelBean model) {

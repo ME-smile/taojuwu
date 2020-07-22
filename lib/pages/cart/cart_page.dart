@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
-import 'package:taojuwu/icon/ZYIcon.dart';
+
 // import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
@@ -19,6 +19,7 @@ import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/goods_attr_card.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/step_counter.dart';
@@ -56,6 +57,7 @@ class _CartPageState extends State<CartPage>
         .then((List<ZYResponse> responses) {
       CartCategoryResp resp0 = responses?.first;
       CartListResp resp1 = responses?.last;
+
       if (resp0?.valid == true) {
         categoryList = resp0?.data?.data;
         tabController =
@@ -172,46 +174,6 @@ class _CartPageState extends State<CartPage>
             );
           });
     }
-  }
-
-  Widget buildAttrDescCard(List<CartGoodsAttr> attrs) {
-    if (attrs?.isEmpty == true) return Container();
-    return Container(
-      margin: EdgeInsets.only(top: 10, bottom: 16, left: 48),
-      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(color: Color(0xFFF5F5F9)),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-              child: GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.all(0),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 0,
-                crossAxisSpacing: 0,
-                childAspectRatio: 8),
-            itemBuilder: (BuildContext context, int index) {
-              CartGoodsAttr bean = attrs[index];
-              return Container(
-                child: Text(
-                  '${bean?.name ?? ''}:${bean?.value ?? ''}',
-                  style: TextStyle(color: Color(0xFF6D6D6D), fontSize: 12),
-                ),
-              );
-            },
-            itemCount: attrs?.length ?? 0,
-          )),
-          Container(
-            child: Icon(
-              ZYIcon.next,
-              size: 18,
-            ),
-          )
-        ],
-      ),
-    );
   }
 
   Widget buildProductCard(CartModel cartModel) {
@@ -365,7 +327,10 @@ class _CartPageState extends State<CartPage>
                   ))
                 ],
               ),
-              buildAttrDescCard(cartModel?.attrs),
+              GoodsAttrCard(
+                attrs: cartModel?.attrs,
+                goodsId: cartModel?.goodsId,
+              ),
               Text.rich(
                 TextSpan(text: '预计总金额', children: [
                   TextSpan(
@@ -419,25 +384,23 @@ class _CartPageState extends State<CartPage>
                               Text(provider?.isEditting == true ? '完成' : '编辑'))
                     ],
                     bottom: PreferredSize(
-                        child: isLoading
-                            ? Container()
-                            : TabBar(
-                                controller: tabController,
-                                indicatorSize: TabBarIndicatorSize.label,
-                                unselectedLabelStyle: TextStyle(
-                                    color: Color(0xFF333333), fontSize: 14),
-                                labelStyle: TextStyle(
-                                    color: Color(0xFF1B1B1B),
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500),
-                                labelPadding: EdgeInsets.only(
-                                    bottom: 5, left: 5, right: 5),
-                                tabs: List.generate(categoryList?.length ?? 0,
-                                    (int i) {
-                                  CartCategory bean = categoryList[i];
-                                  return Text('${bean?.name}(${bean?.count})');
-                                })),
-                        preferredSize: Size.fromHeight(20)),
+                        child: TabBar(
+                            controller: tabController,
+                            indicatorSize: TabBarIndicatorSize.label,
+                            unselectedLabelStyle: TextStyle(
+                                color: Color(0xFF333333), fontSize: 14),
+                            labelStyle: TextStyle(
+                                color: Color(0xFF1B1B1B),
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500),
+                            labelPadding:
+                                EdgeInsets.only(bottom: 5, left: 5, right: 5),
+                            tabs: List.generate(categoryList?.length ?? 0,
+                                (int i) {
+                              CartCategory bean = categoryList[i];
+                              return Text('${bean?.name}(${bean?.count})');
+                            })),
+                        preferredSize: Size.fromHeight(isLoading ? 0 : 20)),
                   ),
                   body: TabBarView(
                       controller: tabController,

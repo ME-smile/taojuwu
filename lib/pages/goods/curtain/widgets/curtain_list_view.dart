@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 // import 'package:taojuwu/pages/curtain/curtain_detail_page.dart';
-import 'package:taojuwu/pages/curtain/widgets/onsale_tag.dart';
+import 'package:taojuwu/pages/goods/base/onsale_tag.dart';
 import 'package:taojuwu/router/handlers.dart';
 // import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';

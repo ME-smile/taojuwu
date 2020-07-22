@@ -606,7 +606,7 @@ class OrderGoods {
     isShade = json['is_shade'];
     parentOrderStatus = json['parent_order_status'];
     goodsAttrStr = json['goods_attr_str'] ?? '';
-    Map map = json['wc_attr'];
+    Map map = json['wc_attr'] is Map ? json['wc_attr'] : {};
 
     List<Map<String, dynamic>> wrapper = [];
     map?.forEach((key, val) {

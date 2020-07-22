@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:fluro/fluro.dart';
+import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,7 @@ class Application {
   static SharedPreferences sp;
   static String deviceInfo;
   static String versionInfo;
+  static RouteObserver routeObserver = RouteObserver();
   static init() async {
     sp = await SharedPreferences.getInstance();
     deviceInfo = await getAppInfo();

@@ -7,7 +7,10 @@ import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 
 import 'package:taojuwu/models/zy_response.dart';
-import 'package:taojuwu/pages/curtain/widgets/onsale_tag.dart';
+import 'package:taojuwu/pages/goods/base/bottom_action_bar.dart';
+import 'package:taojuwu/pages/goods/base/cart_button.dart';
+import 'package:taojuwu/pages/goods/base/like_button.dart';
+import 'package:taojuwu/pages/goods/base/onsale_tag.dart';
 import 'package:taojuwu/providers/end_product_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -97,7 +100,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage> {
         builder: (BuildContext context, ProductBeanRes response) {
           ProductBeanDataWrapper wrapper = response?.data;
           ProductBean bean = wrapper?.goodsDetail;
-          TargetClient targetClient = TargetClient.instance;
+
           return ChangeNotifierProvider<EndProductProvider>(
             create: (BuildContext context) => EndProductProvider(bean),
             child: Consumer<EndProductProvider>(builder:
@@ -170,44 +173,36 @@ class _EndProductDetailPageState extends State<EndProductDetailPage> {
                                             text: bean?.goodsName ?? '',
                                             style: textTheme.caption)
                                       ])),
-                                  Text.rich(TextSpan(text: '', children: [
-                                    WidgetSpan(
-                                        child: ValueListenableBuilder(
-                                            valueListenable: hasCollected,
-                                            builder: (BuildContext context,
-                                                bool isLiked, _) {
-                                              return InkWell(
-                                                  child: Icon(
-                                                    ZYIcon.like,
-                                                    size: 18,
-                                                    color: isLiked
-                                                        ? Colors.red
-                                                        : const Color(
-                                                            0xFFCCCCCC),
-                                                  ),
-                                                  onTap: () {
-                                                    collect(context);
-                                                  });
-                                            })),
-                                    WidgetSpan(
-                                        child:
-                                            SizedBox(width: UIKit.width(30))),
-                                    WidgetSpan(
-                                        child: InkWell(
-                                            child: Icon(ZYIcon.cart, size: 18),
-                                            onTap: () {
-                                              if (targetClient
-                                                      .hasSelectedClient ==
-                                                  false) {
-                                                return CommonKit.showInfo(
-                                                    '请选择客户');
-                                              }
-                                              RouteHandler.goCartPage(
-                                                context,
-                                                clientId: targetClient.clientId,
-                                              );
-                                            }))
-                                  ]))
+                                  Container(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: UIKit.width(20)),
+                                          child: LikeButton(
+                                            hasLiked: false,
+                                            callback: () {
+                                              // collect(context, goodsProvider);
+                                            },
+                                          ),
+                                        ),
+                                        CartButton(
+                                          count: provider?.cartCount,
+                                          callback: () {
+                                            if (TargetClient.instance
+                                                    .hasSelectedClient ==
+                                                false) {
+                                              return CommonKit.showInfo(
+                                                  '请选择客户');
+                                            }
+                                            RouteHandler.goCartPage(context,
+                                                clientId: TargetClient
+                                                    .instance.clientId);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
                               VSpacing(20),
@@ -297,92 +292,15 @@ class _EndProductDetailPageState extends State<EndProductDetailPage> {
                       )
                     ]),
                   ),
-                  bottomNavigationBar: Container(
-                    color: themeData.primaryColor,
-                    padding: EdgeInsets.symmetric(
-                        horizontal: UIKit.width(20),
-                        vertical: UIKit.height(10)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 2,
-                          child: Text.rich(TextSpan(text: '预计:\n', children: [
-                            TextSpan(
-                                text: '¥${provider?.totalPrice ?? 0.00}',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500)),
-                          ])),
-                        ),
-                        Expanded(
-                            flex: 3,
-                            child: Container(
-                              child: Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    child: InkWell(
-                                      // onTap: provider?.canAddToCart == true
-                                      //     ? () {
-                                      //         if (!beforePurchase(
-                                      //             goodsProvider, context))
-                                      //           return;
-                                      //         setCartParams(goodsProvider);
-                                      //         addCart(context, goodsProvider);
-                                      //       }
-                                      //     : null,
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: UIKit.width(20),
-                                            vertical: UIKit.height(11)),
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                                width: 1,
-                                                color: provider?.canAddToCart ==
-                                                        true
-                                                    ? themeData.accentColor
-                                                    : themeData.disabledColor)),
-                                        child: Text(
-                                          '加入购物车',
-                                          textAlign: TextAlign.center,
-                                          style: provider?.canAddToCart == true
-                                              ? TextStyle()
-                                              : TextStyle(
-                                                  color:
-                                                      themeData.disabledColor),
-                                        ),
-                                      ),
-                                    ),
-                                    flex: 1,
-                                  ),
-                                  Expanded(
-                                      child: InkWell(
-                                        onTap: () {
-                                          // if (!beforePurchase(
-                                          //     goodsProvider, context)) return;
-                                          // createOrder(context);
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: UIKit.height(11)),
-                                          decoration: BoxDecoration(
-                                              color: themeData.accentColor,
-                                              border: Border.all(
-                                                  color:
-                                                      themeData.accentColor)),
-                                          child: Text(
-                                            '立即购买',
-                                            style: themeData
-                                                .accentTextTheme.button,
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-                                      flex: 1),
-                                ],
-                              ),
-                            ))
-                      ],
-                    ),
+                  bottomNavigationBar: PurchaseActionBar(
+                    totalPrice: '${provider?.totalPrice ?? '0.00'}',
+                    canAddToCart: provider?.canAddToCart,
+                    addToCartFunc: () {
+                      provider?.addCart(context);
+                    },
+                    purchaseFunc: () {
+                      provider?.createOrder(context);
+                    },
                   ),
                 ),
               );
@@ -464,11 +382,11 @@ class _EndProductDetailPageState extends State<EndProductDetailPage> {
                                       i == 0
                                           ? StepCounter(
                                               count: provider?.count,
-                                              model: provider?.goods,
+                                              model: provider?.curSkubean,
                                             )
                                           : Wrap(
                                               runSpacing: UIKit.sp(16),
-                                              spacing: UIKit.sp(32),
+                                              spacing: UIKit.sp(24),
                                               children: List.generate(
                                                   item?.value?.length, (index) {
                                                 ProductBeanSpecValueBean e =
