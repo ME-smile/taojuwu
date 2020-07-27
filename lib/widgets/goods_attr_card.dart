@@ -1,23 +1,48 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/base/goods_attr.dart';
+import 'package:taojuwu/models/shop/cart_list_model.dart';
+
 import 'package:taojuwu/router/handlers.dart';
 
 class GoodsAttrCard extends StatelessWidget {
-  final int goodsId;
+  final int clientId;
   final List<GoodsAttr> attrs;
+  final CartModel cartModel;
   final bool isInCartPage;
+  final Function callback;
   const GoodsAttrCard(
-      {Key key, this.attrs, this.goodsId, this.isInCartPage: true})
+      {Key key,
+      this.cartModel,
+      this.clientId,
+      this.callback,
+      this.isInCartPage: true,
+      this.attrs})
       : super(key: key);
 
+  int get goodsId => cartModel?.goodsId;
+  int get cartId => cartModel?.cartId;
+  List<GoodsAttr> get attrList => attrs ?? cartModel?.attrs;
+  List<GoodsAttr> get selectedValueAttrs =>
+      attrList?.where((element) => element?.hasSelected)?.toList();
+  String get params => jsonEncode(attrList?.map((e) => e?.toJson())?.toList());
   @override
   Widget build(BuildContext context) {
-    if (attrs?.isEmpty == true) return Container();
+    if (selectedValueAttrs?.isEmpty == true) return SizedBox.shrink();
     return InkWell(
       onTap: isInCartPage
           ? () {
-              RouteHandler.goEditGoodsAttrPage(context, goodsId);
+              if (callback != null) callback();
+              RouteHandler.goEditGoodsAttrPage(
+                context,
+                goodsId: goodsId,
+                params: params,
+                clientId: clientId,
+                cartId: cartId,
+              );
             }
           : null,
       child: Container(
@@ -38,7 +63,7 @@ class GoodsAttrCard extends StatelessWidget {
                   crossAxisSpacing: 0,
                   childAspectRatio: 8),
               itemBuilder: (BuildContext context, int index) {
-                GoodsAttr bean = attrs[index];
+                GoodsAttr bean = selectedValueAttrs[index];
                 return Container(
                   child: Text(
                     '${bean?.name ?? ''}:${bean?.value ?? ''}',
@@ -46,7 +71,7 @@ class GoodsAttrCard extends StatelessWidget {
                   ),
                 );
               },
-              itemCount: attrs?.length ?? 0,
+              itemCount: selectedValueAttrs?.length ?? 0,
             )),
             isInCartPage
                 ? Container(

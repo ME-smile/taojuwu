@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/triangle_clipper.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
 // import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class OptionView extends StatelessWidget {
@@ -34,24 +35,29 @@ class OptionView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            AnimatedOpacity(
-              opacity: 1,
-              duration: Duration(microseconds: 500),
-              child: Container(
-                width: UIKit.width(150),
-                height: UIKit.width(150),
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: NetworkImage(UIKit.getNetworkImgPath(img))),
-                    border: Border.all(
-                        color: showBorder
-                            ? Theme.of(context).accentColor
-                            : Colors.transparent,
-                        width: 1.2)),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: showBorder ? TriAngle() : Container(),
-                ),
+            Container(
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: showBorder
+                              ? Theme.of(context).accentColor
+                              : Colors.transparent,
+                          width: 1.2),
+                    ),
+                    width: UIKit.width(150),
+                    height: UIKit.width(150),
+                    child: ZYNetImage(
+                      imgPath: UIKit.getNetworkImgPath(img),
+                    ),
+                  ),
+                  Positioned(
+                    child: showBorder ? TriAngle() : Container(),
+                    right: 0,
+                    bottom: 0,
+                  ),
+                ],
               ),
             ),
             Padding(

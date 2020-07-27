@@ -22,12 +22,16 @@ class CartListResp extends ZYResponse<CartListWrapper> {
 class CartListWrapper {
   List<CartModel> data;
   String goodsLadderPreferential;
-
+  List<CartCategory> categoryList;
   CartListWrapper.fromJson(Map<String, dynamic> json) {
     data = List()
       ..addAll(
           (json['cart_list'] as List ?? []).map((o) => CartModel.fromJson(o)));
     goodsLadderPreferential = json['goods_ladder_preferential'];
+  }
+
+  setCategoryList(List<CartCategory> list) {
+    categoryList = list;
   }
 }
 
@@ -45,13 +49,18 @@ class CartCategoryListWrapper {
 
 class CartCategory {
   String name;
-  int id;
+  String id;
   int count;
+  int index;
+
+  bool get isAll => id == '0' ? true : false;
   CartCategory.fromJson(Map<String, dynamic> json) {
     name = json['name'];
-    id = json['id'];
+    id = '${json['category_id'] ?? ''}';
     count = json['num'];
   }
+
+  CartCategory(name, id, count);
 }
 
 class CartModel extends CountModel {
@@ -68,7 +77,7 @@ class CartModel extends CountModel {
   String skuName;
   double price;
   int count = 1;
-  int goodsPicture;
+
   int goodsType;
   int blId;
   int isShade;
@@ -82,11 +91,13 @@ class CartModel extends CountModel {
   int pointExchange;
   String earnestMoney;
   int promotionPrice;
+  String categoryId;
   String tag = '';
   Map attr;
   List<OrderProductAttrWrapper> wcAttr;
   PictureInfo pictureInfo;
   List<GoodsAttr> attrs;
+
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
   bool get isProduct => !isCustomizedProduct; //等于0时表示成品
   bool get isCustomizedProduct => goodsType == 1;
@@ -94,16 +105,18 @@ class CartModel extends CountModel {
   CartModel.fromJson(Map<String, dynamic> json) {
     cartId = json['cart_id'];
     clientId = json['client_id'];
+    categoryId = '${json['category_id'] ?? ''}';
     buyerId = json['buyer_id'];
     shopId = json['shop_id'];
     shopName = json['shop_name'];
     goodsId = json['goods_id'];
     goodsName = json['goods_name'];
-    skuId = json['sku_id'];
+    skuId = json['sku_id'] is int ? json['sku_id'] : int.parse(json['sku_id']);
     skuName = json['sku_name'];
-    price = json['price'] * 1.0;
-    count = json['num'];
-    goodsPicture = json['goods_picture'];
+    String priceStr = '${json['price'] ?? '0.00'}';
+    price = double.parse(priceStr);
+    count = json['num'] is int ? json['num'] : int.parse(json['num']);
+
     blId = json['bl_id'];
     isShade = json['is_shade'];
     estimatedPrice = json['estimated_price'];
@@ -117,7 +130,7 @@ class CartModel extends CountModel {
     promotionPrice = json['promotion_price'];
     goodsAttrStr = json['goods_attr_str'] ?? '';
     goodsType = json['goods_special_type'];
-    Map map = json['wc_attr'] ?? {};
+    Map map = json['wc_attr'] is Map ? json['wc_attr'] : {};
 
     List<Map<String, dynamic>> wrapper = [];
     map.forEach((key, val) {
@@ -127,6 +140,7 @@ class CartModel extends CountModel {
       }
       tmp['attr_name'] = Constants.ATTR_MAP[int.parse('$key')];
       tmp['attr'] = val is List ? val : [val];
+
       wrapper.add(tmp);
     });
 
@@ -136,14 +150,49 @@ class CartModel extends CountModel {
         ? new PictureInfo.fromJson(json['picture_info'])
         : null;
 
-    attr = json['wc_attr'];
+    attr = json['wc_attr'] is Map ? json['wc_attr'] : {};
 
-    if (json['goods_accessory'] != null) {
-      attrs = [];
-      json['goods_accessory']?.forEach((item) {
-        attrs.add((GoodsAttr.fromJson(item)));
-      });
-    }
+    //可修改的 3 5 8 12 13
+
+    List<Map> options = [];
+
+    List<int> mutableAttrs = [3, 5, 8, 12, 13];
+
+    List<int> keys = attr?.keys?.map((e) => int.parse(e))?.toList();
+    Constants.ATTR_MAP.forEach((key, value) {
+      if (keys?.contains(key) == false) {
+        attr['$key'] = {
+          'name': '无',
+        };
+      }
+    });
+
+    attr?.forEach((key, value) {
+      key = int.parse(key);
+      if (mutableAttrs?.contains(key) == true) {
+        Map<String, dynamic> dict = {};
+        String name;
+        dict['type'] = key;
+        if (value is Map) {
+          name = value['name'] ?? '';
+          dict['id'] = value is Map ? value['id'] ?? 0 : 0;
+          dict['has_selected'] = value['name']?.contains('无') == false &&
+              value['name']?.contains('不') == false;
+        }
+        if (value is List) {
+          name = value?.map((e) => e['name'] ?? '')?.toList()?.join(',');
+          dict['has_selected'] = true;
+          dict['id'] = value?.map((e) => e['id'] ?? 0)?.toList();
+        }
+        dict['attr_category'] = Constants.ATTR_MAP[key];
+        dict['attr_name'] = name;
+        options?.add(dict);
+      }
+    });
+    attrs = [];
+    options?.forEach((element) {
+      attrs.add((GoodsAttr.fromJson(element)));
+    });
   }
 
   Map<String, dynamic> toJson() => {
@@ -173,5 +222,62 @@ class CartModel extends CountModel {
 class CartCountResp extends ZYResponse<int> {
   CartCountResp.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     this.data = this.valid ? json['data'] : null;
+  }
+}
+
+class GoodsAttrWrapper {
+  List<GoodsAttr> goodsAttrList;
+  double totalPrice;
+
+  Map<String, dynamic> toJson() {
+    return {};
+  }
+
+  GoodsAttrWrapper.fromJson(Map<String, dynamic> json) {
+    totalPrice = json['estimated_price'] is double
+        ? json['estimated_price']
+        : double.parse(json['estimated_price'] ?? '0.00');
+    Map attr = json['wc_attr'] is Map ? json['wc_attr'] : {};
+
+    //可修改的 3 5 8 12 13
+
+    List<Map> options = [];
+
+    List<int> mutableAttrs = [3, 5, 8, 12, 13];
+
+    List<int> keys = attr?.keys?.map((e) => int.parse(e))?.toList();
+    Constants.ATTR_MAP.forEach((key, value) {
+      if (keys?.contains(key) == false) {
+        attr['$key'] = {
+          'name': '无',
+        };
+      }
+    });
+    attr?.forEach((key, value) {
+      key = int.parse(key);
+      if (mutableAttrs?.contains(key) == true) {
+        Map<String, dynamic> dict = {};
+        String name;
+        dict['type'] = key;
+        if (value is Map) {
+          name = value['name'] ?? '';
+          dict['id'] = value is Map ? value['id'] ?? 0 : 0;
+          dict['has_selected'] = value['name']?.contains('无') == false &&
+              value['name']?.contains('不') == false;
+        }
+        if (value is List) {
+          name = value?.map((e) => e['name'] ?? '')?.toList()?.join(',');
+          dict['has_selected'] = true;
+          dict['id'] = value?.map((e) => e['id'] ?? 0)?.toList();
+        }
+        dict['attr_category'] = Constants.ATTR_MAP[key];
+        dict['attr_name'] = name;
+        options?.add(dict);
+      }
+    });
+    goodsAttrList = [];
+    options?.forEach((element) {
+      goodsAttrList.add((GoodsAttr.fromJson(element)));
+    });
   }
 }

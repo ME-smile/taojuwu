@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:taojuwu/icon/ZYIcon.dart';
 
 class CommonKit {
   static Function debounce(Function callback, [int delay = 300]) {
@@ -16,31 +18,68 @@ class CommonKit {
     return fn();
   }
 
+  static initEasyLoading() {
+    EasyLoading.instance
+      ..successWidget = Icon(
+        ZYIcon.check,
+        color: Colors.white,
+        size: 36,
+      )
+      ..infoWidget = Icon(
+        ZYIcon.exclamation_point,
+        color: Colors.white,
+        size: 30,
+      )
+      ..errorWidget = Icon(
+        ZYIcon.close,
+        color: Colors.white,
+        size: 40,
+      );
+  }
+
+  static Function once(Function fn, [List args]) {
+    var result;
+    return () {
+      if (fn != null) {
+        result = Function.apply(fn, [] + args);
+        fn = null;
+      }
+      return result;
+    };
+  }
+
   static void showSuccess() {
+    once(initEasyLoading);
     EasyLoading.showSuccess('提交成功');
   }
 
   static void showLoading() {
+    once(initEasyLoading);
     EasyLoading.show(status: '正在加载');
   }
 
   static void showError() {
+    once(initEasyLoading);
     EasyLoading.showError('网络错误');
   }
 
   static void showErrorInfo(String msg) {
+    once(initEasyLoading);
     EasyLoading.showError(msg);
   }
 
   static void showToast(String msg) {
+    once(initEasyLoading);
     EasyLoading.showToast(msg);
   }
 
   static void showSuccessDIYInfo(String msg) {
+    once(initEasyLoading);
     EasyLoading.showSuccess(msg);
   }
 
   static void showInfo(String msg) {
+    once(initEasyLoading);
     EasyLoading.showInfo(msg);
   }
 

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
+import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 
 import 'package:taojuwu/models/zy_response.dart';
@@ -70,6 +71,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
     widthInputController?.dispose();
     heightInputController?.dispose();
     dyInputController?.dispose();
+    Application.routeObserver.unsubscribe(this);
   }
 
   @override
@@ -84,6 +86,12 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
 
   @override
   void didPopNext() {
+    OTPService.cartCount(context, params: {
+      'client_uid': TargetClient.instance.clientId,
+      'goods_id': id
+    }).then((CartCountResp cartCountResp) {
+      TargetOrderGoods.instance.goodsProvider?.cartCount = cartCountResp?.data;
+    }).catchError((err) => err);
     setState(() {});
   }
 
@@ -584,18 +592,18 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
     ProductBeanRes productBeanRes = data[1];
     ProductBeanDataWrapper wrapper = productBeanRes.data;
     bean = wrapper.goodsDetail;
-
+    CartCountResp cartCountResp = data[9];
     goodsProvider?.initDataWithFilter(
-      measureData: measureData,
-      bean: bean,
-      windowGauzeAttr: data[2],
-      craftAttr: data[3],
-      partAttr: data[4],
-      windowShadeAttr: data[5],
-      canopyAttr: data[6],
-      accessoryAttr: data[7],
-      roomAttr: data[8],
-    );
+        measureData: measureData,
+        bean: bean,
+        windowGauzeAttr: data[2],
+        craftAttr: data[3],
+        partAttr: data[4],
+        windowShadeAttr: data[5],
+        canopyAttr: data[6],
+        accessoryAttr: data[7],
+        roomAttr: data[8],
+        cartCount: cartCountResp?.data);
     setCartParams(goodsProvider);
   }
 

@@ -1,8 +1,10 @@
+import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
 
 class TargetOrderGoods {
   int orderGoodsId;
   GoodsProvider goodsProvider;
+  GoodsProvider cartGoodsProvider;
   bool hasConfirmMeasureData = false;
   TargetOrderGoods._internal();
   int orderId;
@@ -29,6 +31,10 @@ class TargetOrderGoods {
     _instance.goodsProvider = provider;
   }
 
+  setCartGoodsProvider(GoodsProvider provider) {
+    _instance?.cartGoodsProvider = provider;
+  }
+
   removeProvider() {
     goodsProvider?.release();
   }
@@ -37,5 +43,18 @@ class TargetOrderGoods {
     _instance.orderGoodsId = null;
     _instance.hasConfirmMeasureData = false;
     _instance.orderId = null;
+  }
+
+  GoodsAttrWrapper goodsAttrWrapper;
+
+  Future<GoodsAttrWrapper> setCartGoodsParams(Map arg) async {
+    arg?.forEach((key, value) {
+      if (value is Map) {
+        value?.forEach((key, value) {});
+      }
+    });
+    goodsAttrWrapper = GoodsAttrWrapper.fromJson(arg);
+    goodsAttrWrapper?.goodsAttrList?.forEach((e) {});
+    return goodsAttrWrapper;
   }
 }

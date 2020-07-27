@@ -1,5 +1,5 @@
 class Constants {
-  static const HOST = "http://106.14.219.213:80";
+  static const HOST = "http://106.14.219.213:8001";
   static const TRANSITION_DURATION = Duration(milliseconds: 300);
   //订单状态
 
@@ -147,14 +147,14 @@ class Constants {
   static const Map<int, String> ATTR_MAP = {
     1: '空间',
     2: '窗型',
-    3: '窗纱面料',
+    3: '窗纱',
     4: '工艺',
-    5: '配件',
+    5: '型材',
     6: '帘身款式',
     7: '帘身面料',
     8: '幔头',
     9: '尺寸',
-    12: '遮光里布',
+    12: '里布',
     13: '配饰'
   };
 

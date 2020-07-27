@@ -234,6 +234,25 @@ class OTPService {
     return <dynamic>[measureDataModelResp?.data?.measureData] + result;
   }
 
+  static Future fetchCurtainAttrData(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    params = params ?? {};
+
+    List<Future> list = [
+      windowGauzeAttr(context, params: params),
+      partAttr(context, params: params),
+      canopyAttr(context, params: params),
+      windowShadeAttr(context, params: params),
+      accessoryAttr(context, params: params),
+    ];
+    list.forEach((v) {
+      v.catchError((err) => err);
+    });
+    List<dynamic> result = await Future.wait(list);
+
+    return result;
+  }
+
   static Future<ZYResponse> addUser(Map<String, dynamic> params) async {
     Response response = await xhr.post(ApiPath.userAdd, data: params ?? {});
     return ZYResponse.fromJsonWithData(response.data);
@@ -325,21 +344,18 @@ class OTPService {
     return CartListResp.fromJson(response.data);
   }
 
-  static Future<List<ZYResponse>> fetchCartData(BuildContext context,
-      {Map<String, dynamic> params}) async {
+  static Future<CartListResp> fetchCartData(BuildContext context,
+      {Map<String, dynamic> params, bool requestCategoryData: true}) async {
     params = params ?? {};
 
-    List<Future<ZYResponse>> list = [
-      cartCategory(context, params: params),
-      cartList(context, params: params),
-    ];
+    CartListResp cartListResp = await cartList(context, params: params);
+    if (requestCategoryData) {
+      CartCategoryResp cartCategoryResp =
+          await cartCategory(context, params: params);
+      cartListResp?.data?.setCategoryList(cartCategoryResp?.data?.data);
+    }
 
-    list.forEach((v) {
-      v.catchError((err) => err);
-    });
-    List<ZYResponse> result = await Future.wait(list);
-
-    return result;
+    return cartListResp;
   }
 
   static Future<ZYResponse> delCart({Map<String, dynamic> params}) async {
@@ -377,7 +393,7 @@ class OTPService {
       {Map<String, dynamic> params}) async {
     Response response = await xhr.post(ApiPath.createOrder, formdata: params);
     ZYResponse<dynamic> resp =
-        ZYResponse<dynamic>.fromJsonWithData(response.data);
+        ZYResponse<dynamic>.fromJsonWithData(response?.data);
     if (resp?.valid != true) {
       CommonKit.showErrorInfo(resp?.message ?? '');
     }
@@ -541,6 +557,16 @@ class OTPService {
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.cartCount, params: params);
-    return CartCountResp.fromJson(response.data);
+    return CartCountResp.fromJson(response?.data);
+  }
+
+  static Future<ZYResponse> modifyCartAttr(
+      BuildContext context, Map<String, dynamic> params) async {
+    Response response = await xhr.post(
+      ApiPath.modifyCartAttr,
+      data: params ?? {},
+    );
+
+    return ZYResponse.fromJsonWithData(response?.data);
   }
 }

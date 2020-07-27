@@ -17,8 +17,8 @@ class CartButton extends StatelessWidget {
         child: isCartEmpty
             ? SizedBox.shrink()
             : Container(
-                width: 16,
-                height: 16,
+                // width: 16,
+                // height: 16,
                 child: Text(
                   '$count',
                   textAlign: TextAlign.center,
@@ -29,9 +29,9 @@ class CartButton extends StatelessWidget {
               ),
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(UIKit.getAssetsImagePath(isCartEmpty
-                    ? 'cart_deactive@2x.png'
-                    : 'cart_button@2x.png')))),
+                image: AssetImage(UIKit.getAssetsImagePath(
+          'cart_blank@2x.png',
+        )))),
       ),
     );
   }

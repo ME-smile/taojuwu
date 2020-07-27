@@ -737,14 +737,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                             : NotificationListener<ScrollNotification>(
                                 onNotification:
                                     (ScrollNotification scrollNotification) {
-                                  print(
-                                      '$offsetY============${scrollNotification?.metrics?.pixels}');
-                                  print(
-                                      '${offsetY == scrollNotification?.metrics?.pixels}');
-
                                   if (offsetY ==
                                       scrollNotification?.metrics?.pixels) {
-                                    print('停止滚动');
                                     //停止滚动
 
                                     showFloatingButton = true;

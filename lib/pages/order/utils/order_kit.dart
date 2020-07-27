@@ -85,6 +85,8 @@ class OrderKit {
           useRootNavigator: false,
           builder: (BuildContext context) {
             return AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
               title: Text(
                 '您确定要取消订单？',
                 textAlign: TextAlign.center,
@@ -93,22 +95,26 @@ class OrderKit {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Container(
-                    height: UIKit.height(72),
-                    color: const Color(0xffF5F5F5),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: UIKit.width(10),
-                    ),
-                    child: TextField(
-                      onChanged: (String text) {
-                        why = text;
-                      },
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                        // contentPadding: EdgeInsets.symmetric(vertical: 0),
-                        hintText: '请概述您需要取消订单的原因(选填)',
+                      color: const Color(0xffF5F5F5),
+                      constraints: BoxConstraints(
+                        maxHeight: 36,
                       ),
-                    ),
-                  ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: UIKit.width(10),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                        child: TextField(
+                          onChanged: (String text) {
+                            why = text;
+                          },
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              // contentPadding: EdgeInsets.symmetric(vertical: 0),
+                              hintText: '请概述您需要取消订单的原因(选填)',
+                              contentPadding: EdgeInsets.all(10)),
+                        ),
+                      )),
                   Container(
                     alignment: Alignment.center,
                     child: Row(

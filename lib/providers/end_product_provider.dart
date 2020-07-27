@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 import 'package:taojuwu/models/shop/sku_bean.dart';
 import 'package:taojuwu/models/zy_response.dart';
@@ -126,7 +127,6 @@ class EndProductProvider with ChangeNotifier {
         .then((ZYResponse response) {
           if (response?.valid == true) {
             cartCount = response?.data;
-            print(response?.data);
           }
         })
         .catchError((err) => err)
@@ -156,5 +156,24 @@ class EndProductProvider with ChangeNotifier {
             }
           ],
         }));
+  }
+
+  Map<String, dynamic> get productAttrArg {
+    return {'sku_id': goods?.skuId, 'num': count};
+  }
+
+  Future modifyEndProductAttr(BuildContext context,
+      {Map<String, dynamic> params,
+      CartModel cartModel,
+      Function callback}) async {
+    params.addAll(productAttrArg);
+
+    OTPService.modifyCartAttr(context, params).then((ZYResponse response) {
+      if (response?.valid == true) {
+        Navigator.of(context).pop();
+        cartModel = CartModel.fromJson(response?.data);
+        if (callback != null) callback();
+      }
+    }).catchError((err) => err);
   }
 }

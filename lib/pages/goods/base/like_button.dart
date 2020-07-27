@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taojuwu/icon/ZYIcon.dart';
+import 'package:taojuwu/utils/ui_kit.dart';
 
 class LikeButton extends StatefulWidget {
   final bool hasLiked;
@@ -18,9 +18,13 @@ class _LikeButtonState extends State<LikeButton> {
     return InkWell(
       onTap: callback,
       child: Container(
-        child: Icon(ZYIcon.like,
-            color: hasLiked ? Color(0xFFFF6161) : Color(0xFFCCCCCC)),
-      ),
+          child: Image.asset(
+        UIKit.getAssetsImagePath(
+          hasLiked ? 'heart_fill@2x.png' : 'heart_blank@2x.png',
+        ),
+        width: 25,
+        height: 25,
+      )),
     );
   }
 }

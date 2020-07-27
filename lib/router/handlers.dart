@@ -8,7 +8,7 @@ import 'package:taojuwu/pages/after_sale_service/after_sale_service_page.dart';
 
 import 'package:taojuwu/pages/cart/cart_page.dart';
 import 'package:taojuwu/pages/collect/collect_page.dart';
-import 'package:taojuwu/pages/edit_goods_attr/edit_goods_attr_page.dart';
+import 'package:taojuwu/pages/goods/curtain/subPages/edit_goods_attr_page.dart';
 import 'package:taojuwu/pages/goods/curtain/curtain_detail_page.dart';
 import 'package:taojuwu/pages/goods/curtain/curtain_mall_page.dart';
 import 'package:taojuwu/pages/goods/curtain/subPages/edit_open_mode_page.dart';
@@ -350,7 +350,7 @@ class RouteHandler {
   });
 
   static goCartPage(BuildContext context, {int clientId: -1}) {
-    _jumpTo(context, '${Routes.cart}?clientId=$clientId');
+    _jumpTo(context, '${Routes.cart}?clientId=$clientId', maintainState: true);
   }
 
   static Handler commitOrder = Handler(
@@ -543,11 +543,31 @@ class RouteHandler {
 
   static Handler editGoodsAttr = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    int id = int.parse(params['id']?.first);
+    int goodId = int.parse(params['goodsId']?.first);
+    int clientId = int.parse(params['clientId']?.first);
+    int cartId = int.parse(params['cartId']?.first);
+    String args = params['params']?.first;
+    args = FluroConvertUtils.fluroCnParamsDecode(args);
 
-    return EditGoodsAttrPage(id: id);
+    List json = jsonDecode(args);
+
+    return EditGoodsAttrPage(
+      goodsId: goodId,
+      clientId: clientId,
+      cartId: cartId,
+      attrs: json,
+    );
   });
-  static goEditGoodsAttrPage(BuildContext context, int id) {
-    _jumpTo(context, '${Routes.editGoodsAttr}?id=$id');
+  static goEditGoodsAttrPage(
+    BuildContext context, {
+    int goodsId,
+    String params,
+    int clientId,
+    int cartId,
+  }) {
+    params =
+        params != null ? FluroConvertUtils.fluroCnParamsEncode(params) : '';
+    _jumpTo(context,
+        '${Routes.editGoodsAttr}?goodsId=$goodsId&params=$params&clientId=$clientId&cartId=$cartId');
   }
 }

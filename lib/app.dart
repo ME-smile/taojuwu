@@ -5,7 +5,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/pages/home/home_page.dart';
 import 'package:taojuwu/pages/login/login_page.dart';
 
@@ -61,22 +60,6 @@ class App extends StatelessWidget {
           enableBallisticLoad: true,
           child: FlutterEasyLoading(
               child: Builder(builder: (BuildContext context) {
-            EasyLoading.instance
-              ..successWidget = Icon(
-                ZYIcon.check,
-                color: Colors.white,
-                size: 36,
-              )
-              ..infoWidget = Icon(
-                ZYIcon.exclamation_point,
-                color: Colors.white,
-                size: 30,
-              )
-              ..errorWidget = Icon(
-                ZYIcon.close,
-                color: Colors.white,
-                size: 40,
-              );
             return MaterialApp(
                 title: '淘居屋',
                 // initialRoute: userProvider?.isLogin == true ? Routes.home : null,

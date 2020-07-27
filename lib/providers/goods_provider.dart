@@ -1,7 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+
 import 'package:taojuwu/models/order/order_detail_model.dart';
+import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 import 'package:taojuwu/models/shop/sku_attr/accessory_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/canopy_attr.dart';
@@ -204,43 +205,83 @@ class GoodsProvider with ChangeNotifier {
         _partAttr?.data?.isNotEmpty == true ? _partAttr?.data?.first : null;
   }
 
-  void initDataWithFilter({
-    OrderGoodsMeasure measureData,
-    ProductBean bean,
-    WindowGauzeAttr windowGauzeAttr,
-    CraftAttr craftAttr,
-    PartAttr partAttr,
-    WindowShadeAttr windowShadeAttr,
-    CanopyAttr canopyAttr,
-    AccessoryAttr accessoryAttr,
-    RoomAttr roomAttr,
-  }) {
+  void initDataWithFilter(
+      {OrderGoodsMeasure measureData,
+      ProductBean bean,
+      WindowGauzeAttr windowGauzeAttr,
+      CraftAttr craftAttr,
+      PartAttr partAttr,
+      WindowShadeAttr windowShadeAttr,
+      CanopyAttr canopyAttr,
+      AccessoryAttr accessoryAttr,
+      RoomAttr roomAttr,
+      int cartCount}) {
     initData(
-      measureData: measureData,
-      bean: bean,
-      windowGauzeAttr: windowGauzeAttr,
-      craftAttr: craftAttr,
-      partAttr: partAttr,
-      windowShadeAttr: windowShadeAttr,
-      canopyAttr: canopyAttr,
-      accessoryAttr: accessoryAttr,
-      roomAttr: roomAttr,
-    );
+        measureData: measureData,
+        bean: bean,
+        windowGauzeAttr: windowGauzeAttr,
+        craftAttr: craftAttr,
+        partAttr: partAttr,
+        windowShadeAttr: windowShadeAttr,
+        canopyAttr: canopyAttr,
+        accessoryAttr: accessoryAttr,
+        roomAttr: roomAttr,
+        cartCount: cartCount);
     filterCraft();
     filterParts();
   }
 
-  void initData({
-    OrderGoodsMeasure measureData,
-    ProductBean bean,
-    WindowGauzeAttr windowGauzeAttr,
-    CraftAttr craftAttr,
-    PartAttr partAttr,
-    WindowShadeAttr windowShadeAttr,
-    CanopyAttr canopyAttr,
-    AccessoryAttr accessoryAttr,
-    RoomAttr roomAttr,
-  }) {
+  initDataFromGoodsAttr(data, Map<int, dynamic> idMap) {
+    _windowGauzeAttr = data[0];
+    int wndowGauzeAttrId = idMap[3];
+    _curwindowGauzeAttrBean = _windowGauzeAttr?.data?.isNotEmpty == true
+        ? windowGauzeAttr?.data
+                ?.firstWhere((element) => element?.id == wndowGauzeAttrId) ??
+            _windowGauzeAttr?.data?.first
+        : null;
+    _partAttr = data[1];
+    int partAttrId = idMap[5];
+    _curPartAttrBean = _partAttr?.data?.isNotEmpty == true
+        ? _partAttr?.data?.firstWhere((element) => element.id == partAttrId) ??
+            _partAttr?.data?.first
+        : null;
+    _canopyAttr = data[2];
+    int canopyAttrId = idMap[8];
+    _curCanopyAttrBean = _canopyAttr?.data?.isNotEmpty == true
+        ? _canopyAttr?.data
+                ?.firstWhere((element) => element?.id == canopyAttrId) ??
+            _canopyAttr?.data?.first
+        : null;
+    _windowShadeAttr = data[3];
+    int windowShadeAttrId = idMap[12];
+    _curWindowShadeAttrBean = _windowShadeAttr?.data?.isNotEmpty == true
+        ? _windowShadeAttr?.data
+                ?.firstWhere((element) => element?.id == windowShadeAttrId) ??
+            _windowShadeAttr?.data?.first
+        : null;
+    _accessoryAttr = data[4];
+    idMap[13] = idMap[13] is List ? idMap[13] : [idMap[13]];
+    List accessoryAttrIdList =
+        idMap[13]?.map((e) => e is int ? e : int.parse(e))?.toList();
+
+    _accessoryAttr?.data?.forEach((element) {
+      element?.isChecked =
+          accessoryAttrIdList.contains(element?.id) ? true : false;
+    });
+    notifyListeners();
+  }
+
+  void initData(
+      {OrderGoodsMeasure measureData,
+      ProductBean bean,
+      WindowGauzeAttr windowGauzeAttr,
+      CraftAttr craftAttr,
+      PartAttr partAttr,
+      WindowShadeAttr windowShadeAttr,
+      CanopyAttr canopyAttr,
+      AccessoryAttr accessoryAttr,
+      RoomAttr roomAttr,
+      int cartCount}) {
     _measureData = measureData;
     _goods = bean;
     _windowGauzeAttr = windowGauzeAttr;
@@ -278,7 +319,7 @@ class GoodsProvider with ChangeNotifier {
         _canopyAttr?.data?.isNotEmpty == true ? _canopyAttr?.data?.first : null;
     _curRoomAttrBean =
         _roomAttr?.data?.isNotEmpty == true ? _roomAttr?.data?.first : null;
-
+    _cartCount = cartCount;
     if (measureData != null) {
       initMeasureData();
     }
@@ -292,6 +333,8 @@ class GoodsProvider with ChangeNotifier {
   WindowShadeAttrBean get curWindowShadeAttrBean => _curWindowShadeAttrBean;
   CanopyAttrBean get curCanopyAttrBean => _curCanopyAttrBean;
   int get createType => _createType;
+  String get curAccessoryAttrBeansName =>
+      curAccessoryAttrBeans?.map((e) => e?.name)?.toList()?.join(',') ?? '无';
   List<AccessoryAttrBean> get curAccessoryAttrBeans =>
       accessoryAttr?.data?.isNotEmpty == true
           ? accessoryAttr?.data
@@ -446,11 +489,10 @@ class GoodsProvider with ChangeNotifier {
   }
 
   String get checkedSubOptionStr {
-    print(checkedSubOption);
     List list = [];
     checkedSubOption?.forEach((key, value) {
       String tmp = '${key[0]}${value?.first[0]}';
-      print(tmp);
+
       list.add(tmp);
     });
 
@@ -775,7 +817,7 @@ class GoodsProvider with ChangeNotifier {
     WindowPatternAttr.reset();
   }
 
-  Map<String, dynamic> getWindowGauzeAttrArgs() {
+  Map<String, dynamic> get getWindowGauzeAttrArgs {
     return {
       //工艺方式
       '1': {
@@ -806,7 +848,7 @@ class GoodsProvider with ChangeNotifier {
     };
   }
 
-  Map<String, dynamic> getWindowRollerAttrArgs() {
+  Map<String, dynamic> get getWindowRollerAttrArgs {
     return {
       //工艺方式
       '1': {
@@ -829,9 +871,9 @@ class GoodsProvider with ChangeNotifier {
 
   Map<String, dynamic> get attrArgs {
     return isWindowGauze == true
-        ? getWindowGauzeAttrArgs()
+        ? getWindowGauzeAttrArgs
         : isWindowRoller == true
-            ? getWindowRollerAttrArgs()
+            ? getWindowRollerAttrArgs
             : {
                 //空间
                 '1': {
@@ -906,7 +948,6 @@ class GoodsProvider with ChangeNotifier {
         '打开方式': openModeParams
       }
     };
-
     params['data'] = jsonEncode(data);
     return params;
   }
@@ -960,11 +1001,11 @@ class GoodsProvider with ChangeNotifier {
       return false;
     }
     if (double.parse(h) == 0) {
-      CommonKit?.showInfo('高度不能为0哦');
+      CommonKit?.showInfo('高��不能为0哦');
       return false;
     }
     if (double.parse(h) > 350) {
-      CommonKit.showInfo('暂不支持3.5m以上定制');
+      CommonKit.showInfo('暂不支持3.5m�������������上定制');
       h = '350';
       return false;
     }
@@ -1006,7 +1047,6 @@ class GoodsProvider with ChangeNotifier {
       };
       OTPService.addCart(params: cartParams)
           .then((ZYResponse response) {
-            print(cartParams);
             if (response?.valid == true) {
               cartCount = response?.data;
             }
@@ -1030,6 +1070,35 @@ class GoodsProvider with ChangeNotifier {
   }
 
   Future purchase(BuildContext context) async {
+    print({
+      'tag': curRoomAttrBean?.name ?? '',
+      'img': goods?.picCoverMid ?? '',
+      'goods_name': goods?.goodsName,
+      'price': goods?.price,
+      'desc': attrDesc,
+      'measure_id': measureId ?? '',
+      'sku_id': goods?.skuId,
+      'goods_id': goods?.goodsId ?? '',
+      'total_price': totalPrice ?? 0.0,
+      'goods_type': goodsType,
+      'goods_attrs': jsonEncode([
+        {
+          'attr_category': '窗纱',
+          'attr_name': _curwindowGauzeAttrBean?.name,
+        },
+        {
+          'attr_category': '型材',
+          'attr_name': _curPartAttrBean?.name,
+        },
+        {'attr_category': '里布', 'attr_name': _curWindowShadeAttrBean?.name},
+        {'attr_category': '幔头', 'attr_name': _curCanopyAttrBean?.name},
+        {
+          'attr_category': '配饰',
+          'attr_name':
+              curAccessoryAttrBeans?.map((e) => e?.name)?.toList()?.join(',')
+        }
+      ])
+    });
     RouteHandler.goCommitOrderPage(context,
         params: jsonEncode({
           'data': [
@@ -1044,31 +1113,82 @@ class GoodsProvider with ChangeNotifier {
               'goods_id': goods?.goodsId ?? '',
               'total_price': totalPrice ?? 0.0,
               'goods_type': goodsType,
+              'attr': jsonEncode(attrArgs),
               'goods_attrs': jsonEncode([
                 {
                   'attr_category': '窗纱',
-                  'attr_name': _curwindowGauzeAttrBean?.name,
+                  'attr_name': _curwindowGauzeAttrBean?.name ?? '',
                 },
                 {
                   'attr_category': '型材',
-                  'attr_name': _curPartAttrBean?.name,
+                  'attr_name': _curPartAttrBean?.name ?? '',
                 },
                 {
                   'attr_category': '里布',
-                  'attr_name': _curWindowShadeAttrBean?.name
+                  'attr_name': _curWindowShadeAttrBean?.name ?? ''
                 },
-                {'attr_category': '幔头', 'attr_name': _curCanopyAttrBean?.name},
+                {
+                  'attr_category': '幔头',
+                  'attr_name': _curCanopyAttrBean?.name ?? ''
+                },
                 {
                   'attr_category': '配饰',
                   'attr_name': curAccessoryAttrBeans
-                      ?.map((e) => e?.name)
-                      ?.toList()
-                      ?.join(',')
+                          ?.map((e) => e?.name)
+                          ?.toList()
+                          ?.join(',') ??
+                      ''
                 }
               ])
             }
           ]
         }));
+  }
+
+  Map<String, dynamic> get cartAttrArg {
+    return {
+      '3': {
+        'name': curWindowGauzeAttrBean?.name ?? '',
+        'id': curWindowGauzeAttrBean?.id ?? ''
+      },
+      '5': {
+        'name': curPartAttrBean?.name ?? '',
+        'id': curPartAttrBean?.id ?? ''
+      },
+      '8': {
+        'name': curCanopyAttrBean?.name ?? '',
+        'id': curCanopyAttrBean?.id ?? '',
+      },
+      //遮光里布
+      '12': {
+        'name': curWindowShadeAttrBean?.name ?? '',
+        'id': curWindowShadeAttrBean?.id ?? ''
+      },
+      // 配饰
+      '13': (curAccessoryAttrBeans?.isEmpty == true
+              ? [accessoryAttr?.data?.first]
+              : curAccessoryAttrBeans)
+          ?.map((item) => {'name': item.name, 'id': item.id})
+          ?.toList()
+    };
+  }
+
+  void modifyCartAttr(BuildContext context,
+      {Function callback, Map<String, dynamic> params}) {
+    params.addAll({'wc_attr': jsonEncode(cartAttrArg)});
+    OTPService.modifyCartAttr(context, params).then((ZYResponse response) {
+      if (response?.valid == true) {
+        TargetOrderGoods.instance
+            .setCartGoodsParams(response?.data)
+            .then((GoodsAttrWrapper goodsAttrWrapper) {
+          Navigator.of(context).pop();
+        });
+
+        if (callback != null) callback();
+      } else {
+        CommonKit.showInfo(response?.message ?? '');
+      }
+    }).catchError((err) => err);
   }
 
   void selectProduct(

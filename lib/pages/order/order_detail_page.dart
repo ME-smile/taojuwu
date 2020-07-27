@@ -235,7 +235,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     //         ),
     //         buildTimeInfoBar('客户意向安装时���', model?.installTime ?? ''),
     //         buildTimeInfoBar('需��量窗数', '${model?.windowNum ?? 0}��'),
-    //         buildTimeInfoBar('定金', '��������������������������������������������������������������${model?.orderEarnestMoney ?? 0}'),
+    //         buildTimeInfoBar('定金', '���������������������������������������������������������������${model?.orderEarnestMoney ?? 0}'),
     //         buildTimeInfoBar(
     //             '备注',
     //             model?.orderRemark == null ||
@@ -662,14 +662,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         );
       },
     );
-  }
-
-  @override
-  void deactivate() {
-    super.deactivate();
-    if (mounted) {
-      fetchData();
-    }
   }
 
   void saveInfoForTargetClient(OrderDetailModel model) {
