@@ -92,13 +92,21 @@ class CartProvider with ChangeNotifier {
     String categoryId = cartModel?.categoryId;
     if (i != -1) {
       models?.removeAt(i);
-
+      int totalCount = curCategory?.count;
+      totalCount--;
+      curCategory?.count = totalCount > 0 ? totalCount : 0;
       //在全部tab下
+
       categoryList?.forEach((element) {
-        if (element?.id == categoryId && element?.id == curCategory?.id) {
-          element?.count--;
+        if (curCategory?.isAll == true) {
+          if (element?.id == categoryId) {
+            element?.count--;
+          }
+        } else {
+          if (element?.isAll == true) {
+            element?.count--;
+          }
         }
-        curCategory?.count--;
       });
     }
     notifyListeners();
@@ -110,13 +118,18 @@ class CartProvider with ChangeNotifier {
     String categoryId = cartModels?.first?.categoryId;
     int len = cartModels?.length ?? 0;
 
+    int count = curCategory?.count ?? 0;
+    curCategory?.count = count - len > 0 ? count - len : 0;
+
     categoryList?.forEach((element) {
-      if (element?.id == categoryId && element?.id != curCategory?.id) {
-        int count = element?.count ?? 0;
-        element?.count = count - len > 0 ? count - len : 0;
+      if (curCategory?.isAll == true) {
+        if (element?.id == categoryId) {}
+      } else {
+        if (element?.isAll == true) {
+          int count = element?.count ?? 0;
+          element?.count = count - len > 0 ? count - len : 0;
+        }
       }
-      int count = curCategory?.count ?? 0;
-      curCategory?.count = count - len > 0 ? count - len : 0;
     });
     models?.removeWhere((element) => element?.isChecked);
     notifyListeners();

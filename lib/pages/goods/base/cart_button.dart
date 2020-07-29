@@ -3,8 +3,13 @@ import 'package:taojuwu/utils/ui_kit.dart';
 
 class CartButton extends StatelessWidget {
   final int count;
+
   final Function callback;
-  const CartButton({Key key, this.count = 0, this.callback}) : super(key: key);
+  const CartButton({
+    Key key,
+    this.count = 0,
+    this.callback,
+  }) : super(key: key);
 
   bool get isCartEmpty => count == 0;
   Widget build(BuildContext context) {

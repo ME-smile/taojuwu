@@ -65,8 +65,10 @@ class GoodsProvider with ChangeNotifier {
   }
 
   set cartCount(int count) {
-    _cartCount = count;
-    notifyListeners();
+    Future.delayed(Duration(milliseconds: 800), () {
+      _cartCount = count;
+      notifyListeners();
+    });
   }
 
   String get curInstallMode {

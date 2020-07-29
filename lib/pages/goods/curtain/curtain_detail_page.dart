@@ -40,6 +40,8 @@ import 'widgets/attr_options_bar.dart';
 import '../base/onsale_tag.dart';
 import 'widgets/zy_dialog.dart';
 
+typedef AddToCartCallback = Function(Offset endPoint, Key rootKey);
+
 class CurtainDetailPage extends StatefulWidget {
   CurtainDetailPage(
     this.id, {
@@ -59,6 +61,9 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
   TextEditingController heightInputController;
   TextEditingController dyInputController;
 
+  GlobalKey cartKey = GlobalKey();
+  GlobalKey rootKey = GlobalKey();
+  Offset endPoint;
   int id;
   String partType;
 
@@ -629,6 +634,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
               builder: (BuildContext context, GoodsProvider goodsProvider, _) {
                 return WillPopScope(
                     child: Scaffold(
+                        key: rootKey,
                         body: NestedScrollView(
                             headerSliverBuilder: (BuildContext context,
                                 bool innerBoxIsScrolled) {
@@ -711,6 +717,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
                                                     ),
                                                   ),
                                                   CartButton(
+                                                    key: cartKey,
                                                     count: goodsProvider
                                                         ?.cartCount,
                                                     callback: () {
@@ -726,7 +733,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
                                                               .instance
                                                               .clientId);
                                                     },
-                                                  ),
+                                                  )
                                                 ],
                                               ),
                                             )
@@ -859,7 +866,10 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
                                 )
                               ],
                             )),
-                        bottomNavigationBar: BottomActionButtonBar()),
+                        bottomNavigationBar: BottomActionButtonBar(
+                          rootKey: rootKey,
+                          cartKey: cartKey,
+                        )),
                     onWillPop: () {
                       Navigator.of(context).pop();
                       TargetOrderGoods.instance.clear();
@@ -874,7 +884,10 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
 }
 
 class BottomActionButtonBar extends StatelessWidget {
-  const BottomActionButtonBar({Key key}) : super(key: key);
+  final GlobalKey rootKey;
+  final GlobalKey cartKey;
+  const BottomActionButtonBar({Key key, this.rootKey, this.cartKey})
+      : super(key: key);
 
   // void setParams(GoodsProvider provider) {
   //   params['dataId'] = '${provider?.windowPatternId ?? ''}';
@@ -921,6 +934,8 @@ class BottomActionButtonBar extends StatelessWidget {
                 ))
             : PurchaseActionBar(
                 totalPrice: goodsProvider?.totalPrice ?? '0.00',
+                rootKey: rootKey,
+                cartKey: cartKey,
                 addToCartFunc: () {
                   goodsProvider?.addCart(context);
                 },

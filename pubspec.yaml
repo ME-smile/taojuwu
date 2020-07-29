@@ -49,6 +49,7 @@ dependencies:
   animations: ^1.1.1
   flutter_staggered_animations: ^0.1.2
   flutter_swiper: ^1.1.6
+  add_cart_parabola: ^0.0.6
   # barcode_scan:
   #   git:
   #     url: https://github.com/simplezhli/flutter_barcode_reader.git
