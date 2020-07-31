@@ -125,7 +125,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       width: 12,
       height: 12,
       callback: () {
-        scrollToTop();
+        if (goodsList?.isEmpty != true) {
+          scrollToTop();
+        }
+
         if (isGridMode) return;
         setState(() {
           params['page_index'] = 1;
@@ -141,7 +144,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       width: 12.5,
       height: 12.5,
       callback: () {
-        scrollToTop();
+        if (goodsList?.isEmpty != true) {
+          scrollToTop();
+        }
+
         if (!isGridMode) return;
         setState(() {
           params['page_index'] = 1;
@@ -632,6 +638,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   GridView buildGridView() {
     return GridView.builder(
         // physics: NeverScrollableScrollPhysics(),
+        controller: scrollController,
         shrinkWrap: true,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -658,6 +665,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     return ListView.builder(
         // physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
+        controller: scrollController,
         itemCount:
             goodsList != null && goodsList.isNotEmpty ? goodsList?.length : 0,
         itemBuilder: (BuildContext context, int i) {
@@ -773,33 +781,33 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                         ? Center(
                             child: LoadingCircle(),
                           )
-                        : AnimationLimiter(
-                            child: SmartRefresher(
-                              enablePullDown: true,
-                              enablePullUp: true,
-                              primary: false,
-                              onRefresh: () async {
-                                params['page_index'] = 1;
-                                isRefresh = true;
-                                requestGoodsData();
-                              },
-                              onLoading: () async {
-                                params['page_index']++;
+                        : goodsList?.isEmpty == true
+                            ? NoData(
+                                isFromSearch: isFromSearch,
+                              )
+                            : AnimationLimiter(
+                                child: SmartRefresher(
+                                  enablePullDown: true,
+                                  enablePullUp: true,
+                                  primary: false,
+                                  onRefresh: () async {
+                                    params['page_index'] = 1;
+                                    isRefresh = true;
+                                    requestGoodsData();
+                                  },
+                                  onLoading: () async {
+                                    params['page_index']++;
 
-                                isRefresh = false;
-                                requestGoodsData();
-                              },
-                              controller: _refreshController,
-                              scrollController: scrollController,
-                              child: goodsList?.isEmpty == true
-                                  ? NoData(
-                                      isFromSearch: isFromSearch,
-                                    )
-                                  : isGridMode
+                                    isRefresh = false;
+                                    requestGoodsData();
+                                  },
+                                  controller: _refreshController,
+                                  scrollController: scrollController,
+                                  child: isGridMode
                                       ? buildGridView()
                                       : buildListView(),
-                            ),
-                          ),
+                                ),
+                              ),
                     GZXDropDownMenu(
                         controller: menuController,
                         animationMilliseconds: 400,

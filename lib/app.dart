@@ -60,10 +60,9 @@ class App extends StatelessWidget {
           enableBallisticLoad: true,
           child: FlutterEasyLoading(
               child: MaterialApp(
-                  title: '淘居屋',
+                  title: '淘居屋商家',
                   // initialRoute: userProvider?.isLogin == true ? Routes.home : null,
                   debugShowCheckedModeBanner: false,
-                  
                   onGenerateRoute: Application.router.generator,
                   darkTheme: ThemeProvider.lightTheme,
                   theme: ThemeProvider.lightTheme,

@@ -111,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
     UserProvider user = Provider.of<UserProvider>(context, listen: false);
     user.logOut();
     TargetClient.instance.clear();
-    RouteHandler.goLoginPage(context);
+    RouteHandler.goLoginPage(context, clearStack: true);
   }
 
   void logout() {

@@ -81,8 +81,9 @@ class RouteHandler {
     return LoginPage();
   });
 
-  static goLoginPage(BuildContext context, {bool replace: false}) {
-    _jumpTo(context, Routes.login, replace: replace);
+  static goLoginPage(BuildContext context,
+      {bool replace: false, bool clearStack: true}) {
+    _jumpTo(context, Routes.login, replace: replace, clearStack: clearStack);
   }
 
   static Handler curtain = Handler(

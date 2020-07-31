@@ -89,23 +89,29 @@ class OrderKit {
                 '您确定要取消订单？',
                 textAlign: TextAlign.center,
               ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  Container(
-                    height: UIKit.height(72),
-                    color: const Color(0xffF5F5F5),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: UIKit.width(10),
+                  ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxHeight: 36,
                     ),
-                    child: TextField(
-                      onChanged: (String text) {
-                        why = text;
-                      },
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                        // contentPadding: EdgeInsets.symmetric(vertical: 0),
-                        hintText: '请概述您需要取消订单的原因(选填)',
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      child: TextField(
+                        onChanged: (String text) {
+                          why = text;
+                        },
+                        maxLines: 1,
+                        decoration: InputDecoration(
+                          // contentPadding: EdgeInsets.symmetric(vertical: 0),
+                          hintText: '请概述您需要取消订单的原因(选填)',
+                          filled: true,
+                          fillColor: const Color(0xFFF2F2F2),
+                          contentPadding: EdgeInsets.all(10),
+                        ),
                       ),
                     ),
                   ),
@@ -258,6 +264,8 @@ class OrderKit {
                 '您确定取消此商品?' ?? '',
                 textAlign: TextAlign.center,
               ),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
               content: Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
