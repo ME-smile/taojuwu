@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/red_dot.dart';
 
 class PurchaseActionBar extends StatefulWidget {
   final String totalPrice;
@@ -39,10 +38,10 @@ class _PurchaseActionBarState extends State<PurchaseActionBar> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      RenderBox renderBox = cartKey.currentContext.findRenderObject();
-      endPoint = renderBox.localToGlobal(Offset.zero);
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   RenderBox renderBox = cartKey.currentContext.findRenderObject();
+    //   endPoint = renderBox.localToGlobal(Offset.zero);
+    // });
   }
 
   @override
@@ -77,23 +76,23 @@ class _PurchaseActionBarState extends State<PurchaseActionBar> {
                                     if (addToCartFunc != null) {
                                       addToCartFunc();
                                     }
-                                    OverlayEntry entry =
-                                        OverlayEntry(builder: (_) {
-                                      RenderBox box = ctx.findRenderObject();
-                                      startPoint =
-                                          box.localToGlobal(Offset.zero);
+                                    // OverlayEntry entry =
+                                    //     OverlayEntry(builder: (_) {
+                                    //   RenderBox box = ctx.findRenderObject();
+                                    //   startPoint =
+                                    //       box.localToGlobal(Offset.zero);
 
-                                      return RedDotPage(
-                                          startPosition: startPoint,
-                                          endPosition: endPoint);
-                                    });
-                                    Overlay.of(context).insert(entry);
-                                    // 等待动画结束
-                                    Future.delayed(Duration(milliseconds: 800),
-                                        () {
-                                      entry.remove();
-                                      entry = null;
-                                    });
+                                    //   return RedDotPage(
+                                    //       startPosition: startPoint,
+                                    //       endPosition: endPoint);
+                                    // });
+                                    // Overlay.of(context).insert(entry);
+                                    // // 等待动画结束
+                                    // Future.delayed(Duration(milliseconds: 800),
+                                    //     () {
+                                    //   entry.remove();
+                                    //   entry = null;
+                                    // });
                                   }
                                 : null,
                             child: Container(

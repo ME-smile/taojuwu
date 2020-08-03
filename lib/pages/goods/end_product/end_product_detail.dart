@@ -363,76 +363,89 @@ class _EndProductDetailPageState extends State<EndProductDetailPage> {
                                   ))
                                 ],
                               ),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                itemBuilder: (BuildContext context, int i) {
-                                  ProductBeanSpecListBean item =
-                                      provider?.specList[i];
-
-                                  return Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: UIKit.height(16)),
-                                        child: Text(item?.specName),
-                                      ),
-                                      i == 0
-                                          ? StepCounter(
-                                              count: provider?.count,
-                                              model: provider?.curSkubean,
-                                            )
-                                          : Wrap(
-                                              runSpacing: UIKit.sp(16),
-                                              spacing: UIKit.sp(24),
-                                              children: List.generate(
-                                                  item?.value?.length, (index) {
-                                                ProductBeanSpecValueBean e =
-                                                    item?.value[index];
-                                                return Container(
-                                                  height: 26,
-                                                  child: AspectRatio(
-                                                    aspectRatio: 3,
-                                                    child: ZYActionChip(
-                                                      callback: () {
-                                                        item?.value?.forEach(
-                                                            (element) {
-                                                          element?.selected =
-                                                              false;
-                                                        });
-                                                        setState(() {
-                                                          e.selected =
-                                                              !e.selected;
-                                                        });
-                                                        provider?.skuList
-                                                            ?.forEach(
-                                                                (element) {
-                                                          if (element
-                                                                  ?.attrValueItemsFormat ==
-                                                              provider
-                                                                  ?.checkedOptionsValueStr) {
-                                                            provider?.skuId =
-                                                                element?.skuId;
-                                                          }
-                                                        });
-                                                      },
-                                                      bean:
-                                                          ActionBean.fromJson({
-                                                        'text': e.specValueName,
-                                                        'is_checked': e.selected
-                                                      }),
-                                                    ),
-                                                  ),
-                                                );
-                                              }),
-                                            )
-                                    ],
-                                  );
-                                },
-                                itemCount: provider?.specList?.length ?? 0,
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: UIKit.height(16)),
+                                      child: Text('数量'),
+                                    ),
+                                    StepCounter(
+                                      count: provider?.count,
+                                      model: provider?.curSkubean,
+                                    ),
+                                  ],
+                                ),
                               ),
+                              Flexible(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.all(0),
+                                  itemBuilder: (BuildContext context, int i) {
+                                    ProductBeanSpecListBean item =
+                                        provider?.specList[i];
+
+                                    return Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: UIKit.height(16)),
+                                          child: Text(item?.specName),
+                                        ),
+                                        Wrap(
+                                          runSpacing: UIKit.sp(16),
+                                          spacing: UIKit.sp(24),
+                                          children: List.generate(
+                                              item?.value?.length, (index) {
+                                            ProductBeanSpecValueBean e =
+                                                item?.value[index];
+                                            return Container(
+                                              height: 26,
+                                              child: AspectRatio(
+                                                aspectRatio: 3,
+                                                child: ZYActionChip(
+                                                  callback: () {
+                                                    item?.value
+                                                        ?.forEach((element) {
+                                                      element?.selected = false;
+                                                    });
+                                                    setState(() {
+                                                      e.selected = !e.selected;
+                                                    });
+                                                    provider?.skuList
+                                                        ?.forEach((element) {
+                                                      if (element
+                                                              ?.attrValueItemsFormat ==
+                                                          provider
+                                                              ?.checkedOptionsValueStr) {
+                                                        provider?.skuId =
+                                                            element?.skuId;
+                                                      }
+                                                    });
+                                                  },
+                                                  bean: ActionBean.fromJson({
+                                                    'text': e.specValueName,
+                                                    'is_checked': e.selected
+                                                  }),
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                        )
+                                      ],
+                                    );
+                                  },
+                                  itemCount: provider?.specList?.length ?? 0,
+                                ),
+                              )
                             ],
                           );
                         })),

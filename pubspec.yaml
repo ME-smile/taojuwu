@@ -84,7 +84,10 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - assets/images/
+    - assets/images/2.0/
+    - assets/images/3.0/
     - assets/images/curtain/
+
     # - locale/i18n_en.json
     - assets/data/province.json
     - assets/data/city.json

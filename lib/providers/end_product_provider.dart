@@ -32,11 +32,11 @@ class EndProductProvider with ChangeNotifier {
   List<ProductBeanGoodsImageBean> get goodsImgList => _goods?.goodsImgList;
 
   List<ProductBeanSpecListBean> get specList {
-    List<ProductBeanSpecListBean> list = [
-      ProductBeanSpecListBean.fromMap({'spec_name': '数量'})
-    ];
-    list.addAll(goods?.specList);
-    return list;
+    // List<ProductBeanSpecListBean> list = [
+    //   ProductBeanSpecListBean.fromMap({'spec_name': '数量'})
+    // ];
+    // list.addAll(goods?.specList);
+    return goods?.specList;
   }
 
   List<SkuBean> get skuList => _goods?.skuList;
@@ -166,14 +166,26 @@ class EndProductProvider with ChangeNotifier {
       {Map<String, dynamic> params,
       CartModel cartModel,
       Function callback}) async {
-    params.addAll(productAttrArg);
+    params = params ?? {};
+    params?.addAll({'cart_id': cartModel?.cartId});
+    params?.addAll(productAttrArg);
 
-    OTPService.modifyCartAttr(context, params).then((ZYResponse response) {
-      if (response?.valid == true) {
-        Navigator.of(context).pop();
-        cartModel = CartModel.fromJson(response?.data);
-        if (callback != null) callback();
-      }
-    }).catchError((err) => err);
+    OTPService.modifyCartAttr(context, params)
+        .then((ZYResponse response) {
+          if (response?.valid == true) {
+            print(response?.data);
+            CartModel tmp = CartModel.fromJson(response?.data);
+            cartModel?.price = tmp?.price;
+            cartModel?.pictureInfo?.picCoverSmall =
+                tmp?.pictureInfo?.picCoverSmall;
+            cartModel?.count = tmp?.count;
+            // cartModel?.count =
+            if (callback != null) callback();
+          }
+        })
+        .catchError((err) => err)
+        .whenComplete(() {
+          // Navigator.of(context)
+        });
   }
 }

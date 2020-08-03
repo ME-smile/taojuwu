@@ -843,10 +843,11 @@ class GoodsProvider with ChangeNotifier {
       ],
       // 配饰
       '13': (curAccessoryAttrBeans?.isEmpty == true
-              ? [accessoryAttr?.data?.first]
-              : curAccessoryAttrBeans)
-          ?.map((item) => {'name': item.name, 'id': item.id})
-          ?.toList()
+                  ? [accessoryAttr?.data?.first]
+                  : curAccessoryAttrBeans)
+              ?.map((item) => {'name': item.name, 'id': item.id})
+              ?.toList() ??
+          []
     };
   }
 
@@ -926,10 +927,11 @@ class GoodsProvider with ChangeNotifier {
                 },
                 // 配饰
                 '13': (curAccessoryAttrBeans?.isEmpty == true
-                        ? [accessoryAttr?.data?.first]
-                        : curAccessoryAttrBeans)
-                    ?.map((item) => {'name': item.name, 'id': item.id})
-                    ?.toList()
+                            ? [accessoryAttr?.data?.first]
+                            : curAccessoryAttrBeans)
+                        ?.map((item) => {'name': item.name, 'id': item.id})
+                        ?.toList() ??
+                    []
               };
   }
 
@@ -1003,11 +1005,11 @@ class GoodsProvider with ChangeNotifier {
       return false;
     }
     if (double.parse(h) == 0) {
-      CommonKit?.showInfo('高��不能为0哦');
+      CommonKit?.showInfo('高度不能为0哦');
       return false;
     }
     if (double.parse(h) > 350) {
-      CommonKit.showInfo('暂不支持3.5m�������������上定制');
+      CommonKit.showInfo('暂不支持3.5m以上定制');
       h = '350';
       return false;
     }
@@ -1168,10 +1170,11 @@ class GoodsProvider with ChangeNotifier {
       },
       // 配饰
       '13': (curAccessoryAttrBeans?.isEmpty == true
-              ? [accessoryAttr?.data?.first]
-              : curAccessoryAttrBeans)
-          ?.map((item) => {'name': item.name, 'id': item.id})
-          ?.toList()
+                  ? [accessoryAttr?.data?.first]
+                  : curAccessoryAttrBeans)
+              ?.map((item) => {'name': item.name, 'id': item.id})
+              ?.toList() ??
+          []
     };
   }
 
@@ -1213,6 +1216,7 @@ class GoodsProvider with ChangeNotifier {
       'wc_attr': jsonEncode(attrArgs),
       'order_goods_id': TargetOrderGoods.instance?.orderGoodsId,
     };
+    print(params);
     OTPService.selectProduct(params: params).then((ZYResponse response) {
       if (response.valid) {
         clearGoodsInfo();

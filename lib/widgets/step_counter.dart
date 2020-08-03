@@ -1,8 +1,9 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/icon/ZYIcon.dart';
+// import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/base/count_model.dart';
 import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 class StepCounter extends StatefulWidget {
   final int count;
@@ -56,59 +57,110 @@ class _StepCounterState extends State<StepCounter> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 100,
-      alignment: Alignment.center,
-      child: Row(
-        children: <Widget>[
-          InkWell(
-            child: Container(
-              height: 20,
-              child: Icon(
-                ZYIcon.substract,
-                size: 18,
-              ),
-            ),
-            onTap: () {
+      height: 24,
+      child:
+          ToggleButtons(constraints: BoxConstraints(maxWidth: 100), children: [
+        Padding(
+          padding: EdgeInsets.all(6),
+          child: ZYAssetImage(
+            'substract.png',
+            width: 10,
+            height: 10,
+            callback: () {
               count--;
             },
           ),
-          Expanded(
-              child: Container(
-            alignment: Alignment.center,
-
-            // height: 20,
-            constraints: BoxConstraints(maxHeight: 20, minHeight: 20),
-            padding: EdgeInsets.only(top: 1, bottom: 1),
-            child: TextField(
-              keyboardType: TextInputType.number,
-              controller: textEditingController,
-              textAlign: TextAlign.center,
-              onChanged: (String text) {
-                count = NumUtil.getIntByValueStr(text);
-              },
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.zero),
-                    borderSide:
-                        BorderSide(width: .8, color: Color(0xFFCCCCCC))),
-                contentPadding: const EdgeInsets.symmetric(vertical: 1.0),
-              ),
+        ),
+        ConstrainedBox(
+          constraints: BoxConstraints(
+              minHeight: 24, maxHeight: 24, minWidth: 56, maxWidth: 56),
+          child: TextField(
+            keyboardType: TextInputType.number,
+            controller: textEditingController,
+            textAlign: TextAlign.center,
+            onChanged: (String text) {
+              count = NumUtil.getIntByValueStr(text);
+            },
+            decoration: InputDecoration(
+              // enabledBorder: OutlineInputBorder(
+              //     borderRadius: BorderRadius.all(Radius.zero),
+              //     borderSide: BorderSide(width: .8, color: Color(0xFFCCCCCC))),
+              contentPadding: EdgeInsets.all(11),
             ),
-          )),
-          InkWell(
-            child: Container(
-              height: 20,
-              child: Icon(
-                ZYIcon.plus,
-                size: 18,
-              ),
-            ),
-            onTap: () {
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(6),
+          child: ZYAssetImage(
+            'plus.png',
+            width: 10,
+            height: 10,
+            callback: () {
               count++;
             },
-          )
-        ],
-      ),
+          ),
+        ),
+      ], isSelected: [
+        false,
+        false,
+        false
+      ]),
     );
+    //   return Container(
+    //     width: 100,
+    //     alignment: Alignment.center,
+    //     child: Row(
+    //       children: <Widget>[
+    //         InkWell(
+    //           child: Container(
+    //             height: 20,
+    //             child: Icon(
+    //               ZYIcon.substract,
+    //               size: 18,
+    //             ),
+    //           ),
+    //           onTap: () {
+    //             count--;
+    //           },
+    //         ),
+    //         Expanded(
+    //             child: Container(
+    //           alignment: Alignment.center,
+
+    //           // height: 20,
+    //           constraints: BoxConstraints(maxHeight: 20, minHeight: 20),
+    //           padding: EdgeInsets.only(top: 1, bottom: 1),
+    //           child: TextField(
+    //             keyboardType: TextInputType.number,
+    //             controller: textEditingController,
+    //             textAlign: TextAlign.center,
+    //             onChanged: (String text) {
+    //               count = NumUtil.getIntByValueStr(text);
+    //             },
+    //             decoration: InputDecoration(
+    //               enabledBorder: OutlineInputBorder(
+    //                   borderRadius: BorderRadius.all(Radius.zero),
+    //                   borderSide:
+    //                       BorderSide(width: .8, color: Color(0xFFCCCCCC))),
+    //               contentPadding: const EdgeInsets.symmetric(vertical: 1.0),
+    //             ),
+    //           ),
+    //         )),
+    //         InkWell(
+    //           child: Container(
+    //             height: 20,
+    //             child: Icon(
+    //               ZYIcon.plus,
+    //               size: 18,
+    //             ),
+    //           ),
+    //           onTap: () {
+    //             count++;
+    //           },
+    //         )
+    //       ],
+    //     ),
+    //   );
+    // }
   }
 }

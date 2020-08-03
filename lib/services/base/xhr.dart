@@ -6,6 +6,8 @@ import 'package:taojuwu/application.dart';
 // import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/services/api_path.dart';
 import 'package:taojuwu/utils/common_kit.dart';
+
+import '../../utils/common_kit.dart';
 // import 'package:taojuwu/models/user/user_info_model.dart';
 
 class Xhr {
@@ -126,15 +128,18 @@ class Xhr {
     if (e.type == DioErrorType.CONNECT_TIMEOUT) {
       // It occurs when url is opened timeout.
       print("连接超时");
+      CommonKit.showErrorInfo('连接超时');
     } else if (e.type == DioErrorType.SEND_TIMEOUT) {
       // It occurs when url is sent timeout.
       print("请求超时");
+      CommonKit.showErrorInfo('连接超时');
     } else if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
       //It occurs when receiving timeout
       print("响应超时");
     } else if (e.type == DioErrorType.RESPONSE) {
       // When the server response, but with a incorrect status, such as 404, 503...
       print("出现异常");
+      CommonKit.showErrorInfo('出现异常');
     } else if (e.type == DioErrorType.CANCEL) {
       // When the request is cancelled, dio will throw a error with this type.
       print("请求取消");

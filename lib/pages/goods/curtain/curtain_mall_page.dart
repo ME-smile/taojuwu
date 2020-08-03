@@ -49,13 +49,12 @@ class CurtainMallPage extends StatefulWidget {
 
 class _CurtainMallPageState extends State<CurtainMallPage>
     with SingleTickerProviderStateMixin {
-  List tabs = [
-    '成品定制',
-  ];
-
+  List get tabs => ['窗帘', '配件', '抱枕', '床品', '沙发'];
+  List<List<GoodsItemBean>> goodsListWrapper = List.filled(5, []);
   CurtainProductListDataBean beanData;
   CurtainGoodsListWrapper wrapper;
   ScrollController scrollController;
+
   List<GoodsItemBean> goodsList = [];
   bool isRefresh = false;
 
@@ -86,9 +85,14 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   void initState() {
     super.initState();
     TargetRoute.instance.context = context;
-    tabController = TabController(length: tabs.length, vsync: this);
+    tabController = TabController(length: tabs.length, vsync: this)
+      ..addListener(() {
+        params['category_type'] = tabIndex;
+        fetchData();
+      });
 
     params['keyword'] = widget.keyword;
+    params['category_type'] = tabs[tabIndex];
     isFromSearch = widget.keyword.isNotEmpty;
     scrollController = ScrollController();
     Future.delayed(Constants.TRANSITION_DURATION, () {
@@ -123,6 +127,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   Animation<Offset> animation;
   bool isGridMode = true;
   double width;
+  int get tabIndex => tabController?.index ?? 0;
   bool get hasMoreData => params['page_index'] < totalPage;
   TagFilterWrapper tagWrapper;
   bool showFloatingButton = true;
@@ -459,6 +464,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   }
 
   void fetchData() {
+    print(params);
     OTPService.mallData(context, params: params).then((data) {
       CurtainProductListResp curtainProductListResp = data[0];
       TagModelListResp tagListResp = data[1];
@@ -709,156 +715,170 @@ class _CurtainMallPageState extends State<CurtainMallPage>
               // ),
             ),
             bottom: PreferredSize(
-                child: GoodsFilterHeader(
-                  filter1: _buildFilter1(),
-                  filter2: _buildFilter2(),
-                  filter3: _buildFilter3(),
-                  filter4: _buildFilter4(),
+                child: Column(
+                  children: <Widget>[
+                    TabBar(
+                      tabs: tabs?.map((e) => Text(e))?.toList(),
+                      controller: tabController,
+                      indicatorColor: Colors.transparent,
+                    ),
+                    GoodsFilterHeader(
+                      filter1: _buildFilter1(),
+                      filter2: _buildFilter2(),
+                      filter3: _buildFilter3(),
+                      filter4: _buildFilter4(),
+                    )
+                  ],
                 ),
-                preferredSize: Size.fromHeight(20)),
+                preferredSize: Size.fromHeight(50)),
           ),
           body: Scaffold(
             key: _scaffoldKey,
             endDrawer: endDrawer(context),
-            body: TabBarView(controller: tabController, children: [
-              Container(
-                alignment: Alignment.center,
-                // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                child: Stack(
-                  children: <Widget>[
-                    isLoading
-                        ? Center(
-                            child: LoadingCircle(),
-                          )
-                        : goodsList?.isEmpty == true
-                            ? NoData(
-                                isFromSearch: isFromSearch,
+            body: TabBarView(
+                controller: tabController,
+                children: List.generate(tabs?.length, (int index) {
+                  return Container(
+                    alignment: Alignment.center,
+                    // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    child: Stack(
+                      children: <Widget>[
+                        isLoading
+                            ? Center(
+                                child: LoadingCircle(),
                               )
-                            : NotificationListener<ScrollNotification>(
-                                onNotification:
-                                    (ScrollNotification scrollNotification) {
-                                  if (offsetY ==
-                                      scrollNotification?.metrics?.pixels) {
-                                    //停止滚动
+                            : goodsList?.isEmpty == true
+                                ? NoData(
+                                    isFromSearch: isFromSearch,
+                                  )
+                                : NotificationListener<ScrollNotification>(
+                                    onNotification: (ScrollNotification
+                                        scrollNotification) {
+                                      if (offsetY ==
+                                          scrollNotification?.metrics?.pixels) {
+                                        //停止滚动
 
-                                    showFloatingButton = true;
-                                  } else {
-                                    //滚动
-                                    showFloatingButton = false;
-                                  }
-                                  // if (timer == null) {
-                                  //   timer = Timer.periodic(Duration(seconds: 1),
-                                  //       (timer) {
-                                  //     if (offsetY ==
-                                  //         scrollNotification?.metrics?.pixels) {
-                                  //       timer?.cancel();
+                                        showFloatingButton = true;
+                                      } else {
+                                        //滚动
+                                        showFloatingButton = false;
+                                      }
+                                      // if (timer == null) {
+                                      //   timer = Timer.periodic(Duration(seconds: 1),
+                                      //       (timer) {
+                                      //     if (offsetY ==
+                                      //         scrollNotification?.metrics?.pixels) {
+                                      //       timer?.cancel();
 
-                                  //       timer = null;
-                                  //       if (isAnimationRunningForwardsOrComplete) {
-                                  //         animationController?.reverse();
-                                  //       } else {
-                                  //         animationController?.forward();
-                                  //       }
-                                  //       print('停止滚动');
-                                  //     }
-                                  //   });
-                                  // }
-                                  offsetY = scrollNotification?.metrics?.pixels;
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((timeStamp) {
-                                    setState(() {});
-                                  });
-                                  return true;
-                                },
-                                child: AnimationLimiter(
-                                  child: SmartRefresher(
-                                    enablePullDown: true,
-                                    enablePullUp: true,
-                                    primary: false,
-                                    onRefresh: () async {
-                                      params['page_index'] = 1;
-                                      isRefresh = true;
-                                      requestGoodsData();
-                                    },
-                                    onLoading: () async {
-                                      params['page_index']++;
-
-                                      isRefresh = false;
-                                      requestGoodsData();
-                                    },
-                                    controller: _refreshController,
-                                    scrollController: scrollController,
-                                    child: isGridMode
-                                        ? buildGridView()
-                                        : buildListView(),
-                                  ),
-                                )),
-                    GZXDropDownMenu(
-                        controller: menuController,
-                        animationMilliseconds: 400,
-                        menus: [
-                          GZXDropdownMenuBuilder(
-                              dropDownHeight: 30.0 * SORT_TYPES.length,
-                              dropDownWidget: Column(
-                                children:
-                                    List.generate(SORT_TYPES.length, (int i) {
-                                  bool isCurrentOption = currentSortType == i;
-                                  return Flexible(
-                                      child: InkWell(
-                                    onTap: () {
-                                      if (isCurrentOption) return;
-                                      setState(() {
-                                        currentSortType = i;
-                                        params['page_index'] = 1;
-                                        isRefresh = true;
-                                        params['order'] =
-                                            sortParams[i]['order'];
-                                        params['sort'] = sortParams[i]['sort'];
-                                        menuController?.hide();
-                                        scrollToTop();
-                                        requestGoodsData();
+                                      //       timer = null;
+                                      //       if (isAnimationRunningForwardsOrComplete) {
+                                      //         animationController?.reverse();
+                                      //       } else {
+                                      //         animationController?.forward();
+                                      //       }
+                                      //       print('停止滚动');
+                                      //     }
+                                      //   });
+                                      // }
+                                      offsetY =
+                                          scrollNotification?.metrics?.pixels;
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((timeStamp) {
+                                        setState(() {});
                                       });
+                                      return true;
                                     },
-                                    child: Container(
-                                        height: 30,
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 50),
-                                          child: Text.rich(
-                                            TextSpan(
-                                                text: SORT_TYPES[i],
-                                                style: TextStyle(
-                                                    color: isCurrentOption
-                                                        ? textTheme
-                                                            .bodyText2.color
-                                                        : Colors.grey),
-                                                children: [
-                                                  WidgetSpan(
-                                                      child:
-                                                          SizedBox(width: 20)),
-                                                  WidgetSpan(
-                                                      child: isCurrentOption
-                                                          ? Icon(
-                                                              ZYIcon.check,
-                                                              color: const Color(
-                                                                  0xFF050505),
-                                                            )
-                                                          : SizedBox(
-                                                              width: 24,
-                                                              height: 24,
-                                                            ))
-                                                ]),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        )),
-                                  ));
-                                }),
-                              ))
-                        ])
-                  ],
-                ),
-              )
-            ]),
+                                    child: AnimationLimiter(
+                                      child: SmartRefresher(
+                                        enablePullDown: true,
+                                        enablePullUp: true,
+                                        primary: false,
+                                        onRefresh: () async {
+                                          params['page_index'] = 1;
+                                          isRefresh = true;
+                                          requestGoodsData();
+                                        },
+                                        onLoading: () async {
+                                          params['page_index']++;
+
+                                          isRefresh = false;
+                                          requestGoodsData();
+                                        },
+                                        controller: _refreshController,
+                                        scrollController: scrollController,
+                                        child: isGridMode
+                                            ? buildGridView()
+                                            : buildListView(),
+                                      ),
+                                    )),
+                        GZXDropDownMenu(
+                            controller: menuController,
+                            animationMilliseconds: 400,
+                            menus: [
+                              GZXDropdownMenuBuilder(
+                                  dropDownHeight: 30.0 * SORT_TYPES.length,
+                                  dropDownWidget: Column(
+                                    children: List.generate(SORT_TYPES.length,
+                                        (int i) {
+                                      bool isCurrentOption =
+                                          currentSortType == i;
+                                      return Flexible(
+                                          child: InkWell(
+                                        onTap: () {
+                                          if (isCurrentOption) return;
+                                          setState(() {
+                                            currentSortType = i;
+                                            params['page_index'] = 1;
+                                            isRefresh = true;
+                                            params['order'] =
+                                                sortParams[i]['order'];
+                                            params['sort'] =
+                                                sortParams[i]['sort'];
+                                            menuController?.hide();
+                                            scrollToTop();
+                                            requestGoodsData();
+                                          });
+                                        },
+                                        child: Container(
+                                            height: 30,
+                                            child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 50),
+                                              child: Text.rich(
+                                                TextSpan(
+                                                    text: SORT_TYPES[i],
+                                                    style: TextStyle(
+                                                        color: isCurrentOption
+                                                            ? textTheme
+                                                                .bodyText2.color
+                                                            : Colors.grey),
+                                                    children: [
+                                                      WidgetSpan(
+                                                          child: SizedBox(
+                                                              width: 20)),
+                                                      WidgetSpan(
+                                                          child: isCurrentOption
+                                                              ? Icon(
+                                                                  ZYIcon.check,
+                                                                  color: const Color(
+                                                                      0xFF050505),
+                                                                )
+                                                              : SizedBox(
+                                                                  width: 24,
+                                                                  height: 24,
+                                                                ))
+                                                    ]),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            )),
+                                      ));
+                                    }),
+                                  ))
+                            ])
+                      ],
+                    ),
+                  );
+                })),
           ),
         ),
         onWillPop: () {

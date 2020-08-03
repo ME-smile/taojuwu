@@ -51,8 +51,9 @@ class _CartPageState extends State<CartPage>
   List<List<CartModel>> modelsList;
   List<CartModel> get models => cartProvider?.models;
   List<GlobalKey<AnimatedListState>> keyList;
-  GlobalKey<AnimatedListState> get animatedListKey =>
-      keyList[tabController?.index ?? 0];
+  // GlobalKey<AnimatedListState> get animatedListKey =>
+  //     keyList[tabController?.index ?? 0];
+  GlobalKey<AnimatedListState> animatedListKey = GlobalKey<AnimatedListState>();
   List<CartCategory> categoryList;
   CartCategory get curCategory => categoryList == null
       ? CartCategory('全部', 0, 0)
@@ -109,7 +110,6 @@ class _CartPageState extends State<CartPage>
                 categoryList?.length ?? 0, GlobalKey<AnimatedListState>());
             modelsList[0] = wrapper?.data;
             hasInit = true;
-
             cartProvider?.setData(modelsList, categoryList);
           }
         })
@@ -289,6 +289,7 @@ class _CartPageState extends State<CartPage>
         },
         onTap: () {
           ZYDialog.checkEndProductAttr(context, cartModel, callback: () {
+            Navigator.of(context).pop();
             setState(() {});
           });
         },
@@ -523,19 +524,16 @@ class _CartPageState extends State<CartPage>
               body: isLoading
                   ? LoadingCircle()
                   : TabBarView(
-                      key: UniqueKey(),
                       controller: tabController,
                       children:
                           List.generate(categoryList?.length ?? 0, (int i) {
-                        List<CartModel> cartModels =
-                            cartProvider?.modelsList == null
-                                ? []
-                                : cartProvider?.modelsList[i];
+                        List<CartModel> cartModels = cartProvider?.models;
+                        print(cartModels);
                         return cartModels?.isEmpty == true
                             ? NoData()
                             : AnimationLimiter(
                                 child: AnimatedList(
-                                  key: keyList[i],
+                                  // key: key,
                                   shrinkWrap: true,
                                   itemBuilder: (BuildContext context, int j,
                                       Animation animation) {

@@ -210,7 +210,8 @@ class CartModel extends CountModel {
             : double.parse(estimatedPrice ?? '0.0'),
         'is_shade': isShade,
         'cart_id': cartId,
-        'goods_type': goodsType
+        'goods_type': goodsType,
+        'goods_attrs': jsonEncode(attrs?.map((e) => e?.toJson())?.toList())
       };
 
   @override

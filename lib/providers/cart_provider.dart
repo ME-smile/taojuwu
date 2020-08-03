@@ -80,8 +80,6 @@ class CartProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void countReduce(int i) {}
-
   void removeGoods(
     int id, {
     Function callback,
@@ -109,7 +107,33 @@ class CartProvider with ChangeNotifier {
         }
       });
     }
+    removeGoodsFromList(categoryId, [id]);
     notifyListeners();
+  }
+
+  int getCategoryIndexById(String id) {
+    for (int i = 0; i < categoryList?.length ?? 0; i++) {
+      CartCategory e = categoryList[i];
+      if (e?.id == id) {
+        return i;
+      }
+    }
+    return 0;
+  }
+
+  void removeGoodsFromList(String categoryId, List<int> idList) {
+    int index = getCategoryIndexById(categoryId);
+
+    categoryList?.forEach((element) {
+      if (curCategory?.isAll == true) {
+        if (modelsList[index] == null) return;
+        modelsList[index]?.removeWhere(
+            (element) => idList?.contains(element?.categoryId) ?? false);
+      } else {
+        modelsList?.first?.removeWhere(
+            (element) => idList?.contains(element?.categoryId) ?? false);
+      }
+    });
   }
 
   void batchRemoveGoods() {
@@ -132,6 +156,8 @@ class CartProvider with ChangeNotifier {
       }
     });
     models?.removeWhere((element) => element?.isChecked);
+    removeGoodsFromList(
+        categoryId, selectedModels?.map((e) => e?.cartId)?.toList());
     notifyListeners();
   }
 }
