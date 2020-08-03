@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:fluro/fluro.dart';
+import 'package:install_plugin/install_plugin.dart';
 import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,6 +13,7 @@ class Application {
   static SharedPreferences sp;
   static String deviceInfo;
   static String versionInfo;
+  static const String apkName = '淘居屋商家.apk';
   static init() async {
     sp = await SharedPreferences.getInstance();
     deviceInfo = await getAppInfo();
@@ -101,5 +103,33 @@ class Application {
       list.add(appInfo.systemVersion);
     }
     return list.join(',');
+  }
+
+  static Future<String> getAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String version = packageInfo.version;
+    return version;
+  }
+
+  static Future<String> getApkPath() async {
+    final directory = await getExternalStorageDirectory();
+    return directory.path;
+  }
+
+  static Future<bool> hasNewAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String localVersion = packageInfo.version;
+    String remoteVersion = await getAppVersion();
+    return remoteVersion.compareTo(localVersion) == 1;
+  }
+
+  static Future<Null> installApk() async {
+    try {
+      String path = await getApkPath();
+
+      InstallPlugin.installApk(path + apkName, 'com.buyi.taojuwu')
+          .then((_) {})
+          .catchError((err) => err);
+    } on Error catch (_) {}
   }
 }

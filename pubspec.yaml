@@ -11,7 +11,7 @@ description: A new Flutter project.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.1.0+1
+version: 1.0.0+1
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -48,6 +48,8 @@ dependencies:
   syncfusion_flutter_charts: ^18.1.59
   animations: ^1.1.1
   flutter_staggered_animations: ^0.1.2
+  install_plugin: ^2.0.1
+  flutter_app_upgrade: ^1.1.0
   # barcode_scan:
   #   git:
   #     url: https://github.com/simplezhli/flutter_barcode_reader.git
