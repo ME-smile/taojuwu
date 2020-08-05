@@ -7,8 +7,8 @@ import 'package:taojuwu/models/shop/cart_list_model.dart';
 
 class CartProvider with ChangeNotifier {
   int _curIndex = 0;
-  List<List<CartModel>> modelsList;
-  List<CartModel> get models => modelsList == null ? [] : modelsList[curIndex];
+  List<List<CartModel>> modelsList = [];
+  List<CartModel> get models => modelsList.isEmpty ? [] : modelsList[curIndex];
   List<CartCategory> categoryList;
   CartCategory get curCategory =>
       categoryList == null ? null : categoryList[curIndex];
@@ -23,7 +23,7 @@ class CartProvider with ChangeNotifier {
 
   set curIndex(int index) {
     _curIndex = index;
-    notifyListeners();
+    print(curIndex);
   }
 
   set isEditting(bool flag) {
@@ -32,9 +32,19 @@ class CartProvider with ChangeNotifier {
   }
 
   void setData(List<List<CartModel>> cartModelsList,
-      List<CartCategory> cartCategoryList) {
+      [List<CartCategory> cartCategoryList]) {
     modelsList = cartModelsList;
-    categoryList = cartCategoryList;
+    if (cartCategoryList != null) categoryList = cartCategoryList;
+    notifyListeners();
+  }
+
+  void assignModelList(int index, List<CartModel> cartModelsList) {
+    modelsList[index] = cartModelsList;
+
+    modelsList?.forEach((element) {
+      print('$index---------${modelsList?.length}啦啦啦啦啦${element?.length}');
+      print(modelsList[index]?.length);
+    });
     notifyListeners();
   }
 

@@ -90,4 +90,6 @@ class ApiPath {
   static const String cartCount = '/api/goods/cartCount';
 
   static const String modifyCartAttr = '/api/goods/modifyCartAccessory';
+
+  static const String associativeWords = '/api/goods/searchContent';
 }

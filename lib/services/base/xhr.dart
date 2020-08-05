@@ -14,7 +14,7 @@ class Xhr {
   static Xhr xhr = Xhr._internal();
   static const int TIMER = 5000;
 
-  static Dio dio = dio = Dio(BaseOptions(
+  static Dio dio = Dio(BaseOptions(
       headers: {
         "ACCEPT": 'application/json',
         'equipment': Application.deviceInfo
@@ -26,13 +26,18 @@ class Xhr {
       receiveTimeout: TIMER,
       connectTimeout: TIMER,
       baseUrl: ApiPath.HOST))
-    ..interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options) {
-      // Do something before request is sent
+    ..interceptors.addAll([
+      Application.cache,
+      InterceptorsWrapper(onRequest: (RequestOptions options) {
+        // Do something before request is sent
 
-      return options; //continue
-    }, onResponse: (Response response) {
-      response.data = jsonDecode(response.toString());
-    }));
+        return options; //continue
+      }, onResponse: (Response response) {
+        response.data = jsonDecode(response.toString());
+      }),
+      Application.cache
+    ]);
+  // 添加缓存
 
   Xhr._internal();
   static Xhr get instance {
@@ -44,14 +49,19 @@ class Xhr {
     url, {
     params,
     options,
+    extra,
     cancelToken,
     bool isShowLoading = true,
   }) async {
     try {
       dio.options.queryParameters['token'] = Application.sp.getString('token');
-
-      return await dio.get(url,
-          queryParameters: params, options: options, cancelToken: cancelToken);
+      print('发送请求');
+      return await dio.get(
+        url,
+        queryParameters: params,
+        options: options,
+        cancelToken: cancelToken,
+      );
     } on DioError catch (e) {
       formatError(e);
       if (e == null) {

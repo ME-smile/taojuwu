@@ -97,7 +97,7 @@ class CartModel extends CountModel {
   List<OrderProductAttrWrapper> wcAttr;
   PictureInfo pictureInfo;
   List<GoodsAttr> attrs;
-
+  bool hasDeleted = false;
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
   bool get isProduct => !isCustomizedProduct; //等于0时表示成品
   bool get isCustomizedProduct => goodsType == 1;

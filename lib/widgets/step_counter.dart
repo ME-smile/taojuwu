@@ -58,53 +58,56 @@ class _StepCounterState extends State<StepCounter> {
   Widget build(BuildContext context) {
     return Container(
       height: 24,
-      child:
-          ToggleButtons(constraints: BoxConstraints(maxWidth: 100), children: [
-        Padding(
-          padding: EdgeInsets.all(6),
-          child: ZYAssetImage(
-            'substract.png',
-            width: 10,
-            height: 10,
-            callback: () {
-              count--;
-            },
-          ),
-        ),
-        ConstrainedBox(
-          constraints: BoxConstraints(
-              minHeight: 24, maxHeight: 24, minWidth: 56, maxWidth: 56),
-          child: TextField(
-            keyboardType: TextInputType.number,
-            controller: textEditingController,
-            textAlign: TextAlign.center,
-            onChanged: (String text) {
-              count = NumUtil.getIntByValueStr(text);
-            },
-            decoration: InputDecoration(
-              // enabledBorder: OutlineInputBorder(
-              //     borderRadius: BorderRadius.all(Radius.zero),
-              //     borderSide: BorderSide(width: .8, color: Color(0xFFCCCCCC))),
-              contentPadding: EdgeInsets.all(11),
+      child: ToggleButtons(
+          borderRadius: BorderRadius.all(Radius.circular(2)),
+          constraints: BoxConstraints(maxWidth: 100),
+          children: [
+            Padding(
+              padding: EdgeInsets.all(6),
+              child: ZYAssetImage(
+                'substract.png',
+                width: 10,
+                height: 10,
+                callback: () {
+                  count--;
+                },
+              ),
             ),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(6),
-          child: ZYAssetImage(
-            'plus.png',
-            width: 10,
-            height: 10,
-            callback: () {
-              count++;
-            },
-          ),
-        ),
-      ], isSelected: [
-        false,
-        false,
-        false
-      ]),
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                  minHeight: 24, maxHeight: 24, minWidth: 56, maxWidth: 56),
+              child: TextField(
+                keyboardType: TextInputType.number,
+                controller: textEditingController,
+                textAlign: TextAlign.center,
+                onSubmitted: (String text) {
+                  count = NumUtil.getIntByValueStr(text);
+                },
+                decoration: InputDecoration(
+                  // enabledBorder: OutlineInputBorder(
+                  //     borderRadius: BorderRadius.all(Radius.zero),
+                  //     borderSide: BorderSide(width: .8, color: Color(0xFFCCCCCC))),
+                  contentPadding: EdgeInsets.all(11),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(6),
+              child: ZYAssetImage(
+                'plus.png',
+                width: 10,
+                height: 10,
+                callback: () {
+                  count++;
+                },
+              ),
+            ),
+          ],
+          isSelected: [
+            false,
+            false,
+            false
+          ]),
     );
     //   return Container(
     //     width: 100,

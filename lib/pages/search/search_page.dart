@@ -5,8 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
+import 'package:taojuwu/models/shop/search/associative_word.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -20,17 +22,32 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   static const HINT_TEXT_MAP = {1: '搜索窗帘', 2: '搜索客户', 3: '搜索订单'};
-  int type;
+  int get type => widget.type;
   List<String> history = [];
-  UserProvider provider;
+  UserProvider get provider =>
+      Provider.of<UserProvider>(context, listen: false);
   TextEditingController inputController;
   @override
   void initState() {
     super.initState();
-    type = widget.type;
-    provider = Provider.of<UserProvider>(context, listen: false);
     inputController = TextEditingController();
     loadHistory();
+    if (type == 1) {
+      fetchData();
+    }
+  }
+
+  List data = [];
+  List get associativeWords =>
+      data?.where((element) => element?.contains(keyword) ?? false)?.toList();
+  String keyword = '';
+  bool get isVisible => keyword?.isNotEmpty == true ?? false;
+  fetchData() {
+    OTPService.associativeWords(context).then((AssociativeWordResp response) {
+      if (response?.valid == true) {
+        data?.addAll(response?.data?.data);
+      }
+    }).catchError((err) => err);
   }
 
   void loadHistory() {
@@ -204,14 +221,17 @@ class _SearchPageState extends State<SearchPage> {
                       controller: inputController,
                       // enableInteractiveSelection: false,
                       // textAlignVertical: TextAlignVertical(y: .5),
+                      onChanged: (String text) {
+                        setState(() {
+                          keyword = text;
+                        });
+                      },
                       onSubmitted: (String text) {
                         if (text?.trim()?.isEmpty == true) {
                           return CommonKit.showInfo('请输入关键字');
                         }
                         addHistory(text);
-                        jumpTo(text);
                       },
-
                       decoration: InputDecoration(
                           // fillColor: Colors.grey,
 
@@ -254,46 +274,75 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
           preferredSize: Size.fromHeight(60)),
-      body: Padding(
-          padding: EdgeInsets.symmetric(
-              horizontal: UIKit.width(15), vertical: UIKit.height(15)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text('历史搜索'),
-                  InkWell(
-                      child: Icon(
-                        ZYIcon.del,
-                      ),
-                      onTap: () {
-                        showDelDialog();
-                      })
-                ],
-              ),
-              Wrap(
-                children: List.generate(history?.length ?? 0, (int i) {
-                  return InkWell(
-                    onTap: () {
-                      jumpTo(history[i] ?? '');
-                    },
-                    child: Container(
-                      color: const Color(0xFFEDEFF1),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: UIKit.width(30),
-                          vertical: UIKit.height(10)),
-                      margin: EdgeInsets.symmetric(
-                          horizontal: UIKit.width(15),
-                          vertical: UIKit.height(15)),
-                      child: Text(history[i] ?? ''),
+      body: Stack(
+        children: <Widget>[
+          Visibility(
+            child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: UIKit.width(15), vertical: UIKit.height(15)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('历史搜索'),
+                        InkWell(
+                            child: Icon(
+                              ZYIcon.del,
+                            ),
+                            onTap: () {
+                              showDelDialog();
+                            })
+                      ],
                     ),
-                  );
-                }),
-              )
-            ],
-          )),
+                    Wrap(
+                      children: List.generate(history?.length ?? 0, (int i) {
+                        return InkWell(
+                          onTap: () {
+                            jumpTo(history[i] ?? '');
+                          },
+                          child: Container(
+                            color: const Color(0xFFEDEFF1),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: UIKit.width(30),
+                                vertical: UIKit.height(10)),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: UIKit.width(15),
+                                vertical: UIKit.height(15)),
+                            child: Text(history[i] ?? ''),
+                          ),
+                        );
+                      }),
+                    )
+                  ],
+                )),
+            visible: !isVisible,
+          ),
+          Visibility(
+            child: ListView.builder(
+              itemBuilder: (BuildContext context, int i) {
+                String text = associativeWords[i];
+                return GestureDetector(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: UIKit.width(15),
+                        vertical: UIKit.height(15)),
+                    child: Text(text),
+                  ),
+                  onTap: () {
+                    keyword = text;
+                    addHistory(text);
+                    jumpTo(keyword);
+                  },
+                );
+              },
+              itemCount: associativeWords?.length ?? 0,
+            ),
+            visible: isVisible,
+          ),
+        ],
+      ),
     );
   }
 }

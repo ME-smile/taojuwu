@@ -50,7 +50,7 @@ class GridCard extends StatelessWidget {
           ),
           Expanded(
               child: Text.rich(TextSpan(
-                  text: '￥${bean.displayPrice ?? "0.00"}',
+                  text: '￥${bean?.displayPrice ?? "0.00"}',
                   style: TextStyle(fontSize: UIKit.sp(32)),
                   children: [
                 TextSpan(

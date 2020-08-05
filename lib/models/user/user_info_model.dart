@@ -7,7 +7,7 @@ class UserInfo {
   String nickName;
   String userTel;
   String address;
-
+  bool enableCache = true;
   UserInfo._singleton();
 
   static final UserInfo _instance = UserInfo._singleton();

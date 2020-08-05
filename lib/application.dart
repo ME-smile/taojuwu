@@ -10,11 +10,27 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:taojuwu/utils/common_kit.dart';
 
+import 'services/base/cache.dart';
+
+class NetworkCacheConfig {
+  final bool enable;
+  final int maxAge;
+  final int maxCount;
+  NetworkCacheConfig(
+      {this.enable = true, this.maxAge = 1000, this.maxCount = 100});
+
+  Map<String, dynamic> toJson() {
+    return {'enable': enable, 'maxAge': maxAge, 'maxCount': maxCount};
+  }
+}
+
 class Application {
   static Router router;
   static SharedPreferences sp;
   static String deviceInfo;
   static String versionInfo;
+  static NetworkCacheConfig cacheConfig = NetworkCacheConfig();
+  static NetCache cache = NetCache();
   static RouteObserver routeObserver = RouteObserver();
   static init() async {
     sp = await SharedPreferences.getInstance();

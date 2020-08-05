@@ -13,6 +13,7 @@ import 'package:taojuwu/models/shop/collect_list_model.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 import 'package:taojuwu/models/shop/product_tag_model.dart';
+import 'package:taojuwu/models/shop/search/associative_word.dart';
 import 'package:taojuwu/models/shop/sku_attr/accessory_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/canopy_attr.dart';
 import 'package:taojuwu/models/shop/sku_attr/craft_attr.dart';
@@ -37,8 +38,16 @@ class OTPService {
   static Xhr xhr = Xhr.instance;
   static Future<CurtainProductListResp> productGoodsList(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response =
-        await xhr.get(context, ApiPath.productMall, params: params ?? {});
+    Response response = await xhr.get(context, ApiPath.productMall,
+        params: params ?? {},
+        options: Options(extra: {
+          'cache': true,
+          'cacheKey': '${ApiPath.productMall}/${params["category_type"]}'
+        }));
+    print({
+      'cache': true,
+      'cacheKey': '${ApiPath.productMall}/${params["category_type"]}'
+    });
     return CurtainProductListResp.fromMap(response.data);
   }
 
@@ -59,6 +68,7 @@ class OTPService {
     List<Future> list = [
       productGoodsList(context, params: params),
       tagList(context),
+      cartCount(context),
     ];
 
     list.forEach((v) {
@@ -568,5 +578,13 @@ class OTPService {
     );
 
     return ZYResponse.fromJsonWithData(response?.data);
+  }
+
+  static Future<AssociativeWordResp> associativeWords(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.associativeWords, params: params);
+
+    return AssociativeWordResp.fromJson(response?.data);
   }
 }
