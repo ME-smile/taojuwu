@@ -368,13 +368,13 @@ class OTPService {
     return cartListResp;
   }
 
-  static Future<ZYResponse> delCart({Map<String, dynamic> params}) async {
+  static Future<CartCategoryResp> delCart({Map<String, dynamic> params}) async {
     Response response = await xhr.post(
       ApiPath.delCart,
       data: params,
     );
 
-    return ZYResponse.fromJson(response.data);
+    return CartCategoryResp.fromJson(response.data);
   }
 
   static Future<ZYResponse> editAddress(BuildContext context,

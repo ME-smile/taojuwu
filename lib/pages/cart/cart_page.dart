@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -9,7 +9,7 @@ import 'package:taojuwu/application.dart';
 
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
-import 'package:taojuwu/models/zy_response.dart';
+
 import 'package:taojuwu/pages/goods/curtain/widgets/zy_dialog.dart';
 
 import 'package:taojuwu/providers/cart_provider.dart';
@@ -20,13 +20,12 @@ import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
 
-import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/goods_attr_card.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/step_counter.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
-import 'package:taojuwu/widgets/zy_outline_button.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class CartPage extends StatefulWidget {
@@ -39,21 +38,20 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage>
     with TickerProviderStateMixin, RouteAware {
-  CartProvider _cartProvider = CartProvider();
-  CartProvider get cartProvider => _cartProvider;
+  CartProvider get cartProvider => context.read<CartProvider>();
   int get clientId => widget.clientId;
   TabController tabController;
 
   bool isLoading = true;
   List<List<CartModel>> modelsList;
   List<CartModel> get models => cartProvider?.models;
-  List<String> tabs = ['全部', '窗帘', '抱枕', '沙发', '床品'];
+  List<CartCategory> get tabs => CartProvider.tabs;
   // GlobalKey<AnimatedListState> get animatedListKey =>
   //     keyList[tabController?.index ?? 0];
 
   List<CartCategory> categoryList;
   CartCategory get curCategory => categoryList == null
-      ? CartCategory('全部', 0, 0)
+      ? CartCategory('全部', 0)
       : categoryList[tabController?.index ?? 0];
   get categoryId => curCategory?.id;
   CartModel curCartModel;
@@ -67,19 +65,16 @@ class _CartPageState extends State<CartPage>
     });
   }
 
+  CartListWrapper wrapper;
   Future fetchData() {
     return OTPService.fetchCartData(context,
             params: {'client_uid': clientId, 'category_id': categoryId ?? 0})
         .then((CartListResp response) {
           if (response?.valid == true) {
-            CartListWrapper wrapper = response?.data;
+            wrapper = response?.data;
             categoryList = wrapper?.categoryList;
             tabController =
                 TabController(length: categoryList?.length ?? 0, vsync: this);
-
-            cartProvider?.setData(
-                List.filled(categoryList?.length ?? 0, []), categoryList);
-            cartProvider?.assignModelList(0, wrapper?.data);
           }
         })
         .catchError((err) => err)
@@ -121,67 +116,71 @@ class _CartPageState extends State<CartPage>
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
+
     return ChangeNotifierProvider(
       create: (_) {
-        return cartProvider;
+        return CartProvider();
       },
-      child: Consumer<CartProvider>(
-        builder: (BuildContext context, CartProvider provider, _) {
-          // List<CartModel> models = provider?.models;
-          return Scaffold(
-              appBar: AppBar(
-                title: Text('购物车'),
-                centerTitle: true,
-                actions: <Widget>[
-                  FlatButton(
-                      onPressed: () {
-                        provider?.isEditting = !provider.isEditting;
-                      },
-                      child: Text(provider?.isEditting == true ? '完成' : '编辑'))
-                ],
-                bottom: PreferredSize(
-                    child: Consumer<CartProvider>(
-                      builder:
-                          (BuildContext context, CartProvider provider, _) {
-                        return TabBar(
-                            controller: tabController,
-                            indicatorSize: TabBarIndicatorSize.label,
-                            unselectedLabelStyle: TextStyle(
-                                color: Color(0xFF333333), fontSize: 14),
-                            labelStyle: TextStyle(
-                                color: Color(0xFF1B1B1B),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500),
-                            labelPadding:
-                                EdgeInsets.only(bottom: 5, left: 5, right: 5),
-                            tabs: isLoading
-                                ? List.generate(tabs?.length,
-                                    (index) => Text('${tabs[index]}(0)'))
-                                : List.generate(categoryList?.length ?? 0,
-                                    (int i) {
-                                    CartCategory bean = categoryList[i];
-                                    return Text(
-                                        '${bean?.name}(${bean?.count})');
-                                  }));
-                      },
-                    ),
-                    preferredSize: Size.fromHeight(20)),
-              ),
-              body: isLoading
-                  ? LoadingCircle()
-                  : TabBarView(
-                      controller: tabController,
-                      children:
-                          List.generate(categoryList?.length ?? 0, (int i) {
-                        int id = int.parse(categoryList[i]?.id ?? '0');
-                        return CartTabBarView(
-                          clientId: clientId,
-                          categoryId: id,
-                          index: i,
-                          requestData: i != 0,
-                        );
-                      })),
-              bottomNavigationBar: AnimatedOpacity(
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text('购物车'),
+            centerTitle: true,
+            actions: <Widget>[
+              Selector(builder: (BuildContext context, bool isEditting, _) {
+                return FlatButton(
+                    onPressed: () {
+                      CartProvider provider = context.read<CartProvider>();
+                      provider?.isEditting = !provider.isEditting;
+                    },
+                    child: Text(isEditting == true ? '完成' : '编辑'));
+              }, selector: (BuildContext context, CartProvider provider) {
+                return provider?.isEditting;
+              })
+            ],
+            bottom: PreferredSize(
+                child: Consumer<CartProvider>(
+                  builder: (BuildContext context, CartProvider provider, _) {
+                    return TabBar(
+                        controller: tabController,
+                        indicatorSize: TabBarIndicatorSize.label,
+                        unselectedLabelStyle:
+                            TextStyle(color: Color(0xFF333333), fontSize: 14),
+                        labelStyle: TextStyle(
+                            color: Color(0xFF1B1B1B),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500),
+                        labelPadding:
+                            EdgeInsets.only(bottom: 5, left: 5, right: 5),
+                        tabs: List.generate(provider?.categoryList?.length ?? 0,
+                            (int i) {
+                          CartCategory bean = provider?.categoryList[i];
+                          return Text('${bean?.name}(${bean?.count})');
+                        }));
+                  },
+                ),
+                preferredSize: Size.fromHeight(20)),
+          ),
+          body: Builder(builder: (BuildContext context) {
+            cartProvider?.setData(
+                List.filled(categoryList?.length ?? 0, []), categoryList);
+            cartProvider?.assignModelList(0, wrapper?.data);
+            return isLoading
+                ? LoadingCircle()
+                : TabBarView(
+                    controller: tabController,
+                    children: List.generate(categoryList?.length ?? 0, (int i) {
+                      int id = int.parse(categoryList[i]?.id ?? '0');
+                      return CartTabBarView(
+                        clientId: clientId,
+                        categoryId: id,
+                        index: i,
+                        requestData: i != 0,
+                      );
+                    }));
+          }),
+          bottomNavigationBar: Consumer(
+            builder: (BuildContext context, CartProvider provider, _) {
+              return AnimatedOpacity(
                 opacity: provider?.hasModels == true ? 1.0 : 0.0,
                 duration: Duration(milliseconds: 500),
                 child: Container(
@@ -209,6 +208,11 @@ class _CartPageState extends State<CartPage>
                                 '删除所选',
                                 () {
                                   // batchDelCart(provider);
+                                  provider
+                                      ?.batchRemoveGoods(context)
+                                      ?.then((_) {
+                                    setState(() {});
+                                  });
                                 },
                                 isActive: provider?.hasSelectedModels,
                               )
@@ -224,9 +228,9 @@ class _CartPageState extends State<CartPage>
                     ],
                   ),
                 ),
-              ));
-        },
-      ),
+              );
+            },
+          )),
     );
   }
 }
@@ -261,17 +265,12 @@ class _CartTabBarViewState extends State<CartTabBarView> with RouteAware {
       Provider.of<CartProvider>(context, listen: false);
   Widget buildCartCard(CartModel cartModel, int index) {
     return SlideAnimation(
+      key: ObjectKey(cartModel),
       child: cartModel?.isCustomizedProduct == true
           ? CustomizedProductCard(
               cartModel: cartModel,
               index: index,
               clientId: clientId,
-              longPressCallback: () {
-                remove(provider, cartModel);
-              },
-              checkCallback: (bool isSelected) {
-                provider?.checkGoods(cartModel, isSelected);
-              },
             )
           : ProductCard(
               cartModel: cartModel,
@@ -287,102 +286,6 @@ class _CartTabBarViewState extends State<CartTabBarView> with RouteAware {
               },
             ),
     );
-  }
-
-  Future remove(CartProvider provider, CartModel cartModel, {int index}) async {
-    if (Platform.isAndroid) {
-      await showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                '删除',
-                textAlign: TextAlign.center,
-              ),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text('您确定要从购物车中删除该商品吗?'),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ZYOutlineButton('取消', () {
-                        setState(() {
-                          cartModel?.isChecked = false;
-                        });
-                        Navigator.of(context).pop();
-                      }),
-                      SizedBox(
-                        width: 30,
-                      ),
-                      ZYRaisedButton('确定', () {
-                        delCart(provider, cartModel?.cartId,
-                            cartModel: cartModel);
-                        // animatedListKey?.currentState?.removeItem(index, (context, animation) => null)
-                      }),
-                    ],
-                  )
-                ],
-              ),
-            );
-          });
-    } else {
-      await showCupertinoDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return CupertinoAlertDialog(
-              title: Text(
-                '删除',
-              ),
-              content: Text('您确定从购物��中删除该商品吗?'),
-              actions: <Widget>[
-                CupertinoDialogAction(
-                  child: Text('取消'),
-                  onPressed: () {
-                    setState(() {
-                      cartModel?.isChecked = false;
-                    });
-                    Navigator.of(context).pop();
-                  },
-                ),
-                CupertinoDialogAction(
-                  child: Text('确定'),
-                  onPressed: () {
-                    delCart(provider, cartModel?.cartId);
-                  },
-                )
-              ],
-            );
-          });
-    }
-  }
-
-  void delCart(CartProvider provider, int id, {CartModel cartModel}) {
-    OTPService.delCart(params: {'cart_id_array': '$id'})
-        .then((ZYResponse response) {
-      if (response.valid) {
-        Navigator.of(context).pop();
-        int i = provider?.models?.indexOf(cartModel);
-        provider?.removeGoods(id);
-        animatedListKey?.currentState?.removeItem(
-            i,
-            (context, animation) => AnimationConfiguration.staggeredList(
-                position: i,
-                duration: const Duration(milliseconds: 500),
-                child: SlideTransition(
-                  position: animation?.drive(tween),
-                  child: SlideAnimation(
-                      verticalOffset: 50.0,
-                      child: FadeInAnimation(
-                        child: buildCartCard(cartModel, i),
-                      )),
-                )));
-      } else {
-        CommonKit.showToast(response?.message ?? '');
-      }
-    }).catchError((err) => err);
   }
 
   CartModel curCartModel;
@@ -443,33 +346,44 @@ class _CartTabBarViewState extends State<CartTabBarView> with RouteAware {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (BuildContext context, CartProvider provider, _) {
-        return Container(
-          child: AnimationLimiter(
-            child: ListView.separated(
-              // key: key,
-              shrinkWrap: true,
-              itemBuilder: (
-                BuildContext context,
-                int j,
-              ) {
-                return AnimationConfiguration.staggeredList(
-                    position: j,
-                    duration: const Duration(milliseconds: 375),
-                    child: SlideAnimation(
-                        verticalOffset: 50.0,
-                        child: FadeInAnimation(
-                          child: buildCartCard(cartModels[j], j),
-                        )));
-                // return buildCollectCard(context, beanList[i], i);
-              },
-              separatorBuilder: (BuildContext context, int i) {
-                return Divider(
-                  height: 1,
-                );
-              },
-              itemCount: cartModels?.isEmpty == true ? 0 : cartModels?.length,
-            ),
-          ),
+        return PageTransitionSwitcher(
+          transitionBuilder: (
+            Widget child,
+            Animation<double> animation,
+            Animation<double> secondaryAnimation,
+          ) {
+            return FadeThroughTransition(
+              animation: animation,
+              secondaryAnimation: secondaryAnimation,
+              child: child,
+            );
+          },
+          child: cartModels?.isEmpty == true
+              ? NoData()
+              : Container(
+                  child: AnimationLimiter(
+                    child: ListView.builder(
+                      // key: key,
+                      shrinkWrap: true,
+                      itemBuilder: (
+                        BuildContext context,
+                        int j,
+                      ) {
+                        return AnimationConfiguration.staggeredList(
+                            position: j,
+                            duration: const Duration(milliseconds: 375),
+                            child: SlideAnimation(
+                                verticalOffset: 50.0,
+                                child: FadeInAnimation(
+                                  child: buildCartCard(cartModels[j], j),
+                                )));
+                        // return buildCollectCard(context, beanList[i], i);
+                      },
+                      itemCount:
+                          cartModels?.isEmpty == true ? 0 : cartModels?.length,
+                    ),
+                  ),
+                ),
         );
       },
     );
@@ -480,162 +394,186 @@ class CustomizedProductCard extends StatefulWidget {
   final CartModel cartModel;
   final int index;
   final int clientId;
-  final Function longPressCallback;
+
   final Function tapCallback;
-  final Function checkCallback;
+
   final Function editAttrCallback;
   CustomizedProductCard(
       {Key key,
       this.cartModel,
       this.index,
       this.clientId,
-      this.longPressCallback,
       this.tapCallback,
-      this.checkCallback,
       this.editAttrCallback})
       : super(key: key);
 
   @override
-  _CustomizedProductCardState createState() => _CustomizedProductCardState();
+  CustomizedProductCardState createState() => CustomizedProductCardState();
 }
 
-class _CustomizedProductCardState extends State<CustomizedProductCard>
+class CustomizedProductCardState extends State<CustomizedProductCard>
     with TickerProviderStateMixin {
   int get clientId => widget.clientId;
   CartModel get cartModel => widget.cartModel;
-  Function get longPressCallback => widget.longPressCallback;
   Function get tapCallback => widget.tapCallback;
-  Function get checkCallback => widget.checkCallback;
   Function get editAttrCallback => widget.editAttrCallback;
 
-  AnimationController animationController;
-  Animation<Offset> animation;
-  Animation<double> animation1;
-  BuildContext ctx;
+  AnimationController slideAnimationController;
+  AnimationController sizeAnimationController;
+  Animation<Offset> slideAnimation;
+  Animation<double> sizeAnimation;
+
   @override
   void initState() {
-    animationController =
-        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
-    animation = Tween(begin: Offset(0.0, 0.0), end: Offset(1.0, 0.0))
-        .animate(animationController);
-    animation1 = Tween(begin: 1.0, end: 0.0).animate(animationController);
+    slideAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    sizeAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    slideAnimation = Tween(begin: Offset(0.0, 0.0), end: Offset(1.0, 0.0))
+        .animate(slideAnimationController)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              sizeAnimationController?.forward();
+            }
+          });
+    sizeAnimation =
+        Tween(begin: 1.0, end: 0.0).animate(sizeAnimationController);
+
     super.initState();
   }
 
   @override
   void dispose() {
-    animationController?.dispose();
+    slideAnimationController?.dispose();
+    sizeAnimationController?.dispose();
     super.dispose();
   }
 
   bool visible = true;
-
+  bool isSliding = false;
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-
-    return SlideTransition(
-      position: animation,
-      child: SizeTransition(
-          sizeFactor: animation1,
-          child: AnimatedOpacity(
-            opacity: visible ? 1.0 : 0.0,
-            duration: Duration(milliseconds: 500),
-            child: GestureDetector(
-              onLongPress: () {
-                longPressCallback();
-                setState(() {
-                  cartModel?.isChecked = true;
-                  visible = false;
-                });
-                Navigator.of(context).pop();
-                animationController?.forward();
-              },
-              child: Container(
-                color: themeData.primaryColor,
-                margin: EdgeInsets.only(top: UIKit.height(20)),
-                padding: EdgeInsets.symmetric(
-                    horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Row(
+    // return SizeTransition(sizeFactor: null);
+    return SizeTransition(
+      sizeFactor: sizeAnimation,
+      child: SlideTransition(
+        position: slideAnimation,
+        child: AnimatedOpacity(
+          opacity: visible ? 1.0 : 0.0,
+          duration: Duration(milliseconds: 500),
+          child: Consumer(
+            builder: (BuildContext context, CartProvider provider, Widget _) {
+              return GestureDetector(
+                  onLongPress: () {
+                    setState(() {
+                      cartModel?.isChecked = true;
+                    });
+                    provider.remove(context, cartModel, confirm: () {
+                      setState(() {
+                        visible = false;
+                        slideAnimationController?.forward();
+                      });
+                    }, cancel: () {
+                      setState(() {
+                        cartModel?.isChecked = false;
+                        visible = true;
+                      });
+                      Navigator.of(context).pop();
+                    });
+                  },
+                  child: Container(
+                    color: themeData.primaryColor,
+                    margin: EdgeInsets.only(top: UIKit.height(20)),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: UIKit.width(20),
+                        vertical: UIKit.height(20)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Checkbox(
-                            value: cartModel?.isChecked,
-                            onChanged: checkCallback),
-                        ZYNetImage(
-                          imgPath: cartModel?.pictureInfo?.picCoverSmall,
-                          isCache: false,
-                          width: UIKit.width(180),
-                        ),
-                        Expanded(
-                            child: Container(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                          height: UIKit.height(190),
-                          // width: MediaQuery.of(context).size.width,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                        Row(
+                          children: <Widget>[
+                            Checkbox(
+                                value: cartModel?.isChecked,
+                                onChanged: (bool isSelected) {
+                                  provider?.checkGoods(cartModel, isSelected);
+                                }),
+                            ZYNetImage(
+                              imgPath: cartModel?.pictureInfo?.picCoverSmall,
+                              isCache: false,
+                              width: UIKit.width(180),
+                            ),
+                            Expanded(
+                                child: Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: UIKit.width(20)),
+                              height: UIKit.height(190),
+                              // width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(
-                                    cartModel?.goodsName ?? '',
-                                    style: textTheme.headline6
-                                        .copyWith(fontSize: UIKit.sp(28)),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        cartModel?.goodsName ?? '',
+                                        style: textTheme.headline6
+                                            .copyWith(fontSize: UIKit.sp(28)),
+                                      ),
+                                      Text.rich(TextSpan(
+                                          text:
+                                              '￥' + '${cartModel?.price}' ?? '',
+                                          children: [
+                                            TextSpan(text: cartModel?.unit)
+                                          ])),
+                                    ],
                                   ),
-                                  Text.rich(TextSpan(
-                                      text: '￥' + '${cartModel?.price}' ?? '',
-                                      children: [
-                                        TextSpan(text: cartModel?.unit)
-                                      ])),
+                                  Expanded(
+                                    child: Text(
+                                      cartModel?.goodsAttrStr ?? '',
+                                      softWrap: true,
+                                      style: textTheme.caption
+                                          .copyWith(fontSize: 12),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 5,
+                                    ),
+                                  ),
                                 ],
                               ),
-                              Expanded(
-                                child: Text(
-                                  cartModel?.goodsAttrStr ?? '',
-                                  softWrap: true,
-                                  style:
-                                      textTheme.caption.copyWith(fontSize: 12),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ))
+                            ))
+                          ],
+                        ),
+                        GoodsAttrCard(
+                          cartModel: cartModel,
+                          clientId: clientId,
+                          callback: editAttrCallback,
+                        ),
+                        Text.rich(
+                          TextSpan(text: '预计总金额', children: [
+                            TextSpan(
+                                text: '￥' +
+                                        (double.parse(
+                                                cartModel?.estimatedPrice ??
+                                                    '0.00'))
+                                            .toStringAsFixed(2) ??
+                                    '',
+                                style: TextStyle(
+                                    fontSize: UIKit.sp(32),
+                                    fontWeight: FontWeight.w500))
+                          ]),
+                          textAlign: TextAlign.end,
+                        ),
                       ],
                     ),
-                    GoodsAttrCard(
-                      cartModel: cartModel,
-                      clientId: clientId,
-                      callback: editAttrCallback,
-                    ),
-                    Text.rich(
-                      TextSpan(text: '预计总金额', children: [
-                        TextSpan(
-                            text: '￥' +
-                                    (double.parse(cartModel?.estimatedPrice ??
-                                            '0.00'))
-                                        .toStringAsFixed(2) ??
-                                '',
-                            style: TextStyle(
-                                fontSize: UIKit.sp(32),
-                                fontWeight: FontWeight.w500))
-                      ]),
-                      textAlign: TextAlign.end,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )),
+                  ));
+            },
+          ),
+        ),
+      ),
     );
   }
 }

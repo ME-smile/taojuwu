@@ -55,7 +55,6 @@ class Xhr {
   }) async {
     try {
       dio.options.queryParameters['token'] = Application.sp.getString('token');
-      print('发送请求');
       return await dio.get(
         url,
         queryParameters: params,

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/widgets.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/base/count_model.dart';
 import 'package:taojuwu/models/base/goods_attr.dart';
@@ -60,7 +61,7 @@ class CartCategory {
     count = json['num'];
   }
 
-  CartCategory(name, id, count);
+  CartCategory(name, count);
 }
 
 class CartModel extends CountModel {
@@ -98,6 +99,8 @@ class CartModel extends CountModel {
   PictureInfo pictureInfo;
   List<GoodsAttr> attrs;
   bool hasDeleted = false;
+  BuildContext ctx;
+  Function callback;
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
   bool get isProduct => !isCustomizedProduct; //等于0时表示成品
   bool get isCustomizedProduct => goodsType == 1;

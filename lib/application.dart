@@ -17,7 +17,7 @@ class NetworkCacheConfig {
   final int maxAge;
   final int maxCount;
   NetworkCacheConfig(
-      {this.enable = true, this.maxAge = 1000, this.maxCount = 100});
+      {this.enable = false, this.maxAge = 1000, this.maxCount = 100});
 
   Map<String, dynamic> toJson() {
     return {'enable': enable, 'maxAge': maxAge, 'maxCount': maxCount};
