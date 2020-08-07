@@ -14,6 +14,7 @@ class GoodsAttrCard extends StatelessWidget {
   final CartModel cartModel;
   final bool isInCartPage;
   final Function callback;
+
   const GoodsAttrCard(
       {Key key,
       this.cartModel,
@@ -27,7 +28,7 @@ class GoodsAttrCard extends StatelessWidget {
   int get cartId => cartModel?.cartId;
   List<GoodsAttr> get attrList => attrs ?? cartModel?.attrs;
   List<GoodsAttr> get selectedValueAttrs =>
-      attrList?.where((element) => element?.hasSelected)?.toList();
+      attrList?.where((element) => element?.visible)?.toList();
   String get params => jsonEncode(attrList?.map((e) => e?.toJson())?.toList());
   @override
   Widget build(BuildContext context) {
@@ -64,11 +65,14 @@ class GoodsAttrCard extends StatelessWidget {
                   childAspectRatio: 8),
               itemBuilder: (BuildContext context, int index) {
                 GoodsAttr bean = selectedValueAttrs[index];
-                return Container(
-                  child: Text(
-                    '${bean?.name ?? ''}:${bean?.value ?? ''}',
-                    style: TextStyle(color: Color(0xFF6D6D6D), fontSize: 12),
+                return Offstage(
+                  child: Container(
+                    child: Text(
+                      '${bean?.name ?? ''}:${bean?.value ?? ''}',
+                      style: TextStyle(color: Color(0xFF6D6D6D), fontSize: 12),
+                    ),
                   ),
+                  offstage: bean?.visible == false,
                 );
               },
               itemCount: selectedValueAttrs?.length ?? 0,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/order/order_cart_goods_model.dart';
 import 'package:taojuwu/pages/order/widgets/buyer_info_bar.dart';
@@ -22,7 +23,7 @@ class CommitOrderPage extends StatefulWidget {
   _CommitOrderPageState createState() => _CommitOrderPageState();
 }
 
-class _CommitOrderPageState extends State<CommitOrderPage> {
+class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
   ScrollController controller;
   Map params;
   List<OrderCartGoods> goodsList = [];
@@ -45,6 +46,19 @@ class _CommitOrderPageState extends State<CommitOrderPage> {
   }
 
   bool canClick = true;
+
+  @override
+  void didChangeDependencies() {
+    Application.routeObserver.subscribe(this, ModalRoute.of(context));
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didPopNext() {
+    setState(() {});
+
+    super.didPopNext();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -14,6 +14,7 @@ import 'package:taojuwu/router/handlers.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -45,7 +46,7 @@ class _CartPageState extends State<CartPage>
 
   List<CartCategory> categoryList;
 
-  CartModel curCartModel;
+  CartModel get curCartModel => cartProvider?.curCartModel;
 
   @override
   void initState() {
@@ -82,6 +83,19 @@ class _CartPageState extends State<CartPage>
   void didChangeDependencies() {
     Application.routeObserver.subscribe(this, ModalRoute.of(context));
     super.didChangeDependencies();
+  }
+
+  @override
+  void didPopNext() {
+    GoodsAttrWrapper goodsAttrWrapper =
+        TargetOrderGoods.instance.goodsAttrWrapper;
+    if (goodsAttrWrapper != null) {
+      curCartModel?.attrs = goodsAttrWrapper?.goodsAttrList;
+      curCartModel?.estimatedPrice =
+          '${goodsAttrWrapper?.totalPrice ?? '0.00'}';
+      setState(() {});
+    }
+    super.didPopNext();
   }
 
   @override
@@ -183,7 +197,8 @@ class _CartPageState extends State<CartPage>
                                   '删除所选',
                                   () {
                                     // batchDelCart(provider);
-                                    provider?.batchRemoveGoods(context);
+                                    provider?.batchRemoveGoods(
+                                        context, clientId);
                                   },
                                   isActive: provider?.hasSelectedModels,
                                 )

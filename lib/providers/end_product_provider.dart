@@ -162,6 +162,23 @@ class EndProductProvider with ChangeNotifier {
     return {'sku_id': goods?.skuId, 'num': count};
   }
 
+  static Future editCount(BuildContext context,
+      {Map<String, dynamic> params, Function callback}) async {
+    OTPService.modifyCartAttr(context, params)
+        .then((ZYResponse response) {
+          print(response?.valid);
+          if (response?.valid == true) {
+            // cartModel?.count =
+
+            if (callback != null) callback();
+          }
+        })
+        .catchError((err) => err)
+        .whenComplete(() {
+          // Navigator.of(context)
+        });
+  }
+
   Future modifyEndProductAttr(BuildContext context,
       {Map<String, dynamic> params,
       CartModel cartModel,

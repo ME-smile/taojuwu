@@ -2,13 +2,13 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
-import 'package:taojuwu/application.dart';
 
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/pages/goods/curtain/widgets/zy_dialog.dart';
 import 'package:taojuwu/providers/cart_provider.dart';
+import 'package:taojuwu/providers/end_product_provider.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/singleton/target_order_goods.dart';
+
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/goods_attr_card.dart';
 import 'package:taojuwu/widgets/loading.dart';
@@ -30,7 +30,7 @@ class CartTabBarView extends StatefulWidget {
   _CartTabBarViewState createState() => _CartTabBarViewState();
 }
 
-class _CartTabBarViewState extends State<CartTabBarView> with RouteAware {
+class _CartTabBarViewState extends State<CartTabBarView> {
   int get clientId => widget.clientId;
   String get categoryId => widget.categoryId;
 
@@ -49,6 +49,9 @@ class _CartTabBarViewState extends State<CartTabBarView> with RouteAware {
               cartModel: cartModel,
               index: index,
               clientId: clientId,
+              editAttrCallback: () {
+                provider?.curCartModel = cartModel;
+              },
             )
           : ProductCard(
               cartModel: cartModel,
@@ -94,25 +97,6 @@ class _CartTabBarViewState extends State<CartTabBarView> with RouteAware {
   }
 
   @override
-  void didChangeDependencies() {
-    Application.routeObserver.subscribe(this, ModalRoute.of(context));
-    super.didChangeDependencies();
-  }
-
-  @override
-  void didPopNext() {
-    GoodsAttrWrapper goodsAttrWrapper =
-        TargetOrderGoods.instance.goodsAttrWrapper;
-    if (goodsAttrWrapper != null) {
-      curCartModel?.attrs = goodsAttrWrapper?.goodsAttrList;
-      curCartModel?.estimatedPrice =
-          '${goodsAttrWrapper?.totalPrice ?? '0.00'}';
-      setState(() {});
-    }
-    super.didPopNext();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (BuildContext context, CartProvider provider, _) {
@@ -133,6 +117,7 @@ class _CartTabBarViewState extends State<CartTabBarView> with RouteAware {
               : cartModels?.isEmpty == true
                   ? NoData()
                   : Container(
+                      alignment: Alignment.topCenter,
                       child: AnimationLimiter(
                         child: ListView.builder(
                           // key: key,
@@ -241,8 +226,10 @@ class CustomizedProductCardState extends State<CustomizedProductCard>
               return GestureDetector(
                   onLongPress: () {
                     setState(() {
+                      provider?.isEditting = false;
                       cartModel?.isChecked = true;
                     });
+
                     provider.remove(context, cartModel, clientId: clientId,
                         confirm: () {
                       setState(() {
@@ -390,6 +377,7 @@ class _ProductCardState extends State<ProductCard> {
         builder: (BuildContext context, CartProvider provider, _) {
       return GestureDetector(onLongPress: () {
         longPressCallback();
+
         setState(() {
           cartModel?.isChecked = true;
         });
@@ -456,7 +444,13 @@ class _ProductCardState extends State<ProductCard> {
                             count: cartModel?.count ?? 0,
                             model: cartModel,
                             callback: () {
-                              setState(() {});
+                              EndProductProvider.editCount(context, params: {
+                                'sku_id': cartModel?.skuId,
+                                'num': cartModel?.count,
+                                'cart_id': cartModel?.cartId
+                              }, callback: () {
+                                setState(() {});
+                              });
                             },
                           ),
                         )

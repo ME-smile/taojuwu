@@ -28,6 +28,7 @@ class CartProvider with ChangeNotifier {
   List<CartModel> _models = [];
   List<CartModel> get models => _models;
 
+  CartModel curCartModel;
   List<CartCategory> _categoryList;
   List<CartCategory> get categoryList => _categoryList;
   set categoryList(List<CartCategory> list) {
@@ -116,10 +117,10 @@ class CartProvider with ChangeNotifier {
     return 0;
   }
 
-  Future batchRemoveGoods(BuildContext context) async {
+  Future batchRemoveGoods(BuildContext context, int clientId) async {
     List<int> idList = selectedModels?.map((e) => e?.cartId)?.toList();
     CommonKit.showLoading();
-    delCartList(context, idList, callback: () {
+    delCartList(context, idList, clientId: clientId, callback: () {
       models?.removeWhere((element) => element?.isChecked == true);
       CommonKit.showSuccessDIYInfo('删除成功');
     });
@@ -203,9 +204,10 @@ class CartProvider with ChangeNotifier {
   }
 
   void delCartList(BuildContext context, List<int> idList,
-      {Function callback}) {
+      {Function callback, int clientId}) {
     String idStr = idList?.join(',');
-    OTPService.delCart(params: {'cart_id_array': '$idStr'})
+    OTPService.delCart(
+            params: {'cart_id_array': '$idStr', 'client_uid': clientId})
         .then((CartCategoryResp response) {
       if (response?.valid == true) {
         categoryList = response?.data?.data;

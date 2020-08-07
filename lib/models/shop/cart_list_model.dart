@@ -201,24 +201,32 @@ class CartModel extends CountModel {
     });
   }
 
-  Map<String, dynamic> toJson() => {
-        'tag': tag,
-        'img': pictureInfo?.picCoverSmall,
-        'wc_attr': wcAttr?.map((item) => jsonEncode(item))?.toList(),
-        'price': price,
-        'goods_name': goodsName,
-        'sku_id': skuId,
-        'attr': jsonEncode(attr),
-        'count': count,
-        'measure_id': measureId,
-        'total_price': estimatedPrice is double
-            ? estimatedPrice
-            : double.parse(estimatedPrice ?? '0.0'),
-        'is_shade': isShade,
-        'cart_id': cartId,
-        'goods_type': goodsType,
-        'goods_attrs': jsonEncode(attrs?.map((e) => e?.toJson())?.toList())
-      };
+  Map<String, dynamic> toJson() {
+    List<GoodsAttr> visibleOptions = attrs
+        ?.where((element) => [3, 5, 8, 12, 13]?.contains(element?.type))
+        ?.toList();
+    List<Map<String, dynamic>> args =
+        visibleOptions?.map((e) => e?.toJson())?.toList();
+
+    return {
+      'tag': tag,
+      'img': pictureInfo?.picCoverSmall,
+      'price': price,
+      'goods_name': goodsName,
+      'sku_id': skuId,
+      'attr': jsonEncode(attr),
+      'count': count,
+      'measure_id': measureId,
+      'total_price': estimatedPrice is double
+          ? estimatedPrice
+          : double.parse(estimatedPrice ?? '0.0'),
+      'is_shade': isShade,
+      'cart_id': cartId,
+      'goods_type': goodsType,
+      'goods_attrs': jsonEncode(args),
+      'desc': goodsAttrStr,
+    };
+  }
 
   @override
   String toString() {
