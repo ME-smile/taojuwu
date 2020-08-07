@@ -35,13 +35,14 @@ class OrderCartGoods extends CountModel {
           .toList();
     }
     cartId = '${json['cart_id' ?? '']}';
-    price = '${json['price']}';
+    price = double.parse('${json['price']}')?.toStringAsFixed(2);
     goodsName = json['goods_name'];
     measureId = '${json['measure_id'] ?? ''}';
     goodsId = '${json['goods_id'] ?? ''}';
     skuId = '${json['sku_id'] ?? ''}';
     isShade = '${json['is_shade'] ?? '0'}';
     totalPrice = json['total_price'] != null ? '${json['total_price']}' : '0';
+    totalPrice = double.parse(totalPrice)?.toStringAsFixed(2);
     attr = json['attr'];
     count = int.parse('${json['count'] ?? 1}');
     dy = '${json['dy']}';

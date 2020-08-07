@@ -870,6 +870,20 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView> {
                     NotificationListener<ScrollNotification>(
                         onNotification:
                             (ScrollNotification scrollNotification) {
+                          switch (scrollNotification.runtimeType) {
+                            case ScrollStartNotification:
+                              print("开始滚动");
+                              break;
+                            case ScrollUpdateNotification:
+                              print("正在滚动");
+                              break;
+                            case ScrollEndNotification:
+                              print("滚动停止");
+                              break;
+                            case OverscrollNotification:
+                              print("滚动到边界");
+                              break;
+                          }
                           if (offsetY == scrollNotification?.metrics?.pixels) {
                             //停止滚动
                             // showFloatingButton = true;

@@ -387,7 +387,6 @@ class _ProductCardState extends State<ProductCard> {
           setState(() {});
         });
       }, child: Builder(builder: (BuildContext ctx) {
-        ctx = ctx;
         return Container(
           color: themeData.primaryColor,
           margin: EdgeInsets.only(top: UIKit.height(20)),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/models/order/order_cart_goods_model.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/goods_attr_card.dart';
+
 import 'package:taojuwu/widgets/step_counter.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -37,77 +37,69 @@ class EndProductOrderCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: UIKit.height(15)),
-            child: Text(
-              goods?.tag ?? '',
-              style: TextStyle(fontSize: UIKit.sp(24)),
-            ),
-          ),
           Container(
-            width: MediaQuery.of(context).size.width,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Image.network(
-                  UIKit.getNetworkImgPath(goods?.img),
-                  width: UIKit.width(200),
-                ),
-                Expanded(
-                    child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text.rich(TextSpan(
-                            text: goods?.goodsName ?? '',
-                            children: [
-                              TextSpan(text: '  型号', style: textTheme.caption)
-                            ],
-                            style: textTheme.headline6.copyWith(
-                              fontSize: UIKit.sp(24),
+                      Image.network(
+                        UIKit.getNetworkImgPath(goods?.img),
+                        width: UIKit.width(200),
+                      ),
+                      Expanded(
+                          child: Container(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Text(
+                                  goods?.goodsName ?? '',
+                                ),
+                                Text('¥${goods?.price ?? 0.00}'),
+                              ],
                             ),
-                          )),
-                          Text.rich(TextSpan(
-                              text: '${goods?.price ?? 0.00}',
-                              children: [TextSpan(text: goods?.unitPrice)]))
-                        ],
-                      ),
-                      Container(
-                        color: const Color(0xFFFAFAFA),
-                        padding: EdgeInsets.symmetric(
-                            vertical: UIKit.height(10),
-                            horizontal: UIKit.width(10)),
-                        child: Text(
-                          '${goods?.desc ?? ''}',
-                          style: textTheme.caption,
-                        ),
-                      ),
+                            Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                vertical: UIKit.height(10),
+                                // horizontal: UIKit.width(10)
+                              ),
+                              child: Text(
+                                '${goods?.desc ?? ''}',
+                                style: textTheme.caption,
+                              ),
+                            ),
 
-                      // Flexible(
-                      //     child: Container(
-                      //   color: const Color(0xFFFAFAFA),
-                      //   padding: EdgeInsets.symmetric(
-                      //       vertical: UIKit.height(10),
-                      //       horizontal: UIKit.width(10)),
-                      //   child: Text(
-                      //     attrsText ?? '',
-                      //     style: textTheme.caption,
-                      //   ),
-                      // ))
+                            // Flexible(
+                            //     child: Container(
+                            //   color: const Color(0xFFFAFAFA),
+                            //   padding: EdgeInsets.symmetric(
+                            //       vertical: UIKit.height(10),
+                            //       horizontal: UIKit.width(10)),
+                            //   child: Text(
+                            //     attrsText ?? '',
+                            //     style: textTheme.caption,
+                            //   ),
+                            // ))
+                          ],
+                        ),
+                      )),
                     ],
                   ),
-                )),
-              ],
-            ),
-          ),
-          GoodsAttrCard(
-            attrs: goods?.attrs,
-            isInCartPage: false,
-          )
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    alignment: Alignment.centerRight,
+                    child: Text('小计:¥${goods?.totalPrice}'),
+                  )
+                ],
+              )),
         ],
       ),
     );
@@ -131,6 +123,11 @@ class CustomizedProductOrderCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+            child: Text(goods?.tag ?? ''),
+          ),
           Row(
             children: <Widget>[
               ZYNetImage(
