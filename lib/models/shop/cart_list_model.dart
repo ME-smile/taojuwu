@@ -61,7 +61,10 @@ class CartCategory {
     count = json['num'];
   }
 
-  CartCategory(name, count);
+  CartCategory(String name, int count) {
+    this.name = name;
+    this.count = count;
+  }
 }
 
 class CartModel extends CountModel {

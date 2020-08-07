@@ -38,14 +38,15 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage>
     with TickerProviderStateMixin, RouteAware {
-  CartProvider get cartProvider => context.read<CartProvider>();
+  CartProvider _cartProvider = CartProvider();
+  CartProvider get cartProvider => _cartProvider;
   int get clientId => widget.clientId;
   TabController tabController;
 
   bool isLoading = true;
   List<List<CartModel>> modelsList;
   List<CartModel> get models => cartProvider?.models;
-  List<CartCategory> get tabs => CartProvider.tabs;
+
   // GlobalKey<AnimatedListState> get animatedListKey =>
   //     keyList[tabController?.index ?? 0];
 
@@ -59,7 +60,8 @@ class _CartPageState extends State<CartPage>
   @override
   void initState() {
     super.initState();
-    tabController = TabController(length: tabs?.length, vsync: this);
+    tabController =
+        TabController(length: cartProvider?.categoryList?.length, vsync: this);
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData().whenComplete(() {});
     });
@@ -318,7 +320,7 @@ class _CartTabBarViewState extends State<CartTabBarView> with RouteAware {
   @override
   void initState() {
     super.initState();
-    cartProvider.curIndex = index;
+
     if (requestData) {}
     fetchCartList();
   }
