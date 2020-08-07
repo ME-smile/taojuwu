@@ -373,7 +373,8 @@ class OTPService {
       ApiPath.delCart,
       data: params,
     );
-    debugPrint(response?.data);
+    print(params);
+    debugPrint(response?.data?.toString());
     return CartCategoryResp.fromJson(response.data);
   }
 

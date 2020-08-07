@@ -243,7 +243,8 @@ class CustomizedProductCardState extends State<CustomizedProductCard>
                     setState(() {
                       cartModel?.isChecked = true;
                     });
-                    provider.remove(context, cartModel, confirm: () {
+                    provider.remove(context, cartModel, clientId: clientId,
+                        confirm: () {
                       setState(() {
                         visible = false;
                         slideAnimationController?.forward();

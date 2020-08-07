@@ -119,7 +119,10 @@ class CartProvider with ChangeNotifier {
   Future batchRemoveGoods(BuildContext context) async {
     List<int> idList = selectedModels?.map((e) => e?.cartId)?.toList();
     CommonKit.showLoading();
-    delCartList(context, idList, callback: () {});
+    delCartList(context, idList, callback: () {
+      models?.removeWhere((element) => element?.isChecked == true);
+      CommonKit.showSuccessDIYInfo('删除成功');
+    });
 
     notifyListeners();
   }
@@ -184,11 +187,10 @@ class CartProvider with ChangeNotifier {
 
   void delCart(BuildContext context, int id,
       {CartModel cartModel, Function callback, int clientId}) {
-    OTPService.delCart(params: {'cart_id_array': '$id', 'cleint_uid': clientId})
+    OTPService.delCart(params: {'cart_id_array': '$id', 'client_uid': clientId})
         .then((CartCategoryResp response) {
           if (response?.valid == true) {
             categoryList = response?.data?.data;
-
             if (callback != null) callback();
           } else {
             CommonKit.showToast(response?.message ?? '');
@@ -205,15 +207,13 @@ class CartProvider with ChangeNotifier {
     String idStr = idList?.join(',');
     OTPService.delCart(params: {'cart_id_array': '$idStr'})
         .then((CartCategoryResp response) {
-          if (response?.valid == true) {
-            categoryList = response?.data?.data;
-            models = [];
-            if (callback != null) callback();
-          } else {
-            CommonKit.showToast(response?.message ?? '');
-          }
-        })
-        .catchError((err) => err)
-        .whenComplete(() {});
+      if (response?.valid == true) {
+        categoryList = response?.data?.data;
+
+        if (callback != null) callback();
+      } else {
+        CommonKit.showToast(response?.message ?? '');
+      }
+    }).catchError((err) => err);
   }
 }
