@@ -206,6 +206,12 @@ class _CartPageState extends State<CartPage>
                                   '结算(${provider?.totalCount ?? 0})', () {
                                   TargetClient.instance.clientId =
                                       provider?.clientId;
+                                  // Navigator.push(context, MaterialPageRoute(
+                                  //     builder: (BuildContext context) {
+                                  //   return CommitOrderPage(
+                                  //     params: {'data': provider?.checkedModels},
+                                  //   );
+                                  // },),);
                                   RouteHandler.goCommitOrderPage(context,
                                       params: jsonEncode(
                                           {'data': provider?.checkedModels}));

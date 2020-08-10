@@ -92,4 +92,6 @@ class ApiPath {
   static const String modifyCartAttr = '/api/goods/modifyCartAccessory';
 
   static const String associativeWords = '/api/goods/searchContent';
+
+  static const String protocal = '/api/login/registerAgreement';
 }

@@ -38,16 +38,12 @@ class OTPService {
   static Xhr xhr = Xhr.instance;
   static Future<CurtainProductListResp> productGoodsList(BuildContext context,
       {Map<String, dynamic> params}) async {
-    Response response = await xhr.get(context, ApiPath.productMall,
-        params: params ?? {},
-        options: Options(extra: {
-          'cache': true,
-          'cacheKey': '${ApiPath.productMall}/${params["category_type"]}'
-        }));
-    print({
-      'cache': true,
-      'cacheKey': '${ApiPath.productMall}/${params["category_type"]}'
-    });
+    Response response = await xhr.get(
+      context,
+      ApiPath.productMall,
+      params: params ?? {},
+    );
+
     return CurtainProductListResp.fromMap(response.data);
   }
 

@@ -79,7 +79,7 @@ class OrderAttrCard extends StatelessWidget {
                     child: Text(
                       goods?.goodsAttrStr ?? '',
                       overflow: TextOverflow.ellipsis,
-                      maxLines: 3,
+                      maxLines: 2,
                       style: textTheme.caption.copyWith(fontSize: 12),
                     ),
                   ),

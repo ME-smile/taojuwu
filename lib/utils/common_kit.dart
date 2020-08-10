@@ -49,37 +49,30 @@ class CommonKit {
   }
 
   static void showSuccess() {
-    once(initEasyLoading);
     EasyLoading.showSuccess('提交成功');
   }
 
   static void showLoading() {
-    once(initEasyLoading);
     EasyLoading.show(status: '正在加载');
   }
 
   static void showError() {
-    once(initEasyLoading);
     EasyLoading.showError('网络错误');
   }
 
   static void showErrorInfo(String msg) {
-    once(initEasyLoading);
     EasyLoading.showError(msg);
   }
 
   static void showToast(String msg) {
-    once(initEasyLoading);
     EasyLoading.showToast(msg);
   }
 
   static void showSuccessDIYInfo(String msg) {
-    once(initEasyLoading);
     EasyLoading.showSuccess(msg);
   }
 
   static void showInfo(String msg) {
-    once(initEasyLoading);
     EasyLoading.showInfo(msg);
   }
 

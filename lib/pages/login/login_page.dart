@@ -31,6 +31,7 @@ class _LoginPageState extends State<LoginPage> {
 
   UserProvider _userProvider;
   bool _isPwdMode = false;
+  double startX = 0;
   String get tel => _phoneController?.text;
 
   bool get isValidTel {
@@ -184,32 +185,38 @@ class _LoginPageState extends State<LoginPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                InkWell(
-                  child: Text(
-                    '手机号码登录',
-                    style: textTheme.subtitle1,
-                  ),
-                  onTap: () {
-                    if (!_isPwdMode) {
-                      setState(() {
-                        _isPwdMode = !_isPwdMode;
-                      });
-                    }
+                Builder(
+                  builder: (BuildContext context) {
+                    return InkWell(
+                      child: Text(
+                        '手机号码登录',
+                        style: textTheme.subtitle1,
+                      ),
+                      onTap: () {
+                        if (!_isPwdMode) {
+                          setState(() {
+                            _isPwdMode = !_isPwdMode;
+                          });
+                        }
+                      },
+                    );
                   },
                 ),
-                InkWell(
-                  child: Text(
-                    '密码登录',
-                    style: textTheme.subtitle1,
-                  ),
-                  onTap: () {
-                    if (_isPwdMode) {
-                      setState(() {
-                        _isPwdMode = !_isPwdMode;
-                      });
-                    }
-                  },
-                ),
+                Builder(builder: (BuildContext context) {
+                  return InkWell(
+                    child: Text(
+                      '密码登录',
+                      style: textTheme.subtitle1,
+                    ),
+                    onTap: () {
+                      if (_isPwdMode) {
+                        setState(() {
+                          _isPwdMode = !_isPwdMode;
+                        });
+                      }
+                    },
+                  );
+                }),
               ],
             ),
           ),
