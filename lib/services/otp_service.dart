@@ -8,6 +8,7 @@ import 'package:taojuwu/models/order/order_edit_log_model.dart';
 import 'package:taojuwu/models/order/order_mainfest_model.dart';
 
 import 'package:taojuwu/models/order/order_model.dart';
+import 'package:taojuwu/models/protocal/user_protocal_model.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/shop/collect_list_model.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
@@ -36,6 +37,13 @@ import 'base/xhr.dart';
 
 class OTPService {
   static Xhr xhr = Xhr.instance;
+
+  static Future<UserProtocalModelResp> protocal(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response = await xhr.get(context, ApiPath.protocal);
+    return UserProtocalModelResp.fromJson(response.data);
+  }
+
   static Future<CurtainProductListResp> productGoodsList(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response = await xhr.get(

@@ -41,6 +41,7 @@ import 'package:taojuwu/pages/profile/subPages/submit_success_page.dart';
 import 'package:taojuwu/pages/profile/subPages/switch_account_page.dart';
 import 'package:taojuwu/pages/profile/subPages/feedback_page.dart';
 import 'package:taojuwu/pages/profile/subPages/version_page.dart';
+import 'package:taojuwu/pages/protocal/protocal.dart';
 import 'package:taojuwu/pages/refund/refund_page.dart';
 import 'package:taojuwu/pages/search/search_page.dart';
 import 'package:taojuwu/pages/splash/splash_page.dart';
@@ -76,6 +77,19 @@ class RouteHandler {
   });
   static goHomePage(BuildContext context, {bool clearStack: true}) {
     _jumpTo(context, Routes.home, clearStack: clearStack);
+  }
+
+  static Handler protocal = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    return UserProtocalPage();
+  });
+  static goProtocalPage(
+    BuildContext context,
+  ) {
+    _jumpTo(
+      context,
+      Routes.protocal,
+    );
   }
 
   static Handler login = Handler(

@@ -246,6 +246,12 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
             ZYListTile(
+              title: '用户协议',
+              callback: () {
+                RouteHandler.goProtocalPage(context);
+              },
+            ),
+            ZYListTile(
               title: '关于淘居屋',
               showDivider: false,
               callback: () {

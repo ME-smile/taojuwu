@@ -50,6 +50,7 @@ class Routes {
   static const String orderEditLog = '/orderEditLog';
   static const String endProductDetail = '/endProductDetail';
   static const String editGoodsAttr = '/editGoodsAttr';
+  static const String protocal = '/protocal';
   static void configureRoutes(Router router) {
     router.notFoundHandler = new Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -100,5 +101,6 @@ class Routes {
     router.define(orderEditLog, handler: RouteHandler.orderEditLog);
     router.define(endProductDetail, handler: RouteHandler.endProductDetail);
     router.define(editGoodsAttr, handler: RouteHandler.editGoodsAttr);
+    router.define(protocal, handler: RouteHandler.protocal);
   }
 }

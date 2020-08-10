@@ -1,9 +1,10 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:provider/provider.dart';
-import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/models/protocal/user_protocal_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
@@ -14,6 +15,7 @@ import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/send_sms_button.dart';
+import 'package:taojuwu/widgets/zy_future_builder.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
 // import 'package:taojuwu/widgets/zy_assetImage.dart';
 
@@ -31,12 +33,16 @@ class _LoginPageState extends State<LoginPage> {
 
   UserProvider _userProvider;
   bool _isPwdMode = false;
-  double startX = 0;
+  double startX1 = 0;
+  double startX2 = 0;
   String get tel => _phoneController?.text;
 
   bool get isValidTel {
     return RegexUtil.isMobileExact(tel);
   }
+
+  BuildContext context1;
+  BuildContext context2;
 
   @override
   void initState() {
@@ -45,6 +51,22 @@ class _LoginPageState extends State<LoginPage> {
     _phoneController = TextEditingController();
     _pwdController = TextEditingController();
     _smsController = TextEditingController();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      RenderBox box1 = context1.findRenderObject();
+      RenderBox box2 = context2.findRenderObject();
+
+      Offset position1 = box1.localToGlobal(Offset.zero);
+      Offset position2 = box2.localToGlobal(Offset.zero);
+      Size size1 = box1.size;
+      Size size2 = box2.size;
+      startX1 = position1.dx + (size1.width / 2);
+      startX2 = position2.dx + (size2.width / 2);
+      print(position1.dx);
+      print(position2.dx);
+      setState(() {});
+      // startX1 = renderObject1.semanticBounds.left;
+      // startX2 = renderObject2.semanticBounds.left
+    });
   }
 
   void unfocus() {
@@ -72,19 +94,23 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text(
-              '使用协议',
-              textAlign: TextAlign.center,
-            ),
             content: Container(
                 // decoration: ,
+                alignment: Alignment.center,
                 color: themeData.primaryColor,
                 // margin: EdgeInsets.symmetric(
                 //   horizontal: UIKit.width(50),
                 // ),
-                child: SingleChildScrollView(
-                  child: Text(Constants.PRIVACY),
-                )),
+                child: ZYFutureBuilder(
+                    futureFunc: OTPService.protocal,
+                    builder:
+                        (BuildContext context, UserProtocalModelResp response) {
+                      String content = response?.data?.content ?? '';
+
+                      return SingleChildScrollView(
+                        child: Html(data: content),
+                      );
+                    })),
           );
         });
   }
@@ -186,7 +212,9 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Builder(
-                  builder: (BuildContext context) {
+                  builder: (BuildContext ctx) {
+                    context1 = ctx;
+
                     return InkWell(
                       child: Text(
                         '手机号码登录',
@@ -202,7 +230,9 @@ class _LoginPageState extends State<LoginPage> {
                     );
                   },
                 ),
-                Builder(builder: (BuildContext context) {
+                Builder(builder: (BuildContext ctx) {
+                  context2 = ctx;
+
                   return InkWell(
                     child: Text(
                       '密码登录',
@@ -223,9 +253,19 @@ class _LoginPageState extends State<LoginPage> {
           CustomPaint(
             painter: LoginPageIndicatorPainter(
                 triangleW: 5.0,
-                pointX: _isPwdMode ? w * 0.25 - 20.0 : w * 0.75 + 5.0,
+                pointX: _isPwdMode ? startX1 : startX2,
                 width: w),
           ),
+          // AnimatedBuilder(
+          //     animation: null,
+          //     builder: (BuildContext context, _) {
+          //       return CustomPaint(
+          //         painter: LoginPageIndicatorPainter(
+          //             triangleW: 5.0,
+          //             pointX: _isPwdMode ? w * 0.25 - 20.0 : w * 0.75 + 5.0,
+          //             width: w),
+          //       );
+          //     }),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: UIKit.width(50)),
             child: Column(
