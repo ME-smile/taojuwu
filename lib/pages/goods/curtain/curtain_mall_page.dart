@@ -25,8 +25,8 @@ import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/singleton/target_route.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
-
 import 'package:taojuwu/widgets/loading.dart';
+
 import 'package:taojuwu/widgets/no_data.dart';
 
 import 'package:taojuwu/widgets/scan_button.dart';
@@ -53,16 +53,18 @@ class CurtainMallPage extends StatefulWidget {
 class _CurtainMallPageState extends State<CurtainMallPage>
     with SingleTickerProviderStateMixin, RouteAware {
   List get tabs => ['窗帘', '配件', '抱枕', '床品', '沙发'];
-
+  List<List<GoodsItemBean>> goodsListWrapper = List(5);
+  List<BuildContext> contextList = List(5);
+  BuildContext get curTabContext => contextList[tabIndex];
   CurtainProductListDataBean beanData;
   CurtainGoodsListWrapper wrapper;
   ScrollController scrollController;
   GZXDropdownMenuController menuController;
-  List<GoodsItemBean> goodsList = [];
+
+  List<GoodsItemBean> get goodsList => goodsListWrapper[tabIndex];
 
   int totalPage = 0;
 
-  bool isLoading = true;
   static const int PAGE_SIZE = 20;
 
   Map<String, dynamic> params = {
@@ -76,18 +78,15 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     // 'shippingFee': 0,
     // 'type': 0
   };
-
-  //定时器 用于判断是否停止滚动
-
+  String get keyword => widget.keyword;
   bool get isFromSearch => widget.keyword.isNotEmpty ?? false;
+
   @override
   void initState() {
     super.initState();
     TargetRoute.instance.context = context;
+    params['keyword'] = keyword;
     tabController = TabController(length: tabs.length, vsync: this);
-
-    params['keyword'] = widget.keyword;
-    params['category_type'] = tabIndex;
     menuController = GZXDropdownMenuController();
     scrollController = ScrollController();
     Future.delayed(Constants.TRANSITION_DURATION, () {
@@ -140,8 +139,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       sortTypes.firstWhere((element) => element['is_checked']);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  RefreshController _refreshController = RefreshController(
-      initialRefresh: false, initialLoadStatus: LoadStatus.idle);
+  RefreshController _refreshController;
 
   TabController tabController;
   Animation<Offset> animation;
@@ -183,6 +181,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     );
   }
 
+  bool showFloatingButton = true;
   closeEndDrawer() {
     if (_scaffoldKey.currentState.isEndDrawerOpen) {
       return Navigator.of(context).pop();
@@ -223,7 +222,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     );
   }
 
-  bool showFloatingButton = true;
   void filter() {
     setState(() {
       if (menuController?.isShow == true) {
@@ -269,7 +267,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   }
 
   void scrollToTop() {
-    if (goodsList == null || goodsList.isEmpty) return;
+    if (goodsList == null || goodsList?.isEmpty == true) return;
     scrollController?.animateTo(0,
         duration: Duration(milliseconds: 300), curve: Curves.bounceInOut);
   }
@@ -416,6 +414,13 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     );
   }
 
+  void requestGoodsList() {
+    OTPService.productGoodsList(context, params: params)
+        .then((CurtainProductListResp response) {
+      goodsListWrapper[tabIndex] = response?.data?.goodsList?.data ?? [];
+    }).whenComplete(() {});
+  }
+
   int cartCount = 0;
   void fetchData() {
     OTPService.mallData(context, params: params).then((data) {
@@ -425,18 +430,14 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       cartCount = cartCountResp?.data;
       beanData = curtainProductListResp?.data;
       wrapper = beanData?.goodsList;
-      goodsList = wrapper?.data;
+      goodsListWrapper[tabIndex] = wrapper?.data ?? [];
       tagWrapper = tagListResp?.data;
       int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
       int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
       totalPage = mod > 0 ? pages + 1 : pages;
     }).catchError((err) {
       return err;
-    }).whenComplete(() {
-      setState(() {
-        isLoading = false;
-      });
-    });
+    }).whenComplete(() {});
   }
 
   @override
@@ -634,43 +635,45 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                 preferredSize: Size.fromHeight(50)),
           ),
           body: Scaffold(
-              key: _scaffoldKey,
-              endDrawer: endDrawer(context),
-              body: PageTransitionSwitcher(
-                duration: Duration(milliseconds: 500),
-                transitionBuilder: (
-                  Widget child,
-                  Animation<double> animation,
-                  Animation<double> secondaryAnimation,
-                ) {
-                  return FadeThroughTransition(
-                    animation: animation,
-                    secondaryAnimation: secondaryAnimation,
-                    child: child,
-                  );
+            key: _scaffoldKey,
+            endDrawer: endDrawer(context),
+            body: NotificationListener(
+                onNotification: (ScrollNotification notofication) {
+                  if (notofication.runtimeType == ScrollStartNotification) {
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      setState(() {
+                        showFloatingButton = false;
+                      });
+                    });
+                  }
+                  if (notofication.runtimeType == ScrollEndNotification) {
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      setState(() {
+                        showFloatingButton = true;
+                      });
+                    });
+                  }
+                  return true;
                 },
-                child: isLoading
-                    ? LoadingCircle()
-                    : TabBarView(
-                        children: List.generate(tabs?.length ?? 0, (int index) {
-                          return GoodsTabBarView(
-                            menuController: menuController,
-                            sort: sortData,
-                            isGridMode: isGridMode,
-                            goodsList: index == 0 ? goodsList : null,
-                            requestData: index != 0,
-                            params: {
-                              'category_type': index,
-                              'page_size': PAGE_SIZE,
-                              'page_index': 1,
-                              'order': currentSortType['order'],
-                              'sort': currentSortType['sort']
-                            },
-                          );
-                        }),
-                        controller: tabController,
-                      ),
-              )),
+                child: TabBarView(
+                  children: List.generate(tabs?.length ?? 0, (int index) {
+                    return GoodsTabBarView(
+                      menuController: menuController,
+                      sort: sortData,
+                      isGridMode: isGridMode,
+                      goodsList: goodsListWrapper[index],
+                      params: {
+                        'category_type': index,
+                        'page_size': PAGE_SIZE,
+                        'page_index': 1,
+                        'order': currentSortType['order'],
+                        'sort': currentSortType['sort']
+                      },
+                    );
+                  }),
+                  controller: tabController,
+                )),
+          ),
         ),
         onWillPop: () {
           Navigator.of(context).pop();
@@ -686,7 +689,7 @@ class GoodsTabBarView extends StatefulWidget {
   final Function sort;
 
   final GZXDropdownMenuController menuController;
-  final bool requestData;
+
   final bool isGridMode;
   final bool isFromSearch;
   final Map<String, dynamic> params;
@@ -697,7 +700,6 @@ class GoodsTabBarView extends StatefulWidget {
       this.menuController,
       this.params,
       this.isFromSearch = false,
-      this.requestData = true,
       this.isGridMode = true})
       : super(key: key);
 
@@ -707,16 +709,13 @@ class GoodsTabBarView extends StatefulWidget {
 
 class _GoodsTabBarViewState extends State<GoodsTabBarView>
     with AutomaticKeepAliveClientMixin {
-  List<GoodsItemBean> get goodsList => widget.goodsList;
-  set goodsList(List<GoodsItemBean> list) {
-    goodsList = list;
-  }
+  List<GoodsItemBean> goodsList;
 
   Function get sort => widget.sort;
+
   GZXDropdownMenuController get menuController => widget.menuController;
   Map<String, dynamic> get params => widget.params;
   bool get isGridMode => widget.isGridMode;
-  bool get requestData => widget.requestData;
   bool get isFromSearch => widget.isFromSearch;
   static const List<Map<String, dynamic>> SORT_TYPES = [
     {
@@ -736,20 +735,22 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
       'is_checked': false,
     }
   ];
-  double offsetY = 0.0;
-  double lastOffsetY = 0.0;
-  bool showFloatingButton = true;
+  bool isLoading = true;
   RefreshController _refreshController;
   ScrollController scrollController;
   @override
   void initState() {
+    goodsList = widget.goodsList;
+
     _refreshController = RefreshController(
         initialRefresh: false, initialLoadStatus: LoadStatus.idle);
     scrollController = ScrollController();
-
-    if (requestData) {
-      requestGoodsData();
-    }
+    requestGoodsData();
+    // Future.delayed(Constants.TRANSITION_DURATION, () {
+    //   setState(() {
+    //     isLoading = false;
+    //   });
+    // });
     super.initState();
   }
 
@@ -760,39 +761,41 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
     super.dispose();
   }
 
-  bool isLoading = false;
   bool isRefresh = true;
   CurtainProductListDataBean beanData;
   CurtainGoodsListWrapper wrapper;
   int totalPage = 0;
   static const int PAGE_SIZE = 20;
 
-  void refresh() async {
-    params['page_index'] = 1;
-    isRefresh = true;
-    await requestGoodsData();
-  }
-
-  void load() async {
-    params['page_index']++;
-    isRefresh = false;
-    await requestGoodsData();
-  }
-
-  void sortData() async {
-    sort();
-    await requestGoodsData();
+  void reload() {
     setState(() {});
   }
 
-  Future requestGoodsData() async {
+  void refresh() {
+    params['page_index'] = 1;
+    isRefresh = true;
+    requestGoodsData();
+  }
+
+  void load() {
+    params['page_index']++;
+    isRefresh = false;
+    requestGoodsData();
+  }
+
+  void sortData() {
+    sort();
+    requestGoodsData();
+    setState(() {});
+  }
+
+  requestGoodsData() {
     OTPService.productGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
       if (curtainProductListResp?.valid == true) {
         _refreshController?.resetNoData();
         beanData = curtainProductListResp?.data;
         wrapper = beanData?.goodsList;
-
         goodsList = wrapper?.data;
         List<GoodsItemBean> beans = wrapper?.data ?? [];
         int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
@@ -822,7 +825,6 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
         params['page_index'] =
             params['page_index'] < 1 ? 1 : params['page_index'] - 1;
       }
-      print(params);
     }).catchError((err) {
       if (isRefresh) {
         _refreshController?.refreshFailed();
@@ -830,10 +832,11 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
         _refreshController?.loadFailed();
       }
     }).whenComplete(() {
-      if (mounted)
+      if (mounted) {
         setState(() {
           isLoading = false;
         });
+      }
     });
   }
 
@@ -890,88 +893,103 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
     super.build(context);
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return isLoading
-        ? LoadingCircle(
-            color: themeData.scaffoldBackgroundColor,
-          )
-        : goodsList?.isNotEmpty != true
-            ? Container(
-                color: themeData.scaffoldBackgroundColor,
-                child: NoData(),
-              )
-            : Container(
-                alignment: Alignment.center,
-                // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                child: Stack(
-                  children: <Widget>[
-                    SmartRefresher(
-                      enablePullDown: true,
-                      enablePullUp: true,
-                      primary: false,
-                      onRefresh: refresh,
-                      onLoading: load,
-                      controller: _refreshController,
-                      scrollController: scrollController,
-                      child: isGridMode ? buildGridView() : buildListView(),
-                    ),
-                    GZXDropDownMenu(
-                        controller: menuController,
-                        animationMilliseconds: 400,
-                        menus: [
-                          GZXDropdownMenuBuilder(
-                              dropDownHeight: 30.0 * SORT_TYPES.length,
-                              dropDownWidget: Column(
-                                children:
-                                    List.generate(SORT_TYPES.length, (int i) {
-                                  Map<String, dynamic> bean = SORT_TYPES[i];
-                                  return Flexible(
-                                      child: InkWell(
-                                    onTap: () {
-                                      if (bean['is_checked']) return;
-                                      SORT_TYPES.forEach((element) {
-                                        element['is_checked'] = element == bean;
-                                      });
-                                      sort();
-                                    },
-                                    child: Container(
-                                        height: 30,
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 50),
-                                          child: Text.rich(
-                                            TextSpan(
-                                                text: bean['text'],
-                                                style: TextStyle(
-                                                    color: bean['is_checked']
-                                                        ? textTheme
-                                                            .bodyText2.color
-                                                        : Colors.grey),
-                                                children: [
-                                                  WidgetSpan(
-                                                      child:
-                                                          SizedBox(width: 20)),
-                                                  WidgetSpan(
-                                                      child: bean['is_checked']
-                                                          ? Icon(
-                                                              ZYIcon.check,
-                                                              color: const Color(
-                                                                  0xFF050505),
-                                                            )
-                                                          : SizedBox(
-                                                              width: 24,
-                                                              height: 24,
-                                                            ))
-                                                ]),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        )),
-                                  ));
-                                }),
-                              ))
-                        ])
-                  ],
+    return PageTransitionSwitcher(
+      duration: Duration(milliseconds: 500),
+      transitionBuilder: (
+        Widget child,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
+        return FadeThroughTransition(
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          child: child,
+        );
+      },
+      child: isLoading
+          ? LoadingCircle()
+          : goodsList?.isNotEmpty != true
+              ? Container(
+                  color: themeData.scaffoldBackgroundColor,
+                  child: NoData(),
+                )
+              : Container(
+                  alignment: Alignment.center,
+                  // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                  child: Stack(
+                    children: <Widget>[
+                      SmartRefresher(
+                        enablePullDown: true,
+                        enablePullUp: true,
+                        primary: false,
+                        onRefresh: refresh,
+                        onLoading: load,
+                        controller: _refreshController,
+                        scrollController: scrollController,
+                        child: isGridMode ? buildGridView() : buildListView(),
+                      ),
+                      GZXDropDownMenu(
+                          controller: menuController,
+                          animationMilliseconds: 400,
+                          menus: [
+                            GZXDropdownMenuBuilder(
+                                dropDownHeight: 30.0 * SORT_TYPES.length,
+                                dropDownWidget: Column(
+                                  children:
+                                      List.generate(SORT_TYPES.length, (int i) {
+                                    Map<String, dynamic> bean = SORT_TYPES[i];
+                                    return Flexible(
+                                        child: InkWell(
+                                      onTap: () {
+                                        if (bean['is_checked']) return;
+                                        SORT_TYPES.forEach((element) {
+                                          element['is_checked'] =
+                                              element == bean;
+                                        });
+                                        sort();
+                                      },
+                                      child: Container(
+                                          height: 30,
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 50),
+                                            child: Text.rich(
+                                              TextSpan(
+                                                  text: bean['text'],
+                                                  style: TextStyle(
+                                                      color: bean['is_checked']
+                                                          ? textTheme
+                                                              .bodyText2.color
+                                                          : Colors.grey),
+                                                  children: [
+                                                    WidgetSpan(
+                                                        child: SizedBox(
+                                                            width: 20)),
+                                                    WidgetSpan(
+                                                        child:
+                                                            bean['is_checked']
+                                                                ? Icon(
+                                                                    ZYIcon
+                                                                        .check,
+                                                                    color: const Color(
+                                                                        0xFF050505),
+                                                                  )
+                                                                : SizedBox(
+                                                                    width: 24,
+                                                                    height: 24,
+                                                                  ))
+                                                  ]),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          )),
+                                    ));
+                                  }),
+                                ))
+                          ])
+                    ],
+                  ),
                 ),
-              );
+    );
   }
 
   @override

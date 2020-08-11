@@ -46,12 +46,14 @@ class OTPService {
 
   static Future<CurtainProductListResp> productGoodsList(BuildContext context,
       {Map<String, dynamic> params}) async {
+    print('----------------------');
+    print(params);
     Response response = await xhr.get(
       context,
       ApiPath.productMall,
       params: params ?? {},
     );
-
+    print(response?.data);
     return CurtainProductListResp.fromMap(response.data);
   }
 

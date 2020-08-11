@@ -4,6 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:provider/provider.dart';
+// import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/protocal/user_protocal_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/providers/user_provider.dart';
@@ -33,16 +34,11 @@ class _LoginPageState extends State<LoginPage> {
 
   UserProvider _userProvider;
   bool _isPwdMode = false;
-  double startX1 = 0;
-  double startX2 = 0;
   String get tel => _phoneController?.text;
 
   bool get isValidTel {
     return RegexUtil.isMobileExact(tel);
   }
-
-  BuildContext context1;
-  BuildContext context2;
 
   @override
   void initState() {
@@ -51,21 +47,16 @@ class _LoginPageState extends State<LoginPage> {
     _phoneController = TextEditingController();
     _pwdController = TextEditingController();
     _smsController = TextEditingController();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       RenderBox box1 = context1.findRenderObject();
       RenderBox box2 = context2.findRenderObject();
-
       Offset position1 = box1.localToGlobal(Offset.zero);
       Offset position2 = box2.localToGlobal(Offset.zero);
       Size size1 = box1.size;
       Size size2 = box2.size;
       startX1 = position1.dx + (size1.width / 2);
       startX2 = position2.dx + (size2.width / 2);
-      print(position1.dx);
-      print(position2.dx);
       setState(() {});
-      // startX1 = renderObject1.semanticBounds.left;
-      // startX2 = renderObject2.semanticBounds.left
     });
   }
 
@@ -73,6 +64,10 @@ class _LoginPageState extends State<LoginPage> {
     FocusManager.instance.primaryFocus.unfocus();
   }
 
+  double startX1 = 0.0;
+  double startX2 = 0.0;
+  BuildContext context1;
+  BuildContext context2;
   @override
   void dispose() {
     super.dispose();
@@ -88,29 +83,25 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void showPrivacy(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
+    // ThemeData themeData = Theme.of(context);
     // TextTheme textTheme = themeData.textTheme;
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            content: Container(
-                // decoration: ,
-                alignment: Alignment.center,
-                color: themeData.primaryColor,
-                // margin: EdgeInsets.symmetric(
-                //   horizontal: UIKit.width(50),
-                // ),
-                child: ZYFutureBuilder(
-                    futureFunc: OTPService.protocal,
-                    builder:
-                        (BuildContext context, UserProtocalModelResp response) {
-                      String content = response?.data?.content ?? '';
+            content: ZYFutureBuilder(
+                futureFunc: OTPService.protocal,
+                builder:
+                    (BuildContext context, UserProtocalModelResp response) {
+                  String content = response?.data?.content ?? '';
 
-                      return SingleChildScrollView(
-                        child: Html(data: content),
-                      );
-                    })),
+                  return Container(
+                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    child: SingleChildScrollView(
+                      child: Html(data: content),
+                    ),
+                  );
+                }),
           );
         });
   }
@@ -211,32 +202,28 @@ class _LoginPageState extends State<LoginPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Builder(
-                  builder: (BuildContext ctx) {
-                    context1 = ctx;
-
-                    return InkWell(
-                      child: Text(
-                        '手机号码登录',
-                        style: textTheme.subtitle1,
-                      ),
-                      onTap: () {
-                        if (!_isPwdMode) {
-                          setState(() {
-                            _isPwdMode = !_isPwdMode;
-                          });
-                        }
-                      },
-                    );
-                  },
-                ),
+                Builder(builder: (BuildContext ctx) {
+                  context1 = ctx;
+                  return InkWell(
+                    child: Text(
+                      '手机号码登录',
+                      style: textTheme.subtitle2,
+                    ),
+                    onTap: () {
+                      if (!_isPwdMode) {
+                        setState(() {
+                          _isPwdMode = !_isPwdMode;
+                        });
+                      }
+                    },
+                  );
+                }),
                 Builder(builder: (BuildContext ctx) {
                   context2 = ctx;
-
                   return InkWell(
                     child: Text(
                       '密码登录',
-                      style: textTheme.subtitle1,
+                      style: textTheme.subtitle2,
                     ),
                     onTap: () {
                       if (_isPwdMode) {
@@ -256,16 +243,6 @@ class _LoginPageState extends State<LoginPage> {
                 pointX: _isPwdMode ? startX1 : startX2,
                 width: w),
           ),
-          // AnimatedBuilder(
-          //     animation: null,
-          //     builder: (BuildContext context, _) {
-          //       return CustomPaint(
-          //         painter: LoginPageIndicatorPainter(
-          //             triangleW: 5.0,
-          //             pointX: _isPwdMode ? w * 0.25 - 20.0 : w * 0.75 + 5.0,
-          //             width: w),
-          //       );
-          //     }),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: UIKit.width(50)),
             child: Column(

@@ -105,11 +105,12 @@ class CartModel extends CountModel {
   BuildContext ctx;
   Function callback;
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
-  bool get isProduct => !isCustomizedProduct; //等于0时表示成品
-  bool get isCustomizedProduct => goodsType == 1;
+  bool get isProduct => goodsType == 0; //等于0时表示成品
+  bool get isCustomizedProduct => goodsType != 0;
   double get totalPrice => price * count;
   CartModel.fromJson(Map<String, dynamic> json) {
     cartId = json['cart_id'];
+
     clientId = json['client_id'];
     categoryId = '${json['category_id'] ?? ''}';
     buyerId = json['buyer_id'];
@@ -136,6 +137,7 @@ class CartModel extends CountModel {
     promotionPrice = json['promotion_price'];
     goodsAttrStr = json['goods_attr_str'] ?? '';
     goodsType = json['goods_special_type'];
+
     Map map = json['wc_attr'] is Map ? json['wc_attr'] : {};
 
     List<Map<String, dynamic>> wrapper = [];

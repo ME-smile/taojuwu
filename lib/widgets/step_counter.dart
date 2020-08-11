@@ -38,7 +38,7 @@ class _StepCounterState extends State<StepCounter> {
         callback();
       });
     textEditingController?.text = '$_count';
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override

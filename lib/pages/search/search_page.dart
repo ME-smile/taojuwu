@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -274,10 +275,40 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
           preferredSize: Size.fromHeight(60)),
-      body: Stack(
-        children: <Widget>[
-          Visibility(
-            child: Padding(
+      body: PageTransitionSwitcher(
+        duration: Duration(milliseconds: 500),
+        transitionBuilder: (
+          Widget child,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return FadeThroughTransition(
+            animation: animation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          );
+        },
+        child: isVisible
+            ? ListView.builder(
+                itemBuilder: (BuildContext context, int i) {
+                  String text = associativeWords[i];
+                  return GestureDetector(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: UIKit.width(15),
+                          vertical: UIKit.height(15)),
+                      child: Text(text),
+                    ),
+                    onTap: () {
+                      keyword = text;
+                      addHistory(text);
+                      jumpTo(keyword);
+                    },
+                  );
+                },
+                itemCount: associativeWords?.length ?? 0,
+              )
+            : Padding(
                 padding: EdgeInsets.symmetric(
                     horizontal: UIKit.width(15), vertical: UIKit.height(15)),
                 child: Column(
@@ -317,31 +348,6 @@ class _SearchPageState extends State<SearchPage> {
                     )
                   ],
                 )),
-            visible: !isVisible,
-          ),
-          Visibility(
-            child: ListView.builder(
-              itemBuilder: (BuildContext context, int i) {
-                String text = associativeWords[i];
-                return GestureDetector(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: UIKit.width(15),
-                        vertical: UIKit.height(15)),
-                    child: Text(text),
-                  ),
-                  onTap: () {
-                    keyword = text;
-                    addHistory(text);
-                    jumpTo(keyword);
-                  },
-                );
-              },
-              itemCount: associativeWords?.length ?? 0,
-            ),
-            visible: isVisible,
-          ),
-        ],
       ),
     );
   }

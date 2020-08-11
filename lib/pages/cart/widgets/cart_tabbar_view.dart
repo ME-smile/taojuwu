@@ -43,7 +43,6 @@ class _CartTabBarViewState extends State<CartTabBarView> {
   bool isLoading = true;
   Widget buildCartCard(CartModel cartModel, int index) {
     return SlideAnimation(
-      key: ObjectKey(cartModel),
       child: cartModel?.isCustomizedProduct == true
           ? CustomizedProductCard(
               cartModel: cartModel,

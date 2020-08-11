@@ -166,7 +166,6 @@ class EndProductProvider with ChangeNotifier {
       {Map<String, dynamic> params, Function callback}) async {
     OTPService.modifyCartAttr(context, params)
         .then((ZYResponse response) {
-          print(response?.valid);
           if (response?.valid == true) {
             // cartModel?.count =
 
