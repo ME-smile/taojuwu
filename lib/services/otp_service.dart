@@ -46,14 +46,11 @@ class OTPService {
 
   static Future<CurtainProductListResp> productGoodsList(BuildContext context,
       {Map<String, dynamic> params}) async {
-    print('----------------------');
-    print(params);
     Response response = await xhr.get(
       context,
       ApiPath.productMall,
       params: params ?? {},
     );
-    print(response?.data);
     return CurtainProductListResp.fromMap(response.data);
   }
 
@@ -145,6 +142,7 @@ class OTPService {
     params.addAll({
       'type': 5,
     });
+
     Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
 
     return PartAttr.fromJson(response.data);
@@ -379,8 +377,6 @@ class OTPService {
       ApiPath.delCart,
       data: params,
     );
-    print(params);
-    debugPrint(response?.data?.toString());
     return CartCategoryResp.fromJson(response.data);
   }
 
@@ -583,7 +579,6 @@ class OTPService {
       ApiPath.modifyCartAttr,
       data: params ?? {},
     );
-
     return ZYResponse.fromJsonWithData(response?.data);
   }
 
@@ -593,5 +588,13 @@ class OTPService {
         await xhr.get(context, ApiPath.associativeWords, params: params);
 
     return AssociativeWordResp.fromJson(response?.data);
+  }
+
+  static Future<ZYResponse> editCartCount(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.editCartCount, params: params);
+
+    return ZYResponse.fromJsonWithData(response?.data);
   }
 }

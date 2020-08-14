@@ -75,7 +75,7 @@ class GridCard extends StatelessWidget {
     );
   }
 
-  void jump(BuildContext context) {
+  jump(BuildContext context) {
     if (bean?.isCustomizedProduct == true)
       return RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
     return RouteHandler.goEndProductDetail(context, bean?.goodsId);

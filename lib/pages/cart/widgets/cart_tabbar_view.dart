@@ -70,9 +70,8 @@ class _CartTabBarViewState extends State<CartTabBarView> {
 
   CartModel curCartModel;
   GlobalKey<AnimatedListState> animatedListKey = GlobalKey<AnimatedListState>();
-  CartProvider get cartProvider =>
-      Provider.of<CartProvider>(context, listen: false);
-  List<CartModel> get cartModels => cartProvider?.models;
+  CartProvider get cartProvider => context.read<CartProvider>();
+  List<CartModel> get cartModels => cartProvider?.models ?? [];
   CartListWrapper wrapper;
   void fetchData() {
     OTPService.cartList(context,
@@ -84,8 +83,11 @@ class _CartTabBarViewState extends State<CartTabBarView> {
         // cartProvider?.assignModelList(index, wrapper?.data);
       }
     }).whenComplete(() {
-      isLoading = false;
-      cartProvider?.models = wrapper?.data;
+      if (mounted) {
+        isLoading = false;
+
+        cartProvider?.models = wrapper?.data;
+      }
     });
   }
 
@@ -442,11 +444,8 @@ class _ProductCardState extends State<ProductCard> {
                             count: cartModel?.count ?? 0,
                             model: cartModel,
                             callback: () {
-                              EndProductProvider.editCount(context, params: {
-                                'sku_id': cartModel?.skuId,
-                                'num': cartModel?.count,
-                                'cart_id': cartModel?.cartId
-                              }, callback: () {
+                              EndProductProvider.editCount(context,
+                                  cartModel: cartModel, callback: () {
                                 setState(() {});
                               });
                             },

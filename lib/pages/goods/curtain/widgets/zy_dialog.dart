@@ -40,9 +40,9 @@ class ZYDialog {
         });
   }
 
-  static void checkEndProductAttr(BuildContext ctx, CartModel cartModel,
-      {Function callback}) async {
-    await showCupertinoModalPopup(
+  static Future checkEndProductAttr(BuildContext ctx, CartModel cartModel,
+      {Function callback}) {
+    return showCupertinoModalPopup(
         context: ctx,
         builder: (BuildContext context) {
           double height = MediaQuery.of(context).size.height;
@@ -51,6 +51,7 @@ class ZYDialog {
               futureFunc: OTPService.productDetail,
               params: {
                 'goods_id': cartModel?.goodsId,
+                'sku_id': cartModel?.skuId,
               },
               loadingWidget: ClipRRect(
                 borderRadius: BorderRadius.only(
@@ -139,8 +140,8 @@ class ZYDialog {
                                                   child: Text('数量'),
                                                 ),
                                                 StepCounter(
-                                                  count: provider?.count,
-                                                  model: provider?.curSkubean,
+                                                  count: cartModel?.count,
+                                                  model: cartModel,
                                                 ),
                                               ],
                                             ),

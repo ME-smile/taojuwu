@@ -46,6 +46,7 @@ class EndProductProvider with ChangeNotifier {
   bool canAddToCart = true;
 
   SkuBean get curSkubean {
+    if (skuId == null) return null;
     return skuList?.firstWhere((element) => element?.skuId == skuId);
   }
 
@@ -163,12 +164,16 @@ class EndProductProvider with ChangeNotifier {
   }
 
   static Future editCount(BuildContext context,
-      {Map<String, dynamic> params, Function callback}) async {
-    OTPService.modifyCartAttr(context, params)
+      {CartModel cartModel, Function callback}) async {
+    OTPService.editCartCount(context, params: {
+      'sku_id': cartModel?.skuId,
+      'num': cartModel?.count,
+      'cart_id': cartModel?.cartId
+    })
         .then((ZYResponse response) {
           if (response?.valid == true) {
             // cartModel?.count =
-
+            cartModel?.goodsAttrStr = response?.data;
             if (callback != null) callback();
           }
         })
@@ -183,18 +188,25 @@ class EndProductProvider with ChangeNotifier {
       CartModel cartModel,
       Function callback}) async {
     params = params ?? {};
-    params?.addAll({'cart_id': cartModel?.cartId});
+    params?.addAll({'cart_id': cartModel?.cartId, 'sku_id': cartModel?.skuId});
     params?.addAll(productAttrArg);
 
     OTPService.modifyCartAttr(context, params)
         .then((ZYResponse response) {
+          print(params);
           if (response?.valid == true) {
-            print(response?.data);
             CartModel tmp = CartModel.fromJson(response?.data);
             cartModel?.price = tmp?.price;
             cartModel?.pictureInfo?.picCoverSmall =
                 tmp?.pictureInfo?.picCoverSmall;
-            cartModel?.count = tmp?.count;
+
+            cartModel?.skuId = tmp?.skuId;
+            print('哈哈哈哈哈哈哈哈哈-----------++++++++++++++');
+            print(tmp?.goodsAttrStr);
+            cartModel?.goodsAttrStr = tmp?.goodsAttrStr;
+            print('修改成功');
+            print('修改后的成品数量');
+            print(cartModel?.count);
             // cartModel?.count =
             if (callback != null) callback();
           }

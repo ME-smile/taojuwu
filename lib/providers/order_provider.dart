@@ -192,7 +192,7 @@ class OrderProvider with ChangeNotifier {
     if (beforeCallback != null) {
       beforeCallback();
     }
-    print(
+    LogUtil.e(
       {
         'order_earnest_money': deposit,
         'client_uid': clientUid,
@@ -249,6 +249,7 @@ class OrderProvider with ChangeNotifier {
         CommonKit.showErrorInfo(response?.message ?? '');
       }
     }).catchError((err) {
+      print('哈哈哈哈哈哈');
       return err;
     }).whenComplete(() {
       if (afterCallback != null) afterCallback();

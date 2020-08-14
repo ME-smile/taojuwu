@@ -7,7 +7,7 @@ class GoodsAttr {
   bool get visible => !(value == null ||
       value?.isEmpty == true ||
       value?.contains('不') == true ||
-      value?.contains('无') == true);
+      value == '无');
   GoodsAttr.fromJson(Map<String, dynamic> json) {
     name = json['attr_category'];
     value = json['attr_name'];
@@ -17,9 +17,6 @@ class GoodsAttr {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'attr_category': name,
-      'attr_name': value,
-    };
+    return {'attr_category': name, 'attr_name': value, 'type': type, 'id': id};
   }
 }

@@ -24,6 +24,7 @@ class _StepCounterState extends State<StepCounter> {
   int _count;
 
   int get count => _count;
+  bool hasInit = false;
   set count(int count) {
     if (count <= 0) {
       CommonKit.showInfo('数量不能小于1哦');
@@ -33,7 +34,7 @@ class _StepCounterState extends State<StepCounter> {
     }
     model?.count = _count;
 
-    if (callback != null)
+    if (callback != null && hasInit)
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         callback();
       });
@@ -44,6 +45,7 @@ class _StepCounterState extends State<StepCounter> {
   @override
   void initState() {
     count = widget.count;
+    hasInit = true;
     textEditingController = TextEditingController(text: '${widget.count}');
     super.initState();
   }
@@ -77,17 +79,20 @@ class _StepCounterState extends State<StepCounter> {
               constraints: BoxConstraints(
                   minHeight: 24, maxHeight: 24, minWidth: 56, maxWidth: 56),
               child: TextField(
+                style: TextStyle(fontSize: 13),
                 keyboardType: TextInputType.number,
                 controller: textEditingController,
                 textAlign: TextAlign.center,
                 onSubmitted: (String text) {
                   count = NumUtil.getIntByValueStr(text);
                 },
+                maxLines: 1,
                 decoration: InputDecoration(
+                  isDense: true,
                   // enabledBorder: OutlineInputBorder(
                   //     borderRadius: BorderRadius.all(Radius.zero),
                   //     borderSide: BorderSide(width: .8, color: Color(0xFFCCCCCC))),
-                  contentPadding: EdgeInsets.all(11),
+                  contentPadding: EdgeInsets.symmetric(vertical: 5),
                 ),
               ),
             ),

@@ -24,7 +24,7 @@ class OrderCartGoods extends CountModel {
   bool isEndproduct;
   String desc;
   List<GoodsAttr> attrs;
-  OrderCartGoods.fromJson(Map<String, dynamic> json) {
+  OrderCartGoods.fromJson(Map<dynamic, dynamic> json) {
     tag = json['tag'];
     img = json['img'];
     if (json['wc_attr'] != null) {

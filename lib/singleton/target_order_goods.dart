@@ -47,14 +47,5 @@ class TargetOrderGoods {
 
   GoodsAttrWrapper goodsAttrWrapper;
 
-  Future<GoodsAttrWrapper> setCartGoodsParams(Map arg) async {
-    arg?.forEach((key, value) {
-      if (value is Map) {
-        value?.forEach((key, value) {});
-      }
-    });
-    goodsAttrWrapper = GoodsAttrWrapper.fromJson(arg);
-    goodsAttrWrapper?.goodsAttrList?.forEach((e) {});
-    return goodsAttrWrapper;
-  }
+ 
 }

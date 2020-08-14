@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
+import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 
 import 'package:taojuwu/models/zy_response.dart';
@@ -15,6 +17,7 @@ import 'package:taojuwu/providers/end_product_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
+import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/step_counter.dart';
@@ -33,7 +36,8 @@ class EndProductDetailPage extends StatefulWidget {
   _EndProductDetailPageState createState() => _EndProductDetailPageState();
 }
 
-class _EndProductDetailPageState extends State<EndProductDetailPage> {
+class _EndProductDetailPageState extends State<EndProductDetailPage>
+    with RouteAware {
   int get id => widget.id;
 
   ValueNotifier<bool> hasCollected;
@@ -86,6 +90,31 @@ class _EndProductDetailPageState extends State<EndProductDetailPage> {
   void dispose() {
     hasCollected?.dispose();
     super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    OTPService.cartCount(context, params: {
+      'client_uid': TargetClient.instance.clientId,
+      'goods_id': id
+    })
+        .then((CartCountResp cartCountResp) {
+          if (mounted)
+            TargetOrderGoods.instance.goodsProvider?.cartCount =
+                cartCountResp?.data;
+        })
+        .catchError((err) => err)
+        .whenComplete(() {
+          if (mounted) {
+            setState(() {});
+          }
+        });
+  }
+
+  @override
+  void didChangeDependencies() {
+    Application.routeObserver.subscribe(this, ModalRoute.of(context));
+    super.didChangeDependencies();
   }
 
   @override

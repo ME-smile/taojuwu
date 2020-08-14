@@ -49,7 +49,8 @@ class ProductBeanDataWrapper {
     if (map == null) return null;
     ProductBeanDataWrapper dataBean = ProductBeanDataWrapper();
     dataBean.goodsId = map['goods_id'];
-    dataBean.skuId = map['sku_id'];
+    dataBean.skuId =
+        map['sku_id'] is String ? int.parse(map['sku_id']) : map['sku_id'];
     dataBean.goodsDetail = ProductBean.fromMap(map['goods_detail']);
     return dataBean;
   }
@@ -422,7 +423,8 @@ class ProductBean {
       ..addAll((map['shipping_fee_name'] as List ?? [])
           .map((o) => ProductBeanShippingFeeNameBean.fromMap(o)));
     tmpBean.skuName = map['sku_name'];
-    tmpBean.skuId = map['sku_id'];
+    tmpBean.skuId =
+        map['sku_id'] is int ? map['sku_id'] : int.parse(map['sku_id']);
     tmpBean.memberPrice = map['member_price'];
     tmpBean.imgList = List()
       ..addAll((map['img_list'] as List ?? [])

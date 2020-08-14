@@ -94,4 +94,6 @@ class ApiPath {
   static const String associativeWords = '/api/goods/searchContent';
 
   static const String protocal = '/api/login/registerAgreement';
+
+  static const String editCartCount = '/api/goods/modifyCartNum';
 }

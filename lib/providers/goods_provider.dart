@@ -65,10 +65,8 @@ class GoodsProvider with ChangeNotifier {
   }
 
   set cartCount(int count) {
-    Future.delayed(Duration(milliseconds: 800), () {
-      _cartCount = count;
-      notifyListeners();
-    });
+    _cartCount = count;
+    notifyListeners();
   }
 
   String get curInstallMode {
@@ -236,27 +234,31 @@ class GoodsProvider with ChangeNotifier {
   initDataFromGoodsAttr(data, Map<int, dynamic> idMap) {
     _windowGauzeAttr = data[0];
     int wndowGauzeAttrId = idMap[3];
-    _curwindowGauzeAttrBean = _windowGauzeAttr?.data?.isNotEmpty == true
+    _curwindowGauzeAttrBean = _windowGauzeAttr?.data?.isNotEmpty == true &&
+            (wndowGauzeAttrId != 0 && wndowGauzeAttrId != null)
         ? windowGauzeAttr?.data
                 ?.firstWhere((element) => element?.id == wndowGauzeAttrId) ??
             _windowGauzeAttr?.data?.first
         : null;
     _partAttr = data[1];
     int partAttrId = idMap[5];
-    _curPartAttrBean = _partAttr?.data?.isNotEmpty == true
+    _curPartAttrBean = _partAttr?.data?.isNotEmpty == true &&
+            (partAttrId != 0 && partAttrId != null)
         ? _partAttr?.data?.firstWhere((element) => element.id == partAttrId) ??
             _partAttr?.data?.first
         : null;
     _canopyAttr = data[2];
     int canopyAttrId = idMap[8];
-    _curCanopyAttrBean = _canopyAttr?.data?.isNotEmpty == true
+    _curCanopyAttrBean = _canopyAttr?.data?.isNotEmpty == true &&
+            (canopyAttrId != 0 && canopyAttrId != null)
         ? _canopyAttr?.data
                 ?.firstWhere((element) => element?.id == canopyAttrId) ??
             _canopyAttr?.data?.first
         : null;
     _windowShadeAttr = data[3];
     int windowShadeAttrId = idMap[12];
-    _curWindowShadeAttrBean = _windowShadeAttr?.data?.isNotEmpty == true
+    _curWindowShadeAttrBean = _windowShadeAttr?.data?.isNotEmpty == true &&
+            windowShadeAttrId != 0
         ? _windowShadeAttr?.data
                 ?.firstWhere((element) => element?.id == windowShadeAttrId) ??
             _windowShadeAttr?.data?.first
@@ -1183,11 +1185,16 @@ class GoodsProvider with ChangeNotifier {
     params.addAll({'wc_attr': jsonEncode(cartAttrArg)});
     OTPService.modifyCartAttr(context, params).then((ZYResponse response) {
       if (response?.valid == true) {
-        TargetOrderGoods.instance
-            .setCartGoodsParams(response?.data)
-            .then((GoodsAttrWrapper goodsAttrWrapper) {
-          Navigator.of(context).pop();
-        });
+        GoodsAttrWrapper goodsAttrWrapper =
+            GoodsAttrWrapper?.fromJson(response?.data);
+        Navigator.of(context).pop(goodsAttrWrapper);
+        // TargetOrderGoods.instance
+        //     .setCartGoodsParams(response?.data)
+        //   .then((GoodsAttrWrapper goodsAttrWrapper) {
+        // print(goodsAttrWrapper?.goodsAttrList);
+        // print(goodsAttrWrapper?.totalPrice);
+        // Navigator.of(context).pop();
+        // });
 
         if (callback != null) callback();
       } else {
@@ -1216,7 +1223,7 @@ class GoodsProvider with ChangeNotifier {
       'wc_attr': jsonEncode(attrArgs),
       'order_goods_id': TargetOrderGoods.instance?.orderGoodsId,
     };
-    print(params);
+
     OTPService.selectProduct(params: params).then((ZYResponse response) {
       if (response.valid) {
         clearGoodsInfo();

@@ -10,7 +10,6 @@ import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:taojuwu/application.dart';
 
-import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
@@ -51,7 +50,7 @@ class CurtainMallPage extends StatefulWidget {
 }
 
 class _CurtainMallPageState extends State<CurtainMallPage>
-    with SingleTickerProviderStateMixin, RouteAware {
+    with TickerProviderStateMixin, RouteAware {
   List get tabs => ['窗帘', '配件', '抱枕', '床品', '沙发'];
   List<List<GoodsItemBean>> goodsListWrapper = List(5);
   List<BuildContext> contextList = List(5);
@@ -86,12 +85,13 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     super.initState();
     TargetRoute.instance.context = context;
     params['keyword'] = keyword;
-    tabController = TabController(length: tabs.length, vsync: this);
+    tabController = TabController(
+      length: tabs.length,
+      vsync: this,
+    );
     menuController = GZXDropdownMenuController();
     scrollController = ScrollController();
-    Future.delayed(Constants.TRANSITION_DURATION, () {
-      fetchData();
-    });
+    fetchData();
   }
 
   @override
@@ -267,9 +267,9 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   }
 
   void scrollToTop() {
-    if (goodsList == null || goodsList?.isEmpty == true) return;
-    scrollController?.animateTo(0,
-        duration: Duration(milliseconds: 300), curve: Curves.bounceInOut);
+    // if (goodsList == null || goodsList?.isEmpty == true) return;
+    // scrollController?.animateTo(0,
+    //     duration: Duration(milliseconds: 300), curve: Curves.bounceInOut);
   }
 
   void checkTag(
@@ -388,6 +388,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                 onTap: () {
                   params?.addAll(tagWrapper?.args);
                   params['page'] = 1;
+                  params['category_type'] = tabIndex;
                   setState(() {
                     showFloatingButton = true;
                   });
@@ -425,10 +426,14 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   void fetchData() {
     OTPService.mallData(context, params: params).then((data) {
       CurtainProductListResp curtainProductListResp = data[0];
+
       TagModelListResp tagListResp = data[1];
       CartCountResp cartCountResp = data[2];
       cartCount = cartCountResp?.data;
       beanData = curtainProductListResp?.data;
+
+      tabController?.index = beanData?.categoryType;
+
       wrapper = beanData?.goodsList;
       goodsListWrapper[tabIndex] = wrapper?.data ?? [];
       tagWrapper = tagListResp?.data;
@@ -437,7 +442,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       totalPage = mod > 0 ? pages + 1 : pages;
     }).catchError((err) {
       return err;
-    }).whenComplete(() {});
+    }).whenComplete(() {
+      print('刷新=================++++++++++++++++++');
+      setState(() {});
+    });
   }
 
   @override
@@ -599,10 +607,13 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                         size: 16,
                       ),
                     ),
-                    Text(
-                      '搜索款号或关键词',
-                      style: TextStyle(color: Color(0xFF9F9FA5), fontSize: 14),
-                    )
+                    isFromSearch
+                        ? Text(
+                            '搜索款号或关键词',
+                            style: TextStyle(
+                                color: Color(0xFF9F9FA5), fontSize: 14),
+                          )
+                        : Text(keyword)
                   ],
                 ),
                 decoration: BoxDecoration(
@@ -661,10 +672,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                       menuController: menuController,
                       sort: sortData,
                       isGridMode: isGridMode,
-                      goodsList: goodsListWrapper[index],
                       params: {
                         'category_type': index,
                         'page_size': PAGE_SIZE,
+                        'keyword': keyword,
                         'page_index': 1,
                         'order': currentSortType['order'],
                         'sort': currentSortType['sort']
@@ -684,22 +695,18 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 }
 
 class GoodsTabBarView extends StatefulWidget {
-  final List<GoodsItemBean> goodsList;
-
   final Function sort;
 
   final GZXDropdownMenuController menuController;
 
   final bool isGridMode;
-  final bool isFromSearch;
+
   final Map<String, dynamic> params;
   GoodsTabBarView(
       {Key key,
-      this.goodsList = const [],
       this.sort,
       this.menuController,
       this.params,
-      this.isFromSearch = false,
       this.isGridMode = true})
       : super(key: key);
 
@@ -709,15 +716,13 @@ class GoodsTabBarView extends StatefulWidget {
 
 class _GoodsTabBarViewState extends State<GoodsTabBarView>
     with AutomaticKeepAliveClientMixin {
-  List<GoodsItemBean> goodsList;
-
   Function get sort => widget.sort;
 
   GZXDropdownMenuController get menuController => widget.menuController;
   Map<String, dynamic> get params => widget.params;
   bool get isGridMode => widget.isGridMode;
-  bool get isFromSearch => widget.isFromSearch;
-  static const List<Map<String, dynamic>> SORT_TYPES = [
+  bool get isFromSearch => widget.params['keyword']?.isNotEmpty ?? false;
+  static List<Map<String, dynamic>> sortTypes = [
     {
       'text': '销量排序',
       'is_checked': true,
@@ -738,13 +743,13 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   bool isLoading = true;
   RefreshController _refreshController;
   ScrollController scrollController;
+  List<GoodsItemBean> goodsList = [];
   @override
   void initState() {
-    goodsList = widget.goodsList;
-
     _refreshController = RefreshController(
         initialRefresh: false, initialLoadStatus: LoadStatus.idle);
     scrollController = ScrollController();
+
     requestGoodsData();
     // Future.delayed(Constants.TRANSITION_DURATION, () {
     //   setState(() {
@@ -766,10 +771,6 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   CurtainGoodsListWrapper wrapper;
   int totalPage = 0;
   static const int PAGE_SIZE = 20;
-
-  void reload() {
-    setState(() {});
-  }
 
   void refresh() {
     params['page_index'] = 1;
@@ -793,44 +794,42 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
     OTPService.productGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
       if (curtainProductListResp?.valid == true) {
-        _refreshController?.resetNoData();
         beanData = curtainProductListResp?.data;
         wrapper = beanData?.goodsList;
-        goodsList = wrapper?.data;
+
         List<GoodsItemBean> beans = wrapper?.data ?? [];
         int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
         int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
         totalPage = mod > 0 ? pages + 1 : pages;
 
         if (isRefresh) {
-          setState(() {
-            goodsList = wrapper?.data;
-          });
-          _refreshController?.refreshCompleted();
+          goodsList = wrapper?.data;
+          return _refreshController?.refreshCompleted();
         } else {
           if (beans?.isEmpty == true) {
-            _refreshController?.loadNoData();
+            return _refreshController?.loadNoData();
           } else {
-            setState(() {
-              beans?.forEach((item) {
-                if (goodsList?.contains(item) == false) {
-                  goodsList.add(item);
-                }
-              });
-              _refreshController?.loadComplete();
+            beans?.forEach((item) {
+              if (goodsList?.contains(item) == false) {
+                goodsList?.add(item);
+              }
             });
+            // setState(() {
+            //   goodsList?.addAll(beans);
+            // });
+            return _refreshController?.loadComplete();
           }
         }
+      }
+
+      if (isRefresh) {
+        return _refreshController?.refreshFailed();
       } else {
-        params['page_index'] =
-            params['page_index'] < 1 ? 1 : params['page_index'] - 1;
+        return _refreshController?.loadFailed();
       }
     }).catchError((err) {
-      if (isRefresh) {
-        _refreshController?.refreshFailed();
-      } else {
-        _refreshController?.loadFailed();
-      }
+      print('出现异常');
+      return err;
     }).whenComplete(() {
       if (mounted) {
         setState(() {
@@ -843,6 +842,7 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   GridView buildGridView() {
     return GridView.builder(
         // physics: NeverScrollableScrollPhysics(),
+        controller: scrollController,
         shrinkWrap: true,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -872,6 +872,7 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   ListView buildListView() {
     return ListView.builder(
         // physics: NeverScrollableScrollPhysics(),
+        controller: scrollController,
         shrinkWrap: true,
         itemCount:
             goodsList != null && goodsList.isNotEmpty ? goodsList?.length : 0,
@@ -907,11 +908,16 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
         );
       },
       child: isLoading
-          ? LoadingCircle()
+          ? Container(
+              color: themeData.scaffoldBackgroundColor,
+              child: LoadingCircle(),
+            )
           : goodsList?.isNotEmpty != true
               ? Container(
                   color: themeData.scaffoldBackgroundColor,
-                  child: NoData(),
+                  child: NoData(
+                    isFromSearch: isFromSearch,
+                  ),
                 )
               : Container(
                   alignment: Alignment.center,
@@ -933,16 +939,16 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
                           animationMilliseconds: 400,
                           menus: [
                             GZXDropdownMenuBuilder(
-                                dropDownHeight: 30.0 * SORT_TYPES.length,
+                                dropDownHeight: 30.0 * sortTypes.length,
                                 dropDownWidget: Column(
                                   children:
-                                      List.generate(SORT_TYPES.length, (int i) {
-                                    Map<String, dynamic> bean = SORT_TYPES[i];
+                                      List.generate(sortTypes.length, (int i) {
+                                    Map<String, dynamic> bean = sortTypes[i];
                                     return Flexible(
                                         child: InkWell(
                                       onTap: () {
                                         if (bean['is_checked']) return;
-                                        SORT_TYPES.forEach((element) {
+                                        sortTypes.forEach((element) {
                                           element['is_checked'] =
                                               element == bean;
                                         });

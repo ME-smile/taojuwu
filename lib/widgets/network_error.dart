@@ -17,7 +17,7 @@ class NetworkErrorWidget extends StatelessWidget {
       child: Material(
           child: Container(
         alignment: Alignment.center,
-        height: UIKit.height(200),
+        height: UIKit.height(400),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

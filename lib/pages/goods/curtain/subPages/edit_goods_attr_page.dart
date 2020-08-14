@@ -85,8 +85,10 @@ class _EditGoodsAttrPageState extends State<EditGoodsAttrPage> {
       'goods_id': goodsId,
       'client_uid': clientId,
     }).then((data) {
-      TargetOrderGoods.instance.cartGoodsProvider
-          .initDataFromGoodsAttr(data, selectedId);
+      if (mounted) {
+        TargetOrderGoods.instance.cartGoodsProvider
+            .initDataFromGoodsAttr(data, selectedId);
+      }
     }).catchError((err) => err);
   }
 

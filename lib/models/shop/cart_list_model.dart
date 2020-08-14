@@ -107,7 +107,7 @@ class CartModel extends CountModel {
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
   bool get isProduct => goodsType == 0; //等于0时表示成品
   bool get isCustomizedProduct => goodsType != 0;
-  double get totalPrice => price * count;
+  double get totalPrice => price ?? 0 * count ?? 0;
   CartModel.fromJson(Map<String, dynamic> json) {
     cartId = json['cart_id'];
 

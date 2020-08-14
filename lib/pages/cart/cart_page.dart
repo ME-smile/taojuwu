@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
-import 'package:taojuwu/application.dart';
 
 import 'package:taojuwu/models/shop/cart_list_model.dart';
+import 'package:taojuwu/pages/order/commit_order_page.dart';
 
 import 'package:taojuwu/providers/cart_provider.dart';
 
@@ -29,8 +29,7 @@ class CartPage extends StatefulWidget {
   _CartPageState createState() => _CartPageState();
 }
 
-class _CartPageState extends State<CartPage>
-    with TickerProviderStateMixin, RouteAware {
+class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
   CartProvider _cartProvider = CartProvider();
   CartProvider get cartProvider => _cartProvider;
   int get clientId => widget.clientId;
@@ -79,15 +78,9 @@ class _CartPageState extends State<CartPage>
   }
 
   @override
-  void didChangeDependencies() {
-    Application.routeObserver.subscribe(this, ModalRoute.of(context));
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
     tabController?.dispose();
-    Application.routeObserver.unsubscribe(this);
+
     super.dispose();
   }
 
@@ -192,15 +185,21 @@ class _CartPageState extends State<CartPage>
                                   '结算(${provider?.totalCount ?? 0})', () {
                                   TargetClient.instance.clientId =
                                       provider?.clientId;
-                                  // Navigator.push(context, MaterialPageRoute(
-                                  //     builder: (BuildContext context) {
-                                  //   return CommitOrderPage(
-                                  //     params: {'data': provider?.checkedModels},
-                                  //   );
-                                  // },),);
-                                  RouteHandler.goCommitOrderPage(context,
-                                      params: jsonEncode(
-                                          {'data': provider?.checkedModels}));
+                                  Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (BuildContext context) {
+                                        return CommitOrderPage(
+                                          params: {
+                                            'data': provider?.checkedModels
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  );
+                                  // RouteHandler.goCommitOrderPage(context,
+                                  //     params: jsonEncode(
+                                  //         {'data': provider?.checkedModels}));
                                 }),
                         ),
                       ],

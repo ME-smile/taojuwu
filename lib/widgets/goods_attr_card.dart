@@ -37,13 +37,18 @@ class GoodsAttrCard extends StatelessWidget {
       onTap: isInCartPage
           ? () {
               if (callback != null) callback();
+
               RouteHandler.goEditGoodsAttrPage(
                 context,
                 goodsId: goodsId,
                 params: params,
                 clientId: clientId,
                 cartId: cartId,
-              );
+              ).then((wrapper) {
+                cartModel?.attrs = wrapper?.goodsAttrList;
+                cartModel?.price = wrapper?.totalPrice;
+                // cartModel?.totalPrice = t
+              });
             }
           : null,
       child: Container(

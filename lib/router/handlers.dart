@@ -4,6 +4,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/export/export_pages.dart';
+import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/pages/after_sale_service/after_sale_service_page.dart';
 
 import 'package:taojuwu/pages/cart/cart_page.dart';
@@ -51,13 +52,13 @@ import 'package:taojuwu/utils/common_kit.dart';
 import 'routes.dart';
 
 class RouteHandler {
-  static _jumpTo(BuildContext context, String path,
+  static Future _jumpTo(BuildContext context, String path,
       {bool replace = false,
       bool clearStack = false,
       bool maintainState = false,
       Duration transitionDuration = const Duration(milliseconds: 250),
       RouteTransitionsBuilder transitionBuilder}) {
-    Application.router.navigateTo(context, path,
+    return Application.router.navigateTo(context, path,
         replace: replace,
         clearStack: clearStack,
         maintainState: maintainState,
@@ -75,18 +76,18 @@ class RouteHandler {
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     return HomePage();
   });
-  static goHomePage(BuildContext context, {bool clearStack: true}) {
-    _jumpTo(context, Routes.home, clearStack: clearStack);
+  static Future goHomePage(BuildContext context, {bool clearStack: true}) {
+    return _jumpTo(context, Routes.home, clearStack: clearStack);
   }
 
   static Handler protocal = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     return UserProtocalPage();
   });
-  static goProtocalPage(
+  static Future goProtocalPage(
     BuildContext context,
   ) {
-    _jumpTo(
+    return _jumpTo(
       context,
       Routes.protocal,
     );
@@ -97,9 +98,10 @@ class RouteHandler {
     return LoginPage();
   });
 
-  static goLoginPage(BuildContext context,
+  static Future goLoginPage(BuildContext context,
       {bool replace: false, bool clearStack: false}) {
-    _jumpTo(context, Routes.login, replace: replace, clearStack: clearStack);
+    return _jumpTo(context, Routes.login,
+        replace: replace, clearStack: clearStack);
   }
 
   static Handler curtain = Handler(
@@ -116,9 +118,9 @@ class RouteHandler {
     );
   });
 
-  static goCurtainDetailPage(BuildContext context, int id,
+  static Future goCurtainDetailPage(BuildContext context, int id,
       {bool replace: false}) {
-    _jumpTo(context, '${Routes.curtainDetail}?id=$id',
+    return _jumpTo(context, '${Routes.curtainDetail}?id=$id',
         maintainState: true, replace: replace);
   }
 
@@ -134,11 +136,12 @@ class RouteHandler {
     );
   });
 
-  static goOrderPage(
+  static Future goOrderPage(
     BuildContext context, {
     int clientId,
   }) {
-    _jumpTo(context, '${Routes.order}?clientId=$clientId', maintainState: true);
+    return _jumpTo(context, '${Routes.order}?clientId=$clientId',
+        maintainState: true);
   }
 
   static Handler orderDetail = Handler(
@@ -150,9 +153,9 @@ class RouteHandler {
     );
   });
 
-  static goOrderDetailPage(BuildContext context, int id,
+  static Future goOrderDetailPage(BuildContext context, int id,
       {bool isReplaceMode: false}) {
-    _jumpTo(context, '${Routes.orderDetail}?id=$id',
+    return _jumpTo(context, '${Routes.orderDetail}?id=$id',
         replace: isReplaceMode, maintainState: true);
   }
 
@@ -161,8 +164,8 @@ class RouteHandler {
     return MeasureOrderPage();
   });
 
-  static goMeasureOrderPage(BuildContext context) {
-    _jumpTo(context, Routes.measureOrder, maintainState: true);
+  static Future goMeasureOrderPage(BuildContext context) {
+    return _jumpTo(context, Routes.measureOrder, maintainState: true);
   }
 
   static Handler customer = Handler(
@@ -173,10 +176,10 @@ class RouteHandler {
       flag: flag,
     );
   });
-  static goCustomerPage(BuildContext context,
+  static Future goCustomerPage(BuildContext context,
       {int isForSelectedClient: 0 //1代表选择客户 0 //普通跳转
       }) {
-    _jumpTo(
+    return _jumpTo(
       context,
       '${Routes.customer}?flag=$isForSelectedClient',
     );
@@ -187,8 +190,8 @@ class RouteHandler {
     int id = int.parse(params['id']?.first);
     return CustomerDetailPage(id);
   });
-  static goCustomerDetailPage(BuildContext context, int id) {
-    _jumpTo(context, '${Routes.customerDetail}?id=$id');
+  static Future goCustomerDetailPage(BuildContext context, int id) {
+    return _jumpTo(context, '${Routes.customerDetail}?id=$id');
   }
 
   static Handler customerEdit = Handler(
@@ -202,14 +205,14 @@ class RouteHandler {
       id: id,
     );
   });
-  static goCustomerEditPage(
+  static Future goCustomerEditPage(
     BuildContext context, {
     String title,
     int id,
   }) {
     title =
         title != null ? FluroConvertUtils.fluroCnParamsEncode(title) : title;
-    _jumpTo(
+    return _jumpTo(
       context,
       '${Routes.customerEdit}?title=$title&id=$id',
     );
@@ -224,9 +227,9 @@ class RouteHandler {
       flag: flag,
     );
   });
-  static goCustomerTablePage(BuildContext context, int type,
+  static Future goCustomerTablePage(BuildContext context, int type,
       {int flag: 0, bool replace: true}) {
-    _jumpTo(context, '${Routes.customerTable}?type=$type&flag=$flag',
+    return _jumpTo(context, '${Routes.customerTable}?type=$type&flag=$flag',
         replace: replace);
   }
 
@@ -235,8 +238,8 @@ class RouteHandler {
     return DataCenterPage();
   });
 
-  static goDataCenterPage(BuildContext context) {
-    _jumpTo(context, Routes.dataCenter);
+  static Future goDataCenterPage(BuildContext context) {
+    return _jumpTo(context, Routes.dataCenter);
   }
 
   static Handler combo = Handler(
@@ -245,8 +248,8 @@ class RouteHandler {
     return;
   });
 
-  static goComboPage(BuildContext context) {
-    _jumpTo(context, Routes.combo);
+  static Future goComboPage(BuildContext context) {
+    return _jumpTo(context, Routes.combo);
   }
 
   static Handler setting = Handler(
@@ -255,8 +258,8 @@ class RouteHandler {
     return;
   });
 
-  static goSettingPage(BuildContext context) {
-    _jumpTo(context, Routes.setting);
+  static Future goSettingPage(BuildContext context) {
+    return _jumpTo(context, Routes.setting);
   }
 
   static Handler profile = Handler(
@@ -265,8 +268,8 @@ class RouteHandler {
     // return;
   });
 
-  static goProfilePage(BuildContext context) {
-    _jumpTo(context, Routes.profile);
+  static Future goProfilePage(BuildContext context) {
+    return _jumpTo(context, Routes.profile);
   }
 
   static Handler curtainMall = Handler(
@@ -279,11 +282,11 @@ class RouteHandler {
     // return;
   });
 
-  static goCurtainMallPage(BuildContext context,
+  static Future goCurtainMallPage(BuildContext context,
       {String keyword: '', bool replace: false}) {
     keyword = FluroConvertUtils.fluroCnParamsEncode(keyword);
     TargetRoute.instance.setRoute('${Routes.curtainMall}?keyword=$keyword');
-    _jumpTo(context, '${Routes.curtainMall}?keyword=$keyword',
+    return _jumpTo(context, '${Routes.curtainMall}?keyword=$keyword',
         maintainState: true, replace: replace);
   }
 
@@ -293,8 +296,8 @@ class RouteHandler {
     // return;
   });
 
-  static goSwitchAccountPage(BuildContext context) {
-    _jumpTo(context, Routes.switchAccount);
+  static Future goSwitchAccountPage(BuildContext context) {
+    return _jumpTo(context, Routes.switchAccount);
   }
 
   static Handler feedback = Handler(
@@ -303,8 +306,8 @@ class RouteHandler {
     // return;
   });
 
-  static goFeedbackPage(BuildContext context) {
-    _jumpTo(context, Routes.feedback);
+  static Future goFeedbackPage(BuildContext context) {
+    return _jumpTo(context, Routes.feedback);
   }
 
   static Handler commitSuccess = Handler(
@@ -313,8 +316,8 @@ class RouteHandler {
     // return;
   });
 
-  static goCommitSuccessPage(BuildContext context) {
-    _jumpTo(context, Routes.commitSuccess);
+  static Future goCommitSuccessPage(BuildContext context) {
+    return _jumpTo(context, Routes.commitSuccess);
   }
 
   static Handler editAddress = Handler(
@@ -325,8 +328,8 @@ class RouteHandler {
     );
   });
 
-  static goEditAddressPage(BuildContext context, {int id}) {
-    _jumpTo(
+  static Future goEditAddressPage(BuildContext context, {int id}) {
+    return _jumpTo(
       context,
       '${Routes.editAddress}?id=$id',
     );
@@ -340,8 +343,8 @@ class RouteHandler {
     );
   });
 
-  static goSearchPage(BuildContext context, int type) {
-    _jumpTo(context, '${Routes.search}?type=$type');
+  static Future goSearchPage(BuildContext context, int type) {
+    return _jumpTo(context, '${Routes.search}?type=$type');
   }
 
   static Handler preMeasureData = Handler(handlerFunc: (
@@ -351,8 +354,8 @@ class RouteHandler {
     return PreMeasureDataPage();
   });
 
-  static goPreMeasureDataPage(BuildContext context) {
-    _jumpTo(context, Routes.preMeasureData);
+  static Future goPreMeasureDataPage(BuildContext context) {
+    return _jumpTo(context, Routes.preMeasureData);
   }
 
   static Handler cart = Handler(
@@ -363,8 +366,9 @@ class RouteHandler {
     );
   });
 
-  static goCartPage(BuildContext context, {int clientId: -1}) {
-    _jumpTo(context, '${Routes.cart}?clientId=$clientId', maintainState: true);
+  static Future goCartPage(BuildContext context, {int clientId: -1}) {
+    return _jumpTo(context, '${Routes.cart}?clientId=$clientId',
+        maintainState: true);
   }
 
   static Handler commitOrder = Handler(
@@ -376,11 +380,11 @@ class RouteHandler {
     return CommitOrderPage(params: json);
   });
 
-  static goCommitOrderPage(BuildContext context, {String params}) {
+  static Future goCommitOrderPage(BuildContext context, {String params}) {
     params =
         params != null ? FluroConvertUtils.fluroCnParamsEncode(params) : '';
 
-    _jumpTo(context, '${Routes.commitOrder}?params=$params',
+    return _jumpTo(context, '${Routes.commitOrder}?params=$params',
         maintainState: true);
   }
 
@@ -394,9 +398,9 @@ class RouteHandler {
     );
   });
 
-  static goOrderCommitSuccessPage(BuildContext context, String clientId,
+  static Future goOrderCommitSuccessPage(BuildContext context, String clientId,
       {int orderType: 1}) {
-    _jumpTo(context,
+    return _jumpTo(context,
         '${Routes.orderCommitSuccess}?clientId=$clientId&orderType=$orderType');
   }
 
@@ -409,9 +413,9 @@ class RouteHandler {
     );
   });
 
-  static goOrderSearchPage(BuildContext context, {String keyword: ''}) {
+  static Future goOrderSearchPage(BuildContext context, {String keyword: ''}) {
     keyword = FluroConvertUtils.fluroCnParamsEncode(keyword);
-    _jumpTo(context, '${Routes.orderSearch}?keyword=$keyword');
+    return _jumpTo(context, '${Routes.orderSearch}?keyword=$keyword');
   }
 
   static Handler customerSearch = Handler(
@@ -423,9 +427,10 @@ class RouteHandler {
     );
   });
 
-  static goCustomerSearchPage(BuildContext context, {String keyword: ''}) {
+  static Future goCustomerSearchPage(BuildContext context,
+      {String keyword: ''}) {
     keyword = FluroConvertUtils.fluroCnParamsEncode(keyword);
-    _jumpTo(context, '${Routes.customerSearch}?keyword=$keyword');
+    return _jumpTo(context, '${Routes.customerSearch}?keyword=$keyword');
   }
 
   static Handler afterSaleService = Handler(
@@ -433,8 +438,8 @@ class RouteHandler {
     return AfterSaleServicePage();
   });
 
-  static goAfterSaleServicePage(BuildContext context) {
-    _jumpTo(context, Routes.afterSaleService);
+  static Future goAfterSaleServicePage(BuildContext context) {
+    return _jumpTo(context, Routes.afterSaleService);
   }
 
   static Handler measureDataPreview = Handler(
@@ -442,8 +447,8 @@ class RouteHandler {
     return MeasureDataPreviewPage();
   });
 
-  static goMeasureDataPreviewPage(BuildContext context) {
-    _jumpTo(context, Routes.measureDataPreview, maintainState: true);
+  static Future goMeasureDataPreviewPage(BuildContext context) {
+    return _jumpTo(context, Routes.measureDataPreview, maintainState: true);
   }
 
   static Handler editOpenMode = Handler(
@@ -451,10 +456,10 @@ class RouteHandler {
     return EditOpenModePage();
   });
 
-  static goEditOpenModePage(
+  static Future goEditOpenModePage(
     BuildContext context,
   ) {
-    _jumpTo(context, Routes.editOpenMode);
+    return _jumpTo(context, Routes.editOpenMode);
   }
 
   static Handler collectList = Handler(
@@ -467,10 +472,10 @@ class RouteHandler {
     );
   });
 
-  static goCollectPage(BuildContext context,
+  static Future goCollectPage(BuildContext context,
       {int clientId: -1, String name: ''}) {
     name = FluroConvertUtils.fluroCnParamsEncode(name);
-    _jumpTo(context, '${Routes.collectList}?id=$clientId&name=$name');
+    return _jumpTo(context, '${Routes.collectList}?id=$clientId&name=$name');
   }
 
   static Handler resetPwd = Handler(
@@ -478,10 +483,10 @@ class RouteHandler {
     return ResetPwdPage();
   });
 
-  static goResetPwdPage(
+  static Future goResetPwdPage(
     BuildContext context,
   ) {
-    _jumpTo(context, Routes.resetPwd);
+    return _jumpTo(context, Routes.resetPwd);
   }
 
   static Handler version = Handler(
@@ -489,10 +494,10 @@ class RouteHandler {
     return VersionPage();
   });
 
-  static goVersionPage(
+  static Future goVersionPage(
     BuildContext context,
   ) {
-    _jumpTo(context, Routes.version);
+    return _jumpTo(context, Routes.version);
   }
 
   static Handler refund = Handler(
@@ -501,8 +506,8 @@ class RouteHandler {
     return RefundPage(id: id);
   });
 
-  static goRefundPage(BuildContext context, int id) {
-    _jumpTo(context, '${Routes.refund}?id=$id');
+  static Future goRefundPage(BuildContext context, int id) {
+    return _jumpTo(context, '${Routes.refund}?id=$id');
   }
 
   static Handler forgetPwd = Handler(
@@ -510,14 +515,14 @@ class RouteHandler {
     return ForgetPwdPage();
   });
 
-  static goForgetPwdPage(
+  static Future goForgetPwdPage(
     BuildContext context,
   ) {
-    _jumpTo(context, Routes.forgetPwd);
+    return _jumpTo(context, Routes.forgetPwd);
   }
 
-  static goOrderMainfestPage(BuildContext context, int id) {
-    _jumpTo(context, '${Routes.mainfest}?id=$id');
+  static Future goOrderMainfestPage(BuildContext context, int id) {
+    return _jumpTo(context, '${Routes.mainfest}?id=$id');
   }
 
   static Handler mainfest = Handler(
@@ -531,8 +536,8 @@ class RouteHandler {
     int id = int.parse(params['id']?.first);
     return LogisticsPage(id);
   });
-  static goLogisticsPage(BuildContext context, int id) {
-    _jumpTo(context, '${Routes.logistics}?id=$id');
+  static Future goLogisticsPage(BuildContext context, int id) {
+    return _jumpTo(context, '${Routes.logistics}?id=$id');
   }
 
   static Handler orderEditLog = Handler(
@@ -541,8 +546,8 @@ class RouteHandler {
     int type = int.parse(params['type']?.first);
     return OrderEditLogPage(id: id, type: type);
   });
-  static goOrderEditLogPage(BuildContext context, int id, int type) {
-    _jumpTo(context, '${Routes.orderEditLog}?id=$id&type=$type');
+  static Future goOrderEditLogPage(BuildContext context, int id, int type) {
+    return _jumpTo(context, '${Routes.orderEditLog}?id=$id&type=$type');
   }
 
   static Handler endProductDetail = Handler(
@@ -551,8 +556,8 @@ class RouteHandler {
 
     return EndProductDetailPage(id: id);
   });
-  static goEndProductDetail(BuildContext context, int id) {
-    _jumpTo(context, '${Routes.endProductDetail}?id=$id');
+  static Future goEndProductDetail(BuildContext context, int id) {
+    return _jumpTo(context, '${Routes.endProductDetail}?id=$id');
   }
 
   static Handler editGoodsAttr = Handler(
@@ -572,7 +577,7 @@ class RouteHandler {
       attrs: json,
     );
   });
-  static goEditGoodsAttrPage(
+  static Future goEditGoodsAttrPage(
     BuildContext context, {
     int goodsId,
     String params,
@@ -581,7 +586,7 @@ class RouteHandler {
   }) {
     params =
         params != null ? FluroConvertUtils.fluroCnParamsEncode(params) : '';
-    _jumpTo(context,
+    return _jumpTo(context,
         '${Routes.editGoodsAttr}?goodsId=$goodsId&params=$params&clientId=$clientId&cartId=$cartId');
   }
 }

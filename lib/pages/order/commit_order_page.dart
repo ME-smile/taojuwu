@@ -33,6 +33,7 @@ class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
 
     controller = ScrollController();
     params = widget.params;
+
     if (params['data'] != null && params.isNotEmpty) {
       List list = params['data'];
       goodsList.addAll(list?.map((item) => OrderCartGoods.fromJson(item)));
