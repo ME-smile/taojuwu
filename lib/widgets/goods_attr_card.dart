@@ -45,8 +45,10 @@ class GoodsAttrCard extends StatelessWidget {
                 clientId: clientId,
                 cartId: cartId,
               ).then((wrapper) {
-                cartModel?.attrs = wrapper?.goodsAttrList;
-                cartModel?.price = wrapper?.totalPrice;
+                if (wrapper != null) {
+                  cartModel?.attrs = wrapper?.goodsAttrList;
+                  cartModel?.price = wrapper?.totalPrice;
+                }
                 // cartModel?.totalPrice = t
               });
             }
@@ -55,6 +57,7 @@ class GoodsAttrCard extends StatelessWidget {
         margin:
             EdgeInsets.only(top: 10, bottom: 16, left: isInCartPage ? 48 : 0),
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        alignment: Alignment.center,
         decoration: BoxDecoration(color: Color(0xFFF5F5F9)),
         child: Row(
           children: <Widget>[
@@ -72,6 +75,7 @@ class GoodsAttrCard extends StatelessWidget {
                 GoodsAttr bean = selectedValueAttrs[index];
                 return Offstage(
                   child: Container(
+                    alignment: Alignment.centerLeft,
                     child: Text(
                       '${bean?.name ?? ''}:${bean?.value ?? ''}',
                       style: TextStyle(color: Color(0xFF6D6D6D), fontSize: 12),

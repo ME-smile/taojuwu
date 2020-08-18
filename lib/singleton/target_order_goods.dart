@@ -1,10 +1,12 @@
 import 'package:taojuwu/models/shop/cart_list_model.dart';
+import 'package:taojuwu/providers/end_product_provider.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
 
 class TargetOrderGoods {
   int orderGoodsId;
   GoodsProvider goodsProvider;
   GoodsProvider cartGoodsProvider;
+  EndProductProvider endProductProvider;
   bool hasConfirmMeasureData = false;
   TargetOrderGoods._internal();
   int orderId;
@@ -27,6 +29,10 @@ class TargetOrderGoods {
     _instance.hasConfirmMeasureData = flag;
   }
 
+  setEndProductProvider(EndProductProvider provider) {
+    endProductProvider = provider;
+  }
+
   setGoodsProvider(GoodsProvider provider) {
     _instance.goodsProvider = provider;
   }
@@ -40,12 +46,9 @@ class TargetOrderGoods {
   }
 
   clear() {
-    _instance.orderGoodsId = null;
     _instance.hasConfirmMeasureData = false;
     _instance.orderId = null;
   }
 
   GoodsAttrWrapper goodsAttrWrapper;
-
- 
 }

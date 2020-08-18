@@ -98,6 +98,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void jumpTo(String keyword) {
+    inputController?.text = keyword;
     switch (type) {
       case 1:
         {
@@ -220,6 +221,7 @@ class _SearchPageState extends State<SearchPage> {
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     child: TextField(
                       controller: inputController,
+                      autofocus: true,
                       // enableInteractiveSelection: false,
                       // textAlignVertical: TextAlignVertical(y: .5),
                       onChanged: (String text) {
@@ -232,6 +234,7 @@ class _SearchPageState extends State<SearchPage> {
                           return CommonKit.showInfo('请输入关键字');
                         }
                         addHistory(text);
+                        jumpTo(text);
                       },
                       decoration: InputDecoration(
                           // fillColor: Colors.grey,

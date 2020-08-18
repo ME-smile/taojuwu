@@ -217,8 +217,9 @@ class GoodsItemBean {
   double displayPrice;
   String groupName;
   int goodsSpecialType;
-  bool get isPromotionGoods =>
-      !(marketPrice == displayPrice && marketPrice != 0);
+  bool get isPromotionGoods {
+    return marketPrice != 0 && marketPrice != displayPrice;
+  }
 
   bool get isProduct => goodsSpecialType == 0;
 

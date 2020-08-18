@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/order/order_model.dart';
 import 'package:taojuwu/pages/order/order_detail_page.dart';
@@ -35,7 +36,8 @@ class OrderPage extends StatefulWidget {
   _OrderPageState createState() => _OrderPageState();
 }
 
-class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
+class _OrderPageState extends State<OrderPage>
+    with TickerProviderStateMixin, RouteAware {
   List items = Constants.ORDER_STATUS_TAB_MAP.values.toList();
   List<String> tabs = Constants.ORDER_STATUS_TAB_LIST;
   TabController _tabController;
@@ -278,6 +280,17 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
     globalKey.currentState.handleTap();
   }
 
+  @override
+  void didChangeDependencies() {
+    Application.routeObserver.subscribe(this, ModalRoute.of(context));
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didPopNext() {
+    fetchData();
+  }
+
   Widget buildButtonChip(String text, Function callback, bool isActive) {
     return InkWell(
       child: Container(
@@ -366,7 +379,9 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
       nums = response?.data?.statusNum?.values?.toList();
       modelList[_tabController?.index] = response?.data?.data;
       for (int i = 0; i < nums.length - 1; i++) {
-        statusOptions[i]['count'] = nums[i];
+        Map<String, dynamic> item = statusOptions[i];
+        item['count'] = nums[i];
+        item['text'] = item['text'] ?? '' + '(' + item['count'] ?? '0' + ')';
       }
     }).catchError((err) {
       return err;
@@ -384,6 +399,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
     super.dispose();
     _tabController?.dispose();
     _controller?.dispose();
+    Application.routeObserver.unsubscribe(this);
   }
 
   String currentStatus = '';

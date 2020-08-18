@@ -6,7 +6,6 @@ import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:gzx_dropdown_menu/gzx_dropdown_menu.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:taojuwu/application.dart';
 
@@ -15,6 +14,8 @@ import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 
 import 'package:taojuwu/models/shop/tag_model.dart';
+import 'package:taojuwu/pages/goods/events/filter_event.dart';
+
 // import 'package:taojuwu/pages/order/measure_order_page.dart';
 import 'package:taojuwu/router/handlers.dart';
 
@@ -51,35 +52,30 @@ class CurtainMallPage extends StatefulWidget {
 
 class _CurtainMallPageState extends State<CurtainMallPage>
     with TickerProviderStateMixin, RouteAware {
-  List get tabs => ['窗帘', '配件', '抱枕', '床品', '沙发'];
+  List get tabs => ['窗帘', '床品', '抱枕', '沙发', '其他'];
   List<List<GoodsItemBean>> goodsListWrapper = List(5);
   List<BuildContext> contextList = List(5);
   BuildContext get curTabContext => contextList[tabIndex];
   CurtainProductListDataBean beanData;
   CurtainGoodsListWrapper wrapper;
   ScrollController scrollController;
-  GZXDropdownMenuController menuController;
 
+  GlobalKey<_CurtainMallPageState> appBarKey =
+      GlobalKey<_CurtainMallPageState>(); //设置globalkey 获取appbar的高度和位置信息
   List<GoodsItemBean> get goodsList => goodsListWrapper[tabIndex];
 
   int totalPage = 0;
 
   static const int PAGE_SIZE = 20;
-
   Map<String, dynamic> params = {
-    // 'keyword': '',
-    // 'stock': '',
     'order': 'sales',
     'sort': 'desc',
     'page_size': PAGE_SIZE,
     'page_index': 1,
-
-    // 'shippingFee': 0,
-    // 'type': 0
   };
+
   String get keyword => widget.keyword;
   bool get isFromSearch => widget.keyword.isNotEmpty ?? false;
-
   @override
   void initState() {
     super.initState();
@@ -88,9 +84,14 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     tabController = TabController(
       length: tabs.length,
       vsync: this,
-    );
-    menuController = GZXDropdownMenuController();
+    )..addListener(() {
+        closeSortPanel();
+        closeEndDrawer();
+        fetchTag();
+      });
+
     scrollController = ScrollController();
+
     fetchData();
   }
 
@@ -108,13 +109,38 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         });
   }
 
+  bool showSortPanel = false;
+
+  void sort() {
+    closeEndDrawer();
+    setState(() {
+      showSortPanel = !showSortPanel;
+    });
+    if (showSortPanel) {
+    } else {}
+
+    // setState(() {
+    //   showSortPanel = !showSortPanel;
+    //   menuController?.show(0);
+    //   closeEndDrawer();
+    // });
+  }
+
   @override
   void didChangeDependencies() {
     Application.routeObserver.subscribe(this, ModalRoute.of(context));
     super.didChangeDependencies();
   }
 
-  List<Map<String, dynamic>> sortTypes = [
+  void resetSortType() {
+    int len = sortTypes.length;
+    for (int i = 0; i < len; i++) {
+      Map<String, dynamic> item = sortTypes[i];
+      item['is_checked'] = i == 0;
+    }
+  }
+
+  static List<Map<String, dynamic>> sortTypes = [
     {
       'text': '销量排序',
       'is_checked': true,
@@ -142,7 +168,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   RefreshController _refreshController;
 
   TabController tabController;
-  Animation<Offset> animation;
   bool isGridMode = true;
   double width;
   int get tabIndex => tabController?.index ?? 0;
@@ -189,16 +214,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     return;
   }
 
-  bool showSortPanel = false;
-
-  void sort() {
-    setState(() {
-      showSortPanel = !showSortPanel;
-      menuController?.show(0);
-      closeEndDrawer();
-    });
-  }
-
   Widget _buildFilter3() {
     return InkWell(
       onTap: sort,
@@ -222,11 +237,16 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     );
   }
 
+  void closeSortPanel() {
+    setState(() {
+      // if (showSortPanel) overlayEntry?.remove();
+      showSortPanel = false;
+    });
+  }
+
   void filter() {
     setState(() {
-      if (menuController?.isShow == true) {
-        menuController?.hide();
-      }
+      closeSortPanel();
       ScaffoldState state = _scaffoldKey.currentState;
       if (!state.isEndDrawerOpen) {
         state.openEndDrawer();
@@ -236,6 +256,20 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         showFloatingButton = true;
       }
     });
+  }
+
+  void filterData() {
+    Map<String, dynamic> args = {};
+    args.addAll(tagWrapper?.args);
+    args['page_index'] = 1;
+    args['category_type'] = tabIndex;
+    Application.eventBus.fire(
+      FilterEvent(args, tab: tabIndex),
+    );
+    setState(() {
+      showFloatingButton = true;
+    });
+    Navigator.of(context).pop();
   }
 
   Widget _buildFilter4() {
@@ -369,7 +403,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   child: InkWell(
                 onTap: () {
                   tagWrapper?.reset();
-
                   setState(() {});
                   params?.addAll(tagWrapper?.args);
                 },
@@ -385,16 +418,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
               )),
               Expanded(
                   child: InkWell(
-                onTap: () {
-                  params?.addAll(tagWrapper?.args);
-                  params['page'] = 1;
-                  params['category_type'] = tabIndex;
-                  setState(() {
-                    showFloatingButton = true;
-                  });
-                  fetchData();
-                  Navigator.of(context).pop();
-                },
+                onTap: filterData,
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.black,
@@ -422,18 +446,26 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     }).whenComplete(() {});
   }
 
+  void fetchTag() {
+    OTPService.tagList(context, params: {'category_type': tabIndex})
+        .then((TagModelListResp response) {
+          tagWrapper = response?.data;
+        })
+        .catchError((err) => err)
+        .whenComplete(() {
+          setState(() {});
+        });
+  }
+
   int cartCount = 0;
   void fetchData() {
     OTPService.mallData(context, params: params).then((data) {
       CurtainProductListResp curtainProductListResp = data[0];
-
       TagModelListResp tagListResp = data[1];
       CartCountResp cartCountResp = data[2];
       cartCount = cartCountResp?.data;
       beanData = curtainProductListResp?.data;
-
       tabController?.index = beanData?.categoryType;
-
       wrapper = beanData?.goodsList;
       goodsListWrapper[tabIndex] = wrapper?.data ?? [];
       tagWrapper = tagListResp?.data;
@@ -443,7 +475,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     }).catchError((err) {
       return err;
     }).whenComplete(() {
-      print('刷新=================++++++++++++++++++');
       setState(() {});
     });
   }
@@ -451,69 +482,28 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   @override
   void dispose() {
     super.dispose();
-    menuController?.dispose();
+    resetSortType();
     tabController?.dispose();
     _refreshController?.dispose();
     scrollController?.dispose();
   }
 
-  GridView buildGridView() {
-    return GridView.builder(
-        // physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: .8,
-          crossAxisSpacing: 10,
-        ),
-        itemCount: goodsList == null || goodsList?.isEmpty == true
-            ? 0
-            : goodsList.length,
-        itemBuilder: (BuildContext context, int i) {
-          return AnimationConfiguration.staggeredGrid(
-            columnCount: goodsList == null || goodsList?.isEmpty == true
-                ? 0
-                : (goodsList.length ~/ 2) + 1,
-            position: i,
-            duration: Duration(milliseconds: 600),
-            child: SlideAnimation(
-                verticalOffset: 200.0,
-                child: FadeInAnimation(
-                  child: GridCard(goodsList[i]),
-                )),
-          );
-        });
-  }
-
-  ListView buildListView() {
-    return ListView.builder(
-        // physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount:
-            goodsList != null && goodsList.isNotEmpty ? goodsList?.length : 0,
-        itemBuilder: (BuildContext context, int i) {
-          return AnimationConfiguration.staggeredList(
-            position: i,
-            duration: Duration(milliseconds: 700),
-            child: SlideAnimation(
-                verticalOffset: 200.0,
-                child: FadeInAnimation(
-                  child: ListCard(goodsList[i]),
-                )),
-          );
-        });
-  }
-
   void clear() {
     TargetOrderGoods.instance.clear();
     TargetClient.instance.clear();
+    TargetOrderGoods.instance.orderGoodsId = null;
   }
 
   void sortData() {
     params['page_index'] = 1;
     params['order'] = currentSortType['order'];
-    params['sort'] = currentSortType['sort'];
-    menuController?.hide();
+    params['sort'] = currentSortType['order'];
+    Application.eventBus.fire(FilterEvent({
+      'page_index': 1,
+      'order': currentSortType['order'],
+      'sort': currentSortType['sort']
+    }, tab: tabIndex));
+    closeSortPanel();
     scrollToTop();
   }
 
@@ -521,9 +511,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-
-    width = MediaQuery.of(context).size.width;
-
+    Size size = MediaQuery.of(context).size;
     return WillPopScope(
         child: Scaffold(
           floatingActionButton: AnimatedOpacity(
@@ -544,23 +532,29 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                     child: Container(
                       width: UIKit.width(60),
                       height: UIKit.width(60),
-                      alignment: Alignment(1.2, -1.5),
-                      child: Container(
-                        width: 16,
-                        height: 16,
-                        child: Text(
-                          '$cartCount',
-                          style: TextStyle(fontSize: 10),
-                          textAlign: TextAlign.center,
+                      alignment: Alignment(1.4, -1.6),
+                      child: Visibility(
+                        child: Container(
+                          width: 16,
+                          height: 16,
+                          alignment: Alignment.center,
+                          child: Text(
+                            '$cartCount',
+                            style: TextStyle(
+                                fontSize: cartCount > 10 ? 10 : 12,
+                                fontFamily: 'Roboto'),
+                          ),
+                          decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8))),
                         ),
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                        visible: cartCount != 0,
                       ),
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               image: AssetImage(UIKit.getAssetsImagePath(
-                                  'cart_button@2x.png')))),
+                                  'cart_button.png')))),
                     ),
                   ),
                 ),
@@ -587,6 +581,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
             ),
           ),
           appBar: AppBar(
+            key: appBarKey,
             centerTitle: true,
             actions: <Widget>[ScanButton()],
             title: GestureDetector(
@@ -609,11 +604,15 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                     ),
                     isFromSearch
                         ? Text(
+                            keyword,
+                            style: TextStyle(
+                                color: Color(0xFF333333), fontSize: 14),
+                          )
+                        : Text(
                             '搜索款号或关键词',
                             style: TextStyle(
                                 color: Color(0xFF9F9FA5), fontSize: 14),
                           )
-                        : Text(keyword)
                   ],
                 ),
                 decoration: BoxDecoration(
@@ -626,7 +625,12 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                 child: Column(
                   children: <Widget>[
                     TabBar(
-                        tabs: tabs?.map((e) => Text(e))?.toList(),
+                        tabs: tabs
+                            ?.map((e) => Text(
+                                  e,
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                ))
+                            ?.toList(),
                         controller: tabController,
                         indicatorColor: Colors.transparent,
                         labelColor: const Color(0xFF1B1B1B),
@@ -648,46 +652,119 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           body: Scaffold(
             key: _scaffoldKey,
             endDrawer: endDrawer(context),
-            body: NotificationListener(
-                onNotification: (ScrollNotification notofication) {
-                  if (notofication.runtimeType == ScrollStartNotification) {
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      setState(() {
-                        showFloatingButton = false;
+            body: Stack(
+              children: [
+                NotificationListener(
+                  onNotification: (ScrollNotification notofication) {
+                    if (notofication.runtimeType == ScrollStartNotification) {
+                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                        setState(() {
+                          showFloatingButton = false;
+                        });
                       });
-                    });
-                  }
-                  if (notofication.runtimeType == ScrollEndNotification) {
-                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                      setState(() {
-                        showFloatingButton = true;
+                    }
+                    if (notofication.runtimeType == ScrollEndNotification) {
+                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                        setState(() {
+                          showFloatingButton = true;
+                        });
                       });
-                    });
-                  }
-                  return true;
-                },
-                child: TabBarView(
-                  children: List.generate(tabs?.length ?? 0, (int index) {
-                    return GoodsTabBarView(
-                      menuController: menuController,
-                      sort: sortData,
-                      isGridMode: isGridMode,
-                      params: {
-                        'category_type': index,
-                        'page_size': PAGE_SIZE,
-                        'keyword': keyword,
-                        'page_index': 1,
-                        'order': currentSortType['order'],
-                        'sort': currentSortType['sort']
+                    }
+                    return true;
+                  },
+                  child: TabBarView(
+                    children: List.generate(tabs?.length ?? 0, (int i) {
+                      return GoodsTabBarView(
+                        key: ObjectKey(tabs[i]),
+                        sort: sortData,
+                        tab: i,
+                        isGridMode: isGridMode,
+                        params: {
+                          'category_type': i,
+                          'page_size': PAGE_SIZE,
+                          'keyword': keyword,
+                          'page_index': 1,
+                          'type': 1,
+                          'sort': currentSortType['sort'],
+                          'order': currentSortType['order']
+                        },
+                      );
+                    }),
+                    controller: tabController,
+                  ),
+                ),
+                Offstage(
+                  offstage: !showSortPanel,
+                  child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          showSortPanel = false;
+                        });
                       },
-                    );
-                  }),
-                  controller: tabController,
-                )),
+                      child: Container(
+                          width: size.width,
+                          height: size.height,
+                          color: Colors.black54,
+                          child: Container(
+                              child: Column(
+                                  children: sortTypes
+                                      ?.map((bean) =>
+                                          Builder(builder: (BuildContext ctx) {
+                                            return GestureDetector(
+                                              onTap: () {
+                                                if (bean['is_checked']) return;
+                                                sortTypes.forEach((element) {
+                                                  element['is_checked'] =
+                                                      element == bean;
+                                                });
+
+                                                sortData();
+                                              },
+                                              child: Container(
+                                                width: size.width,
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 5),
+                                                color: Colors.white,
+                                                alignment: Alignment.center,
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    Text(bean['text']),
+                                                    SizedBox(
+                                                      width: 20,
+                                                    ),
+                                                    Opacity(
+                                                      child: Icon(
+                                                        ZYIcon.check,
+                                                        color: const Color(
+                                                            0xFF050505),
+                                                      ),
+                                                      opacity:
+                                                          bean['is_checked']
+                                                              ? 1.0
+                                                              : 0,
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          }))
+                                      ?.toList())))),
+                )
+              ],
+            ),
           ),
         ),
         onWillPop: () {
           Navigator.of(context).pop();
+          if (showSortPanel) {
+            // overlayEntry?.remove();
+          }
+
           clear();
           return Future.value(false);
         });
@@ -696,18 +773,12 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
 class GoodsTabBarView extends StatefulWidget {
   final Function sort;
-
-  final GZXDropdownMenuController menuController;
-
+  final int tab;
   final bool isGridMode;
 
   final Map<String, dynamic> params;
   GoodsTabBarView(
-      {Key key,
-      this.sort,
-      this.menuController,
-      this.params,
-      this.isGridMode = true})
+      {Key key, this.sort, this.params, this.tab, this.isGridMode = true})
       : super(key: key);
 
   @override
@@ -717,40 +788,37 @@ class GoodsTabBarView extends StatefulWidget {
 class _GoodsTabBarViewState extends State<GoodsTabBarView>
     with AutomaticKeepAliveClientMixin {
   Function get sort => widget.sort;
-
-  GZXDropdownMenuController get menuController => widget.menuController;
   Map<String, dynamic> get params => widget.params;
   bool get isGridMode => widget.isGridMode;
   bool get isFromSearch => widget.params['keyword']?.isNotEmpty ?? false;
-  static List<Map<String, dynamic>> sortTypes = [
-    {
-      'text': '销量排序',
-      'is_checked': true,
-    },
-    {
-      'text': '新品优先',
-      'is_checked': false,
-    },
-    {
-      'text': '价格升序',
-      'is_checked': false,
-    },
-    {
-      'text': '价格降序',
-      'is_checked': false,
-    }
-  ];
+  int get tab => widget.tab;
   bool isLoading = true;
   RefreshController _refreshController;
   ScrollController scrollController;
   List<GoodsItemBean> goodsList = [];
+  StreamSubscription filterSubscription;
+  int pageIndex = 1;
   @override
   void initState() {
     _refreshController = RefreshController(
         initialRefresh: false, initialLoadStatus: LoadStatus.idle);
     scrollController = ScrollController();
+    if (mounted) {
+      filterSubscription =
+          Application.eventBus.on<FilterEvent>().listen((event) {
+        params?.addAll(event?.args);
 
-    requestGoodsData();
+        if (event.tab == tab) {
+          setState(() {
+            isLoading = true;
+          });
+          requestGoodsData();
+        }
+        print('***************__________________');
+        print(params);
+        // goodsList?.clear();
+      });
+    }
     // Future.delayed(Constants.TRANSITION_DURATION, () {
     //   setState(() {
     //     isLoading = false;
@@ -761,6 +829,7 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
 
   @override
   void dispose() {
+    filterSubscription?.cancel();
     _refreshController?.dispose();
     scrollController?.dispose();
     super.dispose();
@@ -773,14 +842,26 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   static const int PAGE_SIZE = 20;
 
   void refresh() {
-    params['page_index'] = 1;
     isRefresh = true;
+    pageIndex = 1;
+    // params['page_index'] = 1;
+
     requestGoodsData();
   }
 
+  @override
+  void didChangeDependencies() {
+    isRefresh = true;
+
+    requestGoodsData();
+    super.didChangeDependencies();
+  }
+
   void load() {
-    params['page_index']++;
     isRefresh = false;
+    pageIndex++;
+    // params['page_index']++;
+
     requestGoodsData();
   }
 
@@ -791,6 +872,7 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   }
 
   requestGoodsData() {
+    params?.addAll({'page_index': pageIndex});
     OTPService.productGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
       if (curtainProductListResp?.valid == true) {
@@ -810,15 +892,25 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
             return _refreshController?.loadNoData();
           } else {
             beans?.forEach((item) {
-              if (goodsList?.contains(item) == false) {
-                goodsList?.add(item);
-              }
+              goodsList?.add(item);
             });
-            // setState(() {
-            //   goodsList?.addAll(beans);
-            // });
-            return _refreshController?.loadComplete();
+            if (beans.length < PAGE_SIZE) {
+              return _refreshController?.loadNoData();
+            } else {
+              return _refreshController?.loadComplete();
+            }
           }
+          // if (beans.length < PAGE_SIZE) {
+          //   _refreshController?.loadNoData();
+          // } else {
+          //   beans?.forEach((item) {
+          //     goodsList?.add(item);
+          //   });
+          //   // setState(() {
+          //   //   goodsList?.addAll(beans);
+          //   // });
+
+          // }
         }
       }
 
@@ -893,7 +985,7 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   Widget build(BuildContext context) {
     super.build(context);
     ThemeData themeData = Theme.of(context);
-    TextTheme textTheme = themeData.textTheme;
+
     return PageTransitionSwitcher(
       duration: Duration(milliseconds: 500),
       transitionBuilder: (
@@ -922,77 +1014,15 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
               : Container(
                   alignment: Alignment.center,
                   // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                  child: Stack(
-                    children: <Widget>[
-                      SmartRefresher(
-                        enablePullDown: true,
-                        enablePullUp: true,
-                        primary: false,
-                        onRefresh: refresh,
-                        onLoading: load,
-                        controller: _refreshController,
-                        scrollController: scrollController,
-                        child: isGridMode ? buildGridView() : buildListView(),
-                      ),
-                      GZXDropDownMenu(
-                          controller: menuController,
-                          animationMilliseconds: 400,
-                          menus: [
-                            GZXDropdownMenuBuilder(
-                                dropDownHeight: 30.0 * sortTypes.length,
-                                dropDownWidget: Column(
-                                  children:
-                                      List.generate(sortTypes.length, (int i) {
-                                    Map<String, dynamic> bean = sortTypes[i];
-                                    return Flexible(
-                                        child: InkWell(
-                                      onTap: () {
-                                        if (bean['is_checked']) return;
-                                        sortTypes.forEach((element) {
-                                          element['is_checked'] =
-                                              element == bean;
-                                        });
-                                        sort();
-                                      },
-                                      child: Container(
-                                          height: 30,
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 50),
-                                            child: Text.rich(
-                                              TextSpan(
-                                                  text: bean['text'],
-                                                  style: TextStyle(
-                                                      color: bean['is_checked']
-                                                          ? textTheme
-                                                              .bodyText2.color
-                                                          : Colors.grey),
-                                                  children: [
-                                                    WidgetSpan(
-                                                        child: SizedBox(
-                                                            width: 20)),
-                                                    WidgetSpan(
-                                                        child:
-                                                            bean['is_checked']
-                                                                ? Icon(
-                                                                    ZYIcon
-                                                                        .check,
-                                                                    color: const Color(
-                                                                        0xFF050505),
-                                                                  )
-                                                                : SizedBox(
-                                                                    width: 24,
-                                                                    height: 24,
-                                                                  ))
-                                                  ]),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          )),
-                                    ));
-                                  }),
-                                ))
-                          ])
-                    ],
+                  child: SmartRefresher(
+                    enablePullDown: true,
+                    enablePullUp: true,
+                    primary: false,
+                    onRefresh: refresh,
+                    onLoading: load,
+                    controller: _refreshController,
+                    scrollController: scrollController,
+                    child: isGridMode ? buildGridView() : buildListView(),
                   ),
                 ),
     );

@@ -1,9 +1,12 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
+import 'package:taojuwu/constants/constants.dart';
 // import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/protocal/user_protocal_model.dart';
 import 'package:taojuwu/models/zy_response.dart';
@@ -17,6 +20,8 @@ import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/send_sms_button.dart';
 import 'package:taojuwu/widgets/zy_future_builder.dart';
+import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
 // import 'package:taojuwu/widgets/zy_assetImage.dart';
 
@@ -57,11 +62,158 @@ class _LoginPageState extends State<LoginPage> {
       startX1 = position1.dx + (size1.width / 2);
       startX2 = position2.dx + (size2.width / 2);
       setState(() {});
+
+      if (Application.hasAgree == false) {
+        return showTip();
+      }
     });
   }
 
   void unfocus() {
     FocusManager.instance.primaryFocus.unfocus();
+  }
+
+  void showTip() async {
+    await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return WillPopScope(
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.only(bottom: 6),
+                      child: Text(
+                        '温馨提示',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(bottom: 6),
+                      child: Text(
+                        '欢迎来到淘居屋商家！',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            color: Color(0xFF1B1B1B),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                    DefaultTextStyle(
+                        style:
+                            TextStyle(fontSize: 12, color: Color(0xFF464646)),
+                        child: Text.rich(
+                            TextSpan(text: Constants.ALERT_TIP_HADE, children: [
+                          WidgetSpan(
+                              child: GestureDetector(
+                            onTap: () {
+                              RouteHandler.goProtocalPage(context);
+                            },
+                            child: Text(Constants.ALERT_TIP_BODY,
+                                style: TextStyle(color: Color(0xFF388FFF))),
+                          )),
+                          TextSpan(text: Constants.ALERT_TIP_TAIL)
+                        ]))),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        ZYOutlineButton(
+                          '不同意',
+                          () {
+                            Navigator.of(context).pop();
+                            secondConfirm();
+                          },
+                        ),
+                        SizedBox(
+                          width: 30,
+                        ),
+                        ZYRaisedButton(
+                          '同意  ',
+                          () {
+                            Application.sp.setBool('hasAgree', true);
+                            Navigator.of(context).pop();
+
+                            // delCart(provider, cartModel?.cartId);
+                          },
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              onWillPop: () {
+                return Future.value(false);
+              });
+        });
+  }
+
+  void secondConfirm() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return WillPopScope(
+              child: AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.only(bottom: 6),
+                      child: Text(
+                        '您需要同意后，才能继续使用淘居屋商家的服务',
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        ZYOutlineButton(
+                          '不同意并退出',
+                          () {
+                            SystemChannels.platform
+                                .invokeMethod('SystemNavigator.pop');
+                          },
+                          horizontalPadding: 5,
+                        ),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        ZYRaisedButton(
+                          '  同意并使用  ',
+                          () {
+                            Navigator.of(context).pop();
+                            Application.sp.setBool('hasAgree', true);
+                            // delCart(provider, cartModel?.cartId);
+                          },
+                          horizontalPadding: 5,
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              onWillPop: () {
+                return Future.value(false);
+              });
+        });
   }
 
   double startX1 = 0.0;

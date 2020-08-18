@@ -1,6 +1,7 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/models/user/customer_model.dart';
 
@@ -21,7 +22,8 @@ class CustomerManagePage extends StatefulWidget {
   _CustomerManagePageState createState() => _CustomerManagePageState();
 }
 
-class _CustomerManagePageState extends State<CustomerManagePage> {
+class _CustomerManagePageState extends State<CustomerManagePage>
+    with RouteAware {
   Map<String, dynamic> params = {
     'page_size': 20,
     'page_index': 1,
@@ -43,6 +45,18 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
     });
   }
 
+  @override
+  void didChangeDependencies() {
+    Application.routeObserver.subscribe(this, ModalRoute.of(context));
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didPopNext() {
+    fetchData();
+    super.didPopNext();
+  }
+
   void fetchData() {
     OTPService.userList(context, params: params)
         .then((CustomerModelListResp response) {
@@ -62,6 +76,12 @@ class _CustomerManagePageState extends State<CustomerManagePage> {
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    Application.routeObserver.unsubscribe(this);
+    super.dispose();
   }
 
   static List<Map<String, dynamic>> entrys = [

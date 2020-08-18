@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +7,6 @@ import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/pages/order/commit_order_page.dart';
 
 import 'package:taojuwu/providers/cart_provider.dart';
-
-import 'package:taojuwu/router/handlers.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
@@ -166,8 +162,11 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                             }),
                         Text('全选'),
                         Spacer(),
-                        Text(
-                            '总价: ￥${provider?.totalAmount?.toStringAsFixed(2) ?? 0.00}元'),
+                        Visibility(
+                          child: Text(
+                              '总价: ￥${provider?.totalAmount?.toStringAsFixed(2) ?? 0.00}元'),
+                          visible: provider?.isEditting == false,
+                        ),
                         Container(
                           margin:
                               EdgeInsets.symmetric(horizontal: UIKit.width(20)),

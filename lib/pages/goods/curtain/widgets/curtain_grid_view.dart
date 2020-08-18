@@ -41,8 +41,8 @@ class GridCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.left,
                     style: TextStyle(fontSize: UIKit.sp(30))),
-                Offstage(
-                  offstage: bean?.isPromotionGoods == false,
+                Visibility(
+                  visible: bean?.isPromotionGoods == true,
                   child: OnSaleTag(),
                 ),
               ],

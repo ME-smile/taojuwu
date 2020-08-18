@@ -283,7 +283,7 @@ class ProductBean {
   String picCoverMicro;
   String categoryName;
   int count = 1;
-  bool get isPromotionGoods => !(marketPrice == price && marketPrice != 0);
+  bool get isPromotionGoods => marketPrice != 0 && marketPrice != price;
   String get picCoverMid {
     return imgList?.isEmpty == true ? '' : imgList?.first?.picCover;
   }
@@ -314,9 +314,12 @@ class ProductBean {
     tmpBean.promotionType = map['promotion_type'];
     tmpBean.promoteId = map['promote_id'];
     tmpBean.goodsType = map['goods_type'];
+    print(map['market_price']);
+    print(map['price']);
     tmpBean.marketPrice = map['market_price'].runtimeType == double
         ? map['market_price']
         : double.parse(map['market_price'] ?? '0.00');
+
     tmpBean.price = map['price'].runtimeType == double
         ? map['price']
         : double.parse(map['price'] ?? '0.00');

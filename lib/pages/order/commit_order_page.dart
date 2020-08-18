@@ -40,6 +40,10 @@ class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
     }
   }
 
+//
+  bool get hasCustomizedProduct =>
+      goodsList?.indexWhere((element) => element?.goodsType != 0) != -1;
+
   @override
   void dispose() {
     super.dispose();
@@ -104,8 +108,11 @@ class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
                             },
                             itemCount: goodsList?.length ?? 0),
                       ),
-                      CustomerNeedBar(
-                        isHideMeasureWindowNum: true,
+                      Visibility(
+                        child: CustomerNeedBar(
+                          isHideMeasureWindowNum: true,
+                        ),
+                        visible: hasCustomizedProduct,
                       ),
                       Consumer(builder:
                           (BuildContext context, OrderProvider provider, _) {
@@ -201,7 +208,7 @@ class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
                               setState(() {
                                 canClick = true;
                               });
-                            });
+                            }, hasCustomizedProdoct: hasCustomizedProduct);
                           },
                           isActive: canClick,
                         ),

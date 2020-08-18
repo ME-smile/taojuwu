@@ -165,7 +165,9 @@ class OrderProvider with ChangeNotifier {
   }
 
   void createOrder(BuildContext ctx,
-      {Function beforeCallback, Function afterCallback}) {
+      {Function beforeCallback,
+      Function afterCallback,
+      bool hasCustomizedProdoct = true}) {
     // LogUtil.e({
     //   'order_earnest_money': deposit,
     //   'client_uid': clientUid,
@@ -188,7 +190,9 @@ class OrderProvider with ChangeNotifier {
     //       "goods_sku_list": "$goodsSkuListText"
     //     }'''
     // });
-    if (!beforeCreateOrder(ctx)) return;
+    if (hasCustomizedProdoct) {
+      if (!beforeCreateOrder(ctx)) return;
+    }
     if (beforeCallback != null) {
       beforeCallback();
     }

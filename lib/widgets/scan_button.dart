@@ -25,6 +25,7 @@ class ScanButton extends StatelessWidget {
         List<String> splits = barcode?.rawContent?.split(',');
         String type = splits?.first;
         String model = splits?.last;
+
         OTPService.scanQR(params: {'type': type, 'model': model})
             .then((ZYResponse response) {
           if (response?.valid == true && response?.data != null) {

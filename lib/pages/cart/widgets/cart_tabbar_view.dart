@@ -424,21 +424,31 @@ class _ProductCardState extends State<ProductCard> {
                               style: textTheme.headline6
                                   .copyWith(fontSize: UIKit.sp(28)),
                             ),
-                            Text.rich(TextSpan(
-                                text: '￥' + '${cartModel?.price}' ?? '',
-                                children: [TextSpan(text: cartModel?.unit)])),
+                            Text('￥' + '${cartModel?.price}' ?? '')
+                            // Text.rich(TextSpan(
+                            //     text: '￥' + '${cartModel?.price}' ?? '',
+                            //     children: [TextSpan(text: cartModel?.unit)])),
                           ],
                         ),
-                        Expanded(
-                          child: Text(
-                            cartModel?.goodsAttrStr ?? '',
-                            softWrap: true,
-                            style: textTheme.caption.copyWith(fontSize: 12),
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 5,
+                        Flexible(
+                          child: Row(
+                            children: [
+                              Text(
+                                cartModel?.goodsAttrStr ?? '',
+                                softWrap: true,
+                                style: textTheme.caption.copyWith(fontSize: 12),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 5,
+                              ),
+                              Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 18,
+                              )
+                            ],
                           ),
                         ),
-                        Container(
+                        Expanded(
+                            child: Container(
                           alignment: Alignment.bottomRight,
                           child: StepCounter(
                             count: cartModel?.count ?? 0,
@@ -446,11 +456,11 @@ class _ProductCardState extends State<ProductCard> {
                             callback: () {
                               EndProductProvider.editCount(context,
                                   cartModel: cartModel, callback: () {
-                                setState(() {});
+                                provider?.refresh();
                               });
                             },
                           ),
-                        )
+                        ))
                       ],
                     ),
                   ))

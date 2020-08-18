@@ -8,7 +8,6 @@ import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
 
-import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/pages/goods/base/bottom_action_bar.dart';
 import 'package:taojuwu/pages/goods/base/cart_button.dart';
 import 'package:taojuwu/pages/goods/base/like_button.dart';
@@ -40,44 +39,6 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
     with RouteAware {
   int get id => widget.id;
 
-  ValueNotifier<bool> hasCollected;
-
-  @override
-  void initState() {
-    hasCollected = ValueNotifier<bool>(false);
-    super.initState();
-  }
-
-  Map<String, dynamic> collectParams = {};
-  collect(
-    BuildContext context,
-  ) {
-    // final Completer<bool> completer = new Completer<bool>();
-    if (!TargetClient.instance.hasSelectedClient) {
-      CommonKit.showInfo('请选择客户');
-      return;
-    }
-    collectParams = {
-      // 'fav_type':'goods',
-      'fav_id': widget.id,
-      'client_uid': TargetClient.instance.clientId
-    };
-    if (hasCollected?.value == false) {
-      OTPService.collect(params: collectParams).then((ZYResponse response) {
-        if (response?.valid == true) {
-          hasCollected.value = true;
-        }
-      }).catchError((err) => err);
-    } else {
-      OTPService.cancelCollect(params: collectParams)
-          .then((ZYResponse response) {
-        if (response?.valid == true) {
-          hasCollected.value = false;
-        }
-      }).catchError((err) => err);
-    }
-  }
-
   bool beforePurchase(EndProductProvider provider, BuildContext context) {
     if (TargetClient.instance.hasSelectedClient == false) {
       CommonKit.showInfo('请选择客户');
@@ -88,7 +49,6 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
 
   @override
   void dispose() {
-    hasCollected?.dispose();
     super.dispose();
   }
 
@@ -100,7 +60,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
     })
         .then((CartCountResp cartCountResp) {
           if (mounted)
-            TargetOrderGoods.instance.goodsProvider?.cartCount =
+            TargetOrderGoods.instance.endProductProvider?.cartCount =
                 cartCountResp?.data;
         })
         .catchError((err) => err)
@@ -131,7 +91,11 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
           ProductBean bean = wrapper?.goodsDetail;
 
           return ChangeNotifierProvider<EndProductProvider>(
-            create: (BuildContext context) => EndProductProvider(bean),
+            create: (BuildContext context) {
+              EndProductProvider goodsProvider = EndProductProvider(bean);
+              TargetOrderGoods.instance.setEndProductProvider(goodsProvider);
+              return goodsProvider;
+            },
             child: Consumer<EndProductProvider>(builder:
                 (BuildContext context, EndProductProvider provider, _) {
               return WillPopScope(
@@ -210,9 +174,9 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                                               horizontal: UIKit.width(20)),
                                           child: LikeButton(
                                             hasLiked: false,
-                                            callback: () {
-                                              // collect(context, goodsProvider);
-                                            },
+                                            goodsId: id,
+                                            clientId:
+                                                TargetClient.instance.clientId,
                                           ),
                                         ),
                                         CartButton(
@@ -325,7 +289,9 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                     totalPrice: '${provider?.totalPrice ?? '0.00'}',
                     canAddToCart: provider?.canAddToCart,
                     addToCartFunc: () {
-                      provider?.addCart(context);
+                      selectAttrOption(provider, () {
+                        provider?.addCart(context);
+                      });
                     },
                     purchaseFunc: () {
                       provider?.createOrder(context);

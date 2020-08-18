@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -91,6 +92,7 @@ class _HomePageState extends State<HomePage> {
     timer = Timer.periodic(const Duration(seconds: 5), (_) {
       _streamController.add(DateTime.now());
     });
+    Application.checkAppVersion(context);
   }
 
   @override

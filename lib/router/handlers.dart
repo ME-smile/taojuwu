@@ -4,7 +4,6 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/export/export_pages.dart';
-import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/pages/after_sale_service/after_sale_service_page.dart';
 
 import 'package:taojuwu/pages/cart/cart_page.dart';
@@ -179,10 +178,8 @@ class RouteHandler {
   static Future goCustomerPage(BuildContext context,
       {int isForSelectedClient: 0 //1代表选择客户 0 //普通跳转
       }) {
-    return _jumpTo(
-      context,
-      '${Routes.customer}?flag=$isForSelectedClient',
-    );
+    return _jumpTo(context, '${Routes.customer}?flag=$isForSelectedClient',
+        maintainState: false);
   }
 
   static Handler customerDetail = Handler(
@@ -344,7 +341,7 @@ class RouteHandler {
   });
 
   static Future goSearchPage(BuildContext context, int type) {
-    return _jumpTo(context, '${Routes.search}?type=$type');
+    return _jumpTo(context, '${Routes.search}?type=$type', maintainState: true);
   }
 
   static Handler preMeasureData = Handler(handlerFunc: (
@@ -557,7 +554,8 @@ class RouteHandler {
     return EndProductDetailPage(id: id);
   });
   static Future goEndProductDetail(BuildContext context, int id) {
-    return _jumpTo(context, '${Routes.endProductDetail}?id=$id');
+    return _jumpTo(context, '${Routes.endProductDetail}?id=$id',
+        maintainState: true);
   }
 
   static Handler editGoodsAttr = Handler(

@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_upgrade/flutter_app_upgrade.dart';
+import 'package:taojuwu/models/app_info/app_info_model.dart';
 import 'package:taojuwu/models/logistics/logistics_data_model.dart';
 import 'package:taojuwu/models/order/measure_data_model.dart';
 
@@ -489,7 +493,7 @@ class OTPService {
   static Future<ZYResponse<dynamic>> scanQR(
       {Map<String, dynamic> params}) async {
     Response response = await xhr.post(ApiPath.scanQR, data: params);
-    return ZYResponse<dynamic>.fromJsonWithData(response.data);
+    return ZYResponse<dynamic>.fromJsonWithData(response?.data);
   }
 
   static Future<ZYResponse<dynamic>> uploadImg(
@@ -596,5 +600,24 @@ class OTPService {
         await xhr.get(context, ApiPath.editCartCount, params: params);
 
     return ZYResponse.fromJsonWithData(response?.data);
+  }
+
+  static Future<AppInfoWrapper> appInfo({Map<String, dynamic> params}) async {
+    params = params ?? {};
+    if (Platform.isIOS) {
+      params.addAll({'app_type': 'Ios'});
+    } else {
+      params.addAll({'app_type': 'Android'});
+    }
+    Response response = await xhr.post(ApiPath.appInfo, formdata: params);
+    AppInfoModelResp resp = AppInfoModelResp.fromJson(response?.data);
+    AppInfoModel model = resp?.data;
+    return AppInfoWrapper(
+        appInfoModel: model,
+        appUpgradeInfo: AppUpgradeInfo(
+            title: model?.title,
+            contents: [model?.log],
+            force: true,
+            apkDownloadUrl: model?.downloadUrl));
   }
 }

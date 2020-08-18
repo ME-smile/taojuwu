@@ -8,7 +8,7 @@ class Constants {
   static const String ORDER_STATUS_TO_AUDIT = '待审核';
   static const String ORDER_STATUS_TO_MEASURE = '待测量';
   static const String ORDER_STATUS_TO_SELECT = '待选品';
-  static const String ORDER_STATUS_PAY_TAIL = '付尾款';
+  static const String ORDER_STATUS_PAY_TAIL = '待付款';
   static const String ORDER_STATUS_PRODUCTING = '生产中';
 
   static const String ORDER_STATUS_TO_SHIP = '待发货';
@@ -178,4 +178,12 @@ class Constants {
   (2)24小时售后响应制，2个工作日给予解决方案，最终以用户确认满意评价。 
   (3)客户满足测量条件（硬装结束，地板及门框安装完毕）预约测量；正式选品下单后，20天左右生产完成。
   ''';
+  static const String ALERT_TIP_HADE = "为了更好的提供服务，我们依据相关法律制作了";
+  static const String ALERT_TIP_BODY = "《用户协议与隐私政策》";
+  static const String ALERT_TIP_TAIL =
+      """帮助您了解、使用、存储和共享个人信息的情况，我们会根据您使用服务的具体功能需要，收集必要的用户信息（可能涉及账户、交易、设备等相关信息）。\n
+未经您同意，我们不会从第三方获取、共享或对外提供您的信息。如您对指引内容有任何疑问、意向或者建议，欢迎随时联系我们。\n
+[特别提示]当您点击「同意」即代表您已充分阅读、理解并接受淘居屋商家的《用户协议与隐私政策》的全部内容。
+  
+  """;
 }

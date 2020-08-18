@@ -18,15 +18,21 @@ class CartButton extends StatelessWidget {
       child: Container(
         width: UIKit.width(60),
         height: UIKit.width(60),
-        alignment: Alignment(1.2, -1.5),
+        margin: EdgeInsets.only(bottom: 5),
+        alignment: Alignment(1.0, -1.0),
         child: isCartEmpty
             ? SizedBox.shrink()
             : Container(
-                // width: 16,
-                // height: 16,
+                width: 16,
+                height: 16,
+                alignment: Alignment.center,
                 child: Text(
                   '$count',
                   textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: count > 10 ? 10 : 12,
+                      fontFamily: 'Roboto'),
                 ),
                 decoration: BoxDecoration(
                     color: Colors.red,
@@ -34,9 +40,11 @@ class CartButton extends StatelessWidget {
               ),
         decoration: BoxDecoration(
             image: DecorationImage(
-                image: AssetImage(UIKit.getAssetsImagePath(
-          'cart_blank@2x.png',
-        )))),
+                image: AssetImage(
+          UIKit.getAssetsImagePath(
+            'cart_blank.png',
+          ),
+        ))),
       ),
     );
   }

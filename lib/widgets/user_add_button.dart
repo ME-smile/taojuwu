@@ -15,9 +15,12 @@ class UserAddButton extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
           child: ZYAssetImage(
-            'client_add@2x.png',
-            width: 24,
-            height: 24,
+            'client_add.png',
+            width: 18,
+            height: 18,
+            callback: () {
+              RouteHandler.goCustomerEditPage(context, title: '添加客户');
+            },
           ),
         ));
   }

@@ -1,6 +1,8 @@
 class ApiPath {
   static const HOST = 'http://106.14.219.213:8001';
 
+  static const String appInfo = '/api/Config/getAppUpgradeInfo';
+
   static const String productMall = '/api/goods/goodsListByConditions';
 
   static const String productDetail = '/api/goods/goodsDetail';

@@ -246,7 +246,7 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
             ZYListTile(
-              title: '用户协议',
+              title: '隐私政策与用户协议',
               callback: () {
                 RouteHandler.goProtocalPage(context);
               },

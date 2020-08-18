@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/models/order/order_cart_goods_model.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/goods_attr_card.dart';
 
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -60,8 +61,9 @@ class EndProductOrderCard extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           goods?.goodsName ?? '',
-                          style: textTheme.headline6
-                              .copyWith(fontSize: UIKit.sp(28)),
+                          style: textTheme.headline6.copyWith(
+                              fontSize: UIKit.sp(28),
+                              fontWeight: FontWeight.bold),
                         ),
                         Text.rich(TextSpan(
                           text: '￥' + '${goods?.price}' ?? '',
@@ -97,6 +99,7 @@ class CustomizedProductOrderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
+
     return Container(
       color: themeData.primaryColor,
       padding: EdgeInsets.symmetric(
@@ -164,6 +167,10 @@ class CustomizedProductOrderCard extends StatelessWidget {
                         ),
                       )),
                     ],
+                  ),
+                  GoodsAttrCard(
+                    isInCartPage: false,
+                    attrs: goods?.attrs,
                   ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),

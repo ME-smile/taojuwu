@@ -59,7 +59,7 @@ class App extends StatelessWidget {
             true, // Disable pull-up to load more functionality when Viewport is less than one screen
         enableBallisticLoad: true,
         child: MaterialApp(
-            title: '淘居屋',
+            title: Application.appName,
             // initialRoute: userProvider?.isLogin == true ? Routes.home : null,
             debugShowCheckedModeBanner: false,
             onGenerateRoute: Application.router.generator,

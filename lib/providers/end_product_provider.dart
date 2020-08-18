@@ -107,9 +107,9 @@ class EndProductProvider with ChangeNotifier {
     };
   }
 
-  void addCart(
+  Future addCart(
     BuildContext context,
-  ) {
+  ) async {
     if (!beforePurchase(context)) return;
 
     canAddToCart = false;
@@ -128,6 +128,7 @@ class EndProductProvider with ChangeNotifier {
         .then((ZYResponse response) {
           if (response?.valid == true) {
             cartCount = response?.data;
+            Navigator.of(context).pop();
           }
         })
         .catchError((err) => err)
@@ -153,7 +154,8 @@ class EndProductProvider with ChangeNotifier {
               'total_price': totalPrice ?? 0.0,
               'count': count,
               'is_endproduct': true,
-              'goods_attrs': jsonEncode([])
+              'goods_attrs': jsonEncode([]),
+              'goods_type': goods?.goodsSpecialType
             }
           ],
         }));
@@ -173,7 +175,7 @@ class EndProductProvider with ChangeNotifier {
         .then((ZYResponse response) {
           if (response?.valid == true) {
             // cartModel?.count =
-            cartModel?.goodsAttrStr = response?.data;
+            // cartModel?.goodsAttrStr = '${response?.data ?? '0'}';
             if (callback != null) callback();
           }
         })

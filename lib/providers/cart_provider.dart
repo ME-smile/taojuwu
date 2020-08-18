@@ -91,7 +91,12 @@ class CartProvider with ChangeNotifier {
     selectedModels?.forEach((element) {
       sum += element?.totalPrice;
     });
+
     return sum;
+  }
+
+  void refresh() {
+    notifyListeners();
   }
 
   void checkAll(bool isSelected) {

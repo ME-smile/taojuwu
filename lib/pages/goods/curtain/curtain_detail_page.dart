@@ -708,6 +708,9 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
                                                                 UIKit.width(
                                                                     20)),
                                                     child: LikeButton(
+                                                      goodsId: id,
+                                                      clientId: TargetClient
+                                                          .instance.clientId,
                                                       hasLiked: goodsProvider
                                                           ?.hasLike,
                                                       callback: () {

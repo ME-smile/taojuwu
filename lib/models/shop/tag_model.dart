@@ -38,7 +38,7 @@ class TagFilterWrapper {
     });
   }
 
-  Map<String, String> get args {
+  Map<String, dynamic> get args {
     Map<String, List<String>> map = {};
     filterList?.forEach((item) {
       if (map[item?.filterName] == null) {

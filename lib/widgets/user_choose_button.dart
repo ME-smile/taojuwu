@@ -19,17 +19,18 @@ class UserChooseButton extends StatelessWidget {
         child: Row(
           children: <Widget>[
             ZYAssetImage(
-              targetClient?.hasSelectedClient == true
-                  ? 'client@2x.png'
-                  : 'client_add@2x.png',
-              width: 24,
-              height: 24,
+              'client.png',
+              width: 18,
+              height: 18,
             ),
             Padding(
                 padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                child: Text(targetClient?.hasSelectedClient == true
-                    ? targetClient?.clientName
-                    : '请选择'))
+                child: Text(
+                  targetClient?.hasSelectedClient == true
+                      ? targetClient?.clientName ?? ''
+                      : '请选择',
+                  style: TextStyle(fontSize: 12),
+                ))
           ],
         ));
   }

@@ -14,7 +14,8 @@ class SearchButton extends StatelessWidget {
       child: IconButton(
           icon: Icon(
             ZYIcon.search,
-            color: const Color(0xFF979797),
+            size: 18,
+            color: Colors.black,
           ),
           onPressed: () {
             RouteHandler.goSearchPage(context, type);

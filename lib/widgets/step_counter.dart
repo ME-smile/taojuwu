@@ -64,15 +64,20 @@ class _StepCounterState extends State<StepCounter> {
           borderRadius: BorderRadius.all(Radius.circular(2)),
           constraints: BoxConstraints(maxWidth: 100),
           children: [
-            Padding(
-              padding: EdgeInsets.all(6),
-              child: ZYAssetImage(
-                'substract.png',
-                width: 10,
-                height: 10,
-                callback: () {
-                  count--;
-                },
+            InkWell(
+              onTap: () {
+                count--;
+              },
+              child: Padding(
+                padding: EdgeInsets.all(6),
+                child: ZYAssetImage(
+                  'substract.png',
+                  width: 10,
+                  height: 10,
+                  callback: () {
+                    count--;
+                  },
+                ),
               ),
             ),
             ConstrainedBox(
@@ -96,17 +101,22 @@ class _StepCounterState extends State<StepCounter> {
                 ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.all(6),
-              child: ZYAssetImage(
-                'plus.png',
-                width: 10,
-                height: 10,
-                callback: () {
-                  count++;
-                },
+            InkWell(
+              onTap: () {
+                count++;
+              },
+              child: Padding(
+                padding: EdgeInsets.all(6),
+                child: ZYAssetImage(
+                  'plus.png',
+                  width: 10,
+                  height: 10,
+                  callback: () {
+                    count++;
+                  },
+                ),
               ),
-            ),
+            )
           ],
           isSelected: [
             false,
