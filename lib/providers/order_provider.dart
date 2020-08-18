@@ -35,9 +35,10 @@ class OrderProvider with ChangeNotifier {
       double price = item?.totalPrice is String
           ? double.parse(item?.totalPrice ?? '0.00')
           : item?.totalPrice;
-
+      print(price);
       sum += price ?? 0.00;
     });
+    print(sum);
     return sum;
   }
 

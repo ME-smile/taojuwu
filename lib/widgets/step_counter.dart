@@ -45,9 +45,15 @@ class _StepCounterState extends State<StepCounter> {
   @override
   void initState() {
     count = widget.count;
+
     hasInit = true;
     textEditingController = TextEditingController(text: '${widget.count}');
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
@@ -58,6 +64,7 @@ class _StepCounterState extends State<StepCounter> {
 
   @override
   Widget build(BuildContext context) {
+    print('执行技术实现--$count');
     return Container(
       height: 24,
       child: ToggleButtons(

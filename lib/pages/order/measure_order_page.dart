@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/singleton/target_client.dart';
@@ -19,10 +20,28 @@ class MeasureOrderPage extends StatefulWidget {
   _MeasureOrderPageState createState() => _MeasureOrderPageState();
 }
 
-class _MeasureOrderPageState extends State<MeasureOrderPage> {
+class _MeasureOrderPageState extends State<MeasureOrderPage> with RouteAware {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    Application.routeObserver.subscribe(this, ModalRoute.of(context));
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    Application.routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    setState(() {});
+    super.didPopNext();
   }
 
   @override
@@ -46,7 +65,12 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
                 child: Column(
                   children: <Widget>[
                     BuyerInfoBar(),
-                    VSpacing(20),
+                    Divider(
+                      height: 1,
+                      indent: UIKit.width(20),
+                      endIndent: UIKit.width(20),
+                    ),
+
                     // BuyerInfoBar(),
                     SellerInfoBar(),
                     VSpacing(20),

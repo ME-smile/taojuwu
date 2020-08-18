@@ -36,6 +36,10 @@ class TargetClient {
   }
 
   setClientName(String name) {
+    int len = name?.length ?? 0;
+    if (len > 5) {
+      name = name.substring(0, 5) + '...';
+    }
     _instance.clientName = name;
   }
 

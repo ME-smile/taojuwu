@@ -47,7 +47,8 @@ class GoodsAttrCard extends StatelessWidget {
               ).then((wrapper) {
                 if (wrapper != null) {
                   cartModel?.attrs = wrapper?.goodsAttrList;
-                  cartModel?.price = wrapper?.totalPrice;
+                  cartModel?.estimatedPrice =
+                      '${wrapper?.totalPrice ?? '0.00'}';
                 }
                 // cartModel?.totalPrice = t
               });

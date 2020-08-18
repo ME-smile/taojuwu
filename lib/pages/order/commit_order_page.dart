@@ -87,7 +87,11 @@ class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       BuyerInfoBar(),
-                      VSpacing(20),
+                      Divider(
+                        height: 1,
+                        indent: UIKit.width(20),
+                        endIndent: UIKit.width(20),
+                      ),
                       SellerInfoBar(),
                       VSpacing(20),
                       Flexible(
@@ -114,59 +118,63 @@ class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
                         ),
                         visible: hasCustomizedProduct,
                       ),
-                      Consumer(builder:
-                          (BuildContext context, OrderProvider provider, _) {
-                        provider?.orderGoods = goodsList;
-                        return Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: UIKit.width(20),
-                              vertical: UIKit.height(20)),
-                          alignment: Alignment.centerRight,
-                          color: themeData.primaryColor,
-                          width: double.infinity,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: UIKit.height(10)),
-                                child: Text(
-                                  '小计: ￥${provider?.totalPrice?.toStringAsFixed(2)}',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  Icon(Icons.warning, size: 16),
-                                  Text(
-                                    '预估价格',
-                                    style: textTheme.caption,
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                          // child: Text.rich(TextSpan(text: '小计:', children: [
-                          //   TextSpan(
-                          //       text:
-                          //           '￥${provider?.totalPrice?.toStringAsFixed(2)}\n'),
-                          //   WidgetSpan(
-                          //     child: Icon(
-                          //       Icons.warning,
-                          //       size: UIKit.sp(24),
-                          //     ),
-                          //   ),
-                          //   TextSpan(text: '预估价格')
-                          // ])),
-                        );
-                      }),
+                      // Visibility(
+                      //   child: Consumer(builder:
+                      //       (BuildContext context, OrderProvider provider, _) {
+                      //     provider?.orderGoods = goodsList;
+                      //     return Container(
+                      //       padding: EdgeInsets.symmetric(
+                      //           horizontal: UIKit.width(20),
+                      //           vertical: UIKit.height(20)),
+                      //       alignment: Alignment.centerRight,
+                      //       color: themeData.primaryColor,
+                      //       width: double.infinity,
+                      //       child: Column(
+                      //         crossAxisAlignment: CrossAxisAlignment.end,
+                      //         mainAxisAlignment: MainAxisAlignment.end,
+                      //         children: <Widget>[
+                      //           Container(
+                      //             padding: EdgeInsets.symmetric(
+                      //                 vertical: UIKit.height(10)),
+                      //             child: Text(
+                      //               '小计: ￥${provider?.totalPrice?.toStringAsFixed(2)}',
+                      //               style: TextStyle(
+                      //                   fontSize: 14,
+                      //                   fontWeight: FontWeight.w500),
+                      //             ),
+                      //           ),
+                      //           Row(
+                      //             mainAxisAlignment: MainAxisAlignment.end,
+                      //             children: <Widget>[
+                      //               Icon(Icons.warning, size: 16),
+                      //               Text(
+                      //                 '预估价格',
+                      //                 style: textTheme.caption,
+                      //               ),
+                      //             ],
+                      //           )
+                      //         ],
+                      //       ),
+                      //       // child: Text.rich(TextSpan(text: '小计:', children: [
+                      //       //   TextSpan(
+                      //       //       text:
+                      //       //           '￥${provider?.totalPrice?.toStringAsFixed(2)}\n'),
+                      //       //   WidgetSpan(
+                      //       //     child: Icon(
+                      //       //       Icons.warning,
+                      //       //       size: UIKit.sp(24),
+                      //       //     ),
+                      //       //   ),
+                      //       //   TextSpan(text: '预估价格')
+                      //       // ])),
+                      //     );
+                      //   }),
+                      //   visible: hasCustomizedProduct,
+                      // ),
                       Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: UIKit.width(10)),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: UIKit.width(20),
+                            vertical: UIKit.height(20)),
                         child: Text(
                           Constants.SERVER_PROMISE,
                           style: textTheme.caption,
@@ -188,14 +196,20 @@ class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
                       children: <Widget>[
                         Text.rich(TextSpan(
                             text: '共${provider?.totalCount}件\n',
-                            style: textTheme.caption,
+                            style: textTheme.caption.copyWith(
+                                fontSize: 12, fontWeight: FontWeight.w400),
                             children: [
                               TextSpan(
                                   text:
                                       '${provider?.totalPrice?.toStringAsFixed(2)}',
-                                  style: textTheme.bodyText2),
+                                  style: TextStyle(
+                                      color: Color(0xFFFF6161),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500)),
                               TextSpan(
-                                  text: ' (具体金额以门店)', style: textTheme.caption)
+                                  text: ' (具体金额以门店)',
+                                  style:
+                                      textTheme.caption.copyWith(fontSize: 10))
                             ])),
                         ZYRaisedButton(
                           '提交订单',

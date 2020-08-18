@@ -32,7 +32,7 @@ class BuyerInfoBar extends StatelessWidget {
                 child: Text(
                   '收',
                   style: accentTextTheme.headline6
-                      .copyWith(fontSize: UIKit.sp(36)),
+                      .copyWith(fontSize: 20, fontWeight: FontWeight.w500),
                 ),
                 backgroundColor: themeData.accentColor,
               ),
@@ -43,18 +43,58 @@ class BuyerInfoBar extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text('收货人:${targetClient?.clientName ?? ''}'),
-                    Text('联系方式:${targetClient?.tel ?? ''}'),
-                    Text(
-                      '收货地址:${targetClient?.address ?? ''}',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '收货人: ${targetClient?.clientName ?? ''}',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w600),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: UIKit.width(32)),
+                          child: Text(
+                            '${targetClient?.tel ?? ''}',
+                            style: TextStyle(
+                                color: Color(0xFF6D6D6D), fontSize: 13),
+                          ),
+                        ),
+                      ],
                     ),
+                    Container(
+                      padding: EdgeInsets.only(top: 4),
+                      child: Text(
+                        '收货地址:${targetClient?.address ?? ''}',
+                        style:
+                            TextStyle(fontSize: 13, color: Color(0xFF6D6D6D)),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    )
                   ],
                 ),
               )),
-              Icon(ZYIcon.next)
+              Container(
+                child: Icon(ZYIcon.next),
+              ),
+              // Expanded(
+              //     child: Container(
+              //   padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+              //   alignment: Alignment.centerLeft,
+              //   child: Column(
+              //     mainAxisAlignment: MainAxisAlignment.start,
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: <Widget>[
+              //       Text('收货人:${targetClient?.clientName ?? ''}'),
+              //       Text('联系方式:${targetClient?.tel ?? ''}'),
+              //       Text(
+              //         '收货地址:${targetClient?.address ?? ''}',
+
+              //       ),
+              //     ],
+              //   ),
+              // )),
+              // Icon(ZYIcon.next)
             ],
           ),
         ));

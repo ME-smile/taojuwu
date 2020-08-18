@@ -65,6 +65,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
   bool isLoading = true;
   OrderDetailModel model;
+
   bool isShowDialog(String title) {
     return !['售后维权'].contains(title);
   }
@@ -419,7 +420,24 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     //     ),
     //   );
     // }
-
+    if (model?.hasCustomizedProduct == false) {
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '总价',
+              style: TextStyle(fontSize: 14),
+            ),
+            Text(
+              '¥${model?.orderEstimatedPrice}',
+              style: TextStyle(fontSize: 18, color: Color(0xFFFF6161)),
+            )
+          ],
+        ),
+      );
+    }
     if (model?.hasFinished == true || model?.isWaitingToInstall == true) {
       return Container(
         child: Column(
@@ -624,38 +642,39 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               ),
               Divider(),
               buildOrderFootNote(context, provider, model),
-              Offstage(
-                offstage: model?.isMeasureOrder == true &&
-                    model?.hasMeasured == false,
-                child: InkWell(
-                  child: Container(
-                    padding: EdgeInsets.only(top: UIKit.height(10)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Text(
-                          '${model?.goodsNumDescText},',
-                          style: TextStyle(
-                              color: Color(0xFF999999), fontSize: UIKit.sp(24)),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 2),
-                          child: Text(
-                            '查看商品清单',
-                            style: TextStyle(fontSize: 12),
+              InkWell(
+                child: Visibility(
+                    visible: model?.hasCustomizedProduct == true &&
+                        model?.isMeasureOrder == true &&
+                        model?.hasMeasured == false,
+                    child: Container(
+                      padding: EdgeInsets.only(top: UIKit.height(10)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            '${model?.goodsNumDescText},',
+                            style: TextStyle(
+                                color: Color(0xFF999999),
+                                fontSize: UIKit.sp(24)),
                           ),
-                        ),
-                        Icon(
-                          ZYIcon.next,
-                          size: UIKit.sp(24),
-                        )
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    RouteHandler.goOrderMainfestPage(context, model?.orderId);
-                  },
-                ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 2),
+                            child: Text(
+                              '查看商品清单',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                          Icon(
+                            ZYIcon.next,
+                            size: UIKit.sp(24),
+                          )
+                        ],
+                      ),
+                    )),
+                onTap: () {
+                  RouteHandler.goOrderMainfestPage(context, model?.orderId);
+                },
               )
             ],
           ),
@@ -824,12 +843,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           thickness: .5,
                           height: .5,
                         ),
-                        Container(
-                          color: themeData.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: UIKit.width(20),
-                              vertical: UIKit.height(20)),
-                          child: buildinstallInfoTip(model),
+                        Visibility(
+                          visible: model?.hasCustomizedProduct,
+                          child: Container(
+                            color: themeData.primaryColor,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: UIKit.width(20),
+                                vertical: UIKit.height(20)),
+                            child: buildinstallInfoTip(model),
+                          ),
                         ),
                         VSpacing(20),
                         _orderGoodsDetail(context, model),

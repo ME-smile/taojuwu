@@ -95,7 +95,7 @@ class Xhr {
           data: formdata,
           options: options,
           cancelToken: cancelToken);
-      print(response);
+
       // Navigator.of(context).pop(1)
     } on DioError catch (e) {
       CommonKit.showError();

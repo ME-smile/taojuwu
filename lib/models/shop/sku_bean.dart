@@ -59,7 +59,10 @@ class SkuBean extends CountModel {
     this.attrValueItems = json['attr_value_items'];
     this.attrValueItemsFormat = json['attr_value_items_format'];
     this.marketPrice = json['market_price'];
-    this.price = json['price'];
+    String str = json['price'];
+    str = str == null || str?.isEmpty == true ? '0.00' : str;
+    this.price = str;
+
     this.promotePrice = json['promote_price'];
     this.costPrice = json['cost_price'];
     this.fxPrice = json['fx_price'];

@@ -48,7 +48,7 @@ class _HasDeliveredGoodsPacketCardState
   int get displayTrackLogCount => len < 3 ? len : 3;
   int get packetCount => model?.orderGoodsNum;
   List<ExpressOrderModel> get hiddenList =>
-      expressOrderModels.length > 3 ? expressOrderModels?.sublist(3) : [];
+      len > 3 ? expressOrderModels?.sublist(3) : [];
   bool hasOpen = false;
 
   @override

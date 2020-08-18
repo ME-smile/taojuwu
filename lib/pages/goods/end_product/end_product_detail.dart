@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -19,11 +20,12 @@ import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/step_counter.dart';
 import 'package:taojuwu/widgets/user_choose_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_action_chip.dart';
-import 'package:taojuwu/widgets/zy_future_builder.dart';
+
 import 'package:taojuwu/widgets/zy_netImage.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
 
@@ -62,6 +64,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
           if (mounted)
             TargetOrderGoods.instance.endProductProvider?.cartCount =
                 cartCountResp?.data;
+          print(TargetOrderGoods.instance.endProductProvider?.cartCount);
         })
         .catchError((err) => err)
         .whenComplete(() {
@@ -78,234 +81,282 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
   }
 
   @override
+  void initState() {
+    fetchData();
+    super.initState();
+  }
+
+  void fetchData() {
+    OTPService.endProductDetailData(context, params: {
+      'goods_id': id,
+      'client_uid': TargetClient.instance.clientId
+    })
+        .then((data) {
+          ProductBeanRes response = data[0];
+          CartCountResp cartCountResp = data[1];
+
+          ProductBeanDataWrapper wrapper = response?.data;
+          bean = wrapper?.goodsDetail;
+          goodsProvider = EndProductProvider(bean);
+          TargetOrderGoods.instance.setEndProductProvider(goodsProvider);
+          TargetOrderGoods.instance.endProductProvider.cartCount =
+              cartCountResp?.data;
+        })
+        .catchError((err) => err)
+        .whenComplete(() {
+          if (mounted) {
+            setState(() {
+              isLoading = false;
+            });
+          }
+        });
+  }
+
+  bool isLoading = true;
+  EndProductProvider goodsProvider;
+  ProductBean bean;
+  @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return ZYFutureBuilder(
-        futureFunc: OTPService.productDetail,
-        params: {
-          'goods_id': id,
-        },
-        builder: (BuildContext context, ProductBeanRes response) {
-          ProductBeanDataWrapper wrapper = response?.data;
-          ProductBean bean = wrapper?.goodsDetail;
-
-          return ChangeNotifierProvider<EndProductProvider>(
-            create: (BuildContext context) {
-              EndProductProvider goodsProvider = EndProductProvider(bean);
-              TargetOrderGoods.instance.setEndProductProvider(goodsProvider);
-              return goodsProvider;
-            },
-            child: Consumer<EndProductProvider>(builder:
-                (BuildContext context, EndProductProvider provider, _) {
-              return WillPopScope(
-                onWillPop: () {
-                  return Future.value(true);
-                },
-                child: Scaffold(
-                  body: NestedScrollView(
-                    headerSliverBuilder:
-                        (BuildContext context, bool innerBoxIsScrolled) {
-                      return <Widget>[
-                        SliverAppBar(
-                          actions: <Widget>[
-                            UserChooseButton(
-                              id: widget.id,
-                            )
-                          ],
-                          expandedHeight: 400,
-                          floating: false,
-                          pinned: true,
-                          flexibleSpace: FlexibleSpaceBar(
-                            background: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: UIKit.width(50),
-                                    vertical: UIKit.height(20)),
-                                margin: EdgeInsets.only(top: 80),
-                                child: Swiper(
-                                  itemCount: bean?.goodsImgList?.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    ProductBeanGoodsImageBean item =
-                                        bean?.goodsImgList[index];
-                                    return ZYNetImage(imgPath: item?.picCover);
-                                  },
-                                  pagination: new SwiperPagination(
-                                      margin:
-                                          EdgeInsets.symmetric(horizontal: 5),
-                                      builder: DotSwiperPaginationBuilder(
-                                          activeColor: Colors.black,
-                                          color: Colors.black.withOpacity(.3))),
-                                )),
-                          ),
-                        )
-                      ];
-                    },
-                    body: CustomScrollView(slivers: <Widget>[
-                      SliverToBoxAdapter(
-                        child: Container(
-                          color: themeData.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: UIKit.width(20),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              VSpacing(20),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text.rich(TextSpan(
-                                      text: '${bean?.goodsName} ' ?? '',
-                                      style: TextStyle(
-                                          fontSize: UIKit.sp(28),
-                                          fontWeight: FontWeight.w400),
-                                      children: [
-                                        TextSpan(
-                                            text: bean?.goodsName ?? '',
-                                            style: textTheme.caption)
-                                      ])),
-                                  Container(
-                                    child: Row(
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: UIKit.width(20)),
-                                          child: LikeButton(
-                                            hasLiked: false,
-                                            goodsId: id,
-                                            clientId:
-                                                TargetClient.instance.clientId,
-                                          ),
-                                        ),
-                                        CartButton(
-                                          count: provider?.cartCount,
-                                          callback: () {
-                                            if (TargetClient.instance
-                                                    .hasSelectedClient ==
-                                                false) {
-                                              return CommonKit.showInfo(
-                                                  '请选择客户');
-                                            }
-                                            RouteHandler.goCartPage(context,
-                                                clientId: TargetClient
-                                                    .instance.clientId);
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              VSpacing(20),
-                              Text.rich(TextSpan(
-                                  text: '¥${bean?.price ?? 0.00}',
-                                  style: TextStyle(
-                                      fontSize: UIKit.sp(32),
-                                      fontWeight: FontWeight.w500),
-                                  children: [
-                                    TextSpan(
-                                        text: provider?.unit,
-                                        style: textTheme.caption),
-                                    TextSpan(text: ' '),
-                                    TextSpan(
-                                        text: bean?.isPromotionGoods == true
-                                            ? '¥${bean?.marketPrice}'
-                                            : '',
-                                        style: textTheme.caption.copyWith(
-                                            decoration:
-                                                TextDecoration.lineThrough)),
-                                    WidgetSpan(
-                                        child: Offstage(
-                                      offstage: bean?.isPromotionGoods == false,
-                                      child: OnSaleTag(),
-                                    ))
-                                  ])),
-                              VSpacing(10),
-                              Divider(),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: UIKit.height(20)),
-                                child: Row(
+    return PageTransitionSwitcher(
+      duration: Duration(milliseconds: 500),
+      transitionBuilder: (
+        Widget child,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
+        return FadeThroughTransition(
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          child: child,
+        );
+      },
+      child: isLoading
+          ? LoadingCircle()
+          : ChangeNotifierProvider<EndProductProvider>(
+              create: (BuildContext context) {
+                return goodsProvider;
+              },
+              child: Consumer<EndProductProvider>(builder:
+                  (BuildContext context, EndProductProvider provider, _) {
+                return WillPopScope(
+                  onWillPop: () {
+                    return Future.value(true);
+                  },
+                  child: Scaffold(
+                    body: NestedScrollView(
+                      headerSliverBuilder:
+                          (BuildContext context, bool innerBoxIsScrolled) {
+                        return <Widget>[
+                          SliverAppBar(
+                            actions: <Widget>[
+                              UserChooseButton(
+                                id: widget.id,
+                              )
+                            ],
+                            expandedHeight: 400,
+                            floating: false,
+                            pinned: true,
+                            flexibleSpace: FlexibleSpaceBar(
+                              background: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: UIKit.width(50),
+                                      vertical: UIKit.height(20)),
+                                  margin: EdgeInsets.only(top: 80),
+                                  child: Swiper(
+                                    itemCount: bean?.goodsImgList?.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      ProductBeanGoodsImageBean item =
+                                          bean?.goodsImgList[index];
+                                      return ZYNetImage(
+                                          imgPath: item?.picCover);
+                                    },
+                                    pagination: new SwiperPagination(
+                                        margin:
+                                            EdgeInsets.symmetric(horizontal: 5),
+                                        builder: DotSwiperPaginationBuilder(
+                                            activeColor: Colors.black,
+                                            color:
+                                                Colors.black.withOpacity(.3))),
+                                  )),
+                            ),
+                          )
+                        ];
+                      },
+                      body: CustomScrollView(slivers: <Widget>[
+                        SliverToBoxAdapter(
+                          child: Container(
+                            color: themeData.primaryColor,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: UIKit.width(20),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                VSpacing(20),
+                                Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Expanded(
-                                      child: Text.rich(
-                                        TextSpan(
-                                            text: '已选',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 15),
-                                            children: [
-                                              WidgetSpan(
-                                                  child: SizedBox(
-                                                width: 10,
-                                              )),
-                                              TextSpan(
-                                                  text:
-                                                      provider?.checkedAttrText,
-                                                  style: textTheme.caption
-                                                      .copyWith(fontSize: 14))
-                                            ]),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        selectAttrOption(provider, () {
-                                          Navigator.of(context).pop();
-                                        });
-                                      },
-                                      child: Icon(
-                                        ZYIcon.three_dot,
-                                        color: Colors.black,
-                                        size: 28,
+                                    Text.rich(TextSpan(
+                                        text: '${bean?.goodsName} ' ?? '',
+                                        style: TextStyle(
+                                            fontSize: UIKit.sp(28),
+                                            fontWeight: FontWeight.w400),
+                                        children: [
+                                          TextSpan(
+                                              text: bean?.goodsName ?? '',
+                                              style: textTheme.caption)
+                                        ])),
+                                    Container(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: UIKit.width(20)),
+                                            child: LikeButton(
+                                              hasLiked: false,
+                                              goodsId: id,
+                                              clientId: TargetClient
+                                                  .instance.clientId,
+                                            ),
+                                          ),
+                                          CartButton(
+                                            count: provider?.cartCount,
+                                            callback: () {
+                                              if (TargetClient.instance
+                                                      .hasSelectedClient ==
+                                                  false) {
+                                                return CommonKit.showInfo(
+                                                    '请选择客户');
+                                              }
+                                              RouteHandler.goCartPage(context,
+                                                  clientId: TargetClient
+                                                      .instance.clientId);
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     )
                                   ],
                                 ),
-                              ),
-                            ],
+                                VSpacing(20),
+                                Text.rich(TextSpan(
+                                    text: '¥${bean?.price ?? 0.00}',
+                                    style: TextStyle(
+                                        fontSize: UIKit.sp(32),
+                                        fontWeight: FontWeight.w500),
+                                    children: [
+                                      TextSpan(
+                                          text: provider?.unit,
+                                          style: textTheme.caption),
+                                      TextSpan(text: ' '),
+                                      TextSpan(
+                                          text: bean?.isPromotionGoods == true
+                                              ? '¥${bean?.marketPrice}'
+                                              : '',
+                                          style: textTheme.caption.copyWith(
+                                              decoration:
+                                                  TextDecoration.lineThrough)),
+                                      WidgetSpan(
+                                          child: Offstage(
+                                        offstage:
+                                            bean?.isPromotionGoods == false,
+                                        child: OnSaleTag(),
+                                      ))
+                                    ])),
+                                VSpacing(10),
+                                Divider(),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: UIKit.height(20)),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Text.rich(
+                                          TextSpan(
+                                              text: '已选',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 15),
+                                              children: [
+                                                WidgetSpan(
+                                                    child: SizedBox(
+                                                  width: 10,
+                                                )),
+                                                TextSpan(
+                                                    text: provider
+                                                        ?.checkedAttrText,
+                                                    style: textTheme.caption
+                                                        .copyWith(fontSize: 14))
+                                              ]),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          selectAttrOption(provider, () {
+                                            Navigator.of(context).pop();
+                                          });
+                                        },
+                                        child: Icon(
+                                          ZYIcon.three_dot,
+                                          color: Colors.black,
+                                          size: 28,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      SliverToBoxAdapter(
-                        child: VSpacing(20),
-                      ),
-                      SliverToBoxAdapter(
-                        child: bean?.description?.isNotEmpty == true
-                            ? Html(
-                                data: bean?.description,
-                                backgroundColor: themeData.primaryColor,
-                              )
-                            : Container(),
-                      )
-                    ]),
+                        SliverToBoxAdapter(
+                          child: VSpacing(20),
+                        ),
+                        SliverToBoxAdapter(
+                          child: bean?.description?.isNotEmpty == true
+                              ? Html(
+                                  data: bean?.description,
+                                  backgroundColor: themeData.primaryColor,
+                                )
+                              : Container(),
+                        )
+                      ]),
+                    ),
+                    bottomNavigationBar: PurchaseActionBar(
+                      totalPrice: '${provider?.totalPrice ?? '0.00'}',
+                      canAddToCart: provider?.canAddToCart,
+                      addToCartFunc: () {
+                        selectAttrOption(provider, () {
+                          provider?.addCart(context);
+                        });
+                      },
+                      purchaseFunc: () {
+                        selectAttrOption(provider, () {
+                          provider?.createOrder(context);
+                        });
+                      },
+                    ),
                   ),
-                  bottomNavigationBar: PurchaseActionBar(
-                    totalPrice: '${provider?.totalPrice ?? '0.00'}',
-                    canAddToCart: provider?.canAddToCart,
-                    addToCartFunc: () {
-                      selectAttrOption(provider, () {
-                        provider?.addCart(context);
-                      });
-                    },
-                    purchaseFunc: () {
-                      provider?.createOrder(context);
-                    },
-                  ),
-                ),
-              );
-            }),
-          );
-        });
+                );
+              }),
+            ),
+    );
   }
 
-  void selectAttrOption(EndProductProvider provider, Function callback) async {
-    await showCupertinoModalPopup(
+  Future selectAttrOption(
+      EndProductProvider provider, Function callback) async {
+    if (TargetClient.instance.hasSelectedClient == false) {
+      return CommonKit.showInfo('请选择客户');
+    }
+    return showCupertinoModalPopup(
         context: context,
         builder: (BuildContext context) {
           double height = MediaQuery.of(context).size.height;

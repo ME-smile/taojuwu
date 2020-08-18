@@ -130,7 +130,7 @@ class OrderAttrCard extends StatelessWidget {
                       context, goods, provider);
                 },
               )
-            : Container()
+            : Container(),
       ],
     ));
   }

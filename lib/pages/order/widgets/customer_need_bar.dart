@@ -278,7 +278,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
               Offstage(
                 offstage: widget.isHideMeasureWindowNum,
                 child: OptBar(
-                  title: '需测量窗数:'.padLeft(17),
+                  title: '需测量窗数:',
                   text: '${provider?.windowNum ?? '请选择'}',
                   callback: () async {
                     await showCupertinoModalPopup<void>(
@@ -316,14 +316,14 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                 ),
               ),
               OptBar(
-                title: '定金:'.padLeft(26),
+                title: '定金:',
                 text: '${provider?.deposit ?? '请输入'}',
                 callback: () {
                   deposit(provider);
                 },
               ),
               OptBar(
-                title: '订单备注:'.padLeft(20),
+                title: '订单备注:',
                 text: '${provider?.orderMark ?? '选填'}',
                 callback: () {
                   note(provider);
@@ -355,12 +355,18 @@ class OptBar extends StatelessWidget {
             horizontal: UIKit.width(20), vertical: UIKit.height(10)),
         child: Row(
           children: <Widget>[
-            Text(title),
             Expanded(
+                flex: 2,
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  child: Text(title),
+                )),
+            Expanded(
+                flex: 3,
                 child: Text(
-              text,
-              style: textTheme.caption,
-            )),
+                  text,
+                  style: textTheme.caption,
+                )),
             Icon(
               ZYIcon.next,
               size: 18,

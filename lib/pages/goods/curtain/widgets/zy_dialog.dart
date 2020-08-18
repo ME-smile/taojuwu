@@ -40,9 +40,10 @@ class ZYDialog {
         });
   }
 
-  static Future checkEndProductAttr(BuildContext ctx, CartModel cartModel,
+  static Future<CartModel> checkEndProductAttr(
+      BuildContext ctx, CartModel cartModel,
       {Function callback}) {
-    return showCupertinoModalPopup(
+    return showCupertinoModalPopup<CartModel>(
         context: ctx,
         builder: (BuildContext context) {
           double height = MediaQuery.of(context).size.height;
@@ -245,10 +246,8 @@ class ZYDialog {
                               ],
                             ),
                             bottomNavigationBar: ZYSubmitButton('确定', () {
-                              provider
-                                  ?.modifyEndProductAttr(context,
-                                      cartModel: cartModel, callback: callback)
-                                  ?.whenComplete(() {});
+                              provider?.modifyEndProductAttr(context,
+                                  cartModel: cartModel, callback: callback);
                             }),
                           ),
                         ),

@@ -110,10 +110,13 @@ class CartModel extends CountModel {
   double get totalPrice {
     price = price == null ? 0.0 : price;
 
-    return price * count;
+    return isEndProduct
+        ? price * count
+        : double.parse(estimatedPrice ?? '0.00');
   }
 
   CartModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     cartId = json['cart_id'];
 
     clientId = json['client_id'];
@@ -224,9 +227,11 @@ class CartModel extends CountModel {
       'attr': jsonEncode(attr),
       'count': count,
       'measure_id': measureId,
-      'total_price': estimatedPrice is double
-          ? estimatedPrice
-          : double.parse(estimatedPrice ?? '0.0'),
+      'total_price': isCustomizedProduct
+          ? estimatedPrice is double
+              ? estimatedPrice
+              : double.parse(estimatedPrice ?? '0.0')
+          : totalPrice,
       'is_shade': isShade,
       'cart_id': cartId,
       'goods_type': goodsType,

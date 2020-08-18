@@ -137,6 +137,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                     controller: tabController,
                     children: provider?.categoryList
                         ?.map((e) => CartTabBarView(
+                              key: ValueKey(e),
                               clientId: clientId,
                               categoryId: e?.id,
                             ))

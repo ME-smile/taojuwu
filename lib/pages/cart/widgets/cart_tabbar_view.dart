@@ -2,6 +2,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 import 'package:taojuwu/pages/goods/curtain/widgets/zy_dialog.dart';
@@ -57,7 +58,6 @@ class _CartTabBarViewState extends State<CartTabBarView> {
               index: index,
               tapCallback: () {
                 ZYDialog.checkEndProductAttr(context, cartModel, callback: () {
-                  Navigator.of(context).pop();
                   setState(() {});
                 });
               },
@@ -91,10 +91,18 @@ class _CartTabBarViewState extends State<CartTabBarView> {
     });
   }
 
+  RefreshController _refreshController;
   @override
   void initState() {
     super.initState();
     fetchData();
+    _refreshController = RefreshController();
+  }
+
+  @override
+  void dispose() {
+    _refreshController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -120,26 +128,31 @@ class _CartTabBarViewState extends State<CartTabBarView> {
                   : Container(
                       alignment: Alignment.topCenter,
                       child: AnimationLimiter(
-                        child: ListView.builder(
-                          // key: key,
-                          shrinkWrap: true,
-                          itemBuilder: (
-                            BuildContext context,
-                            int j,
-                          ) {
-                            return AnimationConfiguration.staggeredList(
-                                position: j,
-                                duration: const Duration(milliseconds: 375),
-                                child: SlideAnimation(
-                                    verticalOffset: 50.0,
-                                    child: FadeInAnimation(
-                                      child: buildCartCard(cartModels[j], j),
-                                    )));
-                            // return buildCollectCard(context, beanList[i], i);
-                          },
-                          itemCount: cartModels?.isEmpty == true
-                              ? 0
-                              : cartModels?.length,
+                        child: SmartRefresher(
+                          controller: _refreshController,
+                          enablePullDown: false,
+                          enablePullUp: false,
+                          child: ListView.builder(
+                            // key: key,
+                            shrinkWrap: true,
+                            itemBuilder: (
+                              BuildContext context,
+                              int j,
+                            ) {
+                              return AnimationConfiguration.staggeredList(
+                                  position: j,
+                                  duration: const Duration(milliseconds: 375),
+                                  child: SlideAnimation(
+                                      verticalOffset: 50.0,
+                                      child: FadeInAnimation(
+                                        child: buildCartCard(cartModels[j], j),
+                                      )));
+                              // return buildCollectCard(context, beanList[i], i);
+                            },
+                            itemCount: cartModels?.isEmpty == true
+                                ? 0
+                                : cartModels?.length,
+                          ),
                         ),
                       ),
                     ),
@@ -374,21 +387,36 @@ class _ProductCardState extends State<ProductCard> {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
 
-    return Consumer<CartProvider>(
-        builder: (BuildContext context, CartProvider provider, _) {
-      return GestureDetector(onLongPress: () {
-        longPressCallback();
+    return GestureDetector(
+        // onLongPress: () {
+        //   longPressCallback();
 
-        setState(() {
-          cartModel?.isChecked = true;
-        });
-      }, onTap: () {
-        ZYDialog.checkEndProductAttr(context, cartModel, callback: () {
-          Navigator.of(context).pop();
-          setState(() {});
-        });
-      }, child: Builder(builder: (BuildContext ctx) {
-        return Container(
+        //   setState(() {
+        //     cartModel?.isChecked = true;
+        //   });
+        // },
+        onTap: () {
+          ZYDialog.checkEndProductAttr(context, cartModel, callback: () {
+            setState(() {
+              print(cartModel?.count);
+            });
+            context?.read<CartProvider>()?.refresh();
+          }).then((CartModel model) {
+            // if (model == null) return;
+            // setState(() {
+            //   cartModel?.price = model?.price;
+            //   cartModel?.pictureInfo?.picCoverSmall =
+            //       model?.pictureInfo?.picCoverSmall;
+
+            //   cartModel?.skuId = model?.skuId;
+            //   cartModel?.goodsAttrStr = model?.goodsAttrStr;
+            //   cartModel?.count = model?.count;
+            //   print(cartModel?.count);
+            //   print('----哈哈哈哈----');
+            // });
+          });
+        },
+        child: Container(
           color: themeData.primaryColor,
           margin: EdgeInsets.only(top: UIKit.height(20)),
           padding: EdgeInsets.symmetric(
@@ -451,12 +479,13 @@ class _ProductCardState extends State<ProductCard> {
                             child: Container(
                           alignment: Alignment.bottomRight,
                           child: StepCounter(
+                            key: ValueKey(cartModel?.count),
                             count: cartModel?.count ?? 0,
                             model: cartModel,
                             callback: () {
                               EndProductProvider.editCount(context,
                                   cartModel: cartModel, callback: () {
-                                provider?.refresh();
+                                context?.read<CartProvider>()?.refresh();
                               });
                             },
                           ),
@@ -468,8 +497,6 @@ class _ProductCardState extends State<ProductCard> {
               ),
             ],
           ),
-        );
-      }));
-    });
+        ));
   }
 }

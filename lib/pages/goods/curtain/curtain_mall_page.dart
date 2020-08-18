@@ -586,7 +586,11 @@ class _CurtainMallPageState extends State<CurtainMallPage>
             actions: <Widget>[ScanButton()],
             title: GestureDetector(
               onTap: () {
-                RouteHandler.goSearchPage(context, 1);
+                if (isFromSearch) {
+                  Navigator.of(context).pop();
+                } else {
+                  RouteHandler.goSearchPage(context, 1);
+                }
               },
               child: Container(
                 height: 30,

@@ -50,9 +50,16 @@ class EndProductProvider with ChangeNotifier {
     return skuList?.firstWhere((element) => element?.skuId == skuId);
   }
 
-  int get count => curSkubean?.count;
-  double get price => double.parse(curSkubean?.price);
-  double get totalPrice => price * count;
+  int get count => curSkubean?.count ?? 1;
+  double get price =>
+      curSkubean == null ? 0.0 : double.parse(curSkubean?.price ?? '0.0');
+  double get totalPrice {
+    if (price == null) return 0.0;
+    print('总价');
+    print(price * count);
+    return price * count;
+  }
+
   set skuId(int id) {
     _goods?.skuId = id;
     notifyListeners();
@@ -148,7 +155,7 @@ class EndProductProvider with ChangeNotifier {
               'img': curSkubean?.coverUrl ?? '',
               'goods_name': goods?.goodsName,
               'price': goods?.price,
-              'desc': checkedAttrText,
+              'desc': '$checkedAttrText\nx数量${curSkubean?.count ?? 1}',
               'sku_id': goods?.skuId,
               'goods_id': goods?.goodsId ?? '',
               'total_price': totalPrice ?? 0.0,
@@ -190,26 +197,28 @@ class EndProductProvider with ChangeNotifier {
       CartModel cartModel,
       Function callback}) async {
     params = params ?? {};
+    curSkubean?.count = cartModel?.count;
     params?.addAll({'cart_id': cartModel?.cartId, 'sku_id': cartModel?.skuId});
     params?.addAll(productAttrArg);
-
     OTPService.modifyCartAttr(context, params)
         .then((ZYResponse response) {
-          print(params);
           if (response?.valid == true) {
-            CartModel tmp = CartModel.fromJson(response?.data);
-            cartModel?.price = tmp?.price;
+            CartModel model = CartModel.fromJson(response?.data);
+            cartModel?.price = model?.price;
             cartModel?.pictureInfo?.picCoverSmall =
-                tmp?.pictureInfo?.picCoverSmall;
+                model?.pictureInfo?.picCoverSmall;
 
-            cartModel?.skuId = tmp?.skuId;
-            print('哈哈哈哈哈哈哈哈哈-----------++++++++++++++');
-            print(tmp?.goodsAttrStr);
-            cartModel?.goodsAttrStr = tmp?.goodsAttrStr;
-            print('修改成功');
-            print('修改后的成品数量');
-            print(cartModel?.count);
-            // cartModel?.count =
+            cartModel?.skuId = model?.skuId;
+            cartModel?.goodsAttrStr = model?.goodsAttrStr;
+            cartModel?.count = model?.count;
+            print('毁掉函数----${callback != null}');
+            if (callback != null) {
+              int i = callback();
+              print('毁掉函数执行了');
+              print(i);
+            }
+
+            Navigator.of(context).pop(model);
             if (callback != null) callback();
           }
         })

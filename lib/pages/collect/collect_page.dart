@@ -4,6 +4,7 @@ import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:taojuwu/constants/constants.dart';
 
 import 'package:taojuwu/models/shop/collect_list_model.dart';
 import 'package:taojuwu/models/shop/product_bean.dart';
@@ -28,9 +29,7 @@ class CollectPage extends StatefulWidget {
   _CollectPageState createState() => _CollectPageState();
 }
 
-class _CollectPageState extends State<CollectPage>
-    with SingleTickerProviderStateMixin {
-  TabController tabController;
+class _CollectPageState extends State<CollectPage> {
   final List<String> tabs = ['窗帘'];
   CollectListWrapper wrapper;
   List<ProductBean> beanList;
@@ -39,6 +38,12 @@ class _CollectPageState extends State<CollectPage>
   @override
   void initState() {
     super.initState();
+    Future.delayed(Constants.TRANSITION_DURATION, () {
+      fetchData();
+    });
+  }
+
+  void fetchData() {
     OTPService.collectList(context, params: {'client_uid': widget.id})
         .then((CollectListResp response) {
       setState(() {
@@ -47,13 +52,11 @@ class _CollectPageState extends State<CollectPage>
         beanList = wrapper?.data;
       });
     }).catchError((err) => err);
-    tabController = TabController(length: 1, vsync: this);
   }
 
   @override
   void dispose() {
     super.dispose();
-    tabController?.dispose();
   }
 
   bool isLoading = true;
@@ -162,12 +165,14 @@ class _CollectPageState extends State<CollectPage>
           RouteHandler.goCurtainDetailPage(context, bean?.goodsId ?? -1);
         },
         child: Container(
+          color: themeData.primaryColor,
           child: Row(
             children: <Widget>[
               ZYNetImage(
                 imgPath: bean?.picCoverMicro,
                 isCache: false,
-                height: UIKit.height(180),
+                height: UIKit.width(200),
+                width: UIKit.width(200),
                 callback: () {
                   RouteHandler.goCurtainDetailPage(
                       context, bean?.goodsId ?? -1);
@@ -204,45 +209,47 @@ class _CollectPageState extends State<CollectPage>
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? LoadingCircle()
-        : Scaffold(
-            appBar: AppBar(
-              title: Text('收藏夹'),
-              centerTitle: true,
-              bottom: PreferredSize(
-                  child: TabBar(
-                      controller: tabController,
-                      labelPadding:
-                          EdgeInsets.only(bottom: 5, left: 5, right: 5),
-                      indicatorSize: TabBarIndicatorSize.label,
-                      tabs: List.generate(tabs.length, (int i) {
-                        return Text('${tabs[i]}($count)');
-                      })),
-                  preferredSize: Size.fromHeight(20)),
-            ),
-            body: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-                child: beanList == null || beanList?.isNotEmpty != true
-                    ? NoData()
-                    : ListView.separated(
-                        itemBuilder: (BuildContext context, int i) {
-                          return AnimationConfiguration.staggeredList(
-                              position: i,
-                              duration: const Duration(milliseconds: 375),
-                              child: SlideAnimation(
-                                  verticalOffset: 50.0,
-                                  child: FadeInAnimation(
-                                    child: buildCollectCard(
-                                        context, beanList[i], i),
-                                  )));
-                          // return buildCollectCard(context, beanList[i], i);
-                        },
-                        separatorBuilder: (BuildContext context, int i) {
-                          return Divider();
-                        },
-                        itemCount: beanList?.length ?? 0)),
-          );
+    ThemeData themeData = Theme.of(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('收藏夹'),
+        centerTitle: true,
+        // bottom: PreferredSize(
+        //     child: TabBar(
+        //         controller: tabController,
+        //         labelPadding:
+        //             EdgeInsets.only(bottom: 5, left: 5, right: 5),
+        //         indicatorSize: TabBarIndicatorSize.label,
+        //         tabs: List.generate(tabs.length, (int i) {
+        //           return Text('${tabs[i]}($count)');
+        //         })),
+        //     preferredSize: Size.fromHeight(20)),
+      ),
+      body: isLoading
+          ? LoadingCircle()
+          : Container(
+              color: themeData.primaryColor,
+              padding: EdgeInsets.symmetric(
+                  horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+              child: beanList == null || beanList?.isNotEmpty != true
+                  ? NoData()
+                  : ListView.separated(
+                      itemBuilder: (BuildContext context, int i) {
+                        return AnimationConfiguration.staggeredList(
+                            position: i,
+                            duration: const Duration(milliseconds: 375),
+                            child: SlideAnimation(
+                                verticalOffset: 50.0,
+                                child: FadeInAnimation(
+                                  child:
+                                      buildCollectCard(context, beanList[i], i),
+                                )));
+                        // return buildCollectCard(context, beanList[i], i);
+                      },
+                      separatorBuilder: (BuildContext context, int i) {
+                        return Divider();
+                      },
+                      itemCount: beanList?.length ?? 0)),
+    );
   }
 }

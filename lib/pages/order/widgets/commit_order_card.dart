@@ -3,6 +3,7 @@ import 'package:taojuwu/models/order/order_cart_goods_model.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/goods_attr_card.dart';
+import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -85,6 +86,14 @@ class EndProductOrderCard extends StatelessWidget {
               ))
             ],
           ),
+          Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+            child: Text(
+              '小计: ¥${goods?.totalPrice}',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+          ),
         ],
       ),
     );
@@ -113,7 +122,8 @@ class CustomizedProductOrderCard extends StatelessWidget {
                 children: [
                   Container(
                     alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+                    padding: EdgeInsets.only(
+                        bottom: UIKit.width(20), left: UIKit.width(20)),
                     child: Text(goods?.tag ?? ''),
                   ),
                   Row(
@@ -123,6 +133,7 @@ class CustomizedProductOrderCard extends StatelessWidget {
                       Image.network(
                         UIKit.getNetworkImgPath(goods?.img),
                         width: UIKit.width(200),
+                        height: UIKit.width(200),
                       ),
                       Expanded(
                           child: Container(
@@ -173,10 +184,37 @@ class CustomizedProductOrderCard extends StatelessWidget {
                     attrs: goods?.attrs,
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
                     alignment: Alignment.centerRight,
-                    child: Text('小计:¥${goods?.totalPrice}'),
-                  )
+                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '小计: ¥${goods?.totalPrice}',
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w500),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 12,
+                              padding: EdgeInsets.only(top: 2, right: 2),
+                              alignment: Alignment.center,
+                              child: ZYAssetImage('exclamatory_mark.png',
+                                  width: 10, height: 10),
+                            ),
+                            Text(
+                              '预估价格',
+                              style: TextStyle(
+                                  fontSize: 12, color: Color(0xFF999999)),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
                 ],
               )),
         ],

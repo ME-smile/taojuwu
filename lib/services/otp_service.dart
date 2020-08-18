@@ -74,8 +74,8 @@ class OTPService {
       {Map<String, dynamic> params}) async {
     List<Future> list = [
       productGoodsList(context, params: params),
-      tagList(context),
-      cartCount(context),
+      tagList(context, params: params),
+      cartCount(context, params: params),
     ];
 
     list.forEach((v) {
@@ -184,6 +184,20 @@ class OTPService {
     Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
 
     return AccessoryAttr.fromJson(response.data);
+  }
+
+  static Future endProductDetailData(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    List<Future> list = [
+      productDetail(context, params: params),
+      cartCount(context, params: params),
+    ];
+
+    list.forEach((v) {
+      v.catchError((err) => err);
+    });
+    List result = await Future.wait(list);
+    return result;
   }
 
   static Future<ProductBeanRes> productDetail(BuildContext context,

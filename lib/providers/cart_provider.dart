@@ -75,6 +75,12 @@ class CartProvider with ChangeNotifier {
   List<Map> get checkedModels {
     final selectedModels =
         models?.where((item) => item.isChecked == true)?.toList()?.reversed;
+    print(selectedModels
+        ?.map((item) => item?.toString())
+        ?.toList()
+        ?.map((item) => Map.castFrom(jsonDecode(item)))
+        ?.toList());
+
     return selectedModels
         ?.map((item) => item?.toString())
         ?.toList()

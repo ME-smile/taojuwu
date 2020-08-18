@@ -209,6 +209,10 @@ class OrderDetailModel {
   bool get hasModifyPrice => adjustMoney?.isNotEmpty == true;
 
   bool get displayDeliveryInfo => orderStatus == 15 || orderStatus == 7;
+
+  // 判断列表内是否有定制品
+  bool get hasCustomizedProduct =>
+      orderGoods?.indexWhere((element) => !element.isEndProduct) != -1 ?? false;
   OrderDetailModel.fromJson(Map<String, dynamic> json) {
     orderId = json['order_id'];
     orderNo = json['order_no'];
@@ -454,7 +458,7 @@ class OrderGoods {
   int shopId;
   int buyerId;
   int pointExchangeType;
-  String goodsType;
+  int goodsType;
   int promotionId;
   int promotionTypeId;
   int orderType;
@@ -502,6 +506,8 @@ class OrderGoods {
   bool get showExpressInfo => orderStatus == 7;
   bool get isWindowRoller => goodsSpecialType == 2;
   String get unit => goodsSpecialType == 2 ? '元/平方米' : '元/米';
+  bool get isEndProduct => goodsSpecialType == 0;
+
   OrderGoods(
       {this.orderGoodsId,
       this.orderId,
@@ -576,7 +582,8 @@ class OrderGoods {
     shopId = json['shop_id'];
     buyerId = json['buyer_id'];
     pointExchangeType = json['point_exchange_type'];
-    goodsType = json['goods_type'];
+    String type = json['goods_type'];
+    goodsType = type == null || type?.isEmpty == true ? -1 : int.parse(type);
     promotionId = json['promotion_id'];
     promotionTypeId = json['promotion_type_id'];
     orderType = json['order_type'];
