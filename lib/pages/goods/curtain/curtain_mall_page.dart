@@ -177,8 +177,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   Widget _buildFilter1() {
     return ZYAssetImage(
       isGridMode ? 'ic_grid_h.png' : 'ic_grid.png',
-      width: 12,
-      height: 12,
+      width: 16,
+      height: 16,
       callback: () {
         scrollToTop();
         if (isGridMode) return;
@@ -193,8 +193,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   Widget _buildFilter2() {
     return ZYAssetImage(
       isGridMode ? 'ic_list.png' : 'ic_list_h.png',
-      width: 12.5,
-      height: 12.5,
+      width: 16,
+      height: 16,
       callback: () {
         scrollToTop();
         if (!isGridMode) return;
@@ -630,19 +630,24 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   children: <Widget>[
                     TabBar(
                         tabs: tabs
-                            ?.map((e) => Text(
-                                  e,
-                                  style: TextStyle(fontWeight: FontWeight.w500),
+                            ?.map((e) => Container(
+                                  height: 24,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    e,
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ))
                             ?.toList(),
                         controller: tabController,
                         indicatorColor: Colors.transparent,
+                        labelPadding: EdgeInsets.all(0),
                         labelColor: const Color(0xFF1B1B1B),
                         unselectedLabelColor: const Color(0xFF6D6D6D),
                         unselectedLabelStyle: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w500),
                         labelStyle: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500)),
+                            fontSize: 18, fontWeight: FontWeight.w500)),
                     GoodsFilterHeader(
                       filter1: _buildFilter1(),
                       filter2: _buildFilter2(),
@@ -651,7 +656,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                     )
                   ],
                 ),
-                preferredSize: Size.fromHeight(50)),
+                preferredSize: Size.fromHeight(60)),
           ),
           body: Scaffold(
             key: _scaffoldKey,

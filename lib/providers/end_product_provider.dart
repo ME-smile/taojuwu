@@ -155,7 +155,7 @@ class EndProductProvider with ChangeNotifier {
               'img': curSkubean?.coverUrl ?? '',
               'goods_name': goods?.goodsName,
               'price': goods?.price,
-              'desc': '$checkedAttrText\nx数量${curSkubean?.count ?? 1}',
+              'desc': '$checkedAttrText\n数量x${curSkubean?.count ?? 1}',
               'sku_id': goods?.skuId,
               'goods_id': goods?.goodsId ?? '',
               'total_price': totalPrice ?? 0.0,

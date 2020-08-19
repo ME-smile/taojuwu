@@ -18,7 +18,6 @@ class AttrOptionsBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
     return InkWell(
       onTap: () {
         FocusManager.instance.primaryFocus.unfocus();
@@ -31,25 +30,31 @@ class AttrOptionsBar extends StatelessWidget {
           // mainAxisSize,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(
-              title,
-              style: textTheme.caption.copyWith(
-                  color: const Color(0xFF6D6D6D), fontSize: UIKit.sp(24)),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(color: const Color(0xFF333333), fontSize: 14),
+              ),
+              flex: 1,
             ),
-            Row(
-              children: <Widget>[
-                Text(
-                  trailingText,
-                  style: TextStyle(fontSize: UIKit.sp(24)),
-                ),
-                showNext
-                    ? Icon(
-                        ZYIcon.next,
-                        size: 20,
-                      )
-                    : Container()
-              ],
-            ),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    trailingText,
+                    style: TextStyle(fontSize: 14, color: Color(0xFF1B1B1B)),
+                  ),
+                  showNext
+                      ? Icon(
+                          ZYIcon.next,
+                          size: 20,
+                        )
+                      : Container()
+                ],
+              ),
+              flex: 4,
+            )
           ],
         ),
       ),

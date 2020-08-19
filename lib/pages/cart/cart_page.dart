@@ -135,9 +135,10 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
               builder: (BuildContext context, CartProvider provider, _) {
                 return TabBarView(
                     controller: tabController,
+                    physics: NeverScrollableScrollPhysics(),
                     children: provider?.categoryList
                         ?.map((e) => CartTabBarView(
-                              key: ValueKey(e),
+                              key: ObjectKey(e),
                               clientId: clientId,
                               categoryId: e?.id,
                             ))

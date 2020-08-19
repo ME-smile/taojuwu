@@ -645,17 +645,19 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
                                       id: widget.id,
                                     )
                                   ],
-                                  expandedHeight: 400,
+                                  expandedHeight: 320,
                                   floating: false,
                                   pinned: true,
                                   flexibleSpace: FlexibleSpaceBar(
                                     background: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: UIKit.width(50),
-                                            vertical: UIKit.height(20)),
+                                        // padding: EdgeInsets.symmetric(
+                                        //     horizontal: UIKit.width(50),
+                                        //     vertical: UIKit.height(20)),
                                         margin: EdgeInsets.only(top: 80),
                                         child: ZYNetImage(
                                           imgPath: bean?.picCoverMid,
+                                          width: 300,
+                                          height: 240,
                                         )
                                         // decoration: BoxDecoration(
                                         //   image: DecorationImage(

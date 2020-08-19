@@ -48,12 +48,14 @@ class GoodsMainfestAttr {
   String material;
   String price;
   String goodsPrice;
+  String materialName;
 
   GoodsMainfestAttr.fromJson(Map<String, dynamic> json) {
     goodsName = json['goods_name'];
     material = json['material'] == null || json['material'].isEmpty
         ? '0.00'
         : json['material'];
+    materialName = json['material_name'];
     price =
         json['price'] == null || json['price'].isEmpty ? '0.00' : json['price'];
     goodsPrice = json['goods_price'] == null || json['goods_price'].isEmpty

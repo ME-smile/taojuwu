@@ -155,14 +155,14 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                                 id: widget.id,
                               )
                             ],
-                            expandedHeight: 400,
+                            expandedHeight: 360,
                             floating: false,
                             pinned: true,
                             flexibleSpace: FlexibleSpaceBar(
                               background: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: UIKit.width(50),
-                                      vertical: UIKit.height(20)),
+                                  // padding: EdgeInsets.symmetric(
+                                  //     horizontal: UIKit.width(50),
+                                  //     vertical: UIKit.height(20)),
                                   margin: EdgeInsets.only(top: 80),
                                   child: Swiper(
                                     itemCount: bean?.goodsImgList?.length,
@@ -171,6 +171,8 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                                       ProductBeanGoodsImageBean item =
                                           bean?.goodsImgList[index];
                                       return ZYNetImage(
+                                          width: 300,
+                                          height: 300,
                                           imgPath: item?.picCover);
                                     },
                                     pagination: new SwiperPagination(

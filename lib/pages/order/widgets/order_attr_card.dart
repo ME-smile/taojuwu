@@ -131,6 +131,17 @@ class OrderAttrCard extends StatelessWidget {
                 },
               )
             : Container(),
+        Visibility(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: UIKit.width(20)),
+            child: Divider(
+              height: 1,
+              indent: UIKit.width(20),
+              endIndent: UIKit.width(20),
+            ),
+          ),
+          visible: model?.orderGoods?.last != goods ?? false,
+        )
       ],
     ));
   }

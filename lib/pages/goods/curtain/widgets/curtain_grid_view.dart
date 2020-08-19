@@ -34,6 +34,8 @@ class GridCard extends StatelessWidget {
             // },
           ),
           Expanded(
+              child: Container(
+            color: themeData.primaryColor,
             child: Row(
               children: <Widget>[
                 Text(bean?.goodsName ?? '',
@@ -47,29 +49,32 @@ class GridCard extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          )),
           Expanded(
-              child: Text.rich(TextSpan(
-                  text: '￥${bean?.displayPrice ?? "0.00"}',
-                  style: TextStyle(fontSize: UIKit.sp(32)),
-                  children: [
-                TextSpan(
-                  text: '起',
-                  style: themeData.textTheme.caption
-                      .copyWith(fontSize: UIKit.sp(22)),
-                ),
-                TextSpan(
-                  text: ' ',
-                ),
-                TextSpan(
-                    text: bean?.isPromotionGoods == true
-                        ? '￥${bean?.marketPrice}起'
-                        : '',
+              child: Container(
+            color: themeData.primaryColor,
+            child: Text.rich(TextSpan(
+                text: '￥${bean?.displayPrice ?? "0.00"}',
+                style: TextStyle(fontSize: UIKit.sp(32)),
+                children: [
+                  TextSpan(
+                    text: '起',
                     style: themeData.textTheme.caption
-                        .copyWith(decoration: TextDecoration.lineThrough)),
-                // TextSpan(text: '\n'),
-                // TextSpan(text: '11324'),
-              ]))),
+                        .copyWith(fontSize: UIKit.sp(22)),
+                  ),
+                  TextSpan(
+                    text: ' ',
+                  ),
+                  TextSpan(
+                      text: bean?.isPromotionGoods == true
+                          ? '￥${bean?.marketPrice}起'
+                          : '',
+                      style: themeData.textTheme.caption
+                          .copyWith(decoration: TextDecoration.lineThrough)),
+                  // TextSpan(text: '\n'),
+                  // TextSpan(text: '11324'),
+                ])),
+          )),
         ],
       ),
     );

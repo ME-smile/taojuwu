@@ -74,6 +74,7 @@ class _CartTabBarViewState extends State<CartTabBarView> {
   List<CartModel> get cartModels => cartProvider?.models ?? [];
   CartListWrapper wrapper;
   void fetchData() {
+    print({'client_uid': clientId, 'category_id': categoryId});
     OTPService.cartList(context,
             params: {'client_uid': clientId, 'category_id': categoryId})
         .then((CartListResp response) {
@@ -95,8 +96,14 @@ class _CartTabBarViewState extends State<CartTabBarView> {
   @override
   void initState() {
     super.initState();
-    fetchData();
+
     _refreshController = RefreshController();
+  }
+
+  @override
+  void didChangeDependencies() {
+    fetchData();
+    super.didChangeDependencies();
   }
 
   @override

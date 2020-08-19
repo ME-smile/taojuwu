@@ -645,7 +645,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               InkWell(
                 child: Visibility(
                     visible: model?.hasCustomizedProduct == true &&
-                        model?.isMeasureOrder == true &&
+                        // model?.isMeasureOrder == true &&
                         model?.hasMeasured == false,
                     child: Container(
                       padding: EdgeInsets.only(top: UIKit.height(10)),

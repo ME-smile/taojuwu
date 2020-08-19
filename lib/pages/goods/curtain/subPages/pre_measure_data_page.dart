@@ -65,9 +65,6 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   }
 
   Widget buildInstallOptionPicker() {
-    ThemeData themeData = Theme.of(context);
-    TextTheme textTheme = themeData.textTheme;
-
     return Consumer<GoodsProvider>(
       builder: (BuildContext context, GoodsProvider provider, _) {
         return Container(
@@ -77,7 +74,8 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                   margin: EdgeInsets.only(right: UIKit.width(45)),
                   child: Text(
                     '安装选项',
-                    style: textTheme.caption,
+                    style:
+                        TextStyle(color: const Color(0xFF333333), fontSize: 14),
                   )),
               Expanded(
                   child: Row(
@@ -111,9 +109,6 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
   }
 
   Widget buildOpenOptionPicker() {
-    ThemeData themeData = Theme.of(context);
-    TextTheme textTheme = themeData.textTheme;
-
     return Consumer<GoodsProvider>(
       builder: (BuildContext context, GoodsProvider provider, _) {
         return Container(
@@ -123,7 +118,8 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                   margin: EdgeInsets.only(right: UIKit.width(45)),
                   child: Text(
                     '打开方式',
-                    style: textTheme.caption,
+                    style:
+                        TextStyle(color: const Color(0xFF333333), fontSize: 14),
                   )),
               Expanded(
                   child: Row(
@@ -247,8 +243,6 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData themeData = Theme.of(context);
-    TextTheme textTheme = themeData.textTheme;
     return ChangeNotifierProvider<GoodsProvider>.value(
       value: TargetOrderGoods.instance.goodsProvider,
       child: Consumer<GoodsProvider>(
@@ -323,12 +317,16 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                 vertical: UIKit.height(20)),
                             child: Row(
                               children: <Widget>[
-                                Padding(
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  width: 80,
                                   padding:
                                       EdgeInsets.only(right: UIKit.width(25)),
                                   child: Text(
-                                    '宽    (cm):',
-                                    style: textTheme.caption,
+                                    '宽(cm):',
+                                    style: TextStyle(
+                                        color: const Color(0xFF333333),
+                                        fontSize: 14),
                                   ),
                                 ),
                                 Container(
@@ -359,12 +357,16 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                 vertical: UIKit.height(20)),
                             child: Row(
                               children: <Widget>[
-                                Padding(
+                                Container(
+                                  alignment: Alignment.centerRight,
+                                  width: 80,
                                   padding:
                                       EdgeInsets.only(right: UIKit.width(25)),
                                   child: Text(
-                                    '高    (cm):',
-                                    style: textTheme.caption,
+                                    '高(cm):',
+                                    style: TextStyle(
+                                        color: const Color(0xFF333333),
+                                        fontSize: 14),
                                   ),
                                 ),
                                 Container(
@@ -398,11 +400,15 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                             EdgeInsets.symmetric(vertical: UIKit.height(20)),
                         child: Row(
                           children: <Widget>[
-                            Padding(
+                            Container(
+                              alignment: Alignment.centerRight,
+                              width: 80,
                               padding: EdgeInsets.only(right: UIKit.width(25)),
                               child: Text(
                                 '离地距离:',
-                                style: textTheme.caption,
+                                style: TextStyle(
+                                    color: const Color(0xFF333333),
+                                    fontSize: 14),
                               ),
                             ),
                             Container(

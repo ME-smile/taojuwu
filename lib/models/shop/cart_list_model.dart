@@ -94,7 +94,7 @@ class CartModel extends CountModel {
   int pointExchangeType;
   int pointExchange;
   String earnestMoney;
-  int promotionPrice;
+  num promotionPrice;
   String categoryId;
   String tag = '';
   Map attr;
