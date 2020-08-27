@@ -11,7 +11,7 @@ import 'package:taojuwu/models/zy_response.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
@@ -31,7 +31,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
   TextEditingController nameInput;
   TextEditingController telInput;
   TextEditingController houseNumInput;
-  TargetClient targetClient = TargetClient.instance;
+  TargetClient targetClient = TargetClient();
   CustomerDetailModel bean;
   String provinceName;
   String cityName;
@@ -119,7 +119,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
   }
 
   void initData(CustomerDetailModel model) {
-    TargetClient targetClient = TargetClient.instance;
+    TargetClient targetClient = TargetClient();
     gender = targetClient.gender ?? model?.clientSex ?? 1;
     model?.provinceName =
         targetClient.provinceName ?? model?.provinceName ?? '';
@@ -213,26 +213,26 @@ class _EditAddressPageState extends State<EditAddressPage> {
 
   bool beforeCommit() {
     if (bean?.clientName == null || bean?.clientName?.trim()?.isEmpty == true) {
-      CommonKit.showInfo('请填写联系人');
+      ToastKit.showInfo('请填写联系人');
       return false;
     }
     if (bean?.clientSex == 0) {
-      CommonKit.showInfo('请填写性别');
+      ToastKit.showInfo('请填写性别');
       return false;
     }
     if (bean?.clientMobile == null ||
         bean?.clientMobile?.trim()?.isEmpty == true ||
         RegexUtil.isMobileSimple(bean?.clientMobile) == false) {
-      CommonKit.showInfo('请输入正确的手机号');
+      ToastKit.showInfo('请输入正确的手机号');
       return false;
     }
     if (bean?.address == null || bean?.address?.trim()?.isEmpty == true) {
-      CommonKit.showInfo('请填写正确的收货地址');
+      ToastKit.showInfo('请填写正确的收货地址');
       return false;
     }
     if (bean?.detailAddress == null ||
         bean?.detailAddress?.trim()?.isEmpty == true) {
-      CommonKit.showInfo('请记得填写门牌号哦');
+      ToastKit.showInfo('请记得填写门牌号哦');
       return false;
     }
     return true;
@@ -388,7 +388,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                           saveInfoToTargetClient(id);
                           Navigator.of(context).pop();
                         } else {
-                          CommonKit.showToast('${response?.message ?? ''}');
+                          ToastKit.showToast('${response?.message ?? ''}');
                         }
                       }).catchError((err) => err);
                     })

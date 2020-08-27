@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 
@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
         'subtitle': '一起买，价格更优惠',
         'icon': 'combo@2x.png',
         'callback': () {
-          CommonKit.showInfo('暂未开放');
+          ToastKit.showInfo('暂未开放');
         },
         'color': const Color(0xFFC9BCA9),
       },
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
         'subtitle': '销售统计，清晰明了',
         'icon': 'data@2x.png',
         'callback': () {
-          CommonKit.showInfo('暂未开放');
+          ToastKit.showInfo('暂未开放');
           // RouteHandler.goDataCenterPage(context);
         },
         'color': const Color(0xff0D0B14)

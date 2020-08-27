@@ -2,7 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 // import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/base/count_model.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 class StepCounter extends StatefulWidget {
@@ -27,7 +27,7 @@ class _StepCounterState extends State<StepCounter> {
   bool hasInit = false;
   set count(int count) {
     if (count <= 0) {
-      CommonKit.showInfo('数量不能小于1哦');
+      ToastKit.showInfo('数量不能小于1哦');
       _count = 1;
     } else {
       _count = count;
@@ -64,7 +64,6 @@ class _StepCounterState extends State<StepCounter> {
 
   @override
   Widget build(BuildContext context) {
-    print('执行技术实现--$count');
     return Container(
       height: 24,
       child: ToggleButtons(

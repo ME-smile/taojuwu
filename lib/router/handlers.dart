@@ -47,7 +47,7 @@ import 'package:taojuwu/pages/search/search_page.dart';
 import 'package:taojuwu/pages/splash/splash_page.dart';
 
 import 'package:taojuwu/singleton/target_route.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/router_kit.dart';
 import 'routes.dart';
 
 class RouteHandler {
@@ -146,15 +146,15 @@ class RouteHandler {
   static Handler orderDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int id = int.parse(params['id']?.first);
+    String orderStatus = params['order_status']?.first ?? '';
     // int tab = int.parse(params['tab']?.first);
-    return OrderDetailPage(
-      id: id,
-    );
+    return OrderDetailPage(id: id, orderStatus: orderStatus);
   });
 
   static Future goOrderDetailPage(BuildContext context, int id,
-      {bool isReplaceMode: false}) {
-    return _jumpTo(context, '${Routes.orderDetail}?id=$id',
+      {bool isReplaceMode: false, String orderStatus}) {
+    return _jumpTo(
+        context, '${Routes.orderDetail}?id=$id&orderStatus=$orderStatus',
         replace: isReplaceMode, maintainState: true);
   }
 

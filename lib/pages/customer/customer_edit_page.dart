@@ -5,7 +5,7 @@ import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/pages/customer/widgets/feature_info_segment.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/widgets/zy_future_builder.dart';
 
 import 'widgets/base_info_segment.dart';
@@ -63,13 +63,13 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
               onPressed: () {
                 String name = params['client_name'] ?? '';
                 if (name == null || name.trim().isEmpty) {
-                  return CommonKit.showInfo('用户名不能为空哦');
+                  return ToastKit.showInfo('用户名不能为空哦');
                 }
                 if (name.length > 12 || name.length < 2) {
-                  return CommonKit.showInfo('用户名在2-12个字符之间哟');
+                  return ToastKit.showInfo('用户名在2-12个字符之间哟');
                 }
                 if (!RegexUtil.isMobileSimple(params['client_mobile'].trim())) {
-                  return CommonKit.showInfo('请输入正确的手机号');
+                  return ToastKit.showInfo('请输入正确的手机号');
                 }
 
                 OTPService.addUser(params).then((ZYResponse response) {

@@ -1,3 +1,5 @@
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -10,7 +12,7 @@ import 'package:taojuwu/pages/login/login_page.dart';
 
 import 'package:taojuwu/providers/theme_provider.dart';
 import 'package:taojuwu/providers/user_provider.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'application.dart';
 
@@ -40,7 +42,20 @@ class App extends StatelessWidget {
           failedText: '加载失败',
           canLoadingText: '上拉加载更多',
           idleText: '上拉加载更多',
+          // noMoreIcon: SizedBox(
+          //   width: 30,
+          //   height: 30,
+          //   child: FlareActor(
+          //     'sad_emoji.flr',
+          //     animation: 'no_more_data',
+          //   ),
+          // ),
           height: 50,
+          loadingIcon: SizedBox(
+            width: 25,
+            height: 25,
+            child: CupertinoActivityIndicator(),
+          ),
         ), // Configure default bottom indicator
         headerTriggerDistance: 80.0, // header trigger refresh trigger distance
         springDescription: SpringDescription(
@@ -68,7 +83,7 @@ class App extends StatelessWidget {
             navigatorObservers: [Application.routeObserver],
             home: userProvider?.isLogin == true ? HomePage() : LoginPage(),
             builder: (BuildContext context, Widget child) {
-              CommonKit.initEasyLoading();
+              ToastKit.initEasyLoading();
               return Material(
                 child: FlutterEasyLoading(
                   child: child,

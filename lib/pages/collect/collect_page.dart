@@ -143,7 +143,7 @@ class _CollectPageState extends State<CollectPage> {
       },
       child: OpenContainer(
         closedBuilder: (BuildContext context, VoidCallback _) {
-          TargetClient.instance.saveInfo(widget.id, widget?.name);
+          TargetClient().saveInfo(widget.id, widget?.name);
           return CurtainDetailPage(bean?.goodsId);
         },
         openBuilder: (BuildContext context, VoidCallback _) {

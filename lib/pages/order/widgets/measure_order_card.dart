@@ -9,7 +9,9 @@ import 'package:taojuwu/widgets/zy_netImage.dart';
 class MeasureOrderCard extends StatelessWidget {
   final OrderModelData orderModelData;
   final bool canClick;
-  const MeasureOrderCard({Key key, this.orderModelData, this.canClick: false})
+  final String orderStatus;
+  const MeasureOrderCard(
+      {Key key, this.orderModelData, this.canClick: false, this.orderStatus})
       : super(key: key);
 
   String get orderEarnestMoneyStr {
@@ -43,7 +45,10 @@ class MeasureOrderCard extends StatelessWidget {
                 onTap: canClick
                     ? () {
                         RouteHandler.goOrderDetailPage(
-                            context, orderModelData?.orderId);
+                          context,
+                          orderModelData?.orderId,
+                          orderStatus: orderStatus,
+                        );
                       }
                     : null,
                 child: Container(

@@ -20,7 +20,7 @@ import 'package:taojuwu/providers/order_detail_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -397,7 +397,7 @@ class OrderKit {
                             Provider.of(ctx, listen: false);
                         double deltaPrice = 0.0;
                         if (deltaMoney?.trim()?.isEmpty == true) {
-                          return CommonKit.showInfo('请输入正确的金额');
+                          return ToastKit.showInfo('请输入正确的金额');
                         }
                         deltaPrice = double.parse(deltaMoney) ?? 0;
                         if (provider?.isMinus == true) {
@@ -451,9 +451,9 @@ class OrderKit {
         .then((ZYResponse response) {
       if (response.valid) {
         Navigator.of(context).pop();
-        CommonKit.showSuccess();
+        ToastKit.showSuccess();
       } else {
-        CommonKit.showInfo(response?.message ?? '');
+        ToastKit.showInfo(response?.message ?? '');
       }
     }).catchError((err) => err);
   }
@@ -565,8 +565,8 @@ class OrderKit {
   }
 
   static void selectProduct(OrderDetailProvider provider, BuildContext ctx) {
-    if (provider?.unselectedGoodsNum == 1) {
-      return CommonKit.showInfo('您当前尚未选品，请先选品后提交');
+    if (provider.selectedGoodsNum == 0) {
+      return ToastKit.showInfo('您当前尚未选品，请先选品后提交');
     }
     if (provider?.hasUnselectedGoods == true) {
       if (Platform.isAndroid) {
@@ -752,6 +752,9 @@ class OrderKit {
     OrderGoods goods,
     OrderDetailProvider provider,
   ) {
+    if (goods.isEndProduct == true) {
+      if (goods.orderStatus > 6) return Container();
+    }
     return Container(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,

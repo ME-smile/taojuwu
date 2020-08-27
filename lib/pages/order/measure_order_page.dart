@@ -115,7 +115,7 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> with RouteAware {
             ),
           ),
           onWillPop: () {
-            TargetClient.instance.clear();
+            TargetClient().clear();
             Navigator.of(context).pop();
             return Future.value(false);
           }),

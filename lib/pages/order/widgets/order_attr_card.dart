@@ -17,8 +17,12 @@ class OrderAttrCard extends StatelessWidget {
   const OrderAttrCard({Key key, this.goods, this.model}) : super(key: key);
 
   bool get canCancelGoods => goods?.refundStatus == 0;
-  bool get showCancelButton =>
-      [1, 2, 3, 4, 14].contains(model?.orderStatus) ?? false;
+  bool get showCancelButton {
+    if (goods?.isEndProduct == false) {
+      return [1, 2, 3, 4, 14].contains(model?.orderStatus);
+    }
+    return goods?.orderStatus == 6;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +73,7 @@ class OrderAttrCard extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     padding: EdgeInsets.symmetric(vertical: UIKit.height(5)),
                     child: Text(
-                      '¥ ${goods?.price ?? 0.00}${goods?.unit}',
+                      '¥ ${goods?.price ?? 0.00}${goods?.isEndProduct == true ? '' : goods?.unit}',
                       style: TextStyle(fontSize: 14),
                     ),
                   ),

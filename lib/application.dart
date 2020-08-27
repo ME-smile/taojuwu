@@ -11,7 +11,7 @@ import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'models/app_info/app_info_model.dart';
 import 'services/base/cache.dart';
@@ -96,7 +96,7 @@ class Application {
     //删除缓存目录
     await delDir(tempDir);
     await loadCache();
-    CommonKit.showSuccessDIYInfo('清除缓存成功');
+    ToastKit.showSuccessDIYInfo('清除缓存成功');
   }
 
   ///递归方式删除目录

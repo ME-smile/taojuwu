@@ -110,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
     Navigator.of(context).pop();
     UserProvider user = Provider.of<UserProvider>(context, listen: false);
     user.logOut();
-    TargetClient.instance.clear();
+    TargetClient().clear();
     RouteHandler.goLoginPage(context, clearStack: true);
   }
 

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:taojuwu/application.dart';
+import 'package:taojuwu/constants/constants.dart';
 
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
@@ -25,6 +26,7 @@ import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/singleton/target_route.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/animated_dropdown_drawer.dart';
 import 'package:taojuwu/widgets/loading.dart';
 
 import 'package:taojuwu/widgets/no_data.dart';
@@ -34,6 +36,8 @@ import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_action_chip.dart';
 
 import 'package:taojuwu/widgets/zy_assetImage.dart';
+import 'package:taojuwu/widgets/zy_dropdown_route.dart';
+
 import 'widgets/curtain_list_view.dart';
 import 'widgets/goods_filter_header.dart';
 import 'widgets/curtain_grid_view.dart';
@@ -52,7 +56,7 @@ class CurtainMallPage extends StatefulWidget {
 
 class _CurtainMallPageState extends State<CurtainMallPage>
     with TickerProviderStateMixin, RouteAware {
-  List get tabs => ['窗帘', '床品', '抱枕', '沙发', '其他'];
+  List get tabs => ['窗帘', '床品', '抱枕', '沙发', '饰品'];
   List<List<GoodsItemBean>> goodsListWrapper = List(5);
   List<BuildContext> contextList = List(5);
   BuildContext get curTabContext => contextList[tabIndex];
@@ -98,7 +102,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   @override
   void didPopNext() {
     OTPService.cartCount(context, params: {
-      'client_uid': TargetClient.instance.clientId,
+      'client_uid': TargetClient().clientId,
     })
         .then((CartCountResp cartCountResp) {
           cartCount = cartCountResp?.data;
@@ -110,14 +114,44 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   }
 
   bool showSortPanel = false;
-
-  void sort() {
-    closeEndDrawer();
+  bool hasNotPush = true;
+  void sort(BuildContext ctx) {
     setState(() {
       showSortPanel = !showSortPanel;
     });
-    if (showSortPanel) {
-    } else {}
+    closeEndDrawer();
+    RenderBox renderBox = ctx.findRenderObject();
+    Rect box = renderBox.localToGlobal(Offset.zero) & renderBox.size;
+
+    if (hasNotPush) {
+      hasNotPush = false;
+      Navigator.of(context)
+          .push(PopDownRoute(buildSortMenu(),
+              offsetY: box.bottom + 10,
+              drawerKey: drawerKey, closedCallback: () {
+        setState(() {
+          showSortPanel = false;
+        });
+      }))
+          .whenComplete(() {
+        hasNotPush = true;
+      });
+    } else {
+      print(showSortPanel);
+      print('-----¥关闭弹窗');
+      hasNotPush = true;
+      Navigator.of(context).pop();
+    }
+    //
+    // Navigator.of(context).push(ZYDropdownRoute(
+    //     position: box, drawerKey: drawerKey, child: buildSortMenu()));
+
+    // closeEndDrawer();
+    // setState(() {
+    //   showSortPanel = !showSortPanel;
+    // });
+    // if (showSortPanel) {
+    // } else {}
 
     // setState(() {
     //   showSortPanel = !showSortPanel;
@@ -215,39 +249,112 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   }
 
   Widget _buildFilter3() {
-    return InkWell(
-      onTap: sort,
-      child: Row(
-        children: <Widget>[
-          Text(
-            currentSortType['text'],
-            style: TextStyle(fontSize: 13),
+    return Builder(
+      builder: (BuildContext ctx) {
+        return InkWell(
+          onTap: () {
+            sort(ctx);
+          },
+          child: Row(
+            children: <Widget>[
+              Text(
+                currentSortType['text'],
+                style: TextStyle(fontSize: 13),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 1, left: 5),
+                child: ZYAssetImage(
+                  showSortPanel == false ? 'dropdown@2x.png' : 'dropup@2x.png',
+                  width: 12,
+                  height: 12,
+                  callback: () {
+                    sort(ctx);
+                  },
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 1, left: 5),
-            child: ZYAssetImage(
-              showSortPanel == false ? 'dropdown@2x.png' : 'dropup@2x.png',
-              width: 12,
-              height: 12,
-              callback: sort,
-            ),
-          ),
-        ],
-      ),
+        );
+      },
+    );
+  }
+
+  GlobalKey<AniamatedDropdownDrawerState> drawerKey =
+      GlobalKey<AniamatedDropdownDrawerState>();
+  Widget buildSortMenu() {
+    Size size = MediaQuery.of(context).size;
+    return Material(
+      child:
+          StatefulBuilder(builder: (BuildContext context, Function setState) {
+        return GestureDetector(
+            onTap: () {
+              // setState(() {
+              //   showSortPanel = false;
+              // });
+            },
+            child: Container(
+                height: 140,
+                color: Colors.white,
+                child: Column(
+                    children: sortTypes
+                        ?.map((bean) => Builder(builder: (BuildContext ctx) {
+                              return GestureDetector(
+                                onTap: () {
+                                  if (bean['is_checked']) return;
+                                  sortTypes.forEach((element) {
+                                    element['is_checked'] = element == bean;
+                                  });
+
+                                  sortData();
+                                  setState(() {});
+                                  drawerKey.currentState
+                                      .close()
+                                      .then((value) {});
+                                  if (hasNotPush) Navigator.of(context).pop();
+                                },
+                                child: Container(
+                                  width: size.width,
+                                  padding: EdgeInsets.symmetric(vertical: 5),
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Text(bean['text']),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Opacity(
+                                        child: Icon(
+                                          ZYIcon.check,
+                                          color: const Color(0xFF050505),
+                                        ),
+                                        opacity: bean['is_checked'] ? 1.0 : 0,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }))
+                        ?.toList())));
+      }),
     );
   }
 
   void closeSortPanel() {
-    setState(() {
-      // if (showSortPanel) overlayEntry?.remove();
-      showSortPanel = false;
-    });
+    if (hasNotPush) return;
+    if (!hasNotPush) {
+      drawerKey.currentState.close();
+      Navigator.of(context).pop();
+    }
   }
 
   void filter() {
+    closeSortPanel();
+    ScaffoldState state = _scaffoldKey.currentState;
     setState(() {
-      closeSortPanel();
-      ScaffoldState state = _scaffoldKey.currentState;
       if (!state.isEndDrawerOpen) {
         state.openEndDrawer();
         showFloatingButton = false;
@@ -323,116 +430,118 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     List<TagFilter> filters = tagWrapper?.filterList ?? [];
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Container(
-      width: width * 2 / 3,
-      height: double.infinity,
-      color: Colors.white,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Container(
-          height: height,
-          padding: EdgeInsets.only(
-              top: UIKit.height(10),
-              bottom: UIKit.height(10),
-              right: UIKit.width(24),
-              left: UIKit.width(24)),
-          child: AnimationLimiter(
-              child: ListView.separated(
-            shrinkWrap: true,
-            separatorBuilder: (BuildContext context, int i) {
-              return SizedBox(
-                height: 12,
-              );
-            },
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) {
-              TagFilter bean = filters[index];
-              List<TagFilterOption> options = bean?.filterValue;
+    return Drawer(
+      child: Container(
+        width: width * 2 / 3,
+        height: double.infinity,
+        color: Colors.white,
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: Container(
+            height: height,
+            padding: EdgeInsets.only(
+                top: UIKit.height(10),
+                bottom: UIKit.height(10),
+                right: UIKit.width(24),
+                left: UIKit.width(24)),
+            child: AnimationLimiter(
+                child: ListView.separated(
+              shrinkWrap: true,
+              separatorBuilder: (BuildContext context, int i) {
+                return SizedBox(
+                  height: 12,
+                );
+              },
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                TagFilter bean = filters[index];
+                List<TagFilterOption> options = bean?.filterValue;
 
-              return AnimationConfiguration.staggeredList(
-                  position: index,
-                  duration: const Duration(milliseconds: 375),
-                  child: SlideAnimation(
-                      verticalOffset: 50.0,
-                      child: FadeInAnimation(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              padding: EdgeInsets.symmetric(vertical: 10),
-                              child: Text('${bean?.showName ?? ''}'),
-                            ),
-                            Container(
-                              child: GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          childAspectRatio: 2.8,
-                                          crossAxisCount: 3,
-                                          crossAxisSpacing: UIKit.width(24),
-                                          mainAxisSpacing: UIKit.height(24)),
-                                  itemCount: options?.length ?? 0,
-                                  itemBuilder: (BuildContext context, int i) {
-                                    TagFilterOption item = options[i];
-                                    return ZYActionChip(
-                                        bean: ActionBean.fromJson({
-                                          'text': item?.name ?? '',
-                                          'is_checked': item?.isChecked
-                                        }),
-                                        callback: () {
-                                          checkTag(bean, options, item);
-                                        });
-                                  }),
-                            ),
-                          ],
-                        ),
-                      )));
-            },
-            itemCount: filters?.length ?? 0,
-          )),
-        ),
-        bottomNavigationBar: Container(
-          margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-          padding: EdgeInsets.symmetric(vertical: UIKit.height(11)),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                  child: InkWell(
-                onTap: () {
-                  tagWrapper?.reset();
-                  setState(() {});
-                  params?.addAll(tagWrapper?.args);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xFF979797))),
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Text(
-                    '重置',
-                    textAlign: TextAlign.center,
+                return AnimationConfiguration.staggeredList(
+                    position: index,
+                    duration: const Duration(milliseconds: 375),
+                    child: SlideAnimation(
+                        verticalOffset: 50.0,
+                        child: FadeInAnimation(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                padding: EdgeInsets.symmetric(vertical: 10),
+                                child: Text('${bean?.showName ?? ''}'),
+                              ),
+                              Container(
+                                child: GridView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                            childAspectRatio: 2.8,
+                                            crossAxisCount: 3,
+                                            crossAxisSpacing: UIKit.width(24),
+                                            mainAxisSpacing: UIKit.height(24)),
+                                    itemCount: options?.length ?? 0,
+                                    itemBuilder: (BuildContext context, int i) {
+                                      TagFilterOption item = options[i];
+                                      return ZYActionChip(
+                                          bean: ActionBean.fromJson({
+                                            'text': item?.name ?? '',
+                                            'is_checked': item?.isChecked
+                                          }),
+                                          callback: () {
+                                            checkTag(bean, options, item);
+                                          });
+                                    }),
+                              ),
+                            ],
+                          ),
+                        )));
+              },
+              itemCount: filters?.length ?? 0,
+            )),
+          ),
+          bottomNavigationBar: Container(
+            margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+            padding: EdgeInsets.symmetric(vertical: UIKit.height(11)),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                    child: InkWell(
+                  onTap: () {
+                    tagWrapper?.reset();
+                    setState(() {});
+                    params?.addAll(tagWrapper?.args);
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xFF979797))),
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      '重置',
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                ),
-              )),
-              Expanded(
-                  child: InkWell(
-                onTap: filterData,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    border: Border.all(width: 1, color: Colors.black),
+                )),
+                Expanded(
+                    child: InkWell(
+                  onTap: filterData,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      border: Border.all(width: 1, color: Colors.black),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      '确认',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Text(
-                    '确认',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              )),
-            ],
+                )),
+              ],
+            ),
           ),
         ),
       ),
@@ -490,7 +599,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
   void clear() {
     TargetOrderGoods.instance.clear();
-    TargetClient.instance.clear();
+    TargetClient().clear();
     TargetOrderGoods.instance.orderGoodsId = null;
   }
 
@@ -507,11 +616,10 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     scrollToTop();
   }
 
-  bool get showCartButton => TargetClient.instance.hasSelectedClient;
+  bool get showCartButton => TargetClient().hasSelectedClient;
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    Size size = MediaQuery.of(context).size;
     return WillPopScope(
         child: Scaffold(
           floatingActionButton: AnimatedOpacity(
@@ -521,22 +629,22 @@ class _CurtainMallPageState extends State<CurtainMallPage>
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Offstage(
-                  offstage: TargetClient.instance.hasSelectedClient == false,
+                  offstage: TargetClient().hasSelectedClient == false,
                   child: FloatingActionButton(
                     heroTag: 'FloatingButtonCart',
                     onPressed: () {
                       RouteHandler.goCartPage(context,
-                          clientId: TargetClient.instance.clientId);
+                          clientId: TargetClient().clientId);
                     },
                     backgroundColor: themeData.primaryColor,
                     child: Container(
                       width: UIKit.width(60),
                       height: UIKit.width(60),
-                      alignment: Alignment(1.4, -1.6),
+                      alignment: Alignment(1.4, -1.5),
                       child: Visibility(
                         child: Container(
-                          width: 16,
-                          height: 16,
+                          width: 18,
+                          height: 18,
                           alignment: Alignment.center,
                           child: Text(
                             '$cartCount',
@@ -658,113 +766,47 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                 ),
                 preferredSize: Size.fromHeight(60)),
           ),
-          body: Scaffold(
-            key: _scaffoldKey,
-            endDrawer: endDrawer(context),
-            body: Stack(
-              children: [
-                NotificationListener(
-                  onNotification: (ScrollNotification notofication) {
-                    if (notofication.runtimeType == ScrollStartNotification) {
-                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                        setState(() {
-                          showFloatingButton = false;
-                        });
-                      });
-                    }
-                    if (notofication.runtimeType == ScrollEndNotification) {
-                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                        setState(() {
-                          showFloatingButton = true;
-                        });
-                      });
-                    }
-                    return true;
-                  },
-                  child: TabBarView(
-                    children: List.generate(tabs?.length ?? 0, (int i) {
-                      return GoodsTabBarView(
-                        key: ObjectKey(tabs[i]),
-                        sort: sortData,
-                        tab: i,
-                        isGridMode: isGridMode,
-                        params: {
-                          'category_type': i,
-                          'page_size': PAGE_SIZE,
-                          'keyword': keyword,
-                          'page_index': 1,
-                          'type': 1,
-                          'sort': currentSortType['sort'],
-                          'order': currentSortType['order']
-                        },
-                      );
-                    }),
-                    controller: tabController,
-                  ),
-                ),
-                Offstage(
-                  offstage: !showSortPanel,
-                  child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          showSortPanel = false;
-                        });
-                      },
-                      child: Container(
-                          width: size.width,
-                          height: size.height,
-                          color: Colors.black54,
-                          child: Container(
-                              child: Column(
-                                  children: sortTypes
-                                      ?.map((bean) =>
-                                          Builder(builder: (BuildContext ctx) {
-                                            return GestureDetector(
-                                              onTap: () {
-                                                if (bean['is_checked']) return;
-                                                sortTypes.forEach((element) {
-                                                  element['is_checked'] =
-                                                      element == bean;
-                                                });
-
-                                                sortData();
-                                              },
-                                              child: Container(
-                                                width: size.width,
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 5),
-                                                color: Colors.white,
-                                                alignment: Alignment.center,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 20,
-                                                    ),
-                                                    Text(bean['text']),
-                                                    SizedBox(
-                                                      width: 20,
-                                                    ),
-                                                    Opacity(
-                                                      child: Icon(
-                                                        ZYIcon.check,
-                                                        color: const Color(
-                                                            0xFF050505),
-                                                      ),
-                                                      opacity:
-                                                          bean['is_checked']
-                                                              ? 1.0
-                                                              : 0,
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          }))
-                                      ?.toList())))),
-                )
-              ],
+          body: NotificationListener(
+            onNotification: (ScrollNotification notofication) {
+              if (notofication.runtimeType == ScrollStartNotification) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  setState(() {
+                    showFloatingButton = false;
+                  });
+                });
+              }
+              if (notofication.runtimeType == ScrollEndNotification) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  setState(() {
+                    showFloatingButton = true;
+                  });
+                });
+              }
+              return true;
+            },
+            child: Scaffold(
+              key: _scaffoldKey,
+              endDrawer: endDrawer(context),
+              body: TabBarView(
+                children: List.generate(tabs?.length ?? 0, (int i) {
+                  return GoodsTabBarView(
+                    key: ObjectKey(tabs[i]),
+                    sort: sortData,
+                    tab: i,
+                    isGridMode: isGridMode,
+                    params: {
+                      'category_type': i,
+                      'page_size': PAGE_SIZE,
+                      'keyword': keyword,
+                      'page_index': 1,
+                      'type': 1,
+                      'sort': currentSortType['sort'],
+                      'order': currentSortType['order']
+                    },
+                  );
+                }),
+                controller: tabController,
+              ),
             ),
           ),
         ),
@@ -823,8 +865,7 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
           });
           requestGoodsData();
         }
-        print('***************__________________');
-        print(params);
+
         // goodsList?.clear();
       });
     }
@@ -862,7 +903,9 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   void didChangeDependencies() {
     isRefresh = true;
 
-    requestGoodsData();
+    Future.delayed(Constants.TRANSITION_DURATION, () {
+      requestGoodsData();
+    });
     super.didChangeDependencies();
   }
 

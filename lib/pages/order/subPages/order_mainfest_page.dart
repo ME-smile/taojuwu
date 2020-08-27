@@ -162,7 +162,7 @@ class GoodsMainfestCard extends StatelessWidget {
                 style: textTheme.caption.copyWith(fontSize: UIKit.sp(26)),
               ),
               Text(
-                '${attr?.materialName ?? '0.00'}',
+                '${attr?.materialName ?? ''}${attr?.material ?? ''}',
                 style: textTheme.caption.copyWith(fontSize: UIKit.sp(26)),
               ),
             ],

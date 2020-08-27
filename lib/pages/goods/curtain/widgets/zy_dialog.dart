@@ -245,10 +245,13 @@ class ZYDialog {
                                     ))
                               ],
                             ),
-                            bottomNavigationBar: ZYSubmitButton('确定', () {
-                              provider?.modifyEndProductAttr(context,
-                                  cartModel: cartModel, callback: callback);
-                            }),
+                            bottomNavigationBar: Container(
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              child: ZYSubmitButton('确定', () {
+                                provider?.modifyEndProductAttr(context,
+                                    cartModel: cartModel, callback: callback);
+                              }),
+                            ),
                           ),
                         ),
                       );

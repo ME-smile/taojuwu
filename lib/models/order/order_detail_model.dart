@@ -27,6 +27,7 @@ class OrderDetailModelWrppaer {
 
 class OrderDetailModel {
   int orderId;
+
   String orderNo;
   String outTradeNo;
   int orderType;
@@ -37,6 +38,7 @@ class OrderDetailModel {
   String userName;
   int buyerId;
   String buyerIp;
+  int isShowExpress;
   String buyerMessage;
   String buyerInvoice;
   String receiverMobile;
@@ -151,6 +153,7 @@ class OrderDetailModel {
     return false;
   }
 
+  bool get isExpressInfoVisible => isShowExpress == 1 ?? false;
   bool get hasAdjustMeasureTime => measureAdjustment == 1;
   bool get hasAdjustInstallime => installAdjustment == 1;
   int get goodsNum =>
@@ -160,12 +163,18 @@ class OrderDetailModel {
           ?.length ??
       0;
 
-  int get unselectedGoodsNum =>
-      orderGoods
-          ?.where((item) => item?.isSelectedGoods == 0)
-          ?.toList()
-          ?.length ??
-      0;
+  int get unselectedGoodsNum {
+    print(orderGoods
+            ?.where((item) => item?.hasSelectedProduct == false)
+            ?.toList()
+            ?.length ??
+        0);
+    return orderGoods
+            ?.where((item) => item?.hasSelectedProduct == false)
+            ?.toList()
+            ?.length ??
+        0;
+  }
 
   int get selectedGoodsNum => orderGoods.length - unselectedGoodsNum;
 
@@ -208,7 +217,8 @@ class OrderDetailModel {
 
   bool get hasModifyPrice => adjustMoney?.isNotEmpty == true;
 
-  bool get displayDeliveryInfo => orderStatus == 15 || orderStatus == 7;
+  bool get displayDeliveryInfo =>
+      orderStatus == 15 || orderStatus == 7 || orderStatus == 8;
 
   // 判断列表内是否有定制品
   bool get hasCustomizedProduct =>
@@ -254,7 +264,11 @@ class OrderDetailModel {
     coinMoney = json['coin_money'];
     givePoint = json['give_point'];
     giveCoin = json['give_coin'];
-    orderStatus = json['order_status'];
+    var status = json['order_status'] ?? '';
+
+    orderStatus = status is int
+        ? status
+        : status?.isEmpty == true ? -1 : int.parse(status);
     payStatus = json['pay_status'];
     shippingStatus = json['shipping_status'];
     reviewStatus = json['review_status'];
@@ -287,7 +301,7 @@ class OrderDetailModel {
     realityMeasureTime = json['reality_measure_time'];
     installTime = json['install_time'];
     realityInstallTime = json['reality_install_time'];
-    measureManuscriptsPicture = json['measure_manuscripts_picture'];
+    // measureManuscriptsPicture = json['measure_manuscripts_picture'] is String?[];
     orderWindowNum = '${json['order_window_num'] ?? ''}';
     orderEarnestMoney = json['order_earnest_money'];
     tailMoney = json['tail_money'];
@@ -300,6 +314,7 @@ class OrderDetailModel {
     installPicture = json['install_picture'];
     isApartment = json['is_apartment'];
     apartmentName = json['apartment_name'];
+    isShowExpress = json['is_show_express'];
     tag = json['tag'];
     clientName = json['client_name'];
     clientInfo = json['client_info'] != null
@@ -318,6 +333,7 @@ class OrderDetailModel {
     if (json['order_goods'] != null) {
       orderGoods = new List<OrderGoods>();
       json['order_goods'].forEach((v) {
+        print(json['order_goods']);
         v['parent_order_status'] = orderStatus ?? -1;
         orderGoods.add(new OrderGoods.fromJson(v));
       });
@@ -505,6 +521,7 @@ class OrderGoods {
       (orderStatus == parentOrderStatus) ?? false;
   bool get showExpressInfo => orderStatus == 7;
   bool get isWindowRoller => goodsSpecialType == 2;
+
   String get unit => goodsSpecialType == 2 ? '元/平方米' : '元/米';
   bool get isEndProduct => goodsSpecialType == 0;
 

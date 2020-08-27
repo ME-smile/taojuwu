@@ -35,22 +35,24 @@ class CustomerDetailPage extends StatelessWidget {
           builder: (BuildContext context, CustomerDetailModelResp response) {
             CustomerDetailModel bean = response.data;
             return SingleChildScrollView(
-              child: Column(children: <Widget>[
-                CustomerProfileHeader(
-                  name: bean?.clientName,
-                  type: bean?.clientType,
-                  age: bean?.clientAge,
-                  address: bean?.address,
-                  gender: bean?.clientSex,
-                ),
-                KongoBar(
-                  id: bean?.id,
-                  name: bean?.clientName,
-                ),
-                CustomerInfoFrame(
-                  model: bean,
-                )
-              ]),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    CustomerProfileHeader(
+                      name: bean?.clientName,
+                      type: bean?.clientType,
+                      age: bean?.clientAge,
+                      address: bean?.address,
+                      gender: bean?.clientSex,
+                    ),
+                    KongoBar(
+                      id: bean?.id,
+                      name: bean?.clientName,
+                    ),
+                    CustomerInfoFrame(
+                      model: bean,
+                    )
+                  ]),
             );
           }),
     );

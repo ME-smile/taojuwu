@@ -25,9 +25,9 @@ class ZYRaisedButton extends StatelessWidget {
         child: Text(
           text,
           style: isActive
-              ? accentTextTheme.button.copyWith(fontSize: 16)
+              ? accentTextTheme.button.copyWith(fontSize: 13)
               : accentTextTheme.button
-                  .copyWith(fontSize: 16, color: Colors.white70),
+                  .copyWith(fontSize: 13, color: Colors.white70),
           textAlign: TextAlign.center,
         ),
         decoration: BoxDecoration(
@@ -39,8 +39,8 @@ class ZYRaisedButton extends StatelessWidget {
             )),
         margin: EdgeInsets.symmetric(vertical: UIKit.height(20)),
         padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding ?? UIKit.width(36),
-            vertical: verticalPadding ?? UIKit.height(8)),
+            horizontal: horizontalPadding ?? 28,
+            vertical: verticalPadding ?? 5),
       ),
     );
   }

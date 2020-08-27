@@ -35,7 +35,7 @@ import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/services/api_path.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'base/xhr.dart';
 
@@ -231,9 +231,9 @@ class OTPService {
     );
     ZYResponse resp = ZYResponse.fromJsonWithData(response.data);
     if (resp?.valid == true) {
-      CommonKit.showSuccessDIYInfo('登录成功');
+      ToastKit.showSuccessDIYInfo('登录成功');
     } else {
-      CommonKit.showErrorInfo('账号或密码错误');
+      ToastKit.showErrorInfo('账号或密码错误');
     }
     return resp;
   }
@@ -244,7 +244,7 @@ class OTPService {
     MeasureDataModelResp measureDataModelResp = await getMeasureData(context,
         params: {'order_goods_id': TargetOrderGoods.instance?.orderGoodsId});
     String partsType = measureDataModelResp?.data?.measureData?.partsType;
-    int clientId = TargetClient.instance.clientId;
+    int clientId = TargetClient().clientId;
     params.addAll({'client_uid': clientId, 'parts_type': partsType});
     List<Future> list = [
       productDetail(context, params: params),
@@ -353,9 +353,9 @@ class OTPService {
     );
     ZYResponse resp = ZYResponse.fromJsonWithData(response.data);
     if (resp?.valid == true) {
-      CommonKit.showSuccessDIYInfo('加入购物车成功');
+      ToastKit.showSuccessDIYInfo('加入购物车成功');
     } else {
-      CommonKit.showErrorInfo(resp?.message);
+      ToastKit.showErrorInfo(resp?.message);
     }
     return resp;
   }
@@ -395,7 +395,7 @@ class OTPService {
       ApiPath.delCart,
       data: params,
     );
-    return CartCategoryResp.fromJson(response.data);
+    return CartCategoryResp.fromJson(response?.data);
   }
 
   static Future<ZYResponse> editAddress(BuildContext context,
@@ -415,7 +415,7 @@ class OTPService {
     ZYResponse<dynamic> resp =
         ZYResponse<dynamic>.fromJsonWithData(response.data);
     if (resp?.valid == false) {
-      CommonKit.showErrorInfo(resp?.message ?? '');
+      ToastKit.showErrorInfo(resp?.message ?? '');
     }
     return resp;
   }
@@ -426,7 +426,7 @@ class OTPService {
     ZYResponse<dynamic> resp =
         ZYResponse<dynamic>.fromJsonWithData(response?.data);
     if (resp?.valid != true) {
-      CommonKit.showErrorInfo(resp?.message ?? '');
+      ToastKit.showErrorInfo(resp?.message ?? '');
     }
     return resp;
   }
@@ -439,9 +439,9 @@ class OTPService {
     );
     ZYResponse resp = ZYResponse<dynamic>.fromJsonWithData(response.data);
     if (resp?.valid == true) {
-      CommonKit.showSuccessDIYInfo('提醒成功');
+      ToastKit.showSuccessDIYInfo('提醒成功');
     } else {
-      CommonKit.showErrorInfo(resp?.message);
+      ToastKit.showErrorInfo(resp?.message);
     }
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
@@ -465,9 +465,9 @@ class OTPService {
     ZYResponse<dynamic> resp =
         ZYResponse<dynamic>.fromJsonWithData(response.data);
     if (resp?.valid == true) {
-      CommonKit.showSuccessDIYInfo('提交成功');
+      ToastKit.showSuccessDIYInfo('提交成功');
     } else {
-      CommonKit.showErrorInfo(resp?.message);
+      ToastKit.showErrorInfo(resp?.message);
     }
     return resp;
   }

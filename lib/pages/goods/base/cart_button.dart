@@ -19,7 +19,7 @@ class CartButton extends StatelessWidget {
         width: UIKit.width(60),
         height: UIKit.width(60),
         margin: EdgeInsets.only(bottom: 5),
-        alignment: Alignment(1.0, -1.0),
+        alignment: Alignment(0.8, -0.8),
         child: isCartEmpty
             ? SizedBox.shrink()
             : Container(

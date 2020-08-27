@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
 class LikeButton extends StatefulWidget {
@@ -28,14 +28,14 @@ class _LikeButtonState extends State<LikeButton> {
   bool hasLiked = false;
   collect() {
     if (clientId == null) {
-      CommonKit.showInfo('请选择客户');
+      ToastKit.showInfo('请选择客户');
       return;
     }
     Map<String, dynamic> args = {
       'fav_id': id,
       'client_uid': clientId,
     };
-    print(hasLiked);
+
     if (hasLiked == false) {
       OTPService.collect(params: args)
           .then((ZYResponse response) {
@@ -69,7 +69,6 @@ class _LikeButtonState extends State<LikeButton> {
 
   @override
   Widget build(BuildContext context) {
-    print(hasLiked);
     return InkWell(
       onTap: collect,
       child: Container(

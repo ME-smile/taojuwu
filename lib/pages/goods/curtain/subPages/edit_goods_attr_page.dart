@@ -49,15 +49,15 @@ class _EditGoodsAttrPageState extends State<EditGoodsAttrPage> {
             goodsProvider: provider);
       },
       () {
-        ZYDialog.checkAttr(context, '幔头选择', provider?.curCanopyAttrBean,
-            goodsProvider: provider);
-      },
-      () {
         ZYDialog.checkAttr(context, '里布选择', provider?.curWindowShadeAttrBean,
             goodsProvider: provider);
       },
       () {
         ZYDialog.checkAttr(context, '配饰选择', provider?.curAccessoryAttrBeans,
+            goodsProvider: provider);
+      },
+      () {
+        ZYDialog.checkAttr(context, '幔头选择', provider?.curCanopyAttrBean,
             goodsProvider: provider);
       },
     ];
@@ -167,15 +167,19 @@ class _EditGoodsAttrPageState extends State<EditGoodsAttrPage> {
       ),
       bottomNavigationBar: Container(
         color: themeData.primaryColor,
-        padding: EdgeInsets.symmetric(horizontal: 46),
-        child: ZYRaisedButton('确定', () {
-          TargetOrderGoods.instance.cartGoodsProvider.modifyCartAttr(
-            context,
-            params: {
-              'cart_id': cartId,
-            },
-          );
-        }),
+        padding: EdgeInsets.symmetric(horizontal: 46, vertical: 8),
+        child: ZYRaisedButton(
+          '确定',
+          () {
+            TargetOrderGoods.instance.cartGoodsProvider.modifyCartAttr(
+              context,
+              params: {
+                'cart_id': cartId,
+              },
+            );
+          },
+          verticalPadding: 8,
+        ),
       ),
     );
   }

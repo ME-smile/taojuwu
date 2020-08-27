@@ -1,7 +1,9 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
@@ -14,6 +16,7 @@ import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
 
 import 'package:taojuwu/singleton/target_client.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/copy_button.dart';
@@ -25,19 +28,20 @@ import 'package:taojuwu/widgets/zy_outline_button.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final int id;
-  OrderDetailPage({Key key, this.id}) : super(key: key);
+  final String orderStatus;
+  OrderDetailPage({Key key, this.id, this.orderStatus}) : super(key: key);
 
   @override
   _OrderDetailPageState createState() => _OrderDetailPageState();
 }
 
-class _OrderDetailPageState extends State<OrderDetailPage> {
-  int id;
+class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
+  int get id => widget.id;
+  String get orderStatus => widget.orderStatus;
 
   @override
   void initState() {
     super.initState();
-    id = widget.id;
 
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData();
@@ -45,7 +49,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   void fetchData() {
-    OTPService.orderDetail(context, params: {'order_id': id})
+    print('参数为${{'order_id': id, 'order_status': orderStatus}}');
+    OTPService.orderDetail(context,
+            params: {'order_id': id, 'order_status': orderStatus})
         .then((OrderDerailModelResp response) {
       if (mounted) {
         setState(() {
@@ -59,7 +65,20 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   @override
+  void didPopNext() {
+    fetchData();
+    super.didPopNext();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Application.routeObserver.subscribe(this, ModalRoute.of(context));
+  }
+
+  @override
   void dispose() {
+    Application.routeObserver.unsubscribe(this);
     super.dispose();
   }
 
@@ -372,8 +391,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     '¥${provider?.deltaPrice ?? 0.00}${provider?.changePriceRemark != '' ? "(" + provider?.changePriceRemark + ")" : ""}')
               ],
             )
-          : Offstage(
-              offstage: model?.hasModifyPrice == true,
+          : Visibility(
+              visible: model?.hasModifyPrice == true,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -458,8 +477,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             buildDepositPriceNote(context, provider, model),
-            Offstage(
-              offstage: model?.hasModifyPrice == true,
+            Visibility(
+              visible: model?.hasModifyPrice == true,
               child: buildOriginPriceNote(context, provider, model),
             ),
             buildEditPriceNote(context, provider, model),
@@ -599,10 +618,16 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       child: CopyButton(text),
                     ),
                   ),
-                  Text(
-                    '$text',
-                    style: TextStyle(
-                        fontSize: UIKit.sp(28), color: Color(0xFF333333)),
+                  GestureDetector(
+                    onTap: () {
+                      Clipboard.setData(ClipboardData(text: text ?? ''));
+                      ToastKit.showToast('已复制到剪切板');
+                    },
+                    child: Text(
+                      '$text',
+                      style: TextStyle(
+                          fontSize: UIKit.sp(28), color: Color(0xFF333333)),
+                    ),
                   )
                 ],
               ),
@@ -644,9 +669,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               buildOrderFootNote(context, provider, model),
               InkWell(
                 child: Visibility(
-                    visible: model?.hasCustomizedProduct == true &&
-                        // model?.isMeasureOrder == true &&
-                        model?.hasMeasured == false,
+                    visible: model?.hasCustomizedProduct == true,
                     child: Container(
                       padding: EdgeInsets.only(top: UIKit.height(10)),
                       child: Row(
@@ -696,6 +719,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
     TextTheme accentTextTheme = themeData.accentTextTheme;
     TextTheme textTheme = themeData.textTheme;
+
     return isLoading
         ? LoadingCircle()
         : ChangeNotifierProvider<OrderDetailProvider>(
@@ -750,8 +774,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                                         .copyWith(color: Color(0xFFD7D7D7))),
                               ])),
                         ),
-                        Offstage(
-                          offstage: model?.displayDeliveryInfo == false,
+                        Visibility(
+                          visible: model?.isExpressInfoVisible,
                           child: InkWell(
                             onTap: () {
                               RouteHandler.goLogisticsPage(context, id);
@@ -931,7 +955,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                 ),
                 onWillPop: () async {
                   Navigator.of(context).pop();
-                  TargetClient.instance.clear();
+                  TargetClient().clear();
                   return false;
                 }),
           );

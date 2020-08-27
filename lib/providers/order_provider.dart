@@ -12,7 +12,7 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/time_period_picker.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
@@ -47,8 +47,8 @@ class OrderProvider with ChangeNotifier {
   int get orderGoodsId => _curOrderGoods?.orderGoodsId;
   int get orderId => _orderId;
 
-  int get addressId => TargetClient.instance.addressId;
-  String get clientUid => '${TargetClient.instance.clientId}';
+  int get addressId => TargetClient().addressId;
+  String get clientUid => '${TargetClient().clientId}';
   String get shopId =>
       '${Provider.of<UserProvider>(context, listen: false)?.userInfo?.shopId}';
   String get goodsSkuListText =>
@@ -142,24 +142,24 @@ class OrderProvider with ChangeNotifier {
   }
 
   bool beforeCreateOrder(BuildContext context, {Function callback}) {
-    if (TargetClient.instance?.hasSelectedClient == false) {
-      CommonKit.showInfo('请选择客户');
+    if (TargetClient().hasSelectedClient == false) {
+      ToastKit.showInfo('请选择客户');
       return false;
     }
     if (addressId == null) {
-      CommonKit.showInfo('请填写收货人');
+      ToastKit.showInfo('请填写收货人');
       return false;
     }
     if (measureTimeStr == null || measureTimeStr?.trim()?.isEmpty == true) {
-      CommonKit.showInfo('请选择上门量尺意向时间');
+      ToastKit.showInfo('请选择上门量尺意向时间');
       return false;
     }
     if (installTime == null || installTime?.trim()?.isEmpty == true) {
-      CommonKit.showInfo('请选择客户意向安装时间');
+      ToastKit.showInfo('请选择客户意向安装时间');
       return false;
     }
     if (deposit == null || deposit?.trim()?.isEmpty == true) {
-      CommonKit.showInfo('请输入定金');
+      ToastKit.showInfo('请输入定金');
       return false;
     }
     return true;
@@ -251,7 +251,7 @@ class OrderProvider with ChangeNotifier {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid);
         clear();
       } else {
-        CommonKit.showErrorInfo(response?.message ?? '');
+        ToastKit.showErrorInfo(response?.message ?? '');
       }
     }).catchError((err) {
       print('哈哈哈哈哈哈');
@@ -262,7 +262,7 @@ class OrderProvider with ChangeNotifier {
   }
 
   clear() {
-    TargetClient.instance.clear();
+    TargetClient().clear();
     _measureTime = null;
     _installTime = null;
     _orderMark = null;
@@ -283,9 +283,9 @@ class OrderProvider with ChangeNotifier {
     }).then((ZYResponse response) {
       if (response.valid) {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid, orderType: 2);
-        TargetClient.instance.clear();
+        TargetClient().clear();
       } else {
-        CommonKit.showErrorInfo(response?.message ?? '');
+        ToastKit.showErrorInfo(response?.message ?? '');
       }
     }).catchError((err) => err);
   }

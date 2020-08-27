@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:taojuwu/models/logistics/logistics_data_model.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/copy_button.dart';
 import 'package:taojuwu/widgets/photo_gallery.dart';
@@ -90,9 +92,16 @@ class _HasDeliveredGoodsPacketCardState
           VSpacing(10),
           Row(
             children: <Widget>[
-              Text(
-                '快递单号:${model?.expressCode ?? ''}',
-                style: TextStyle(fontSize: UIKit.sp(26)),
+              GestureDetector(
+                onTap: () {
+                  Clipboard.setData(
+                      ClipboardData(text: model?.expressCode ?? ''));
+                  ToastKit.showToast('已复制到剪切板');
+                },
+                child: Text(
+                  '快递单号:${model?.expressCode ?? ''}',
+                  style: TextStyle(fontSize: UIKit.sp(26)),
+                ),
               ),
               CopyButton(model?.expressCode ?? '')
             ],
@@ -113,6 +122,7 @@ class _HasDeliveredGoodsPacketCardState
           ),
           ListView.builder(
             shrinkWrap: true,
+            padding: EdgeInsets.all(0),
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) {
               return ExpressOrderTrackLogItem(

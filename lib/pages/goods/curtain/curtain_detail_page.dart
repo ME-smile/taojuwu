@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/application.dart';
+import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/order/order_detail_model.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
@@ -25,12 +27,13 @@ import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
 
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/loading.dart';
 
 import 'package:taojuwu/widgets/user_choose_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
-import 'package:taojuwu/widgets/zy_future_builder.dart';
+
 import 'package:taojuwu/widgets/zy_netImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
 
@@ -61,13 +64,11 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
   TextEditingController heightInputController;
   TextEditingController dyInputController;
 
-  GlobalKey cartKey = GlobalKey();
-  GlobalKey rootKey = GlobalKey();
   Offset endPoint;
   int id;
   String partType;
 
-  TargetClient targetClient = TargetClient.instance;
+  TargetClient targetClient = TargetClient();
 
   @override
   void dispose() {
@@ -83,7 +84,9 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
   void initState() {
     super.initState();
     id = widget.id;
-
+    Future.delayed(Constants.TRANSITION_DURATION, () {
+      fetchData();
+    });
     widthInputController = TextEditingController();
     heightInputController = TextEditingController();
     dyInputController = TextEditingController();
@@ -91,10 +94,9 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
 
   @override
   void didPopNext() {
-    OTPService.cartCount(context, params: {
-      'client_uid': TargetClient.instance.clientId,
-      'goods_id': id
-    }).then((CartCountResp cartCountResp) {
+    OTPService.cartCount(context,
+            params: {'client_uid': TargetClient().clientId, 'goods_id': id})
+        .then((CartCountResp cartCountResp) {
       TargetOrderGoods.instance.goodsProvider?.cartCount = cartCountResp?.data;
     }).catchError((err) => err);
     setState(() {});
@@ -111,7 +113,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
     cartParams['estimated_price'] = goodsProvider?.totalPrice;
     cartParams['measure_id'] = goodsProvider?.measureId;
     cartParams['wc_attr'] = '${goodsProvider.attrArgs}';
-    cartParams['client_uid'] = TargetClient.instance.clientId;
+    cartParams['client_uid'] = TargetClient().clientId;
   }
 
   Map<String, dynamic> getCartDetail(ProductBean bean) {
@@ -315,7 +317,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
         h?.isNotEmpty != true ||
         double.parse(w ?? '0.00') == 0 ||
         double.parse(h ?? '0.00') == 0) {
-      return CommonKit.showInfo('请输入正确的尺寸');
+      return ToastKit.showInfo('请输入正确的尺寸');
     }
     goodsProvider?.hasSetSize = true;
     goodsProvider?.width = widthInputController?.text;
@@ -580,12 +582,12 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
   }
 
   bool beforePurchase(GoodsProvider goodsProvider) {
-    if (TargetClient.instance.hasSelectedClient == false) {
-      CommonKit.showInfo('请选择客户');
+    if (TargetClient().hasSelectedClient == false) {
+      ToastKit.showInfo('请选择客户');
       return false;
     }
     if (goodsProvider?.hasSetSize != true) {
-      CommonKit.showInfo('请先填写尺寸');
+      ToastKit.showInfo('请先填写尺寸');
       return false;
     }
     return true;
@@ -612,279 +614,304 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
     setCartParams(goodsProvider);
   }
 
+  bool isLoading = true;
+  GoodsProvider goodsProvider;
+  void fetchData() {
+    OTPService.fetchCurtainDetailData(context, params: {
+      'goods_id': widget.id,
+    })
+        .then((data) {
+          goodsProvider = GoodsProvider();
+          initData(data, goodsProvider);
+          TargetOrderGoods.instance.setGoodsProvider(goodsProvider);
+        })
+        .catchError((err) => err)
+        .whenComplete(() {
+          setState(() {
+            isLoading = false;
+          });
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
 
-    return ZYFutureBuilder(
-        futureFunc: OTPService.fetchCurtainDetailData,
-        params: {
-          'goods_id': widget.id,
-        },
-        builder: (BuildContext context, data) {
-          return ChangeNotifierProvider(
-            create: (BuildContext context) {
-              GoodsProvider goodsProvider = GoodsProvider();
-              initData(data, goodsProvider);
-              TargetOrderGoods.instance.setGoodsProvider(goodsProvider);
-              return goodsProvider;
-            },
-            child: Consumer<GoodsProvider>(
-              builder: (BuildContext context, GoodsProvider goodsProvider, _) {
-                return WillPopScope(
-                    child: Scaffold(
-                        key: rootKey,
-                        body: NestedScrollView(
-                            headerSliverBuilder: (BuildContext context,
-                                bool innerBoxIsScrolled) {
-                              return <Widget>[
-                                SliverAppBar(
-                                  actions: <Widget>[
-                                    UserChooseButton(
-                                      id: widget.id,
-                                    )
-                                  ],
-                                  expandedHeight: 320,
-                                  floating: false,
-                                  pinned: true,
-                                  flexibleSpace: FlexibleSpaceBar(
-                                    background: Container(
-                                        // padding: EdgeInsets.symmetric(
-                                        //     horizontal: UIKit.width(50),
-                                        //     vertical: UIKit.height(20)),
-                                        margin: EdgeInsets.only(top: 80),
-                                        child: ZYNetImage(
-                                          imgPath: bean?.picCoverMid,
-                                          width: 300,
-                                          height: 240,
-                                        )
-                                        // decoration: BoxDecoration(
-                                        //   image: DecorationImage(
-                                        //       image: NetworkImage(
-                                        // UIKit.getNetworkImgPath(
-                                        //     bean?.picCoverMid))),
-                                        // ),
-                                        ),
-                                  ),
-                                )
-                              ];
-                            },
-                            body: CustomScrollView(
-                              slivers: <Widget>[
-                                SliverToBoxAdapter(
-                                  child: Container(
-                                    color: themeData.primaryColor,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: UIKit.width(20),
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        VSpacing(20),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Text.rich(TextSpan(
-                                                text:
-                                                    '${bean?.goodsName} ' ?? '',
-                                                style: TextStyle(
-                                                    fontSize: UIKit.sp(28),
-                                                    fontWeight:
-                                                        FontWeight.w400),
-                                                children: [
-                                                  TextSpan(
-                                                      text:
-                                                          bean?.goodsName ?? '',
-                                                      style: textTheme.caption)
-                                                ])),
-                                            Container(
-                                              child: Row(
-                                                children: <Widget>[
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal:
-                                                                UIKit.width(
-                                                                    20)),
-                                                    child: LikeButton(
-                                                      goodsId: id,
-                                                      clientId: TargetClient
-                                                          .instance.clientId,
-                                                      hasLiked: goodsProvider
-                                                          ?.hasLike,
-                                                      callback: () {
-                                                        goodsProvider
-                                                            ?.like(widget.id);
-                                                      },
-                                                    ),
-                                                  ),
-                                                  CartButton(
-                                                    key: cartKey,
-                                                    count: goodsProvider
-                                                        ?.cartCount,
-                                                    callback: () {
-                                                      if (TargetClient.instance
-                                                              .hasSelectedClient ==
-                                                          false) {
-                                                        return CommonKit
-                                                            .showInfo('请选择客户');
-                                                      }
-                                                      RouteHandler.goCartPage(
-                                                          context,
-                                                          clientId: TargetClient
-                                                              .instance
-                                                              .clientId);
-                                                    },
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                            // Text.rich(
-                                            //     TextSpan(text: '', children: [
-                                            //   WidgetSpan(
-                                            //       child: ValueListenableBuilder(
-                                            //           valueListenable:
-                                            //               hasCollected,
-                                            //           builder:
-                                            //               (BuildContext context,
-                                            //                   bool isLiked, _) {
-                                            //             return InkWell(
-                                            //                 child: Icon(
-                                            //                   ZYIcon.like,
-                                            //                   size: 18,
-                                            //                   color: isLiked
-                                            //                       ? Colors.red
-                                            //                       : const Color(
-                                            //                           0xFFCCCCCC),
-                                            //                 ),
-                                            //                 onTap: () {
-                                            //                   collect(context);
-                                            //                 });
-                                            //           })),
-                                            //   WidgetSpan(
-                                            //       child: SizedBox(
-                                            //           width: UIKit.width(30))),
-                                            //   WidgetSpan(
-                                            //       child: InkWell(
-                                            //           child: Icon(ZYIcon.cart,
-                                            //               size: 18),
-                                            //           onTap: () {
-                                            //             if (targetClient
-                                            //                     .hasSelectedClient ==
-                                            //                 false) {
-                                            //               return CommonKit
-                                            //                   .showInfo(
-                                            //                       '请选择客户');
-                                            //             }
-                                            //             RouteHandler.goCartPage(
-                                            //               context,
-                                            //               clientId: targetClient
-                                            //                   .clientId,
-                                            //             );
-                                            //           }))
-                                            // ]))
-                                          ],
-                                        ),
-                                        VSpacing(20),
-                                        Text.rich(TextSpan(
-                                            text: '¥${bean?.price ?? 0.00}',
-                                            style: TextStyle(
-                                                fontSize: UIKit.sp(32),
-                                                fontWeight: FontWeight.w500),
-                                            children: [
-                                              TextSpan(
-                                                  text: goodsProvider?.unit,
-                                                  style: textTheme.caption),
-                                              TextSpan(text: ' '),
-                                              TextSpan(
-                                                  text: bean?.isPromotionGoods ==
-                                                          true
-                                                      ? '¥${bean?.marketPrice}'
-                                                      : '',
-                                                  style: textTheme.caption
-                                                      .copyWith(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .lineThrough)),
-                                              WidgetSpan(
-                                                  child: Offstage(
-                                                offstage:
-                                                    bean?.isPromotionGoods ==
-                                                        false,
-                                                child: OnSaleTag(),
-                                              ))
-                                            ])),
-                                        VSpacing(20),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SliverToBoxAdapter(
-                                  child: VSpacing(20),
-                                ),
-                                SliverToBoxAdapter(
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: UIKit.width(20),
-                                        vertical: UIKit.height(10)),
-                                    color: themeData.primaryColor,
-                                    child: Column(
-                                      children: <Widget>[
-                                        Offstage(
-                                          offstage:
-                                              goodsProvider?.isWindowRoller ==
-                                                  true,
-                                          child: Container(
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: UIKit.height(10)),
-                                              alignment: Alignment.centerLeft,
-                                              child: MeasureDataTipBar()),
-                                        ),
-                                        Offstage(
-                                          offstage:
-                                              goodsProvider?.isWindowRoller ==
-                                                  true,
-                                          child: Divider(),
-                                        ),
-                                        goodsProvider?.isWindowGauze == true
-                                            ? buildWindowGauzeOption()
-                                            : goodsProvider?.isWindowRoller ==
-                                                    true
-                                                ? buildWindowRollerOption()
-                                                : buildCurtainOption(),
-                                        Container(
-                                          color:
-                                              themeData.scaffoldBackgroundColor,
-                                          height: UIKit.height(20),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                SliverToBoxAdapter(
-                                  child: bean?.description?.isNotEmpty == true
-                                      ? Html(data: bean?.description)
-                                      : Container(),
-                                )
-                              ],
-                            )),
-                        bottomNavigationBar: BottomActionButtonBar(
-                          rootKey: rootKey,
-                          cartKey: cartKey,
-                        )),
-                    onWillPop: () {
-                      Navigator.of(context).pop();
-                      TargetOrderGoods.instance.clear();
-                      TargetOrderGoods.instance.goodsProvider.release();
-                      return Future.value(false);
-                    });
+    return PageTransitionSwitcher(
+      transitionBuilder: (
+        Widget child,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
+        return FadeThroughTransition(
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          child: child,
+        );
+      },
+      child: isLoading
+          ? LoadingCircle()
+          : ChangeNotifierProvider(
+              create: (BuildContext context) {
+                return goodsProvider;
               },
+              child: Consumer<GoodsProvider>(
+                builder:
+                    (BuildContext context, GoodsProvider goodsProvider, _) {
+                  return WillPopScope(
+                      child: Scaffold(
+                          // key: rootKey,
+                          body: NestedScrollView(
+                              headerSliverBuilder: (BuildContext context,
+                                  bool innerBoxIsScrolled) {
+                                return <Widget>[
+                                  SliverAppBar(
+                                    actions: <Widget>[
+                                      UserChooseButton(
+                                        id: widget.id,
+                                      )
+                                    ],
+                                    expandedHeight: 320,
+                                    floating: false,
+                                    pinned: true,
+                                    flexibleSpace: FlexibleSpaceBar(
+                                      background: Container(
+                                          // padding: EdgeInsets.symmetric(
+                                          //     horizontal: UIKit.width(50),
+                                          //     vertical: UIKit.height(20)),
+                                          margin: EdgeInsets.only(top: 80),
+                                          child: ZYNetImage(
+                                            imgPath: bean?.picCoverMid,
+                                            width: 300,
+                                            height: 240,
+                                          )
+                                          // decoration: BoxDecoration(
+                                          //   image: DecorationImage(
+                                          //       image: NetworkImage(
+                                          // UIKit.getNetworkImgPath(
+                                          //     bean?.picCoverMid))),
+                                          // ),
+                                          ),
+                                    ),
+                                  )
+                                ];
+                              },
+                              body: CustomScrollView(
+                                slivers: <Widget>[
+                                  SliverToBoxAdapter(
+                                    child: Container(
+                                      color: themeData.primaryColor,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: UIKit.width(20),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          // VSpacing(20),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text.rich(TextSpan(
+                                                  text: '${bean?.goodsName} ' ??
+                                                      '',
+                                                  style: TextStyle(
+                                                      fontSize: UIKit.sp(28),
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                  children: [
+                                                    TextSpan(
+                                                        text: bean?.goodsName ??
+                                                            '',
+                                                        style:
+                                                            textTheme.caption)
+                                                  ])),
+                                              Container(
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                          right: 20),
+                                                      child: LikeButton(
+                                                        goodsId: id,
+                                                        clientId: TargetClient
+                                                            .instance.clientId,
+                                                        hasLiked: goodsProvider
+                                                            ?.hasLike,
+                                                        callback: () {
+                                                          goodsProvider
+                                                              ?.like(widget.id);
+                                                        },
+                                                      ),
+                                                    ),
+                                                    CartButton(
+                                                      // key: cartKey,
+                                                      count: goodsProvider
+                                                          ?.cartCount,
+                                                      callback: () {
+                                                        if (TargetClient()
+                                                                .hasSelectedClient ==
+                                                            false) {
+                                                          return ToastKit
+                                                              .showInfo(
+                                                                  '请选择客户');
+                                                        }
+                                                        RouteHandler.goCartPage(
+                                                            context,
+                                                            clientId:
+                                                                TargetClient
+                                                                    .instance
+                                                                    .clientId);
+                                                      },
+                                                    )
+                                                  ],
+                                                ),
+                                              )
+                                              // Text.rich(
+                                              //     TextSpan(text: '', children: [
+                                              //   WidgetSpan(
+                                              //       child: ValueListenableBuilder(
+                                              //           valueListenable:
+                                              //               hasCollected,
+                                              //           builder:
+                                              //               (BuildContext context,
+                                              //                   bool isLiked, _) {
+                                              //             return InkWell(
+                                              //                 child: Icon(
+                                              //                   ZYIcon.like,
+                                              //                   size: 18,
+                                              //                   color: isLiked
+                                              //                       ? Colors.red
+                                              //                       : const Color(
+                                              //                           0xFFCCCCCC),
+                                              //                 ),
+                                              //                 onTap: () {
+                                              //                   collect(context);
+                                              //                 });
+                                              //           })),
+                                              //   WidgetSpan(
+                                              //       child: SizedBox(
+                                              //           width: UIKit.width(30))),
+                                              //   WidgetSpan(
+                                              //       child: InkWell(
+                                              //           child: Icon(ZYIcon.cart,
+                                              //               size: 18),
+                                              //           onTap: () {
+                                              //             if (targetClient
+                                              //                     .hasSelectedClient ==
+                                              //                 false) {
+                                              //               return CommonKit
+                                              //                   .showInfo(
+                                              //                       '请选择客户');
+                                              //             }
+                                              //             RouteHandler.goCartPage(
+                                              //               context,
+                                              //               clientId: targetClient
+                                              //                   .clientId,
+                                              //             );
+                                              //           }))
+                                              // ]))
+                                            ],
+                                          ),
+                                          VSpacing(20),
+                                          Text.rich(TextSpan(
+                                              text: '¥${bean?.price ?? 0.00}',
+                                              style: TextStyle(
+                                                  fontSize: UIKit.sp(32),
+                                                  fontWeight: FontWeight.w500),
+                                              children: [
+                                                TextSpan(
+                                                    text: goodsProvider?.unit,
+                                                    style: textTheme.caption),
+                                                TextSpan(text: ' '),
+                                                TextSpan(
+                                                    text: bean?.isPromotionGoods ==
+                                                            true
+                                                        ? '¥${bean?.marketPrice}'
+                                                        : '',
+                                                    style: textTheme.caption
+                                                        .copyWith(
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .lineThrough)),
+                                                WidgetSpan(
+                                                    child: Offstage(
+                                                  offstage:
+                                                      bean?.isPromotionGoods ==
+                                                          false,
+                                                  child: OnSaleTag(),
+                                                ))
+                                              ])),
+                                          VSpacing(20),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SliverToBoxAdapter(
+                                    child: VSpacing(20),
+                                  ),
+                                  SliverToBoxAdapter(
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: UIKit.width(20),
+                                          vertical: UIKit.height(10)),
+                                      color: themeData.primaryColor,
+                                      child: Column(
+                                        children: <Widget>[
+                                          Offstage(
+                                            offstage:
+                                                goodsProvider?.isWindowRoller ==
+                                                    true,
+                                            child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: UIKit.height(10)),
+                                                alignment: Alignment.centerLeft,
+                                                child: MeasureDataTipBar()),
+                                          ),
+                                          Offstage(
+                                            offstage:
+                                                goodsProvider?.isWindowRoller ==
+                                                    true,
+                                            child: Divider(),
+                                          ),
+                                          goodsProvider?.isWindowGauze == true
+                                              ? buildWindowGauzeOption()
+                                              : goodsProvider?.isWindowRoller ==
+                                                      true
+                                                  ? buildWindowRollerOption()
+                                                  : buildCurtainOption(),
+                                          Container(
+                                            color: themeData
+                                                .scaffoldBackgroundColor,
+                                            height: UIKit.height(20),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SliverToBoxAdapter(
+                                    child: bean?.description?.isNotEmpty == true
+                                        ? Html(data: bean?.description)
+                                        : Container(),
+                                  )
+                                ],
+                              )),
+                          bottomNavigationBar: BottomActionButtonBar(
+                              // rootKey: rootKey,
+                              // cartKey: cartKey,
+                              )),
+                      onWillPop: () {
+                        Navigator.of(context).pop();
+                        TargetOrderGoods.instance.clear();
+                        TargetOrderGoods.instance.goodsProvider.release();
+                        return Future.value(false);
+                      });
+                },
+              ),
             ),
-          );
-        });
+    );
   }
 }
 
@@ -932,9 +959,12 @@ class BottomActionButtonBar extends StatelessWidget {
                     Text.rich(TextSpan(text: '预计:\n', children: [
                       TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
                     ])),
-                    ZYRaisedButton('确认选品', () {
-                      goodsProvider?.selectProduct(context);
-                    })
+                    ZYRaisedButton(
+                      '确认选品',
+                      () {
+                        goodsProvider?.selectProduct(context);
+                      },
+                    )
                   ],
                 ))
             : PurchaseActionBar(

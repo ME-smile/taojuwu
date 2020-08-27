@@ -26,9 +26,9 @@ class ZYOutlineButton extends StatelessWidget {
       child: Container(
         child: Text(text,
             style: isActive
-                ? TextStyle(fontSize: 16)
+                ? TextStyle(fontSize: 13)
                 : textTheme.button
-                    .copyWith(color: themeData.disabledColor, fontSize: 16)),
+                    .copyWith(color: themeData.disabledColor, fontSize: 13)),
         decoration: BoxDecoration(
             color: themeData.primaryColor,
             borderRadius: BorderRadius.all(Radius.circular(4)),
@@ -39,8 +39,8 @@ class ZYOutlineButton extends StatelessWidget {
                     : themeData.disabledColor)),
         margin: EdgeInsets.symmetric(vertical: UIKit.height(20)),
         padding: EdgeInsets.symmetric(
-            horizontal: horizontalPadding ?? UIKit.width(36),
-            vertical: verticalPadding ?? UIKit.height(8)),
+            horizontal: horizontalPadding ?? 28,
+            vertical: verticalPadding ?? 5),
       ),
     );
   }

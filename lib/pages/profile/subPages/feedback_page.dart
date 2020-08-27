@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
 
@@ -36,11 +36,11 @@ class _FeedbackPageState extends State<FeedbackPage> {
     content = questionInput?.text?.trim();
     tel = telInput?.text?.trim();
     if (content?.isNotEmpty != true) {
-      CommonKit.showInfo('反馈信息不能为空哦');
+      ToastKit.showInfo('反馈信息不能为空哦');
       return false;
     }
     if (tel?.isNotEmpty != true) {
-      CommonKit.showInfo('请填写正确的联系方式哦');
+      ToastKit.showInfo('请填写正确的联系方式哦');
       return false;
     }
     return true;

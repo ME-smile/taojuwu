@@ -14,6 +14,7 @@ class ThemeProvider with ChangeNotifier {
     primaryColor: Colors.white,
 
     scaffoldBackgroundColor: TaojuwuColors.SCAFFOLD_BG_COLOR,
+
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     // fontFamily: FONT_FAMILY,

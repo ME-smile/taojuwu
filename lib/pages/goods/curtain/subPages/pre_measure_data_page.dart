@@ -11,7 +11,7 @@ import 'package:taojuwu/pages/goods/curtain/widgets/sku_attr_picker.dart';
 import 'package:taojuwu/pages/goods/curtain/widgets/window_pattern_view.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
@@ -71,7 +71,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
           child: Row(
             children: <Widget>[
               Container(
-                  margin: EdgeInsets.only(right: UIKit.width(45)),
+                  margin: EdgeInsets.only(right: 30),
                   child: Text(
                     '安装选项',
                     style:
@@ -115,7 +115,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
           child: Row(
             children: <Widget>[
               Container(
-                  margin: EdgeInsets.only(right: UIKit.width(45)),
+                  margin: EdgeInsets.only(right: 30),
                   child: Text(
                     '打开方式',
                     style:
@@ -211,23 +211,27 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
     String w = widthInputController?.text;
     String h = heightInputController?.text;
     if (w?.trim()?.isEmpty == true) {
-      CommonKit?.showInfo('请填写宽度');
+      ToastKit.showInfo('请填写宽度');
       return false;
     }
     if (double.parse(w) == 0) {
-      CommonKit?.showInfo('宽度不能为0哦');
+      ToastKit.showInfo('宽度不能为0哦');
+      return false;
+    }
+    if (provider?.isFixedHeight == false && double.parse(w) > 10000) {
+      ToastKit.showInfo('宽度不能超过100米');
       return false;
     }
     if (h?.trim()?.isEmpty == true) {
-      CommonKit?.showInfo('请填写高度');
+      ToastKit.showInfo('请填写高度');
       return false;
     }
     if (double.parse(h) == 0) {
-      CommonKit?.showInfo('高度不能为0哦');
+      ToastKit.showInfo('高度不能为0哦');
       return false;
     }
     if (double.parse(h) > 350) {
-      CommonKit.showInfo('暂不支持3.5m以上定制');
+      ToastKit.showInfo('暂不支持3.5m以上定制');
       h = '350';
       return false;
     }
@@ -248,7 +252,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
       child: Consumer<GoodsProvider>(
         builder: (BuildContext context, GoodsProvider provider, _) {
           return Scaffold(
-            // resizeToAvoidBottomInset: false,
+            // resizeToAvoidBottomInet: false,
             appBar: AppBar(
               title: Text('测装数据'),
               centerTitle: true,
@@ -320,8 +324,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                 Container(
                                   alignment: Alignment.centerRight,
                                   width: 80,
-                                  padding:
-                                      EdgeInsets.only(right: UIKit.width(25)),
+                                  padding: EdgeInsets.only(right: 16),
                                   child: Text(
                                     '宽(cm):',
                                     style: TextStyle(
@@ -360,8 +363,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                                 Container(
                                   alignment: Alignment.centerRight,
                                   width: 80,
-                                  padding:
-                                      EdgeInsets.only(right: UIKit.width(25)),
+                                  padding: EdgeInsets.only(right: 16),
                                   child: Text(
                                     '高(cm):',
                                     style: TextStyle(
@@ -403,7 +405,7 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                             Container(
                               alignment: Alignment.centerRight,
                               width: 80,
-                              padding: EdgeInsets.only(right: UIKit.width(25)),
+                              padding: EdgeInsets.only(right: 16),
                               child: Text(
                                 '离地距离:',
                                 style: TextStyle(
@@ -442,11 +444,14 @@ class _PreMeasureDataPageState extends State<PreMeasureDataPage> {
                 ),
               ),
             ),
-            bottomNavigationBar: ZYSubmitButton('确认', () {
-              if (!beforeSendData(provider)) return;
-              Navigator.of(context).pop();
-              provider?.hasSetSize = true;
-            }),
+            bottomNavigationBar: Container(
+              margin: EdgeInsets.symmetric(vertical: 8),
+              child: ZYSubmitButton('确认', () {
+                if (!beforeSendData(provider)) return;
+                Navigator.of(context).pop();
+                provider?.hasSetSize = true;
+              }),
+            ),
           );
         },
       ),

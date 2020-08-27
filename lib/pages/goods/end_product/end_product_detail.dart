@@ -18,7 +18,7 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/step_counter.dart';
@@ -42,8 +42,8 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
   int get id => widget.id;
 
   bool beforePurchase(EndProductProvider provider, BuildContext context) {
-    if (TargetClient.instance.hasSelectedClient == false) {
-      CommonKit.showInfo('请选择客户');
+    if (TargetClient().hasSelectedClient == false) {
+      ToastKit.showInfo('请选择客户');
       return false;
     }
     return true;
@@ -56,10 +56,8 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
 
   @override
   void didPopNext() {
-    OTPService.cartCount(context, params: {
-      'client_uid': TargetClient.instance.clientId,
-      'goods_id': id
-    })
+    OTPService.cartCount(context,
+            params: {'client_uid': TargetClient().clientId, 'goods_id': id})
         .then((CartCountResp cartCountResp) {
           if (mounted)
             TargetOrderGoods.instance.endProductProvider?.cartCount =
@@ -87,10 +85,8 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
   }
 
   void fetchData() {
-    OTPService.endProductDetailData(context, params: {
-      'goods_id': id,
-      'client_uid': TargetClient.instance.clientId
-    })
+    OTPService.endProductDetailData(context,
+            params: {'goods_id': id, 'client_uid': TargetClient().clientId})
         .then((data) {
           ProductBeanRes response = data[0];
           CartCountResp cartCountResp = data[1];
@@ -197,7 +193,6 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                VSpacing(20),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -216,8 +211,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                                       child: Row(
                                         children: <Widget>[
                                           Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: UIKit.width(20)),
+                                            padding: EdgeInsets.only(right: 20),
                                             child: LikeButton(
                                               hasLiked: false,
                                               goodsId: id,
@@ -228,10 +222,10 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                                           CartButton(
                                             count: provider?.cartCount,
                                             callback: () {
-                                              if (TargetClient.instance
+                                              if (TargetClient()
                                                       .hasSelectedClient ==
                                                   false) {
-                                                return CommonKit.showInfo(
+                                                return ToastKit.showInfo(
                                                     '请选择客户');
                                               }
                                               RouteHandler.goCartPage(context,
@@ -252,8 +246,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                                         fontWeight: FontWeight.w500),
                                     children: [
                                       TextSpan(
-                                          text: provider?.unit,
-                                          style: textTheme.caption),
+                                          text: '元', style: textTheme.caption),
                                       TextSpan(text: ' '),
                                       TextSpan(
                                           text: bean?.isPromotionGoods == true
@@ -304,7 +297,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                                         onTap: () {
                                           selectAttrOption(provider, () {
                                             Navigator.of(context).pop();
-                                          });
+                                          }, shouldPop: false);
                                         },
                                         child: Icon(
                                           ZYIcon.three_dot,
@@ -341,7 +334,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                         });
                       },
                       purchaseFunc: () {
-                        selectAttrOption(provider, () {
+                        selectAttrOption(provider, () {}).whenComplete(() {
                           provider?.createOrder(context);
                         });
                       },
@@ -353,10 +346,10 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
     );
   }
 
-  Future selectAttrOption(
-      EndProductProvider provider, Function callback) async {
-    if (TargetClient.instance.hasSelectedClient == false) {
-      return CommonKit.showInfo('请选择客户');
+  Future selectAttrOption(EndProductProvider provider, Function callback,
+      {bool shouldPop = true}) async {
+    if (TargetClient().hasSelectedClient == false) {
+      return ToastKit.showInfo('请选择客户');
     }
     return showCupertinoModalPopup(
         context: context,
@@ -508,9 +501,15 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                         ))
                   ],
                 ),
-                bottomNavigationBar: ZYSubmitButton('确定', () {
-                  callback();
-                }),
+                bottomNavigationBar: Container(
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  child: ZYSubmitButton('确定', () {
+                    callback();
+                    if (shouldPop) {
+                      Navigator.of(context).pop();
+                    }
+                  }),
+                ),
               ),
             ),
           );

@@ -5,17 +5,18 @@ class Constants {
 
   //order_status 订单状态 1待审核 2待测量 3待付款 4付款待审核 5生产中 6等待预约安装 7待安装 8已完成 9已取消 10售后维权 11售后维权已处理 12售后维权已关闭 -1退款中 13订单自动完成 14待选品' 15取消待审核
   static const String ORDER_STATUS_ALL = '全部';
+  static const String ORDER_STATUS_ING = '进行中';
   static const String ORDER_STATUS_TO_AUDIT = '待审核';
   static const String ORDER_STATUS_TO_MEASURE = '待测量';
   static const String ORDER_STATUS_TO_SELECT = '待选品';
   static const String ORDER_STATUS_PAY_TAIL = '待付款';
   static const String ORDER_STATUS_PRODUCTING = '生产中';
 
-  static const String ORDER_STATUS_TO_SHIP = '待发货';
+  static const String ORDER_STATUS_TO_SHIP = '待出库';
   static const String ORDER_STATUS_TO_RECEIVE = '待收货';
   static const String ORDER_STATUS_TO_INSTALL = '待安装';
   static const String ORDER_STATUS_FINISHED = '已完成';
-
+  static const String ORDER_STATUS_CANCELED = '已取消';
   static const String ORDER_STATUS_PRODUCTED = '生产完成';
 
   static const String ORDER_STATUS_PAIED_TO_AUDIT = '付尾款待审核';
@@ -39,7 +40,7 @@ class Constants {
   };
 
   static const List<String> ORDER_STATUS_TAB_LIST = [
-    ORDER_STATUS_ALL,
+    ORDER_STATUS_ING,
     ORDER_STATUS_TO_AUDIT,
     ORDER_STATUS_TO_MEASURE,
     ORDER_STATUS_TO_SELECT,
@@ -49,6 +50,8 @@ class Constants {
     ORDER_STATUS_TO_RECEIVE,
     ORDER_STATUS_TO_INSTALL,
     ORDER_STATUS_FINISHED,
+    ORDER_STATUS_CANCELED,
+    ORDER_STATUS_ALL
   ];
   static const Map ORDER_STATUS_MAP = {
     '': ORDER_STATUS_ALL,
@@ -113,7 +116,7 @@ class Constants {
     },
     6: {
       'title': '商品已准备完毕',
-      'subtitle': '待发货',
+      'subtitle': '待出库',
     },
     7: {
       'title': '已发货',

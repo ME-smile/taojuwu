@@ -2,7 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/send_sms_button.dart';
@@ -89,17 +89,17 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
                     callback: () async {
                       String tel = telInput.text;
                       if (tel.trim().isEmpty) {
-                        return CommonKit.showInfo('手机号不能为空哦');
+                        return ToastKit.showInfo('手机号不能为空哦');
                       }
                       if (!RegexUtil.isMobileExact(tel)) {
-                        return CommonKit.showInfo('请输入正确的手机号');
+                        return ToastKit.showInfo('请输入正确的手机号');
                       }
                       return OTPService.getSms(context, {'mobile': tel})
                           .then((ZYResponse response) {
                         if (response.valid) {
-                          CommonKit.showToast('验证码发送成功,请注意查收');
+                          ToastKit.showToast('验证码发送成功,请注意查收');
                         } else {
-                          CommonKit.showToast('验证码发送失败,请稍后重试');
+                          ToastKit.showToast('验证码发送失败,请稍后重试');
                         }
                       }).catchError((err) => err);
                     },

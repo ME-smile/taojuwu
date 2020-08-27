@@ -8,7 +8,7 @@ import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 class EndProductProvider with ChangeNotifier {
   ProductBean _goods;
@@ -92,8 +92,8 @@ class EndProductProvider with ChangeNotifier {
   bool beforePurchase(BuildContext context) {
     // setParams(goodsProvider);
 
-    if (TargetClient.instance.hasSelectedClient == false) {
-      CommonKit.showInfo('请选择客户');
+    if (TargetClient().hasSelectedClient == false) {
+      ToastKit.showInfo('请选择客户');
       return false;
     }
 
@@ -122,7 +122,7 @@ class EndProductProvider with ChangeNotifier {
     canAddToCart = false;
 
     Map<String, dynamic> cartParams = {
-      'client_uid': TargetClient.instance.clientId,
+      'client_uid': TargetClient().clientId,
       'cart_detail': jsonEncode(cartDetail),
       'estimated_price': totalPrice,
       // 'wc_attr': jsonEncode(attrArgs),
@@ -135,7 +135,6 @@ class EndProductProvider with ChangeNotifier {
         .then((ZYResponse response) {
           if (response?.valid == true) {
             cartCount = response?.data;
-            Navigator.of(context).pop();
           }
         })
         .catchError((err) => err)
@@ -204,22 +203,20 @@ class EndProductProvider with ChangeNotifier {
         .then((ZYResponse response) {
           if (response?.valid == true) {
             CartModel model = CartModel.fromJson(response?.data);
+
             cartModel?.price = model?.price;
             cartModel?.pictureInfo?.picCoverSmall =
                 model?.pictureInfo?.picCoverSmall;
 
             cartModel?.skuId = model?.skuId;
-            cartModel?.goodsAttrStr = model?.goodsAttrStr;
+            cartModel?.goodsAttrStr = model?.skuName;
             cartModel?.count = model?.count;
-            print('毁掉函数----${callback != null}');
+
             if (callback != null) {
-              int i = callback();
-              print('毁掉函数执行了');
-              print(i);
+              callback();
             }
 
             Navigator.of(context).pop(model);
-            if (callback != null) callback();
           }
         })
         .catchError((err) => err)

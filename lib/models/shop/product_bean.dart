@@ -265,6 +265,9 @@ class ProductBean {
   String categoryName;
   int count = 1;
   bool get isPromotionGoods => marketPrice != 0 && marketPrice != price;
+  int fixHeight;
+
+  bool get isFixedHeight => fixHeight == 1 ?? false;
   String get picCoverMid {
     return imgList?.isEmpty == true ? '' : imgList?.first?.picCover;
   }
@@ -295,7 +298,10 @@ class ProductBean {
     tmpBean.promotionType = map['promotion_type'];
     tmpBean.promoteId = map['promote_id'];
     tmpBean.goodsType = map['goods_type'];
-    tmpBean?.skuId = map['sku_id'];
+
+    var skuId = map['sku_id'] ?? '0';
+    tmpBean?.skuId = skuId is int ? skuId : int.parse(skuId);
+
     tmpBean.marketPrice = map['market_price'].runtimeType == double
         ? map['market_price']
         : double.parse(map['market_price'] ?? '0.00');
@@ -414,6 +420,7 @@ class ProductBean {
     tmpBean.skuPicture = map['sku_picture'];
     tmpBean?.picCoverMicro = map['pic_cover_micro'];
     tmpBean?.categoryName = map['category_name'];
+    tmpBean?.fixHeight = map['fix_height'];
     return tmpBean;
   }
 

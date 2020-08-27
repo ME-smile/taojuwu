@@ -10,7 +10,7 @@ class UserChooseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TargetClient targetClient = TargetClient.instance;
+    TargetClient targetClient = TargetClient();
 
     return InkWell(
         onTap: () {

@@ -7,7 +7,7 @@ import 'package:taojuwu/models/zy_response.dart';
 
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -32,20 +32,20 @@ class ScanButton extends StatelessWidget {
             RouteHandler.goCurtainDetailPage(
                 context, response?.data['goods_id']);
           } else {
-            // CommonKit.showToast('识别失败');
+            // ToastKit.showToast('识别失败');
           }
         }).catchError((err) {
-          CommonKit.showToast('识别出错');
+          ToastKit.showToast('识别出错');
         });
       } else {
-        CommonKit.showToast('未识别的商品');
+        ToastKit.showToast('未识别的商品');
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.cameraAccessDenied) {
-        CommonKit.showToast('访问相机被拒绝');
+        ToastKit.showToast('访问相机被拒绝');
       }
     } on FormatException catch (_) {
-      // CommonKit.showToast('');
+      // ToastKit.showToast('');
     }
   }
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 class ZYResponse<T> {
   int code;
@@ -13,7 +13,7 @@ class ZYResponse<T> {
 
   void showError(BuildContext context) {
     if (valid) return;
-    CommonKit.showToast(message ?? '未知错误');
+    ToastKit.showToast(message ?? '未知错误');
   }
 
   ZYResponse.fromJson(Map<String, dynamic> json) {

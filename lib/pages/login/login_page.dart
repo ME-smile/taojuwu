@@ -14,7 +14,7 @@ import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
@@ -263,10 +263,10 @@ class _LoginPageState extends State<LoginPage> {
     String tel = _phoneController.text;
     String code = _smsController.text;
     if (tel.trim().isEmpty) {
-      return CommonKit.showInfo('手机号不能为空哦');
+      return ToastKit.showInfo('手机号不能为空哦');
     }
     if (code.trim().isEmpty) {
-      return CommonKit.showInfo('验证码不能为空哦');
+      return ToastKit.showInfo('验证码不能为空哦');
     }
     OTPService.loginBySms(context, {'mobile': tel, 'mobile_code': code})
         .then((ZYResponse response) {
@@ -285,14 +285,14 @@ class _LoginPageState extends State<LoginPage> {
     String tel = _phoneController.text;
     String pwd = _pwdController.text;
     if (tel.trim().isEmpty) {
-      return CommonKit.showInfo('手机号不能为空哦');
+      return ToastKit.showInfo('手机号不能为空哦');
     }
 
     if (RegexUtil.isTel(tel)) {
-      return CommonKit.showInfo('请输入正确的手机号');
+      return ToastKit.showInfo('请输入正确的手机号');
     }
     if (pwd.trim().isEmpty) {
-      return CommonKit.showInfo('密码不能为空哦');
+      return ToastKit.showInfo('密码不能为空哦');
     }
     setState(() {
       canClick = false;
@@ -428,21 +428,21 @@ class _LoginPageState extends State<LoginPage> {
                             suffixIcon: SendSmsButton(
                               isActive: isValidTel,
                               callback: () {
-                                CommonKit.showToast('暂未开通注册');
+                                ToastKit.showToast('暂未开通注册');
                                 // String tel = _phoneController.text;
                                 // if (tel.trim().isEmpty) {
-                                //   return CommonKit.showInfo('手机号不能为空哦');
+                                //   return ToastKit.showInfo('手机号不能为空哦');
                                 // }
                                 // if (!RegexUtil.isMobileExact(tel)) {
-                                //   return CommonKit.showInfo('请输入正确的手机号');
+                                //   return ToastKit.showInfo('请输入正确的手机号');
                                 // }
                                 // return OTPService.getSms(
                                 //         context, {'mobile': tel})
                                 //     .then((ZYResponse response) {
                                 //   if (response.valid) {
-                                //     CommonKit.showToast('验证码发送成功,请注意查收');
+                                //     ToastKit.showToast('验证码发送成功,请注意查收');
                                 //   } else {
-                                //     CommonKit.showToast('验证码发送失败,请稍后重试');
+                                //     ToastKit.showToast('验证码发送失败,请稍后重试');
                                 //   }
                                 // }).catchError((err) => err);
                               },
@@ -467,14 +467,7 @@ class _LoginPageState extends State<LoginPage> {
           ZYSubmitButton(
             '登录',
             () {
-              CommonKit.debounce(() {
-                // if(_isPwdMode){
-                //   loginBySms(context);
-                // }else{
-
-                // }
-                loginByPwd(context);
-              }, 500);
+              loginByPwd(context);
             },
             isActive: canClick,
           ),

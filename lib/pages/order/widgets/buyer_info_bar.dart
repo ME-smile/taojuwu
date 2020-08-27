@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/singleton/target_client.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
 class BuyerInfoBar extends StatelessWidget {
@@ -13,11 +13,11 @@ class BuyerInfoBar extends StatelessWidget {
     ThemeData themeData = Theme.of(context);
 
     TextTheme accentTextTheme = themeData.accentTextTheme;
-    TargetClient targetClient = TargetClient.instance;
+    TargetClient targetClient = TargetClient();
     return InkWell(
         onTap: () {
           if (targetClient?.hasSelectedClient == false) {
-            return CommonKit.showInfo('请先选择客户');
+            return ToastKit.showInfo('请先选择客户');
           }
           RouteHandler.goEditAddressPage(context, id: targetClient?.clientId);
         },

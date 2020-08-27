@@ -184,8 +184,8 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                                 )
                               : ZYRaisedButton(
                                   '结算(${provider?.totalCount ?? 0})', () {
-                                  TargetClient.instance.clientId =
-                                      provider?.clientId;
+                                  TargetClient().clientId = provider?.clientId;
+
                                   Navigator.push(
                                     context,
                                     CupertinoPageRoute(

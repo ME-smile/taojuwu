@@ -56,9 +56,11 @@ class _CartTabBarViewState extends State<CartTabBarView> {
           : ProductCard(
               cartModel: cartModel,
               index: index,
+              clientId: clientId,
               tapCallback: () {
                 ZYDialog.checkEndProductAttr(context, cartModel, callback: () {
                   setState(() {});
+                  context.read<CartProvider>().refresh();
                 });
               },
               checkCallback: (bool isSelected) {
@@ -96,14 +98,8 @@ class _CartTabBarViewState extends State<CartTabBarView> {
   @override
   void initState() {
     super.initState();
-
-    _refreshController = RefreshController();
-  }
-
-  @override
-  void didChangeDependencies() {
     fetchData();
-    super.didChangeDependencies();
+    _refreshController = RefreshController();
   }
 
   @override
@@ -382,128 +378,177 @@ class ProductCard extends StatefulWidget {
   _ProductCardState createState() => _ProductCardState();
 }
 
-class _ProductCardState extends State<ProductCard> {
+class _ProductCardState extends State<ProductCard>
+    with TickerProviderStateMixin {
   int get clientId => widget.clientId;
   CartModel get cartModel => widget.cartModel;
   Function get longPressCallback => widget.longPressCallback;
   Function get tapCallback => widget.tapCallback;
   Function get checkCallback => widget.checkCallback;
 
+  AnimationController slideAnimationController;
+  AnimationController sizeAnimationController;
+  Animation<Offset> slideAnimation;
+  Animation<double> sizeAnimation;
+
+  @override
+  void initState() {
+    slideAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    sizeAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    slideAnimation = Tween(begin: Offset(0.0, 0.0), end: Offset(1.0, 0.0))
+        .animate(slideAnimationController)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              sizeAnimationController?.forward();
+            }
+          });
+    sizeAnimation =
+        Tween(begin: 1.0, end: 0.0).animate(sizeAnimationController);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    slideAnimationController?.dispose();
+    sizeAnimationController?.dispose();
+    super.dispose();
+  }
+
+  void refresh() {
+    context?.read<CartProvider>()?.refresh();
+  }
+
+  bool visible = true;
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
 
-    return GestureDetector(
-        // onLongPress: () {
-        //   longPressCallback();
+    return SizeTransition(
+      sizeFactor: sizeAnimation,
+      child: SlideTransition(
+        position: slideAnimation,
+        child: AnimatedOpacity(
+          opacity: visible ? 1.0 : 0.0,
+          duration: Duration(milliseconds: 500),
+          child: Consumer(
+            builder: (BuildContext context, CartProvider provider, Widget _) {
+              return GestureDetector(
+                  onLongPress: () {
+                    setState(() {
+                      provider?.isEditting = false;
+                      cartModel?.isChecked = true;
+                    });
 
-        //   setState(() {
-        //     cartModel?.isChecked = true;
-        //   });
-        // },
-        onTap: () {
-          ZYDialog.checkEndProductAttr(context, cartModel, callback: () {
-            setState(() {
-              print(cartModel?.count);
-            });
-            context?.read<CartProvider>()?.refresh();
-          }).then((CartModel model) {
-            // if (model == null) return;
-            // setState(() {
-            //   cartModel?.price = model?.price;
-            //   cartModel?.pictureInfo?.picCoverSmall =
-            //       model?.pictureInfo?.picCoverSmall;
-
-            //   cartModel?.skuId = model?.skuId;
-            //   cartModel?.goodsAttrStr = model?.goodsAttrStr;
-            //   cartModel?.count = model?.count;
-            //   print(cartModel?.count);
-            //   print('----哈哈哈哈----');
-            // });
-          });
-        },
-        child: Container(
-          color: themeData.primaryColor,
-          margin: EdgeInsets.only(top: UIKit.height(20)),
-          padding: EdgeInsets.symmetric(
-              horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Checkbox(
-                      value: cartModel?.isChecked, onChanged: checkCallback),
-                  ZYNetImage(
-                    imgPath: cartModel?.pictureInfo?.picCoverSmall,
-                    isCache: false,
-                    width: UIKit.width(180),
-                  ),
-                  Expanded(
-                      child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                    height: UIKit.height(190),
-                    // width: MediaQuery.of(context).size.width,
+                    provider.remove(context, cartModel, clientId: clientId,
+                        confirm: () {
+                      setState(() {
+                        visible = false;
+                        slideAnimationController?.forward();
+                      });
+                    }, cancel: () {
+                      setState(() {
+                        cartModel?.isChecked = false;
+                        visible = true;
+                      });
+                      Navigator.of(context).pop();
+                    });
+                  },
+                  onTap: tapCallback,
+                  child: Container(
+                    color: themeData.primaryColor,
+                    margin: EdgeInsets.only(top: UIKit.height(20)),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: UIKit.width(20),
+                        vertical: UIKit.height(20)),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
-                            Text(
-                              cartModel?.goodsName ?? '',
-                              style: textTheme.headline6
-                                  .copyWith(fontSize: UIKit.sp(28)),
+                            Checkbox(
+                                value: cartModel?.isChecked,
+                                onChanged: checkCallback),
+                            ZYNetImage(
+                              imgPath: cartModel?.pictureInfo?.picCoverSmall,
+                              isCache: false,
+                              width: UIKit.width(180),
                             ),
-                            Text('￥' + '${cartModel?.price}' ?? '')
-                            // Text.rich(TextSpan(
-                            //     text: '￥' + '${cartModel?.price}' ?? '',
-                            //     children: [TextSpan(text: cartModel?.unit)])),
+                            Expanded(
+                                child: Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: UIKit.width(20)),
+                              height: UIKit.height(190),
+                              // width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        cartModel?.goodsName ?? '',
+                                        style: textTheme.headline6
+                                            .copyWith(fontSize: UIKit.sp(28)),
+                                      ),
+                                      Text('￥' + '${cartModel?.price}' ?? '')
+                                      // Text.rich(TextSpan(
+                                      //     text: '￥' + '${cartModel?.price}' ?? '',
+                                      //     children: [TextSpan(text: cartModel?.unit)])),
+                                    ],
+                                  ),
+                                  Flexible(
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          cartModel?.goodsAttrStr ?? '',
+                                          softWrap: true,
+                                          style: textTheme.caption
+                                              .copyWith(fontSize: 12),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 5,
+                                        ),
+                                        Icon(
+                                          Icons.keyboard_arrow_down,
+                                          size: 18,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                      child: Container(
+                                    alignment: Alignment.bottomRight,
+                                    child: StepCounter(
+                                      key: ValueKey(cartModel?.count),
+                                      count: cartModel?.count ?? 0,
+                                      model: cartModel,
+                                      callback: () {
+                                        EndProductProvider.editCount(context,
+                                            cartModel: cartModel, callback: () {
+                                          refresh();
+                                        });
+                                      },
+                                    ),
+                                  ))
+                                ],
+                              ),
+                            ))
                           ],
                         ),
-                        Flexible(
-                          child: Row(
-                            children: [
-                              Text(
-                                cartModel?.goodsAttrStr ?? '',
-                                softWrap: true,
-                                style: textTheme.caption.copyWith(fontSize: 12),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 5,
-                              ),
-                              Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 18,
-                              )
-                            ],
-                          ),
-                        ),
-                        Expanded(
-                            child: Container(
-                          alignment: Alignment.bottomRight,
-                          child: StepCounter(
-                            key: ValueKey(cartModel?.count),
-                            count: cartModel?.count ?? 0,
-                            model: cartModel,
-                            callback: () {
-                              EndProductProvider.editCount(context,
-                                  cartModel: cartModel, callback: () {
-                                context?.read<CartProvider>()?.refresh();
-                              });
-                            },
-                          ),
-                        ))
                       ],
                     ),
-                  ))
-                ],
-              ),
-            ],
+                  ));
+            },
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

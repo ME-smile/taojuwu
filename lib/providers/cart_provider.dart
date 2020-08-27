@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
@@ -130,10 +130,10 @@ class CartProvider with ChangeNotifier {
 
   Future batchRemoveGoods(BuildContext context, int clientId) async {
     List<int> idList = selectedModels?.map((e) => e?.cartId)?.toList();
-    CommonKit.showLoading();
+    ToastKit.showLoading();
     delCartList(context, idList, clientId: clientId, callback: () {
       models?.removeWhere((element) => element?.isChecked == true);
-      CommonKit.showSuccessDIYInfo('删除成功');
+      ToastKit.showSuccessDIYInfo('删除成功');
     });
 
     notifyListeners();
@@ -199,19 +199,22 @@ class CartProvider with ChangeNotifier {
 
   void delCart(BuildContext context, int id,
       {CartModel cartModel, Function callback, int clientId}) {
+    print('删除购物车请求参数');
+    print({'cart_id_array': '$id', 'client_uid': clientId});
     OTPService.delCart(params: {'cart_id_array': '$id', 'client_uid': clientId})
         .then((CartCategoryResp response) {
-          if (response?.valid == true) {
-            categoryList = response?.data?.data;
-            if (callback != null) callback();
-          } else {
-            CommonKit.showToast(response?.message ?? '');
-          }
-        })
-        .catchError((err) => err)
-        .whenComplete(() {
-          Navigator.of(context).pop();
-        });
+      if (response?.valid == true) {
+        categoryList = response?.data?.data;
+        if (callback != null) callback();
+      } else {
+        ToastKit.showToast(response?.message ?? '');
+      }
+    }).catchError((err) {
+      print(err);
+      return err;
+    }).whenComplete(() {
+      Navigator.of(context).pop();
+    });
   }
 
   void delCartList(BuildContext context, List<int> idList,
@@ -225,7 +228,7 @@ class CartProvider with ChangeNotifier {
 
         if (callback != null) callback();
       } else {
-        CommonKit.showToast(response?.message ?? '');
+        ToastKit.showToast(response?.message ?? '');
       }
     }).catchError((err) => err);
   }

@@ -35,9 +35,12 @@ class SkuAttrPicker extends StatelessWidget {
                       ),
                     ),
                     Expanded(child: child),
-                    ZYSubmitButton('确定', () {
-                      callback();
-                    })
+                    Container(
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      child: ZYSubmitButton('确定', () {
+                        callback();
+                      }),
+                    )
                   ],
                 )),
             Positioned(

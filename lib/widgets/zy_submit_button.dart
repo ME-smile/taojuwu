@@ -13,8 +13,7 @@ class ZYSubmitButton extends StatelessWidget {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(
-        horizontal: UIKit.width(50),
-      ),
+          horizontal: UIKit.width(50), vertical: UIKit.height(20)),
       child: RaisedButton(
         onPressed: isActive ? callback : null,
         child: Padding(

@@ -17,7 +17,7 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 class GoodsProvider with ChangeNotifier {
   bool get isMeasureOrderGoods =>
@@ -69,6 +69,7 @@ class GoodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  bool get isFixedHeight => goods?.isFixedHeight;
   String get curInstallMode {
     List list = WindowPatternAttr.installOptionMap[windowPatternStr];
     Map<String, dynamic> map =
@@ -231,38 +232,55 @@ class GoodsProvider with ChangeNotifier {
     filterParts();
   }
 
+  dynamic getElementById(List<dynamic> list, int id) {
+    if (list == null || list?.isEmpty == true || id == 0 || id == null)
+      return null;
+
+    if (list.every((element) => element?.id == id)) {
+      return list.firstWhere((element) => element?.id == id);
+    } else {
+      return list?.first;
+    }
+  }
+
   initDataFromGoodsAttr(data, Map<int, dynamic> idMap) {
     _windowGauzeAttr = data[0];
     int wndowGauzeAttrId = idMap[3];
-    _curwindowGauzeAttrBean = _windowGauzeAttr?.data?.isNotEmpty == true &&
-            (wndowGauzeAttrId != 0 && wndowGauzeAttrId != null)
-        ? windowGauzeAttr?.data
-                ?.firstWhere((element) => element?.id == wndowGauzeAttrId) ??
-            _windowGauzeAttr?.data?.first
-        : null;
+    _curwindowGauzeAttrBean =
+        getElementById(_windowGauzeAttr?.data, wndowGauzeAttrId);
+    // _curwindowGauzeAttrBean = _windowGauzeAttr?.data?.isNotEmpty == true &&
+    //         (wndowGauzeAttrId != 0 && wndowGauzeAttrId != null)
+    //     ? windowGauzeAttr?.data
+    //             ?.firstWhere((element) => element?.id == wndowGauzeAttrId) ??
+    //         _windowGauzeAttr?.data?.first
+    //     : null;
     _partAttr = data[1];
     int partAttrId = idMap[5];
-    _curPartAttrBean = _partAttr?.data?.isNotEmpty == true &&
-            (partAttrId != 0 && partAttrId != null)
-        ? _partAttr?.data?.firstWhere((element) => element.id == partAttrId) ??
-            _partAttr?.data?.first
-        : null;
+    _curPartAttrBean = getElementById(_partAttr?.data, partAttrId);
+    // _curPartAttrBean = _partAttr?.data?.isNotEmpty == true &&
+    //         (partAttrId != 0 && partAttrId != null)
+    //     ? _partAttr?.data?.firstWhere((element) => element.id == partAttrId) ??
+    //         _partAttr?.data?.first
+    //     : null;
     _canopyAttr = data[2];
     int canopyAttrId = idMap[8];
-    _curCanopyAttrBean = _canopyAttr?.data?.isNotEmpty == true &&
-            (canopyAttrId != 0 && canopyAttrId != null)
-        ? _canopyAttr?.data
-                ?.firstWhere((element) => element?.id == canopyAttrId) ??
-            _canopyAttr?.data?.first
-        : null;
+    _curCanopyAttrBean = getElementById(_canopyAttr?.data, canopyAttrId);
+    // _curCanopyAttrBean = _canopyAttr?.data?.isNotEmpty == true &&
+    //         (canopyAttrId != 0 && canopyAttrId != null)
+    //     ? _canopyAttr?.data
+    //             ?.firstWhere((element) => element?.id == canopyAttrId) ??
+    //         _canopyAttr?.data?.first
+    //     : null;
     _windowShadeAttr = data[3];
     int windowShadeAttrId = idMap[12];
-    _curWindowShadeAttrBean = _windowShadeAttr?.data?.isNotEmpty == true &&
-            windowShadeAttrId != 0
-        ? _windowShadeAttr?.data
-                ?.firstWhere((element) => element?.id == windowShadeAttrId) ??
-            _windowShadeAttr?.data?.first
-        : null;
+    _curWindowShadeAttrBean =
+        getElementById(_windowShadeAttr?.data, windowShadeAttrId);
+    // _curWindowShadeAttrBean = _windowShadeAttr?.data?.isNotEmpty == true &&
+    //         windowShadeAttrId != 0
+    //     ? _windowShadeAttr?.data
+    //             ?.firstWhere((element) => element?.id == windowShadeAttrId) ??
+    //         _windowShadeAttr?.data?.first
+    //     : null;
     _accessoryAttr = data[4];
     idMap[13] = idMap[13] is List ? idMap[13] : [idMap[13]];
     List accessoryAttrIdList =
@@ -452,14 +470,14 @@ class GoodsProvider with ChangeNotifier {
   void like(
     int goodsId,
   ) {
-    if (!TargetClient.instance.hasSelectedClient) {
-      CommonKit.showInfo('请选择客户');
+    if (!TargetClient().hasSelectedClient) {
+      ToastKit.showInfo('请选择客户');
       return;
     }
     Map<String, dynamic> collectParams = {
       // 'fav_type':'goods',
       'fav_id': goodsId,
-      'client_uid': TargetClient.instance.clientId
+      'client_uid': TargetClient().clientId
     };
     if (hasLike == false) {
       OTPService.collect(params: collectParams).then((ZYResponse response) {
@@ -783,12 +801,17 @@ class GoodsProvider with ChangeNotifier {
     } else {
       // 配饰价格计算 acc-->accesspry
       double heightFactor = 1.0;
+      double mainHeightFactor = 1.0;
       if (heightCM > 270) {
         heightFactor = 1.5;
+        if (!isFixedHeight) {
+          mainHeightFactor = (widthM + heightM - 2.65) / widthM;
+        }
       }
 
       if (hasWindowGauze) {
-        tmp = (unitPrice + windowShadeClothPrice + windowGauzePrice) *
+        tmp = unitPrice * widthM * mainHeightFactor * 2 +
+            (windowShadeClothPrice + windowGauzePrice) *
                 2 *
                 widthM *
                 heightFactor +
@@ -796,7 +819,8 @@ class GoodsProvider with ChangeNotifier {
             partPrice * widthM * 2 +
             accPrice;
       } else {
-        tmp = (unitPrice + windowShadeClothPrice + windowGauzePrice) *
+        tmp = unitPrice * widthM * mainHeightFactor * 2 +
+            (windowShadeClothPrice + windowGauzePrice) *
                 2 *
                 widthM *
                 heightFactor +
@@ -955,6 +979,7 @@ class GoodsProvider with ChangeNotifier {
       }
     };
     params['data'] = jsonEncode(data);
+    print(params);
     return params;
   }
 
@@ -995,23 +1020,27 @@ class GoodsProvider with ChangeNotifier {
     String w = widthCMStr ?? '0.00';
     String h = heightCMStr ?? '0.00';
     if (w?.trim()?.isEmpty == true) {
-      CommonKit?.showInfo('请填写宽度');
+      ToastKit.showInfo('请填写宽度');
       return false;
     }
     if (double.parse(w) == 0) {
-      CommonKit?.showInfo('宽度不能为0哦');
+      ToastKit.showInfo('宽度不能为0哦');
+      return false;
+    }
+    if (isFixedHeight == false && double.parse(w) > 10000) {
+      ToastKit.showInfo('宽度不能超过100米');
       return false;
     }
     if (h?.trim()?.isEmpty == true) {
-      CommonKit?.showInfo('请填写高度');
+      ToastKit.showInfo('请填写高度');
       return false;
     }
     if (double.parse(h) == 0) {
-      CommonKit?.showInfo('高度不能为0哦');
+      ToastKit.showInfo('高度不能为0哦');
       return false;
     }
     if (double.parse(h) > 350) {
-      CommonKit.showInfo('暂不支持3.5m以上定制');
+      ToastKit.showInfo('暂不支持3.5m以上定制');
       h = '350';
       return false;
     }
@@ -1021,12 +1050,12 @@ class GoodsProvider with ChangeNotifier {
   bool beforePurchase(BuildContext context) {
     // setParams(goodsProvider);
 
-    if (TargetClient.instance.hasSelectedClient == false) {
-      CommonKit.showInfo('请选择客户');
+    if (TargetClient().hasSelectedClient == false) {
+      ToastKit.showInfo('请选择客户');
       return false;
     }
     if (hasSetSize != true) {
-      CommonKit.showInfo('请先填写尺寸');
+      ToastKit.showInfo('请先填写尺寸');
       return false;
     }
     // if (isValidateData == false) {
@@ -1044,7 +1073,7 @@ class GoodsProvider with ChangeNotifier {
 
     saveMeasure(context, callback: () {
       Map<String, dynamic> cartParams = {
-        'client_uid': TargetClient.instance.clientId,
+        'client_uid': TargetClient().clientId,
         'wc_attr': jsonEncode(attrArgs),
         'cart_detail': jsonEncode(cartDetail),
         'measure_id': measureId,
@@ -1105,6 +1134,7 @@ class GoodsProvider with ChangeNotifier {
         }
       ])
     });
+
     RouteHandler.goCommitOrderPage(context,
         params: jsonEncode({
           'data': [
@@ -1198,7 +1228,7 @@ class GoodsProvider with ChangeNotifier {
 
         if (callback != null) callback();
       } else {
-        CommonKit.showInfo(response?.message ?? '');
+        ToastKit.showInfo(response?.message ?? '');
       }
     }).catchError((err) => err);
   }
@@ -1209,7 +1239,7 @@ class GoodsProvider with ChangeNotifier {
     TargetOrderGoods targetOrderGoods = TargetOrderGoods.instance;
     if (targetOrderGoods?.hasConfirmMeasureData == false &&
         isWindowRoller == false) {
-      return CommonKit.showInfo('请先确认测装数据');
+      return ToastKit.showInfo('请先确认测装数据');
     }
     Map<String, dynamic> data = {
       'num': 1,
@@ -1234,7 +1264,7 @@ class GoodsProvider with ChangeNotifier {
         // Navigator.of(context)
         //     .popUntil(ModalRoute.withName(TargetRoute.instance.route));
       } else {
-        CommonKit.showInfo(response?.message ?? '');
+        ToastKit.showInfo(response?.message ?? '');
       }
     }).catchError((err) => err);
   }

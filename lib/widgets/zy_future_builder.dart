@@ -17,14 +17,13 @@ class ZYFutureBuilder<T> extends StatefulWidget {
   final Function futureFunc;
   final Map<String, dynamic> params;
   final Widget loadingWidget;
-  final GlobalKey key;
-  ZYFutureBuilder(
-      {@required this.futureFunc,
-      @required this.builder,
-      this.params,
-      Widget loadingWidget,
-      this.key})
-      : loadingWidget = loadingWidget ?? LoadingCircle();
+
+  ZYFutureBuilder({
+    @required this.futureFunc,
+    @required this.builder,
+    this.params,
+    Widget loadingWidget,
+  }) : loadingWidget = loadingWidget ?? LoadingCircle();
 
   @override
   _ZYFutureBuilderState<T> createState() => _ZYFutureBuilderState<T>();

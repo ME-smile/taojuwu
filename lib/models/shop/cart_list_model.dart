@@ -116,7 +116,6 @@ class CartModel extends CountModel {
   }
 
   CartModel.fromJson(Map<String, dynamic> json) {
-    print(json);
     cartId = json['cart_id'];
 
     clientId = json['client_id'];
@@ -144,6 +143,7 @@ class CartModel extends CountModel {
     earnestMoney = json['earnest_money'];
     promotionPrice = json['promotion_price'];
     goodsAttrStr = json['goods_attr_str'] ?? '';
+
     goodsType = json['goods_special_type'];
 
     Map map = json['wc_attr'] is Map ? json['wc_attr'] : {};

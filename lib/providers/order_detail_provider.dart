@@ -17,6 +17,7 @@ class OrderDetailProvider with ChangeNotifier {
   String get clientName => model?.clientName;
   bool get hasUnselectedGoods => unselectedGoodsNum > 0;
   int get unselectedGoodsNum => model?.unselectedGoodsNum;
+  int get selectedGoodsNum => model?.selectedGoodsNum;
   double _deltaPrice;
   double get tailPrice =>
       model?.tailMoney != null ? double.parse(model?.tailMoney) : 0.0;

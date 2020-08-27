@@ -10,8 +10,9 @@ import 'package:taojuwu/widgets/zy_netImage.dart';
 class OrderCard extends StatelessWidget {
   final OrderModelData orderModelData;
   final bool canClick;
-
-  const OrderCard(this.orderModelData, {Key key, this.canClick: false})
+  final String orderStatus;
+  const OrderCard(this.orderModelData,
+      {Key key, this.canClick: false, this.orderStatus})
       : super(key: key);
 
   String get createTimeStr {
@@ -68,11 +69,14 @@ class OrderCard extends StatelessWidget {
         children: <Widget>[
           ListBody(
             children: List.generate(models?.length ?? 0, (int i) {
-              return OrderItemView(models[i],
-                  name: orderModelData?.clientName,
-                  orderNo: orderModelData?.orderNo,
-                  canClick: canClick,
-                  id: orderModelData?.orderId);
+              return OrderItemView(
+                models[i],
+                name: orderModelData?.clientName,
+                orderNo: orderModelData?.orderNo,
+                canClick: canClick,
+                id: orderModelData?.orderId,
+                orderStatus: orderStatus,
+              );
             }),
           ),
           Row(
@@ -88,7 +92,8 @@ class OrderCard extends StatelessWidget {
                   ),
                   OrderKit.buildButton(context, orderModelData, callback: () {
                     RouteHandler.goOrderDetailPage(
-                        context, orderModelData?.orderId);
+                        context, orderModelData?.orderId,
+                        orderStatus: orderStatus);
                   })
                 ],
               ),
@@ -106,8 +111,14 @@ class OrderItemView extends StatelessWidget {
   final String orderNo;
   final int id;
   final bool canClick;
+  final String orderStatus;
   const OrderItemView(this.model,
-      {Key key, this.orderNo: '', this.name: '', this.id, this.canClick: false})
+      {Key key,
+      this.orderNo: '',
+      this.name: '',
+      this.id,
+      this.canClick: false,
+      this.orderStatus})
       : super(key: key);
 
   @override
@@ -118,7 +129,8 @@ class OrderItemView extends StatelessWidget {
     return InkWell(
       onTap: canClick
           ? () {
-              RouteHandler.goOrderDetailPage(context, id);
+              RouteHandler.goOrderDetailPage(context, id,
+                  orderStatus: orderStatus);
             }
           : null,
       child: Container(
@@ -156,7 +168,10 @@ class OrderItemView extends StatelessWidget {
                   ),
                   Text.rich(
                       TextSpan(text: '￥${model?.price ?? '0.00'}', children: [
-                    TextSpan(text: '${model?.unit}', style: textTheme.caption)
+                    TextSpan(
+                        text:
+                            model?.isEndProduct == true ? '' : '${model?.unit}',
+                        style: textTheme.caption)
                   ])),
                   Text(
                     '客户: $name',

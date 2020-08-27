@@ -38,7 +38,7 @@ class CustomerTablePage extends StatelessWidget {
   };
 
   void saveInfoToTargetClient(CategoryCustomerModelBean bean) {
-    TargetClient targetClient = TargetClient.instance;
+    TargetClient targetClient = TargetClient();
     targetClient.setClientId(bean?.id);
     targetClient.setClientName(bean?.clientName);
   }

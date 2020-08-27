@@ -10,7 +10,7 @@ import 'package:taojuwu/models/shop/search/associative_word.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
 class SearchPage extends StatefulWidget {
@@ -231,7 +231,7 @@ class _SearchPageState extends State<SearchPage> {
                       },
                       onSubmitted: (String text) {
                         if (text?.trim()?.isEmpty == true) {
-                          return CommonKit.showInfo('请输入关键字');
+                          return ToastKit.showInfo('请输入关键字');
                         }
                         addHistory(text);
                         jumpTo(text);

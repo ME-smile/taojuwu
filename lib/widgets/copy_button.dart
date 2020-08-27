@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
 class CopyButton extends StatelessWidget {
@@ -31,7 +31,7 @@ class CopyButton extends StatelessWidget {
       ),
       onTap: () {
         Clipboard.setData(ClipboardData(text: copyStr ?? ''));
-        CommonKit.showToast('已复制到剪切板');
+        ToastKit.showToast('已复制到剪切板');
       },
     );
   }

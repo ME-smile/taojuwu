@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/models/zy_response.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
@@ -42,11 +42,11 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
     newPwd = newPwdInput?.text?.trim();
 
     if (oldPwd?.isNotEmpty != true || newPwd?.isNotEmpty != true) {
-      CommonKit.showInfo('密码不能为空哦');
+      ToastKit.showInfo('密码不能为空哦');
       return false;
     }
     if (oldPwd == newPwd) {
-      CommonKit.showInfo('新旧密码不能一样哦');
+      ToastKit.showInfo('新旧密码不能一样哦');
       return false;
     }
     return true;
@@ -62,10 +62,10 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
             params: {'old_password': oldPwd, 'new_password': newPwd})
         .then((ZYResponse response) {
       if (response?.valid == true) {
-        CommonKit.showSuccessDIYInfo('密码修改成功');
+        ToastKit.showSuccessDIYInfo('密码修改成功');
         RouteHandler.goLoginPage(context, replace: true);
       } else {
-        CommonKit.showInfo(response?.message ?? '');
+        ToastKit.showInfo(response?.message ?? '');
       }
     }).catchError((err) {
       return err;
