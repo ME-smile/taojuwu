@@ -18,6 +18,7 @@ class GridCard extends StatelessWidget {
     ThemeData themeData = Theme.of(context);
     double width = MediaQuery.of(context).size.width;
     return Container(
+      key: ValueKey(bean?.goodsId),
       alignment: Alignment.center,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,6 +37,7 @@ class GridCard extends StatelessWidget {
           Expanded(
               child: Container(
             color: themeData.primaryColor,
+            // padding: EdgeInsets.only(left: 20),
             child: Row(
               children: <Widget>[
                 Text(bean?.goodsName ?? '',
@@ -60,17 +62,19 @@ class GridCard extends StatelessWidget {
                   TextSpan(
                     text: '起',
                     style: themeData.textTheme.caption
-                        .copyWith(fontSize: UIKit.sp(22)),
+                        .copyWith(fontSize: UIKit.sp(20)),
                   ),
                   TextSpan(
                     text: ' ',
                   ),
                   TextSpan(
-                      text: bean?.isPromotionGoods == true
-                          ? '￥${bean?.marketPrice}起'
-                          : '',
-                      style: themeData.textTheme.caption
-                          .copyWith(decoration: TextDecoration.lineThrough)),
+                    text: bean?.isPromotionGoods == true
+                        ? '￥${bean?.marketPrice}起'
+                        : '',
+                    style: themeData.textTheme.caption.copyWith(
+                        decoration: TextDecoration.lineThrough,
+                        fontSize: UIKit.sp(20)),
+                  ),
                   // TextSpan(text: '\n'),
                   // TextSpan(text: '11324'),
                 ])),

@@ -51,6 +51,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
 
   @override
   void dispose() {
+    goodsProvider?.dispose();
     super.dispose();
   }
 
@@ -62,7 +63,6 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
           if (mounted)
             TargetOrderGoods.instance.endProductProvider?.cartCount =
                 cartCountResp?.data;
-          print(TargetOrderGoods.instance.endProductProvider?.cartCount);
         })
         .catchError((err) => err)
         .whenComplete(() {
@@ -81,6 +81,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
   @override
   void initState() {
     fetchData();
+
     super.initState();
   }
 
@@ -115,6 +116,11 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: Text('商品详情'),
+    //   ),
+    // );
     return PageTransitionSwitcher(
       duration: Duration(milliseconds: 500),
       transitionBuilder: (
@@ -130,10 +136,8 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
       },
       child: isLoading
           ? LoadingCircle()
-          : ChangeNotifierProvider<EndProductProvider>(
-              create: (BuildContext context) {
-                return goodsProvider;
-              },
+          : ChangeNotifierProvider<EndProductProvider>.value(
+              value: goodsProvider,
               child: Consumer<EndProductProvider>(builder:
                   (BuildContext context, EndProductProvider provider, _) {
                 return WillPopScope(
@@ -161,20 +165,25 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                                   //     vertical: UIKit.height(20)),
                                   margin: EdgeInsets.only(top: 80),
                                   child: Swiper(
+                                    key: ValueKey(id),
                                     itemCount: bean?.goodsImgList?.length,
                                     itemBuilder:
                                         (BuildContext context, int index) {
                                       ProductBeanGoodsImageBean item =
                                           bean?.goodsImgList[index];
                                       return ZYNetImage(
-                                          width: 300,
-                                          height: 300,
-                                          imgPath: item?.picCover);
+                                        width: 300,
+                                        height: 300,
+                                        imgPath: item?.picCoverBig,
+                                        needAnimation: false,
+                                      );
                                     },
                                     pagination: new SwiperPagination(
                                         margin:
                                             EdgeInsets.symmetric(horizontal: 5),
                                         builder: DotSwiperPaginationBuilder(
+                                            size: 8.0,
+                                            activeSize: 8.0,
                                             activeColor: Colors.black,
                                             color:
                                                 Colors.black.withOpacity(.3))),
@@ -327,7 +336,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                     ),
                     bottomNavigationBar: PurchaseActionBar(
                       totalPrice: '${provider?.totalPrice ?? '0.00'}',
-                      canAddToCart: provider?.canAddToCart,
+                      canAddToCart: provider?.canAddToCart ?? true,
                       addToCartFunc: () {
                         selectAttrOption(provider, () {
                           provider?.addCart(context);
@@ -376,7 +385,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                                   Padding(
                                     padding: EdgeInsets.only(right: 14),
                                     child: ZYNetImage(
-                                      imgPath: provider?.curSkubean?.coverUrl,
+                                      imgPath: provider?.curSkubean?.tinyPicUrl,
                                       width: UIKit.width(180),
                                       height: UIKit.width(180),
                                     ),

@@ -1,5 +1,5 @@
 class Constants {
-  static const HOST = "http://106.14.219.213:8001";
+  static const HOST = "http://106.14.219.213:80";
   static const TRANSITION_DURATION = Duration(milliseconds: 300);
   //订单状态
 
@@ -12,7 +12,7 @@ class Constants {
   static const String ORDER_STATUS_PAY_TAIL = '待付款';
   static const String ORDER_STATUS_PRODUCTING = '生产中';
 
-  static const String ORDER_STATUS_TO_SHIP = '待出库';
+  static const String ORDER_STATUS_TO_SHIP = '待发货';
   static const String ORDER_STATUS_TO_RECEIVE = '待收货';
   static const String ORDER_STATUS_TO_INSTALL = '待安装';
   static const String ORDER_STATUS_FINISHED = '已完成';
@@ -116,7 +116,7 @@ class Constants {
     },
     6: {
       'title': '商品已准备完毕',
-      'subtitle': '待出库',
+      'subtitle': '待发货',
     },
     7: {
       'title': '已发货',

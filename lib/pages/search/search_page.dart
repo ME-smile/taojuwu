@@ -172,6 +172,7 @@ class _SearchPageState extends State<SearchPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text('删除搜索记录'),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               content: Text('你确定要清空搜索记录吗？'),
               actions: <Widget>[
                 FlatButton(

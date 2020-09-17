@@ -8,10 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:taojuwu/application.dart';
-import 'package:taojuwu/constants/constants.dart';
 
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/models/shop/cart_list_model.dart';
+
 import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
 
 import 'package:taojuwu/models/shop/tag_model.dart';
@@ -56,7 +56,13 @@ class CurtainMallPage extends StatefulWidget {
 
 class _CurtainMallPageState extends State<CurtainMallPage>
     with TickerProviderStateMixin, RouteAware {
-  List get tabs => ['窗帘', '床品', '抱枕', '沙发', '饰品'];
+  List get tabs => [
+        '窗帘',
+        '床品',
+        '抱枕',
+        '沙发',
+        '饰品',
+      ];
   List<List<GoodsItemBean>> goodsListWrapper = List(5);
   List<BuildContext> contextList = List(5);
   BuildContext get curTabContext => contextList[tabIndex];
@@ -82,19 +88,20 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   bool get isFromSearch => widget.keyword.isNotEmpty ?? false;
   @override
   void initState() {
+    print("--------------------------------------------------------");
+    print(Application.sp.get('token'));
     super.initState();
     TargetRoute.instance.context = context;
     params['keyword'] = keyword;
     tabController = TabController(
+      initialIndex: 0,
       length: tabs.length,
       vsync: this,
     )..addListener(() {
         closeSortPanel();
         closeEndDrawer();
-        fetchTag();
+        fetchTag({'category_type': tabIndex});
       });
-
-    scrollController = ScrollController();
 
     fetchData();
   }
@@ -109,12 +116,14 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         })
         .catchError((err) => err)
         .whenComplete(() {
-          setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         });
   }
 
   bool showSortPanel = false;
-  bool hasNotPush = true;
+
   void sort(BuildContext ctx) {
     setState(() {
       showSortPanel = !showSortPanel;
@@ -123,25 +132,29 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     RenderBox renderBox = ctx.findRenderObject();
     Rect box = renderBox.localToGlobal(Offset.zero) & renderBox.size;
 
-    if (hasNotPush) {
-      hasNotPush = false;
+    if (showSortPanel) {
       Navigator.of(context)
-          .push(PopDownRoute(buildSortMenu(),
-              offsetY: box.bottom + 10,
-              drawerKey: drawerKey, closedCallback: () {
+          .push(PopDownRoute(
+        buildSortMenu(),
+        offsetY: box.bottom + UIKit.height(15),
+        drawerKey: drawerKey,
+      ))
+          .whenComplete(() {
         setState(() {
           showSortPanel = false;
         });
-      }))
-          .whenComplete(() {
-        hasNotPush = true;
       });
     } else {
-      print(showSortPanel);
-      print('-----¥关闭弹窗');
-      hasNotPush = true;
-      Navigator.of(context).pop();
+      closeSortPanel();
     }
+    // if (hasNotPush) {
+
+    // } else {
+    //   print(showSortPanel);
+    //   print('-----¥关闭弹窗');
+    //   hasNotPush = true;
+    //   closeSortPanel();
+    // }
     //
     // Navigator.of(context).push(ZYDropdownRoute(
     //     position: box, drawerKey: drawerKey, child: buildSortMenu()));
@@ -176,8 +189,14 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
   static List<Map<String, dynamic>> sortTypes = [
     {
-      'text': '销量排序',
+      'text': '默认排序',
       'is_checked': true,
+      'order': '',
+      'sort': '',
+    },
+    {
+      'text': '销量排序',
+      'is_checked': false,
       'order': 'sales',
       'sort': 'desc',
     },
@@ -251,28 +270,34 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   Widget _buildFilter3() {
     return Builder(
       builder: (BuildContext ctx) {
-        return InkWell(
+        return GestureDetector(
+          behavior: HitTestBehavior.deferToChild,
           onTap: () {
             sort(ctx);
           },
-          child: Row(
-            children: <Widget>[
-              Text(
-                currentSortType['text'],
-                style: TextStyle(fontSize: 13),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 1, left: 5),
-                child: ZYAssetImage(
-                  showSortPanel == false ? 'dropdown@2x.png' : 'dropup@2x.png',
-                  width: 12,
-                  height: 12,
-                  callback: () {
-                    sort(ctx);
-                  },
+          child: Container(
+            padding: EdgeInsets.only(right: 16),
+            child: Row(
+              children: <Widget>[
+                Text(
+                  currentSortType['text'],
+                  style: TextStyle(fontSize: 13),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: EdgeInsets.only(top: 1, left: 5),
+                  child: ZYAssetImage(
+                    showSortPanel == false
+                        ? 'dropdown@2x.png'
+                        : 'dropup@2x.png',
+                    width: 12,
+                    height: 12,
+                    callback: () {
+                      sort(ctx);
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -283,76 +308,76 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       GlobalKey<AniamatedDropdownDrawerState>();
   Widget buildSortMenu() {
     Size size = MediaQuery.of(context).size;
-    return Material(
-      child:
-          StatefulBuilder(builder: (BuildContext context, Function setState) {
-        return GestureDetector(
-            onTap: () {
-              // setState(() {
-              //   showSortPanel = false;
-              // });
-            },
-            child: Container(
-                height: 140,
-                color: Colors.white,
-                child: Column(
-                    children: sortTypes
-                        ?.map((bean) => Builder(builder: (BuildContext ctx) {
-                              return GestureDetector(
-                                onTap: () {
-                                  if (bean['is_checked']) return;
-                                  sortTypes.forEach((element) {
-                                    element['is_checked'] = element == bean;
-                                  });
-
-                                  sortData();
-                                  setState(() {});
-                                  drawerKey.currentState
-                                      .close()
-                                      .then((value) {});
-                                  if (hasNotPush) Navigator.of(context).pop();
-                                },
-                                child: Container(
-                                  width: size.width,
-                                  padding: EdgeInsets.symmetric(vertical: 5),
-                                  alignment: Alignment.center,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      Text(bean['text']),
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      Opacity(
-                                        child: Icon(
-                                          ZYIcon.check,
-                                          color: const Color(0xFF050505),
-                                        ),
-                                        opacity: bean['is_checked'] ? 1.0 : 0,
-                                      )
-                                    ],
-                                  ),
+    return StatefulBuilder(builder: (BuildContext context, Function setState) {
+      return Container(
+          height: 180,
+          color: Colors.white,
+          child: Column(
+              children: sortTypes
+                  ?.map((bean) => Builder(builder: (BuildContext ctx) {
+                        return GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () async {
+                            // if (bean['is_checked']) return;
+                            sortTypes.forEach((element) {
+                              element['is_checked'] = element == bean;
+                            });
+                            Navigator.of(context).pop();
+                            //弹出蒙版
+                            sortData();
+                            await drawerKey.currentState
+                                .close()
+                                .whenComplete(() {});
+                            // closeSortPanel();
+                          },
+                          child: Container(
+                            width: size.width,
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            alignment: Alignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 20,
                                 ),
-                              );
-                            }))
-                        ?.toList())));
-      }),
-    );
+                                Text(bean['text']),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Opacity(
+                                  child: Icon(
+                                    ZYIcon.check,
+                                    color: const Color(0xFF050505),
+                                  ),
+                                  opacity: bean['is_checked'] ? 1.0 : 0,
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }))
+                  ?.toList()));
+    });
   }
 
   void closeSortPanel() {
-    if (hasNotPush) return;
-    if (!hasNotPush) {
-      drawerKey.currentState.close();
+    if (!showSortPanel && drawerKey?.currentState?.mounted == true) {
+      drawerKey?.currentState?.close();
       Navigator.of(context).pop();
+      setState(() {
+        showSortPanel = false;
+      });
     }
   }
 
   void filter() {
-    closeSortPanel();
+    // closeSortPanel();
+    if (drawerKey?.currentState?.mounted == true) {
+      // closeSortPanel();
+      drawerKey.currentState.close();
+      Navigator.of(context).pop();
+    }
+
     ScaffoldState state = _scaffoldKey.currentState;
     setState(() {
       if (!state.isEndDrawerOpen) {
@@ -371,7 +396,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     args['page_index'] = 1;
     args['category_type'] = tabIndex;
     Application.eventBus.fire(
-      FilterEvent(args, tab: tabIndex),
+      FilterEvent(args, tab: tabIndex, shouldRefresh: true),
     );
     setState(() {
       showFloatingButton = true;
@@ -380,8 +405,9 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   }
 
   Widget _buildFilter4() {
-    return InkWell(
+    return GestureDetector(
       onTap: filter,
+      behavior: HitTestBehavior.translucent,
       child: Container(
         alignment: Alignment.center,
         child: Row(
@@ -415,6 +441,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
   void checkTag(
       TagFilter filter, List<TagFilterOption> options, TagFilterOption bean) {
+    // ToastKit.showLoading();
     bean?.isChecked = !bean.isChecked;
     if (filter?.isMulti == false) {
       options?.forEach((item) {
@@ -422,6 +449,15 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           item?.isChecked = false;
         }
       });
+    }
+
+    if (bean?.shouldRefresh == true) {
+      fetchTag({
+        'category_type': tabIndex,
+        bean?.key: [bean?.id]
+      }, callback: () {
+        // ToastKit.dismiss();
+      }, bean: bean);
     }
     setState(() {});
   }
@@ -555,13 +591,26 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     }).whenComplete(() {});
   }
 
-  void fetchTag() {
-    OTPService.tagList(context, params: {'category_type': tabIndex})
+  void fetchTag(Map<String, dynamic> params,
+      {Function callback, TagFilterOption bean}) {
+    print(params);
+    OTPService.tagList(context, params: params)
         .then((TagModelListResp response) {
           tagWrapper = response?.data;
+
+          if (bean != null) {
+            tagWrapper?.filterList?.forEach((element) {
+              if (element?.filterName == bean?.key) {
+                element?.filterValue?.forEach((e) {
+                  e?.isChecked = e.id == bean?.id;
+                });
+              }
+            });
+          }
         })
         .catchError((err) => err)
         .whenComplete(() {
+          if (callback != null) callback();
           setState(() {});
         });
   }
@@ -572,7 +621,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       CurtainProductListResp curtainProductListResp = data[0];
       TagModelListResp tagListResp = data[1];
       CartCountResp cartCountResp = data[2];
-      cartCount = cartCountResp?.data;
+      cartCount = cartCountResp?.data ?? 0;
       beanData = curtainProductListResp?.data;
       tabController?.index = beanData?.categoryType;
       wrapper = beanData?.goodsList;
@@ -611,7 +660,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
       'page_index': 1,
       'order': currentSortType['order'],
       'sort': currentSortType['sort']
-    }, tab: tabIndex));
+    }, tab: tabIndex, shouldRefresh: true));
     closeSortPanel();
     scrollToTop();
   }
@@ -655,7 +704,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                           decoration: BoxDecoration(
                               color: Colors.red,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(8))),
+                                  BorderRadius.all(Radius.circular(9))),
                         ),
                         visible: cartCount != 0,
                       ),
@@ -768,6 +817,9 @@ class _CurtainMallPageState extends State<CurtainMallPage>
           ),
           body: NotificationListener(
             onNotification: (ScrollNotification notofication) {
+              if (notofication.depth == 0) {
+                return false;
+              }
               if (notofication.runtimeType == ScrollStartNotification) {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                   setState(() {
@@ -801,7 +853,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                       'page_index': 1,
                       'type': 1,
                       'sort': currentSortType['sort'],
-                      'order': currentSortType['order']
+                      'order': currentSortType['order'],
                     },
                   );
                 }),
@@ -849,26 +901,25 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   List<GoodsItemBean> goodsList = [];
   StreamSubscription filterSubscription;
   int pageIndex = 1;
+
+  Map<String, dynamic> extraArgs = {};
   @override
   void initState() {
     _refreshController = RefreshController(
         initialRefresh: false, initialLoadStatus: LoadStatus.idle);
     scrollController = ScrollController();
-    if (mounted) {
-      filterSubscription =
-          Application.eventBus.on<FilterEvent>().listen((event) {
+    filterSubscription = Application.eventBus.on<FilterEvent>().listen((event) {
+      if (tab == event.tab) {
+        extraArgs = event?.args;
         params?.addAll(event?.args);
 
-        if (event.tab == tab) {
-          setState(() {
-            isLoading = true;
-          });
-          requestGoodsData();
-        }
-
-        // goodsList?.clear();
-      });
-    }
+        setState(() {
+          isLoading = true;
+        });
+        refresh();
+      }
+      // goodsList?.clear();
+    });
     // Future.delayed(Constants.TRANSITION_DURATION, () {
     //   setState(() {
     //     isLoading = false;
@@ -882,6 +933,7 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
     filterSubscription?.cancel();
     _refreshController?.dispose();
     scrollController?.dispose();
+    // Application.eventBus.streamController.close();
     super.dispose();
   }
 
@@ -901,17 +953,18 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
 
   @override
   void didChangeDependencies() {
-    isRefresh = true;
+    if (mounted) {
+      isRefresh = true;
 
-    Future.delayed(Constants.TRANSITION_DURATION, () {
       requestGoodsData();
-    });
+    }
     super.didChangeDependencies();
   }
 
   void load() {
     isRefresh = false;
     pageIndex++;
+    params.addAll(extraArgs);
     // params['page_index']++;
 
     requestGoodsData();
@@ -923,14 +976,15 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
     setState(() {});
   }
 
+  bool isNoData = false;
   requestGoodsData() {
     params?.addAll({'page_index': pageIndex});
+    params.addAll(extraArgs);
     OTPService.productGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
       if (curtainProductListResp?.valid == true) {
         beanData = curtainProductListResp?.data;
         wrapper = beanData?.goodsList;
-
         List<GoodsItemBean> beans = wrapper?.data ?? [];
         int pages = (beanData?.totalCount ?? 0) ~/ PAGE_SIZE;
         int mod = (beanData?.totalCount ?? 0) % PAGE_SIZE;
@@ -938,44 +992,49 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
 
         if (isRefresh) {
           goodsList = wrapper?.data;
-          return _refreshController?.refreshCompleted();
+          // return _refreshController?.refreshCompleted();
         } else {
-          if (beans?.isEmpty == true) {
-            return _refreshController?.loadNoData();
-          } else {
-            beans?.forEach((item) {
-              goodsList?.add(item);
-            });
-            if (beans.length < PAGE_SIZE) {
-              return _refreshController?.loadNoData();
-            } else {
-              return _refreshController?.loadComplete();
-            }
-          }
-          // if (beans.length < PAGE_SIZE) {
-          //   _refreshController?.loadNoData();
-          // } else {
-          //   beans?.forEach((item) {
-          //     goodsList?.add(item);
-          //   });
-          //   // setState(() {
-          //   //   goodsList?.addAll(beans);
-          //   // });
-
-          // }
+          beans?.forEach((item) {
+            goodsList?.add(item);
+          });
         }
-      }
 
+        // return _refreshController?.loadComplete();
+
+        // if (beans.length < PAGE_SIZE) {
+        //   _refreshController?.loadNoData();
+        // } else {
+        //   beans?.forEach((item) {
+        //     goodsList?.add(item);
+        //   });
+        //   // setState(() {
+        //   //   goodsList?.addAll(beans);
+        //   // });
+
+        // }_re
+
+      }
+    }).catchError((err) {
       if (isRefresh) {
         return _refreshController?.refreshFailed();
       } else {
         return _refreshController?.loadFailed();
       }
-    }).catchError((err) {
-      print('出现异常');
-      return err;
     }).whenComplete(() {
       if (mounted) {
+        if (isRefresh) {
+          // 清空筛选条案
+          // params['filter_condition'] = '';
+
+          _refreshController?.refreshCompleted();
+        } else {
+          if (totalPage >= pageIndex) {
+            _refreshController?.loadComplete();
+          } else {
+            _refreshController?.resetNoData();
+            _refreshController?.loadNoData();
+          }
+        }
         setState(() {
           isLoading = false;
         });
@@ -988,9 +1047,10 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
         // physics: NeverScrollableScrollPhysics(),
         controller: scrollController,
         shrinkWrap: true,
+        padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: .8,
+          childAspectRatio: .75,
           crossAxisSpacing: 10,
         ),
         itemCount: goodsList == null || goodsList?.isEmpty == true
@@ -1023,7 +1083,7 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
         itemBuilder: (BuildContext context, int i) {
           return AnimationConfiguration.staggeredList(
             position: i,
-            duration: Duration(milliseconds: 700),
+            duration: Duration(milliseconds: 200),
             child: SlideAnimation(
                 verticalOffset: 200.0,
                 child: FadeInAnimation(

@@ -8,8 +8,11 @@ import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 class OrderCommitSuccessPage extends StatelessWidget {
   final int clientId;
-  final int orderType; //1表示普通订单 2表示 测量单
-  const OrderCommitSuccessPage({Key key, this.clientId, this.orderType: 1})
+  final int orderType;
+  final bool showTip;
+  //1表示普通订单 2表示 测量单
+  const OrderCommitSuccessPage(
+      {Key key, this.clientId, this.orderType = 1, this.showTip = false})
       : super(key: key);
 
   @override
@@ -35,13 +38,21 @@ class OrderCommitSuccessPage extends StatelessWidget {
                   width: UIKit.width(180),
                   height: UIKit.height(180),
                 ),
-                VSpacing(30),
                 Text(
-                  '等待师傅上门测量尺寸~',
-                  style: textTheme.caption,
+                  '订单提交成功',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                Text('请在测量完成后支付尾款', style: textTheme.caption),
+                VSpacing(30),
+                Visibility(
+                  child: Text(
+                    '等待师傅上门测量尺寸~\n请在测量完成后支付尾款',
+                    style: textTheme.caption,
+                  ),
+                  visible: showTip,
+                ),
+                // Text('请在测量完成后支付尾款', style: textTheme.caption),
                 VSpacing(20),
+
                 InkWell(
                   onTap: () {
                     if (orderType == 2) {

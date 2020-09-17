@@ -63,7 +63,7 @@ class _LikeButtonState extends State<LikeButton> {
 
   @override
   void initState() {
-    hasLiked = widget.hasLiked;
+    hasLiked = widget.hasLiked ?? false;
     super.initState();
   }
 

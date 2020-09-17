@@ -225,6 +225,8 @@ class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
                             }, hasCustomizedProdoct: hasCustomizedProduct);
                           },
                           isActive: canClick,
+                          verticalPadding: 6,
+                          horizontalPadding: 18,
                         ),
                       ],
                     ),

@@ -1,19 +1,20 @@
 # taojuwu
 
-A new Flutter project.
+1.上架信息
+1.0.1
+华为 1.0.1 2002
+应用宝 1.0.1 1002
+oppo 1.0.1 1002
+vivo 1.0.1 1002
+小米 1.1.1 1002
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+1.0.2 上架
 
-A few resources to get you started if this is your first Flutter project:
+oppo 1.0.1 2002
+vivo 1.0.1 2002
+华为 1.0.1 2002
+小米 1.1.2 2002
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-# 单例模式
+1.1.3 上架
 

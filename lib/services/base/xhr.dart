@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:taojuwu/application.dart';
+import 'package:taojuwu/router/handlers.dart';
 
 // import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/services/api_path.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
-
 
 // import 'package:taojuwu/models/user/user_info_model.dart';
 
@@ -33,6 +33,12 @@ class Xhr {
 
         return options; //continue
       }, onResponse: (Response response) {
+        if (response != null &&
+            response.data is Map &&
+            response.data["code"] == "-999") {
+          RouteHandler.goLoginPage(Application.context);
+          return;
+        }
         response.data = jsonDecode(response.toString());
       }),
       Application.cache

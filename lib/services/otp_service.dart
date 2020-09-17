@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_upgrade/flutter_app_upgrade.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/models/app_info/app_info_model.dart';
 import 'package:taojuwu/models/logistics/logistics_data_model.dart';
 import 'package:taojuwu/models/order/measure_data_model.dart';
@@ -55,7 +56,10 @@ class OTPService {
       ApiPath.productMall,
       params: params ?? {},
     );
-    return CurtainProductListResp.fromMap(response.data);
+
+    print('返回的商品结果');
+    print(response?.data);
+    return CurtainProductListResp.fromMap(response?.data);
   }
 
   static Future<TagListResp> tag(BuildContext context,
@@ -67,11 +71,14 @@ class OTPService {
   static Future<TagModelListResp> tagList(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response = await xhr.get(context, ApiPath.tagList, params: params);
-    return TagModelListResp.fromMap(response.data);
+
+    return TagModelListResp.fromMap(response?.data);
   }
 
   static Future mallData(BuildContext context,
       {Map<String, dynamic> params}) async {
+    print("携带的token----------------------------------------------------");
+    print(Application.sp.get('toekn'));
     List<Future> list = [
       productGoodsList(context, params: params),
       tagList(context, params: params),
@@ -233,7 +240,7 @@ class OTPService {
     if (resp?.valid == true) {
       ToastKit.showSuccessDIYInfo('登录成功');
     } else {
-      ToastKit.showErrorInfo('账号或密码错误');
+      ToastKit.showErrorInfo(resp?.message ?? '账号或密码错误');
     }
     return resp;
   }

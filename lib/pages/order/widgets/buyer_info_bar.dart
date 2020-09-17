@@ -28,7 +28,7 @@ class BuyerInfoBar extends StatelessWidget {
           child: Row(
             children: <Widget>[
               CircleAvatar(
-                radius: UIKit.sp(60),
+                radius: UIKit.sp(48),
                 child: Text(
                   '收',
                   style: accentTextTheme.headline6

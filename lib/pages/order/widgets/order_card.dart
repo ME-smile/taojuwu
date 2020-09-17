@@ -41,7 +41,8 @@ class OrderCard extends StatelessWidget {
         RouteHandler.goAfterSaleServicePage(context);
       },
       14: () {
-        RouteHandler.goOrderDetailPage(context, orderModelData?.orderId);
+        RouteHandler.goOrderDetailPage(context, orderModelData?.orderId,
+            orderStatus: orderStatus);
       }
     };
 

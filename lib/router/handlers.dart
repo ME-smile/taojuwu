@@ -146,7 +146,7 @@ class RouteHandler {
   static Handler orderDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int id = int.parse(params['id']?.first);
-    String orderStatus = params['order_status']?.first ?? '';
+    String orderStatus = params['orderStatus']?.first ?? '';
     // int tab = int.parse(params['tab']?.first);
     return OrderDetailPage(id: id, orderStatus: orderStatus);
   });
@@ -271,8 +271,9 @@ class RouteHandler {
 
   static Handler curtainMall = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    String keyword =
-        FluroConvertUtils.fluroCnParamsDecode(params['keyword']?.first);
+    String key = params['keyword']?.first;
+    key = key ?? '';
+    String keyword = FluroConvertUtils.fluroCnParamsDecode(key);
     return CurtainMallPage(
       keyword: keyword,
     );
@@ -389,16 +390,18 @@ class RouteHandler {
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int clientId = int.parse(params['clientId']?.first) ?? -1;
     int orderType = int.parse(params['orderType']?.first) ?? -1;
+    int showTip = int.parse(params['showTip']?.first);
     return OrderCommitSuccessPage(
       clientId: clientId,
       orderType: orderType,
+      showTip: showTip == 1,
     );
   });
 
   static Future goOrderCommitSuccessPage(BuildContext context, String clientId,
-      {int orderType: 1}) {
+      {int orderType: 1, int showTip: 1}) {
     return _jumpTo(context,
-        '${Routes.orderCommitSuccess}?clientId=$clientId&orderType=$orderType');
+        '${Routes.orderCommitSuccess}?clientId=$clientId&orderType=$orderType&showTip=$showTip');
   }
 
   static Handler orderSearch = Handler(
@@ -555,7 +558,7 @@ class RouteHandler {
   });
   static Future goEndProductDetail(BuildContext context, int id) {
     return _jumpTo(context, '${Routes.endProductDetail}?id=$id',
-        maintainState: true);
+        maintainState: false);
   }
 
   static Handler editGoodsAttr = Handler(

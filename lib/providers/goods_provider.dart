@@ -985,15 +985,11 @@ class GoodsProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    if (false == true) {
-      super.dispose();
-    }
+    super.dispose();
   }
 
   release() {
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      super.dispose();
-    });
+    super.dispose();
   }
 
   Future saveMeasure(BuildContext context, {Function callback}) async {
@@ -1100,14 +1096,21 @@ class GoodsProvider with ChangeNotifier {
     });
   }
 
+  String get openModeStr {
+    if (curOpenOptionIndex == 2) {
+      return '$curOpenMode:$checkedSubOptionStr';
+    }
+    return curOpenMode;
+  }
+
   String get attrDesc {
-    return '宽:${widthMStr ?? ''}米 高:${heightMStr ?? ''}米、${_curRoomAttrBean?.name ?? ''}、${windowPatternStr ?? ''}、${curInstallMode ?? ''}、${curOpenMode ?? ''}、${checkedSubOptionStr ?? ''}、${_curCraftAttrBean?.name ?? ''}、离地距离:${dyCMStr?.isEmpty == true ? '未知' : dyCMStr + 'cm'}';
+    return '宽:${widthMStr ?? ''}米 高:${heightMStr ?? ''}米、${_curRoomAttrBean?.name ?? ''}、${windowPatternStr ?? ''}、${curInstallMode ?? ''}、${openModeStr ?? ''}、${_curCraftAttrBean?.name ?? ''}、离地距离:${dyCMStr?.isEmpty == true ? '未知' : dyCMStr ?? '' + 'cm'}';
   }
 
   Future purchase(BuildContext context) async {
     print({
       'tag': curRoomAttrBean?.name ?? '',
-      'img': goods?.picCoverMid ?? '',
+      'img': goods?.picCoverBig ?? '',
       'goods_name': goods?.goodsName,
       'price': goods?.price,
       'desc': attrDesc,
@@ -1140,7 +1143,7 @@ class GoodsProvider with ChangeNotifier {
           'data': [
             {
               'tag': curRoomAttrBean?.name ?? '',
-              'img': goods?.picCoverMid ?? '',
+              'img': goods?.picCoverBig ?? '',
               'goods_name': goods?.goodsName,
               'price': goods?.price,
               'desc': attrDesc,

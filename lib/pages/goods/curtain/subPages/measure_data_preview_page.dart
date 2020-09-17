@@ -44,6 +44,7 @@ class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
                 '离地距离',
                 textAlign: TextAlign.center,
               ),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[

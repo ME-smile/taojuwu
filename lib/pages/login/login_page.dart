@@ -265,6 +265,9 @@ class _LoginPageState extends State<LoginPage> {
     if (tel.trim().isEmpty) {
       return ToastKit.showInfo('手机号不能为空哦');
     }
+    if (RegexUtil.isTel(tel)) {
+      return ToastKit.showInfo('请输入正确的手机号');
+    }
     if (code.trim().isEmpty) {
       return ToastKit.showInfo('验证码不能为空哦');
     }
@@ -404,17 +407,20 @@ class _LoginPageState extends State<LoginPage> {
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                       hintText: '请输入手机号',
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0xFFC7C8CB), width: 1)),
                       enabledBorder: UnderlineInputBorder(
                           borderSide:
-                              BorderSide(color: Color(0xFFC7C8CB), width: .1)),
+                              BorderSide(color: Color(0xFFC7C8CB), width: 1)),
                       icon: Container(
                         child: Text('+86'),
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                         decoration: BoxDecoration(
                             border: Border(
                                 bottom: BorderSide(
-                                    color: theme.dividerColor, width: .5))
+                                    color: Color(0xFFC7C8CB), width: 1))
                             // border: Border.fromBorderSide(BorderSide(color: ))
                             ),
                       )),
@@ -425,6 +431,12 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _smsController,
                         decoration: InputDecoration(
                             hintText: '请输入验证码',
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xFFC7C8CB), width: 1)),
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xFFC7C8CB), width: 1)),
                             suffixIcon: SendSmsButton(
                               isActive: isValidTel,
                               callback: () {
@@ -453,6 +465,12 @@ class _LoginPageState extends State<LoginPage> {
                         controller: _pwdController,
                         decoration: InputDecoration(
                             hintText: '请输入密码',
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xFFC7C8CB), width: 1)),
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Color(0xFFC7C8CB), width: 1)),
                             suffixIcon: FlatButton(
                                 onPressed: () {
                                   RouteHandler.goForgetPwdPage(context);
@@ -482,9 +500,10 @@ class _LoginPageState extends State<LoginPage> {
                   WidgetSpan(
                       child: InkWell(
                     onTap: () {
-                      showPrivacy(context);
+                      RouteHandler.goProtocalPage(context);
+                      // showPrivacy(context);
                     },
-                    child: Text('用户协议',
+                    child: Text('隐私政策与用户协议',
                         style: textTheme.caption
                             .copyWith(color: textTheme.bodyText2.color)),
                   )),

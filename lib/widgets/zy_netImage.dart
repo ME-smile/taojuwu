@@ -11,6 +11,7 @@ class ZYNetImage extends StatelessWidget {
   final double height;
   final Function callback;
   final BoxFit fit;
+  final bool needAnimation;
   const ZYNetImage(
       {Key key,
       this.imgPath,
@@ -18,6 +19,7 @@ class ZYNetImage extends StatelessWidget {
       this.height,
       this.width,
       this.callback,
+      this.needAnimation = true,
       this.fit: BoxFit.fill})
       : super(key: key);
 
@@ -28,7 +30,7 @@ class ZYNetImage extends StatelessWidget {
         child: FadeInImage(
             width: width,
             height: height,
-            fadeInDuration: Duration(milliseconds: 500),
+            fadeInDuration: Duration(milliseconds: needAnimation ? 200 : 10),
             placeholder: AssetImage(UIKit.getAssetsImagePath(
               'goods_placeholder.png',
             )),

@@ -32,10 +32,10 @@ class ThemeProvider with ChangeNotifier {
       labelStyle: TextStyle(color: TaojuwuColors.LABEL_TEXT_COLOR),
       enabledBorder: InputBorder.none,
       focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: TaojuwuColors.BORDER_COLOR, width: .1),
+        borderSide: BorderSide(color: Colors.transparent, width: 0),
       ),
       border: UnderlineInputBorder(
-        borderSide: BorderSide(color: TaojuwuColors.BORDER_COLOR, width: .1),
+        borderSide: BorderSide(color: Colors.transparent, width: 0),
       ),
     ),
     accentTextTheme: TextTheme(

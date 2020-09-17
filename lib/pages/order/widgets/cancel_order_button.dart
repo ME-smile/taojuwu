@@ -20,6 +20,8 @@ class CancelOrderButton extends StatelessWidget {
         callback();
       },
       isActive: isActive,
+      horizontalPadding: 18,
+      verticalPadding: 5,
     );
   }
 }

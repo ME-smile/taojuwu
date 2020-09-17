@@ -91,6 +91,7 @@ class OrderKit {
                 '您确定要取消订单？',
                 textAlign: TextAlign.center,
               ),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -198,6 +199,7 @@ class OrderKit {
                 title ?? '',
                 textAlign: TextAlign.center,
               ),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               content: Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -264,6 +266,7 @@ class OrderKit {
                 '您确定取消此商品?' ?? '',
                 textAlign: TextAlign.center,
               ),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               content: Container(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -307,6 +310,7 @@ class OrderKit {
                 '修改价格',
                 textAlign: TextAlign.center,
               ),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -578,32 +582,42 @@ class OrderKit {
                   '您还有${provider?.unselectedGoodsNum}窗未完成选品,是否确认提交?',
                   textAlign: TextAlign.center,
                 ),
+                titleTextStyle:
+                    TextStyle(fontSize: 16, color: Color(0xFF333333)),
                 content: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        ZYRaisedButton('确认提交', () async {
-                          await confirmToSelect(context, {
-                            'order_id': provider?.model?.orderId ?? -1
-                          }, callback: () {
-                            // provider?.refresh();
+                        ZYRaisedButton(
+                          '确认提交',
+                          () async {
+                            await confirmToSelect(context, {
+                              'order_id': provider?.model?.orderId ?? -1
+                            }, callback: () {
+                              // provider?.refresh();
 
-                            // provider?.globalKey?.currentState?.initState();
-                          });
+                              // provider?.globalKey?.currentState?.initState();
+                            });
 
-                          Navigator.of(context).pop();
-                        }),
-                        SizedBox(
-                          width: 40,
+                            Navigator.of(context).pop();
+                          },
+                          horizontalPadding: 18,
                         ),
-                        ZYOutlineButton('继续选品', () {
-                          // saveSize(goodsProvider);
-                          // measureData?.newVerticalGroundHeight = tmp;
-                          // goodsProvider?.dy = tmp;
-                          Navigator.of(context).pop();
-                        })
+                        SizedBox(
+                          width: 20,
+                        ),
+                        ZYOutlineButton(
+                          '继续选品',
+                          () {
+                            // saveSize(goodsProvider);
+                            // measureData?.newVerticalGroundHeight = tmp;
+                            // goodsProvider?.dy = tmp;
+                            Navigator.of(context).pop();
+                          },
+                          horizontalPadding: 18,
+                        )
                       ],
                     )
                   ],

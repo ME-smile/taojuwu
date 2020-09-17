@@ -300,7 +300,8 @@ class Gallery extends StatelessWidget {
         shrinkWrap: true,
         itemBuilder: (BuildContext context, int index) {
           return ZYNetImage(
-            height: UIKit.height(160),
+            height: UIKit.width(160),
+            width: UIKit.width(160),
             fit: BoxFit.fill,
             imgPath: imgList[index],
             callback: () {

@@ -54,6 +54,7 @@ class TargetClient {
     _instance.provinceId = null;
     _instance.cityId = null;
     _instance.districtId = null;
+    _instance.addressId = null;
   }
 
   saveInfo(int id, String name) {

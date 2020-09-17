@@ -268,8 +268,10 @@ class ProductBean {
   int fixHeight;
 
   bool get isFixedHeight => fixHeight == 1 ?? false;
-  String get picCoverMid {
-    return imgList?.isEmpty == true ? '' : imgList?.first?.picCover;
+  String get picCoverBig {
+    return goodsImgList?.isEmpty == true
+        ? ''
+        : goodsImgList?.first?.picCoverBig;
   }
 
   List<ProductBeanSpecValueBean> getSpecListByName(String name) {
@@ -414,6 +416,7 @@ class ProductBean {
     tmpBean.skuName = map['sku_name'];
 
     tmpBean.memberPrice = map['member_price'];
+
     tmpBean.imgList = List()
       ..addAll((map['img_list'] as List ?? [])
           .map((o) => ProductBeanGoodsImageBean.fromMap(o)));

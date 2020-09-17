@@ -11,7 +11,7 @@ class CartButton extends StatelessWidget {
     this.callback,
   }) : super(key: key);
 
-  bool get isCartEmpty => count == 0;
+  bool get isCartEmpty => count == 0 || count == null;
   Widget build(BuildContext context) {
     return InkWell(
       onTap: callback,

@@ -30,6 +30,7 @@ class SkuBean extends CountModel {
   String get bigPicUrl => imgBucket?.bigPicUrl;
   String get midPicUrl => imgBucket?.midPicUrl;
   String get coverUrl => imgBucket?.cover;
+  String get tinyPicUrl => imgBucket?.smallPicUrl;
   SkuBean(
       {this.skuName,
       this.attrValueItems,

@@ -42,22 +42,30 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
   @override
   void initState() {
     super.initState();
-
+    orderDetailProvider = OrderDetailProvider();
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData();
     });
   }
 
-  void fetchData() {
-    print('参数为${{'order_id': id, 'order_status': orderStatus}}');
-    OTPService.orderDetail(context,
-            params: {'order_id': id, 'order_status': orderStatus})
+  OrderDetailProvider orderDetailProvider;
+
+  Future fetchData() {
+    String status = orderStatus;
+    if (status.contains(',')) {
+      status = '3';
+    }
+    print('--------+++++++++');
+    print(status);
+    return OTPService.orderDetail(context,
+            params: {'order_id': id, 'order_status': status})
         .then((OrderDerailModelResp response) {
       if (mounted) {
         setState(() {
           isLoading = false;
           OrderDetailModelWrppaer wrppaer = response?.data;
           model = wrppaer?.orderDetailModel;
+          orderDetailProvider.updateModel(model);
           saveInfoForTargetClient(model);
         });
       }
@@ -66,6 +74,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
 
   @override
   void didPopNext() {
+    // fetchData().then((value) {
+    //   Provider.of<OrderDetailProvider>(context, listen: false)
+    //       .updateModel(model);
+    // });
     fetchData();
     super.didPopNext();
   }
@@ -114,6 +126,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
             );
           },
           isActive: orderDetailProvider?.canCancelOrder,
+          verticalPadding: 6,
+          horizontalPadding: 18,
+          fontsize: 14,
         );
       },
     );
@@ -608,7 +623,9 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
                   TextStyle(fontSize: UIKit.sp(28), color: Color(0xFF333333)),
             ),
             Container(
+              alignment: Alignment.centerRight,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Offstage(
                     offstage: !showCopyButton,
@@ -619,16 +636,18 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: text ?? ''));
-                      ToastKit.showToast('已复制到剪切板');
-                    },
-                    child: Text(
-                      '$text',
-                      style: TextStyle(
-                          fontSize: UIKit.sp(28), color: Color(0xFF333333)),
-                    ),
-                  )
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(text: text ?? ''));
+                        ToastKit.showToast('已复制到剪切板');
+                      },
+                      child: Text(
+                        '$text',
+                        maxLines: 2,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: UIKit.sp(28), color: Color(0xFF333333)),
+                      ))
                 ],
               ),
             )
@@ -706,6 +725,20 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
     );
   }
 
+  String get titleName {
+    return model?.titleName == null || model?.titleName?.isEmpty == true
+        ? Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['title'] +
+            '\n\n'
+        : model.titleName + '\n\n';
+  }
+
+  String get titleDesc {
+    if (orderStatus == '8' || orderStatus == '9') return '';
+    return model?.titleDesc == null || model?.titleDesc?.isEmpty == true
+        ? Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['subtitle']
+        : model?.titleDesc;
+  }
+
   void saveInfoForTargetClient(OrderDetailModel model) {
     TargetClient targetClient = TargetClient();
     targetClient.setClientId(model?.clientId);
@@ -713,6 +746,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
     TargetOrderGoods.instance.orderId = model?.orderId;
   }
 
+  BuildContext ctx;
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -723,9 +757,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
     return isLoading
         ? LoadingCircle()
         : ChangeNotifierProvider<OrderDetailProvider>(
-            create: (_) => OrderDetailProvider(
-              model: model,
-            ),
+            create: (_) => orderDetailProvider,
             child: WillPopScope(
                 child: Scaffold(
                   appBar: AppBar(
@@ -749,25 +781,23 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
                           height: UIKit.height(200),
                           color: Color(0xFF18181A),
                           child: Text.rich(TextSpan(
-                              text:
-                                  '${Constants.ORDER_STATUS_TIP_MAP[model?.orderStatus ?? 0]['title']}\n\n',
+                              text: titleName,
                               style: accentTextTheme.headline6.copyWith(
                                   fontSize: UIKit.sp(28),
                                   fontWeight: FontWeight.bold),
                               children: [
                                 TextSpan(
-                                  text: Constants.ORDER_STATUS_TIP_MAP[
-                                      model?.orderStatus ?? 0]['subtitle'],
+                                  text: titleDesc,
                                   style: accentTextTheme.bodyText2
                                       .copyWith(color: Colors.white),
                                 ),
-                                TextSpan(
-                                  text: model?.isWaitingToInstall == true
-                                      ? model?.installTime ?? ''
-                                      : '',
-                                  style: accentTextTheme.bodyText2
-                                      .copyWith(color: Colors.white),
-                                ),
+                                // TextSpan(
+                                //   text: model?.isWaitingToInstall == true
+                                //       ? model?.installTime ?? ''
+                                //       : '',
+                                //   style: accentTextTheme.bodyText2
+                                //       .copyWith(color: Colors.white),
+                                // ),
                                 TextSpan(
                                     text: model?.autoSignTime,
                                     style: accentTextTheme.bodyText2

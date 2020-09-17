@@ -9,6 +9,10 @@ class SelectedProductButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ZYOutlineButton(text, callback);
+    return ZYOutlineButton(
+      text,
+      callback,
+      horizontalPadding: 16,
+    );
   }
 }

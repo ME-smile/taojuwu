@@ -50,6 +50,7 @@ class _CartTabBarViewState extends State<CartTabBarView> {
               index: index,
               clientId: clientId,
               editAttrCallback: () {
+                FocusManager.instance.primaryFocus.unfocus();
                 provider?.curCartModel = cartModel;
               },
             )
@@ -105,6 +106,7 @@ class _CartTabBarViewState extends State<CartTabBarView> {
   @override
   void dispose() {
     _refreshController?.dispose();
+
     super.dispose();
   }
 

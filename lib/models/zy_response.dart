@@ -17,10 +17,12 @@ class ZYResponse<T> {
   }
 
   ZYResponse.fromJson(Map<String, dynamic> json) {
-    this.code = json['code'].runtimeType == int
-        ? json['code']
-        : int.parse(json['code']);
-    this.message = json['msg'] ?? json['message'] ?? '';
+    if (json != null) {
+      this.code = json['code'].runtimeType == int
+          ? json['code']
+          : int.parse(json['code']);
+      this.message = json['msg'] ?? json['message'] ?? '';
+    }
   }
 
   ZYResponse.fromJsonWithData(Map<String, dynamic> json) {

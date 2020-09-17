@@ -38,6 +38,7 @@ class ToastKit {
   }
 
   static void showLoading() {
+    EasyLoading.instance.maskColor = Colors.black;
     EasyLoading.show(status: '正在加载');
   }
 
@@ -59,5 +60,9 @@ class ToastKit {
 
   static void showInfo(String msg) {
     EasyLoading.showInfo(msg);
+  }
+
+  static void dismiss() {
+    EasyLoading.dismiss();
   }
 }

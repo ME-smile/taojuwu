@@ -57,6 +57,7 @@ class _OrderPageState extends State<OrderPage>
     {
       'page_size': PAGE_SIZE,
       'page': 1,
+      'status': 'ing',
     },
     {
       'status': '1',
@@ -139,7 +140,7 @@ class _OrderPageState extends State<OrderPage>
       'index': 4
     },
     {'text': '生产中', 'is_checked': false, 'status': '5', 'count': 0, 'index': 5},
-    {'text': '待出库', 'is_checked': false, 'status': '6', 'count': 0, 'index': 6},
+    {'text': '待发货', 'is_checked': false, 'status': '6', 'count': 0, 'index': 6},
     {
       'text': '待收货',
       'is_checked': false,
@@ -180,91 +181,113 @@ class _OrderPageState extends State<OrderPage>
     TextTheme textTheme = themeData.textTheme;
 
     return StatefulBuilder(builder: (BuildContext ctx, Function setState) {
-      return Container(
-        color: themeData.primaryColor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                color: themeData.primaryColor,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children:
-                    List<Widget>.generate(timePeriodOptions?.length, (int i) {
-                  Map<String, dynamic> item = timePeriodOptions[i];
+      return GestureDetector(
+        onTap: () {
+          Navigator.of(context).pop();
+          setState(() {
+            showFilterHeader = false;
+            hasNotPush = true;
+          });
+        },
+        behavior: HitTestBehavior.translucent,
+        child: Container(
+          color: themeData.primaryColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.only(top: 10),
+                // decoration: BoxDecoration(
+                //   color: themeData.primaryColor,
+                // ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children:
+                      List<Widget>.generate(timePeriodOptions?.length, (int i) {
+                    Map<String, dynamic> item = timePeriodOptions[i];
 
-                  return Expanded(
-                    child: AspectRatio(
-                      aspectRatio: 4,
-                      child: Container(
+                    return Expanded(
+                      child: AspectRatio(
+                        aspectRatio: 4,
+                        child: Container(
+                          margin:
+                              EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                          child: ZYActionChip(
+                            showNumber: false,
+                            bean: ActionBean.fromJson(item),
+                            callback: () {
+                              checkTimePeriodOptions(i);
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                        // child: buildButtonChip(item['text'], () {
+                        //   checkTimePeriodOptions(i);
+                        // }, item['is_checked']),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              GestureDetector(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: UIKit.width(20), top: 16),
+                    child: Text('选择状态',
+                        style: textTheme.caption.copyWith(
+                            backgroundColor: Colors.white,
+                            fontSize: UIKit.sp(28))),
+                  ),
+                ),
+              ),
+              Container(
+                color: themeData.primaryColor,
+                alignment: Alignment.topCenter,
+                child: GridView.count(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.only(top: 8),
+                  physics: NeverScrollableScrollPhysics(),
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 2,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 4,
+                  children: List<Widget>.generate(
+                    statusOptions.length,
+                    (int i) {
+                      Map<String, dynamic> item = statusOptions[i];
+
+                      return Container(
                         margin:
                             EdgeInsets.symmetric(horizontal: UIKit.width(20)),
                         child: ZYActionChip(
+                          showNumber: true,
                           bean: ActionBean.fromJson(item),
                           callback: () {
-                            checkTimePeriodOptions(i);
+                            checkStatusOptions(i);
                             setState(() {});
                           },
                         ),
-                      ),
-                      // child: buildButtonChip(item['text'], () {
-                      //   checkTimePeriodOptions(i);
-                      // }, item['is_checked']),
-                    ),
-                  );
-                }),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: UIKit.width(20), vertical: 4),
-              child: Text('选择状态',
-                  style: textTheme.caption.copyWith(
-                      backgroundColor: Colors.white, fontSize: UIKit.sp(28))),
-            ),
-            Container(
-              color: themeData.primaryColor,
-              alignment: Alignment.topCenter,
-              child: GridView.count(
-                shrinkWrap: true,
-                padding: EdgeInsets.only(top: 8),
-                physics: NeverScrollableScrollPhysics(),
-                crossAxisCount: 3,
-                crossAxisSpacing: 2,
-                mainAxisSpacing: 10,
-                childAspectRatio: 4,
-                children: List<Widget>.generate(
-                  statusOptions.length,
-                  (int i) {
-                    Map<String, dynamic> item = statusOptions[i];
-
-                    return Container(
-                      margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                      child: ZYActionChip(
-                        bean: ActionBean.fromJson(item),
-                        callback: () {
-                          checkStatusOptions(i);
-                          setState(() {});
-                        },
-                      ),
-                    );
-                    // return buildButtonChip('${item['text']}(${item['count']})',
-                    //     () {
-                    //   checkStatusOptions(i);
-                    // }, item['is_checked']);
-                  },
+                      );
+                      // return buildButtonChip('${item['text']}(${item['count']})',
+                      //     () {
+                      //   checkStatusOptions(i);
+                      // }, item['is_checked']);
+                    },
+                  ),
                 ),
               ),
-            ),
-            Container(
-              color: themeData.primaryColor,
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: ZYSubmitButton('确认', closeDropdownDrawer),
-            )
-          ],
+              GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: closeDropdownDrawer,
+                  child: Container(
+                    color: themeData.primaryColor,
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: ZYSubmitButton('确认', closeDropdownDrawer),
+                  ))
+            ],
+          ),
         ),
       );
     });
@@ -310,9 +333,8 @@ class _OrderPageState extends State<OrderPage>
     currentStatus = currentStatusOption['status'];
     currentOrderTime = currentTimePeriodOption['index'];
 
-    // setState(() {
-    //   showFilterHeader = false;
-    // });
+    showFilterHeader = false;
+
     hasNotPush = true;
     Navigator.of(context).pop();
     Future.delayed(Duration(milliseconds: 500), () {
@@ -343,7 +365,7 @@ class _OrderPageState extends State<OrderPage>
         // RegExp reg = new RegExp(r'(\d+)');
         // if (reg.hasMatch(item['text'])) return;
         // String str = item['text'];
-        item['text'] = '${item['text']}(${item['count']})';
+
       }
     }).catchError((err) {
       return err;
@@ -425,7 +447,7 @@ class _OrderPageState extends State<OrderPage>
 
   Map<String, dynamic> formatArgs() {
     Map<String, dynamic> args = {};
-
+    print(currentParams);
     currentParams?.forEach((k, v) {
       args[k] = v;
       if (v is String && v?.isNotEmpty != true) {
@@ -449,7 +471,7 @@ class _OrderPageState extends State<OrderPage>
         // RegExp reg = new RegExp(r'(\d+)');
         // if (reg.hasMatch(item['text'])) return;
         // String str = item['text'];
-        item['text'] = '${item['text']}(${item['count']})';
+        // item['text'] = '${item['text']}(${item['count']})';
       }
     }).catchError((err) {
       return err;
@@ -479,7 +501,7 @@ class _OrderPageState extends State<OrderPage>
     return Navigator.of(context)
         .push(PopDownRoute(
       buildFilterPanel(context),
-      offsetY: box.bottom,
+      offsetY: box.bottom - 10,
       drawerKey: drawerKey,
     ))
         .whenComplete(() {
@@ -491,7 +513,7 @@ class _OrderPageState extends State<OrderPage>
     });
   }
 
-  String currentStatus = '';
+  String currentStatus = 'ing';
   int currentOrderTime = 0;
   bool hasNotPush = true; // 是否已经打开筛选弹窗
   Map<String, dynamic> get currentParams => {
@@ -618,6 +640,8 @@ class _OrderPageState extends State<OrderPage>
           controller: _tabController,
           children: List.generate(tabs.length ?? 0, (int i) {
             params[i]['order_time'] = currentTimePeriodOption['index'];
+            print(params[i]);
+
             return OrderTabView(
               tab: i,
               clientId: widget.clientId,
@@ -778,6 +802,7 @@ class OrderTabView extends StatefulWidget {
   final Map<String, dynamic> params;
   final String status;
   final List<OrderModelData> models;
+
   const OrderTabView(
       {Key key,
       this.clientId,
@@ -796,7 +821,13 @@ class _OrderTabViewState extends State<OrderTabView>
     with AutomaticKeepAliveClientMixin, RouteAware {
   Map<String, dynamic> get params => widget.params;
   List<OrderModelData> get models => widget.models;
-  String get orderStatus => params['status'] ?? '';
+  String get orderStatus {
+    if (tab == 4) {
+      params['status'] = '3';
+    }
+    return params['status'];
+  }
+
   int get tab => widget.tab;
   int get clientId => widget.clientId;
   int totalPage = 0;
@@ -822,7 +853,10 @@ class _OrderTabViewState extends State<OrderTabView>
     //当处于待选品状态时
     if (mounted && tab == 3) {
       isRefresh = true;
-      _refreshController?.requestRefresh();
+      params['page'] = 1;
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        _refreshController?.requestRefresh();
+      });
     }
     super.didPopNext();
   }
@@ -839,7 +873,7 @@ class _OrderTabViewState extends State<OrderTabView>
 
     _refreshController = RefreshController(initialRefresh: false);
     isLoading = true;
-    Future.delayed(Duration(milliseconds: 800), () {
+    Future.delayed(Duration(milliseconds: 375), () {
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -851,6 +885,7 @@ class _OrderTabViewState extends State<OrderTabView>
 
   void requestData(Map<String, dynamic> args) {
     params.addAll({'client_uid': clientId});
+    print(params);
     OTPService.orderList(context, params: params)
         .then((OrderModelListResp response) {
       wrapper = response?.data;

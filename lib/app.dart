@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
@@ -21,6 +20,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Application.context = context;
     return Consumer2<ThemeProvider, UserProvider>(builder:
         (BuildContext context, ThemeProvider provider,
             UserProvider userProvider, _) {

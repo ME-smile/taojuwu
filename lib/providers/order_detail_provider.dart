@@ -182,4 +182,9 @@ class OrderDetailProvider with ChangeNotifier {
       model?.orderId ?? -1,
     );
   }
+
+  void updateModel(OrderDetailModel m) {
+    model = m;
+    notifyListeners();
+  }
 }

@@ -36,8 +36,8 @@ class OrderAttrCard extends StatelessWidget {
           children: <Widget>[
             ZYPhotoView(
               UIKit.getNetworkImgPath(goods?.pictureInfo?.picCoverSmall ?? ''),
-              height: UIKit.width(200),
-              width: UIKit.width(200),
+              height: 90,
+              width: 90,
               tag: CommonKit.getRandomStr(),
             ),
             // ZYNetImage(
@@ -46,7 +46,7 @@ class OrderAttrCard extends StatelessWidget {
             // ),
             Expanded(
                 child: Container(
-              height: UIKit.height(210),
+              height: 90,
               padding: EdgeInsets.only(left: UIKit.width(20)),
               child: Column(
                 mainAxisSize: MainAxisSize.max,
@@ -180,6 +180,7 @@ class CancelOrderGoodsButton extends StatelessWidget {
                   orderDetailProvider?.cancelOrderGoods(context, goods);
                 },
                 isActive: goods?.canCancel ?? true,
+                horizontalPadding: goods?.canCancel == true ? 24 : 16,
               );
       },
     );

@@ -17,6 +17,7 @@ class ListCard extends StatelessWidget {
   Widget buildContent(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return Container(
+      key: ValueKey(bean?.goodsId),
       width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
       child: Column(

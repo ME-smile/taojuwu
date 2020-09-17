@@ -75,7 +75,8 @@ class MeasureOrderCard extends StatelessWidget {
           ),
           OrderKit.buildOrderInfoText(context, orderModelData),
           OrderKit.buildButton(context, orderModelData, callback: () {
-            RouteHandler.goOrderDetailPage(context, orderModelData?.orderId);
+            RouteHandler.goOrderDetailPage(context, orderModelData?.orderId,
+                orderStatus: orderStatus);
           })
         ],
       ),

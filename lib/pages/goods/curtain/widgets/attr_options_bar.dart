@@ -24,7 +24,7 @@ class AttrOptionsBar extends StatelessWidget {
         callback();
       },
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: UIKit.height(10)),
+        padding: EdgeInsets.symmetric(vertical: UIKit.height(16)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           // mainAxisSize,

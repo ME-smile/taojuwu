@@ -117,6 +117,7 @@ class _CustomerManagePageState extends State<CustomerManagePage>
   List<CustomerModelBean> beans;
   List<CustomerModelBean> hotBeans = [];
   void _handleList(List<CustomerModelBean> list) {
+    hotBeans.clear();
     if (list == null || list.isEmpty) return;
     for (int i = 0, length = list.length; i < length; i++) {
       CustomerModelBean item = list[i];

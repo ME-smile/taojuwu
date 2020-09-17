@@ -17,6 +17,7 @@ class CancelOrderGoodsButton extends StatelessWidget {
         callback();
       },
       isActive: isActive,
+      horizontalPadding: isActive ? 24 : 16,
     );
   }
 }

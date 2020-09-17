@@ -50,6 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 '清除缓存',
                 textAlign: TextAlign.center,
               ),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8))),
               content: Column(
@@ -124,6 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 '退出提醒',
                 textAlign: TextAlign.center,
               ),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8))),
               content: Column(

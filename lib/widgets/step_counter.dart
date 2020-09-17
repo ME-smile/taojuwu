@@ -97,6 +97,9 @@ class _StepCounterState extends State<StepCounter> {
                 onSubmitted: (String text) {
                   count = NumUtil.getIntByValueStr(text);
                 },
+                onEditingComplete: () {
+                  FocusManager.instance.primaryFocus.unfocus();
+                },
                 maxLines: 1,
                 decoration: InputDecoration(
                   isDense: true,

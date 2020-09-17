@@ -99,7 +99,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
         .then((CartCountResp cartCountResp) {
       TargetOrderGoods.instance.goodsProvider?.cartCount = cartCountResp?.data;
     }).catchError((err) => err);
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override
@@ -349,6 +349,8 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
                       '离地距离（cm）',
                       textAlign: TextAlign.center,
                     ),
+                    titleTextStyle:
+                        TextStyle(fontSize: 16, color: Color(0xFF333333)),
                     content: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
@@ -682,9 +684,10 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
                                           //     vertical: UIKit.height(20)),
                                           margin: EdgeInsets.only(top: 80),
                                           child: ZYNetImage(
-                                            imgPath: bean?.picCoverMid,
+                                            imgPath: bean?.picCoverBig,
                                             width: 300,
                                             height: 240,
+                                            needAnimation: false,
                                           )
                                           // decoration: BoxDecoration(
                                           //   image: DecorationImage(
@@ -739,7 +742,8 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
                                                         clientId: TargetClient
                                                             .instance.clientId,
                                                         hasLiked: goodsProvider
-                                                            ?.hasLike,
+                                                                ?.hasLike ??
+                                                            false,
                                                         callback: () {
                                                           goodsProvider
                                                               ?.like(widget.id);
@@ -905,7 +909,7 @@ class _CurtainDetailPageState extends State<CurtainDetailPage> with RouteAware {
                       onWillPop: () {
                         Navigator.of(context).pop();
                         TargetOrderGoods.instance.clear();
-                        TargetOrderGoods.instance.goodsProvider.release();
+
                         return Future.value(false);
                       });
                 },
@@ -964,6 +968,9 @@ class BottomActionButtonBar extends StatelessWidget {
                       () {
                         goodsProvider?.selectProduct(context);
                       },
+                      horizontalPadding: 32,
+                      verticalPadding: 8,
+                      fontsize: 16,
                     )
                   ],
                 ))
@@ -974,7 +981,7 @@ class BottomActionButtonBar extends StatelessWidget {
                 addToCartFunc: () {
                   goodsProvider?.addCart(context);
                 },
-                canAddToCart: goodsProvider?.canAddToCart,
+                canAddToCart: goodsProvider?.canAddToCart ?? true,
                 purchaseFunc: () {
                   goodsProvider?.createOrder(context);
                 },

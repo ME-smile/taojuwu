@@ -5,7 +5,7 @@ class ZYOutlineButton extends StatelessWidget {
   final String text;
   final Function callback;
   final bool isActive;
-
+  final double fontsize;
   final double horizontalPadding;
   final double verticalPadding;
   const ZYOutlineButton(
@@ -13,6 +13,7 @@ class ZYOutlineButton extends StatelessWidget {
     this.callback, {
     this.isActive: true,
     this.horizontalPadding,
+    this.fontsize = 13,
     this.verticalPadding,
     Key key,
   }) : super(key: key);
@@ -26,9 +27,9 @@ class ZYOutlineButton extends StatelessWidget {
       child: Container(
         child: Text(text,
             style: isActive
-                ? TextStyle(fontSize: 13)
-                : textTheme.button
-                    .copyWith(color: themeData.disabledColor, fontSize: 13)),
+                ? TextStyle(fontSize: fontsize)
+                : textTheme.button.copyWith(
+                    color: themeData.disabledColor, fontSize: fontsize)),
         decoration: BoxDecoration(
             color: themeData.primaryColor,
             borderRadius: BorderRadius.all(Radius.circular(4)),

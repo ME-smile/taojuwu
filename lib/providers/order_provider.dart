@@ -44,6 +44,7 @@ class OrderProvider with ChangeNotifier {
 
   OrderProvider(this.context, {this.orderGoods});
   bool get hasOrderGoodsId => orderGoodsId != null;
+
   int get orderGoodsId => _curOrderGoods?.orderGoodsId;
   int get orderId => _orderId;
 
@@ -141,14 +142,18 @@ class OrderProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool beforeCreateOrder(BuildContext context, {Function callback}) {
-    if (TargetClient().hasSelectedClient == false) {
-      ToastKit.showInfo('请选择客户');
-      return false;
-    }
-    if (addressId == null) {
-      ToastKit.showInfo('请填写收货人');
-      return false;
+  bool beforeCreateOrder(BuildContext context,
+      {Function callback, bool hasCustomizedProdoct = true}) {
+    if (hasCustomizedProdoct == false) {
+      if (TargetClient().hasSelectedClient == false) {
+        ToastKit.showInfo('请选择客户');
+        return false;
+      }
+      if (addressId == null) {
+        ToastKit.showInfo('请填写收货人');
+        return false;
+      }
+      return true;
     }
     if (measureTimeStr == null || measureTimeStr?.trim()?.isEmpty == true) {
       ToastKit.showInfo('请选择上门量尺意向时间');
@@ -191,9 +196,8 @@ class OrderProvider with ChangeNotifier {
     //       "goods_sku_list": "$goodsSkuListText"
     //     }'''
     // });
-    if (hasCustomizedProdoct) {
-      if (!beforeCreateOrder(ctx)) return;
-    }
+    if (!beforeCreateOrder(ctx, hasCustomizedProdoct: hasCustomizedProdoct))
+      return;
     if (beforeCallback != null) {
       beforeCallback();
     }
@@ -248,13 +252,13 @@ class OrderProvider with ChangeNotifier {
       },
     ).then((ZYResponse response) {
       if (response.valid) {
-        RouteHandler.goOrderCommitSuccessPage(ctx, clientUid);
+        RouteHandler.goOrderCommitSuccessPage(ctx, clientUid,
+            showTip: hasCustomizedProdoct ? 1 : 0);
         clear();
       } else {
         ToastKit.showErrorInfo(response?.message ?? '');
       }
     }).catchError((err) {
-      print('哈哈哈哈哈哈');
       return err;
     }).whenComplete(() {
       if (afterCallback != null) afterCallback();
@@ -271,6 +275,15 @@ class OrderProvider with ChangeNotifier {
   }
 
   void createMeasureOrder(BuildContext ctx) {
+    print({
+      'client_uid': clientUid,
+      'measure_time': measureTimeStr,
+      'install_time': installTime,
+      'order_earnest_money': deposit,
+      'order_remark': orderMark,
+      'shop_id': shopId,
+      'order_window_num': windowNum,
+    });
     if (!beforeCreateOrder(ctx)) return;
     OTPService.createMeasureOrder(params: {
       'client_uid': clientUid,
@@ -282,7 +295,8 @@ class OrderProvider with ChangeNotifier {
       'order_window_num': windowNum,
     }).then((ZYResponse response) {
       if (response.valid) {
-        RouteHandler.goOrderCommitSuccessPage(ctx, clientUid, orderType: 2);
+        RouteHandler.goOrderCommitSuccessPage(ctx, clientUid,
+            orderType: 2, showTip: 1);
         TargetClient().clear();
       } else {
         ToastKit.showErrorInfo(response?.message ?? '');

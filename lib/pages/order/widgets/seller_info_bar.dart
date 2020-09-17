@@ -32,8 +32,8 @@ class SellerInfoBar extends StatelessWidget {
               style: textTheme.headline6
                   .copyWith(fontSize: 20, fontWeight: FontWeight.w500),
             ),
-            width: UIKit.sp(120),
-            height: UIKit.sp(120),
+            width: UIKit.sp(96),
+            height: UIKit.sp(96),
             decoration: BoxDecoration(
               color: themeData.primaryColor,
               borderRadius: BorderRadius.all(Radius.circular(UIKit.sp(60))),
@@ -42,6 +42,7 @@ class SellerInfoBar extends StatelessWidget {
               ),
             ),
           ),
+
           Expanded(
               child: Container(
             padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),

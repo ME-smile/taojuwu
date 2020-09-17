@@ -8,11 +8,13 @@ class ZYRaisedButton extends StatelessWidget {
 
   final double horizontalPadding;
   final double verticalPadding;
+  final double fontsize;
   const ZYRaisedButton(this.text, this.callback,
       {Key key,
       this.isActive: true,
       this.horizontalPadding,
-      this.verticalPadding})
+      this.verticalPadding,
+      this.fontsize = 13})
       : super(key: key);
 
   @override
@@ -25,9 +27,9 @@ class ZYRaisedButton extends StatelessWidget {
         child: Text(
           text,
           style: isActive
-              ? accentTextTheme.button.copyWith(fontSize: 13)
+              ? accentTextTheme.button.copyWith(fontSize: fontsize)
               : accentTextTheme.button
-                  .copyWith(fontSize: 13, color: Colors.white70),
+                  .copyWith(fontSize: fontsize, color: Colors.white70),
           textAlign: TextAlign.center,
         ),
         decoration: BoxDecoration(

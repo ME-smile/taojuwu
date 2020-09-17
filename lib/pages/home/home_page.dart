@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
-import 'package:taojuwu/utils/toast_kit.dart';
+// import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 
@@ -27,15 +27,15 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     items = [
-      {
-        'title': '套餐搭配',
-        'subtitle': '一起买，价格更优惠',
-        'icon': 'combo@2x.png',
-        'callback': () {
-          ToastKit.showInfo('暂未开放');
-        },
-        'color': const Color(0xFFC9BCA9),
-      },
+      // {
+      //   'title': '套餐搭配',
+      //   'subtitle': '一起买，价格更优惠',
+      //   'icon': 'combo@2x.png',
+      //   'callback': () {
+      //     ToastKit.showInfo('暂未开放');
+      //   },
+      //   'color': const Color(0xFFC9BCA9),
+      // },
       {
         'title': '预约测量',
         'subtitle': '上门测量，更准确',
@@ -67,16 +67,16 @@ class _HomePageState extends State<HomePage> {
         },
         'color': const Color(0xffDDE0E1)
       },
-      {
-        'title': '数据中心',
-        'subtitle': '销售统计，清晰明了',
-        'icon': 'data@2x.png',
-        'callback': () {
-          ToastKit.showInfo('暂未开放');
-          // RouteHandler.goDataCenterPage(context);
-        },
-        'color': const Color(0xff0D0B14)
-      },
+      // {
+      //   'title': '数据中心',
+      //   'subtitle': '销售统计，清晰明了',
+      //   'icon': 'data@2x.png',
+      //   'callback': () {
+      //     ToastKit.showInfo('暂未开放');
+      //     // RouteHandler.goDataCenterPage(context);
+      //   },
+      //   'color': const Color(0xff0D0B14)
+      // },
       {
         'title': '设置',
         'subtitle': '问题反馈，软件帮助',
@@ -106,7 +106,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
     ThemeData themeData = Theme.of(context);
-    TextTheme accentTextTheme = themeData.accentTextTheme;
+
     TextTheme textTheme = themeData.textTheme;
 
     return Container(
@@ -149,34 +149,18 @@ class _HomePageState extends State<HomePage> {
                 ),
                 VSpacing(20),
                 InkWell(
-                  onTap: () {
-                    RouteHandler.goCurtainMallPage(context);
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    height: UIKit.height(500),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(
-                          '窗帘定制',
-                          style: accentTextTheme.headline6,
-                        ),
-                        Text(
-                          'curtain',
-                          style: accentTextTheme.subtitle2,
-                        ),
-                      ],
-                    ),
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: AssetImage(UIKit.getAssetsImagePath(
-                                'home_top_cover_origin.png')))),
-                  ),
-                ),
+                    onTap: () {
+                      RouteHandler.goCurtainMallPage(context);
+                    },
+                    child: AspectRatio(
+                      aspectRatio: 1.4,
+                      child: Image.network(
+                        'http://106.14.219.213:8001/upload/master.jpg',
+                        fit: BoxFit.fitWidth,
+                        width: MediaQuery.of(context).size.width,
+                        // height: UIKit.height(500),
+                      ),
+                    )),
                 VSpacing(20),
                 GridView.builder(
                   shrinkWrap: true,

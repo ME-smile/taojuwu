@@ -31,6 +31,7 @@ class NetworkCacheConfig {
 
 class Application {
   static Router router;
+  static BuildContext context;
   static SharedPreferences sp;
   static String deviceInfo;
   static String versionInfo;

@@ -113,6 +113,12 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
                 obscureText: _isOldPwdCypher,
                 decoration: InputDecoration(
                   hintText: '请输入旧密码',
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(0xFFC7C8CB), width: 1)),
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(0xFFC7C8CB), width: 1)),
                   suffixIcon: IconButton(
                       icon: Icon(
                         _isOldPwdCypher
@@ -125,9 +131,6 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
                           _isOldPwdCypher = !_isOldPwdCypher;
                         });
                       }),
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(0xFFC7C8CB), width: .8)),
                 ),
               ),
               VSpacing(10),
@@ -148,9 +151,12 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
                           _isNewPwdCypher = !_isNewPwdCypher;
                         });
                       }),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color(0xFFC7C8CB), width: 1)),
                   enabledBorder: UnderlineInputBorder(
                       borderSide:
-                          BorderSide(color: Color(0xFFC7C8CB), width: .8)),
+                          BorderSide(color: Color(0xFFC7C8CB), width: 1)),
                 ),
               ),
               VSpacing(40),

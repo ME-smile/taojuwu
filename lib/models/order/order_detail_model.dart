@@ -143,6 +143,8 @@ class OrderDetailModel {
   String autoSignTime;
   String acceptStation;
   String acceptTime;
+  String titleName;
+  String titleDesc;
   bool get isSameYear {
     if (measureTime?.isNotEmpty == true && installTime?.isNotEmpty == true) {
       if (measureTime.length > 4 && installTime.length > 4) {
@@ -301,7 +303,10 @@ class OrderDetailModel {
     realityMeasureTime = json['reality_measure_time'];
     installTime = json['install_time'];
     realityInstallTime = json['reality_install_time'];
-    // measureManuscriptsPicture = json['measure_manuscripts_picture'] is String?[];
+
+    measureManuscriptsPicture = json['measure_manuscripts_picture'] is String
+        ? []
+        : json['measure_manuscripts_picture'];
     orderWindowNum = '${json['order_window_num'] ?? ''}';
     orderEarnestMoney = json['order_earnest_money'];
     tailMoney = json['tail_money'];
@@ -330,6 +335,8 @@ class OrderDetailModel {
     paymentTypeName = json['payment_type_name'];
     shippingTypeName = json['shipping_type_name'];
     shippingCompanyName = json['shipping_company_name'];
+    titleName = json['order_title'];
+    titleDesc = json['order_desc'];
     if (json['order_goods'] != null) {
       orderGoods = new List<OrderGoods>();
       json['order_goods'].forEach((v) {

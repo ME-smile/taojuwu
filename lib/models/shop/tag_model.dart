@@ -64,9 +64,12 @@ class TagFilter {
     showName = json['show_name'];
     filterName = json['filter_name'];
     isMultiPle = json['is_multiple'];
+
     if (json['filter_value'] != null) {
       filterValue = new List<TagFilterOption>();
       json['filter_value'].forEach((v) {
+        v['key'] = filterName;
+        v['is_refresh'] = json['is_refresh'];
         filterValue.add(new TagFilterOption.fromJson(v));
       });
     }
@@ -91,23 +94,28 @@ class TagFilter {
 }
 
 class TagFilterOption {
+  String key;
   String id;
   String name;
   bool isChecked = false;
+  bool shouldRefresh = false;
   TagFilterOption({
     this.id,
     this.name,
   });
 
   TagFilterOption.fromJson(Map<String, dynamic> json) {
+    key = json['key'];
     id = '${json['id']}';
     name = json['name'];
+    shouldRefresh = json['is_refresh'] == 1;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['name'] = this.name;
+
     return data;
   }
 }

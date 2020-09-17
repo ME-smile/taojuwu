@@ -86,6 +86,7 @@ class _CollectPageState extends State<CollectPage> {
                 '删除',
                 textAlign: TextAlign.center,
               ),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8))),
               content: Column(

@@ -4,12 +4,9 @@ import 'package:taojuwu/widgets/triangle_clipper.dart';
 class ZYActionChip extends StatefulWidget {
   final ActionBean bean;
   final Function callback;
-
-  ZYActionChip({
-    Key key,
-    this.bean,
-    this.callback,
-  }) : super(key: key);
+  final bool showNumber;
+  ZYActionChip({Key key, this.bean, this.callback, this.showNumber = false})
+      : super(key: key);
 
   @override
   _ZYActionChipState createState() => _ZYActionChipState();
@@ -19,6 +16,7 @@ class _ZYActionChipState extends State<ZYActionChip> {
   ActionBean get bean => widget.bean;
   Function get callback => widget.callback;
   bool get isChecked => bean.isChecked;
+  bool get showNumber => widget.showNumber;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -27,7 +25,7 @@ class _ZYActionChipState extends State<ZYActionChip> {
         children: <Widget>[
           Container(
               child: Text(
-                bean?.text ?? '',
+                '${bean?.text}${showNumber ? "(${bean?.count})" : ""}',
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
@@ -55,9 +53,11 @@ class _ZYActionChipState extends State<ZYActionChip> {
 class ActionBean {
   String text;
   bool isChecked;
+  int count;
   ActionBean({this.isChecked, this.text});
   ActionBean.fromJson(Map<String, dynamic> json) {
     this.text = json['text'];
     this.isChecked = json['is_checked'];
+    this.count = json['count'];
   }
 }

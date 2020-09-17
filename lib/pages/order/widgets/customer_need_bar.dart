@@ -58,6 +58,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                 '备注',
                 textAlign: TextAlign.center,
               ),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -145,6 +146,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
                 '定金',
                 textAlign: TextAlign.center,
               ),
+              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -230,6 +232,7 @@ class _CustomerNeedBarState extends State<CustomerNeedBar> {
         // provider?.initMeasureTime(measureTimePeriod?.value);
         return Container(
           color: themeData.primaryColor,
+          padding: EdgeInsets.only(top: 12, bottom: 12),
           child: Column(
             children: <Widget>[
               OptBar(
@@ -352,7 +355,7 @@ class OptBar extends StatelessWidget {
       onTap: callback,
       child: Container(
         padding: EdgeInsets.symmetric(
-            horizontal: UIKit.width(20), vertical: UIKit.height(10)),
+            horizontal: UIKit.width(20), vertical: UIKit.height(12)),
         child: Row(
           children: <Widget>[
             Expanded(
