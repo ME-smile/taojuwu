@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:taojuwu/models/shop/cart_list_model.dart';
-import 'package:taojuwu/models/shop/product_bean.dart';
-import 'package:taojuwu/models/shop/sku_bean.dart';
-import 'package:taojuwu/models/zy_response.dart';
+import 'package:taojuwu/repository/shop/cart_list_model.dart';
+import 'package:taojuwu/repository/shop/product_bean.dart';
+import 'package:taojuwu/repository/shop/sku_bean.dart';
+import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';

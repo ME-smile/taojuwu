@@ -1,4 +1,4 @@
-import 'package:taojuwu/models/shop/cart_list_model.dart';
+import 'package:taojuwu/repository/shop/cart_list_model.dart';
 import 'package:taojuwu/providers/end_product_provider.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
 

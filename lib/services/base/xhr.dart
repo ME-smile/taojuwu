@@ -2,37 +2,38 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:taojuwu/application.dart';
+import 'package:taojuwu/config/net_config.dart';
 import 'package:taojuwu/router/handlers.dart';
 
 // import 'package:taojuwu/constants/constants.dart';
-import 'package:taojuwu/services/api_path.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 
-// import 'package:taojuwu/models/user/user_info_model.dart';
+// import 'package:taojuwu/repository/user/user_info_model.dart';
 
 class Xhr {
   static Xhr xhr = Xhr._internal();
-  static const int TIMER = 5000;
 
   static Dio dio = Dio(BaseOptions(
-      headers: {
-        "ACCEPT": 'application/json',
-        'equipment': Application.deviceInfo
-      },
-      queryParameters: {
-        'token': Application.sp.getString('token'),
-      },
-      sendTimeout: TIMER,
-      receiveTimeout: TIMER,
-      connectTimeout: TIMER,
-      baseUrl: ApiPath.HOST))
+      headers: NetConfig.headers,
+      queryParameters: NetConfig.queryParameters,
+      sendTimeout: NetConfig.TIME_OUT,
+      receiveTimeout: NetConfig.TIME_OUT,
+      connectTimeout: NetConfig.TIME_OUT,
+      baseUrl: NetConfig.baseUrl))
     ..interceptors.addAll([
-      Application.cache,
       InterceptorsWrapper(onRequest: (RequestOptions options) {
         // Do something before request is sent
 
         return options; //continue
       }, onResponse: (Response response) {
+        bool flag = response != null &&
+            response.data is Map &&
+            response.data["code"] == "-999";
+        print(flag);
+        print(response != null &&
+            response.data is Map &&
+            response.data["code"] == "-999");
+        print(response.data);
         if (response != null &&
             response.data is Map &&
             response.data["code"] == "-999") {
@@ -41,7 +42,6 @@ class Xhr {
         }
         response.data = jsonDecode(response.toString());
       }),
-      Application.cache
     ]);
   // 添加缓存
 

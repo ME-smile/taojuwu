@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/models/base/goods_attr.dart';
-import 'package:taojuwu/models/shop/cart_list_model.dart';
+import 'package:taojuwu/repository/base/goods_attr.dart';
+import 'package:taojuwu/repository/shop/cart_list_model.dart';
 
 import 'package:taojuwu/router/handlers.dart';
 

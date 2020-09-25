@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/models/order/order_detail_model.dart';
-import 'package:taojuwu/pages/order/utils/order_kit.dart';
+import 'package:taojuwu/repository/order/order_detail_model.dart';
+import 'package:taojuwu/view/order/utils/order_kit.dart';
 
 class OrderDetailProvider with ChangeNotifier {
   OrderDetailModel model;

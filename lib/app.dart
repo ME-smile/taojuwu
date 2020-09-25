@@ -6,8 +6,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:taojuwu/pages/home/home_page.dart';
-import 'package:taojuwu/pages/login/login_page.dart';
+import 'package:taojuwu/view/home/home_page.dart';
+import 'package:taojuwu/view/login/login_page.dart';
 
 import 'package:taojuwu/providers/theme_provider.dart';
 import 'package:taojuwu/providers/user_provider.dart';

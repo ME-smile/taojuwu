@@ -4,35 +4,35 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_upgrade/flutter_app_upgrade.dart';
 import 'package:taojuwu/application.dart';
-import 'package:taojuwu/models/app_info/app_info_model.dart';
-import 'package:taojuwu/models/logistics/logistics_data_model.dart';
-import 'package:taojuwu/models/order/measure_data_model.dart';
+import 'package:taojuwu/repository/app_info/app_info_model.dart';
+import 'package:taojuwu/repository/logistics/logistics_data_model.dart';
+import 'package:taojuwu/repository/order/measure_data_model.dart';
 
-import 'package:taojuwu/models/order/order_detail_model.dart';
-import 'package:taojuwu/models/order/order_edit_log_model.dart';
-import 'package:taojuwu/models/order/order_mainfest_model.dart';
+import 'package:taojuwu/repository/order/order_detail_model.dart';
+import 'package:taojuwu/repository/order/order_edit_log_model.dart';
+import 'package:taojuwu/repository/order/order_mainfest_model.dart';
 
-import 'package:taojuwu/models/order/order_model.dart';
-import 'package:taojuwu/models/protocal/user_protocal_model.dart';
-import 'package:taojuwu/models/shop/cart_list_model.dart';
-import 'package:taojuwu/models/shop/collect_list_model.dart';
-import 'package:taojuwu/models/shop/curtain_product_list_model.dart';
-import 'package:taojuwu/models/shop/product_bean.dart';
-import 'package:taojuwu/models/shop/product_tag_model.dart';
-import 'package:taojuwu/models/shop/search/associative_word.dart';
-import 'package:taojuwu/models/shop/sku_attr/accessory_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/canopy_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/craft_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/part_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/room_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/window_gauze_attr.dart';
-// import 'package:taojuwu/models/shop/sku_attr/window_pattern_attr.dart';
-import 'package:taojuwu/models/shop/sku_attr/window_shade_attr.dart';
-import 'package:taojuwu/models/shop/tag_model.dart';
-import 'package:taojuwu/models/user/category_customer_model.dart';
-import 'package:taojuwu/models/user/customer_detail_model.dart';
-import 'package:taojuwu/models/user/customer_model.dart';
-import 'package:taojuwu/models/zy_response.dart';
+import 'package:taojuwu/repository/order/order_model.dart';
+import 'package:taojuwu/repository/protocal/user_protocal_model.dart';
+import 'package:taojuwu/repository/shop/cart_list_model.dart';
+import 'package:taojuwu/repository/shop/collect_list_model.dart';
+import 'package:taojuwu/repository/shop/curtain_product_list_model.dart';
+import 'package:taojuwu/repository/shop/product_bean.dart';
+import 'package:taojuwu/repository/shop/product_tag_model.dart';
+import 'package:taojuwu/repository/shop/search/associative_word.dart';
+import 'package:taojuwu/repository/shop/sku_attr/accessory_attr.dart';
+import 'package:taojuwu/repository/shop/sku_attr/canopy_attr.dart';
+import 'package:taojuwu/repository/shop/sku_attr/craft_attr.dart';
+import 'package:taojuwu/repository/shop/sku_attr/part_attr.dart';
+import 'package:taojuwu/repository/shop/sku_attr/room_attr.dart';
+import 'package:taojuwu/repository/shop/sku_attr/window_gauze_attr.dart';
+// import 'package:taojuwu/repository/shop/sku_attr/window_pattern_attr.dart';
+import 'package:taojuwu/repository/shop/sku_attr/window_shade_attr.dart';
+import 'package:taojuwu/repository/shop/tag_model.dart';
+import 'package:taojuwu/repository/user/category_customer_model.dart';
+import 'package:taojuwu/repository/user/customer_detail_model.dart';
+import 'package:taojuwu/repository/user/customer_model.dart';
+import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/services/api_path.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
@@ -56,9 +56,6 @@ class OTPService {
       ApiPath.productMall,
       params: params ?? {},
     );
-
-    print('返回的商品结果');
-    print(response?.data);
     return CurtainProductListResp.fromMap(response?.data);
   }
 
@@ -230,8 +227,7 @@ class OTPService {
     return ZYResponse.fromJson(response.data);
   }
 
-  static Future<ZYResponse> loginByPwd(
-      BuildContext context, Map<String, String> params) async {
+  static Future<ZYResponse> loginByPwd(Map<String, dynamic> params) async {
     Response response = await xhr.post(
       ApiPath.loginByPwd,
       data: params ?? {},

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/models/zy_response.dart';
+import 'package:taojuwu/repository/zy_response.dart';
 
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';

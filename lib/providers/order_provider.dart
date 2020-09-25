@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:taojuwu/models/order/order_cart_goods_model.dart';
-import 'package:taojuwu/models/order/order_detail_model.dart';
+import 'package:taojuwu/repository/order/order_cart_goods_model.dart';
+import 'package:taojuwu/repository/order/order_detail_model.dart';
 
-import 'package:taojuwu/models/zy_response.dart';
+import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/providers/order_detail_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -149,11 +149,10 @@ class OrderProvider with ChangeNotifier {
         ToastKit.showInfo('请选择客户');
         return false;
       }
-      if (addressId == null) {
-        ToastKit.showInfo('请填写收货人');
-        return false;
-      }
-      return true;
+    }
+    if (addressId == null) {
+      ToastKit.showInfo('请填写收货地址');
+      return false;
     }
     if (measureTimeStr == null || measureTimeStr?.trim()?.isEmpty == true) {
       ToastKit.showInfo('请选择上门量尺意向时间');

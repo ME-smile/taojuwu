@@ -1,7 +1,7 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 // import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/models/base/count_model.dart';
+import 'package:taojuwu/repository/base/count_model.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 

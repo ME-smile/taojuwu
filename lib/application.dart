@@ -13,8 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:taojuwu/utils/toast_kit.dart';
 
-import 'models/app_info/app_info_model.dart';
-import 'services/base/cache.dart';
+import 'repository/app_info/app_info_model.dart';
 import 'services/otp_service.dart';
 
 class NetworkCacheConfig {
@@ -36,7 +35,6 @@ class Application {
   static String deviceInfo;
   static String versionInfo;
   static NetworkCacheConfig cacheConfig = NetworkCacheConfig();
-  static NetCache cache = NetCache();
   static RouteObserver routeObserver = RouteObserver();
   static EventBus eventBus = EventBus();
   static const String appName = '淘居屋商家';
@@ -48,6 +46,17 @@ class Application {
   static init() async {
     sp = await SharedPreferences.getInstance();
     deviceInfo = await getAppInfo();
+  }
+
+  /*
+  *
+  *@author iamsmiling
+  *@create_time 2020/9/24 4:30 PM
+  *@description 获取token
+  */
+
+  static get token {
+    return Application.sp.getString('token');
   }
 
   static Future<double> _getTotalSizeOfFilesInDir(

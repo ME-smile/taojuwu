@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:taojuwu/application.dart';
 
-import 'package:taojuwu/models/user/user_info_model.dart';
+import 'package:taojuwu/repository/user/user_info_model.dart';
 
 class UserProvider with ChangeNotifier {
   final UserInfo userInfo = UserInfo.instance;

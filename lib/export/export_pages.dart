@@ -1,1 +1,1 @@
-export 'package:taojuwu/pages/home/home_page.dart';
+export 'package:taojuwu/view/home/home_page.dart';

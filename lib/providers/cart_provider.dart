@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:taojuwu/models/shop/cart_list_model.dart';
+import 'package:taojuwu/repository/shop/cart_list_model.dart';
 
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
