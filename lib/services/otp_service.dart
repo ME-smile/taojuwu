@@ -227,7 +227,8 @@ class OTPService {
     return ZYResponse.fromJson(response.data);
   }
 
-  static Future<ZYResponse> loginByPwd(Map<String, dynamic> params) async {
+  static Future<ZYResponse> loginByPwd(Map<String, dynamic> params,
+      {Map<String, dynamic> map}) async {
     Response response = await xhr.post(
       ApiPath.loginByPwd,
       data: params ?? {},

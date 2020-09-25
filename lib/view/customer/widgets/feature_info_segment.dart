@@ -8,15 +8,13 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/user/customer_detail_model.dart';
+
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/viewmodel/customer/edit_customer_viewmodel.dart';
 
 class FeatureInfoSegment extends StatefulWidget {
   final CustomerDetailModel model;
   final Map<String, String> params;
-  final EditCustomerViewModel viewModel;
-  FeatureInfoSegment(this.viewModel, {Key key, this.model, this.params})
-      : super(key: key);
+  FeatureInfoSegment({Key key, this.model, this.params}) : super(key: key);
 
   @override
   _FeatureInfoSegmentState createState() => _FeatureInfoSegmentState();

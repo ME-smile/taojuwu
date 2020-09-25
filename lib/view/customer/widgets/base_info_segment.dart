@@ -4,15 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/user/customer_detail_model.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/viewmodel/customer/edit_customer_viewmodel.dart';
+import 'package:taojuwu/widgets/bottom_picker.dart';
 
 class BaseInfoSegment extends StatefulWidget {
   final CustomerDetailModel model;
   final Map<String, String> params;
-
-  final EditCustomerViewModel viewModel;
-  BaseInfoSegment(this.viewModel, {Key key, this.model, this.params})
-      : super(key: key);
+  BaseInfoSegment({Key key, this.model, this.params}) : super(key: key);
 
   @override
   _BaseInfoSegmentState createState() => _BaseInfoSegmentState();
@@ -25,19 +22,23 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
 
   TextEditingController weChatInput;
 
+  CustomerDetailModel model;
   Map<String, String> params;
   FixedExtentScrollController genderController;
   FixedExtentScrollController ageController;
 
-  EditCustomerViewModel get viewmodel => widget.viewModel;
-  CustomerDetailModel get model => viewmodel.bean;
-
   int gender = 0;
   int age = 0;
+  String get genderStr => GENDER_OPTIONS[gender];
+  void unFocus() {
+    FocusManager.instance.primaryFocus.unfocus();
+  }
 
+  static const List<String> GENDER_OPTIONS = ['未知', '男', '女'];
   @override
   void initState() {
     super.initState();
+    model = widget.model;
     params = widget.params;
     nameInput = TextEditingController(text: model?.clientName);
     telInput = TextEditingController(text: model?.clientMobile);
@@ -102,6 +103,72 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
     );
   }
 
+  // 0 woman 1 man
+  void checkGender(
+    BuildContext context,
+  ) async {
+    int tmp = 0;
+    await showCupertinoModalPopup<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return BottomPicker(
+            title: '选择性别',
+            callback: () {
+              params['client_sex'] = '${gender ?? 0}';
+              setState(() {
+                gender = tmp;
+              });
+              Navigator.of(context).pop();
+            },
+            child: CupertinoPicker(
+                backgroundColor: Theme.of(context).primaryColor,
+                scrollController: genderController,
+                itemExtent: UIKit.ITEM_EXTENT,
+                onSelectedItemChanged: (int index) {
+                  tmp = index;
+                },
+                children: List.generate(GENDER_OPTIONS.length, (int i) {
+                  return Center(
+                    child: Text(GENDER_OPTIONS[i]),
+                  );
+                })),
+          );
+        });
+  }
+
+  // 10-80
+  void checkAge(
+    BuildContext context,
+  ) async {
+    int tmp;
+    await showCupertinoModalPopup<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return BottomPicker(
+            title: '选择年龄',
+            callback: () {
+              params['client_age'] = '${tmp ?? 0}';
+              setState(() {
+                age = tmp;
+              });
+              Navigator.of(context).pop();
+            },
+            child: CupertinoPicker(
+                backgroundColor: Theme.of(context).primaryColor,
+                scrollController: ageController,
+                itemExtent: UIKit.ITEM_EXTENT,
+                onSelectedItemChanged: (int index) {
+                  tmp = index + 10;
+                },
+                children: List.generate(70, (int i) {
+                  return Center(
+                    child: Text('${i + 10}'),
+                  );
+                })),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -115,8 +182,9 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
             child: Column(
               children: <Widget>[
                 TextField(
+                  controller: nameInput,
                   onChanged: (String text) {
-                    model.clientName = text;
+                    params['client_name'] = nameInput?.text;
                   },
                   decoration: InputDecoration(
                     icon: Text('姓    名'),
@@ -125,14 +193,24 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
                   ),
                 ),
                 Divider(),
-                _bar(context, '性    别', viewmodel.checkGender, trailText: ''),
+                _bar(context, '性    别', () {
+                  unFocus();
+                  checkGender(
+                    context,
+                  );
+                }, trailText: genderStr),
                 Divider(),
-                _bar(context, '年    龄', viewmodel.checkAge,
-                    trailText: '${age ?? 0}'),
+                _bar(context, '年    龄', () {
+                  unFocus();
+                  checkAge(
+                    context,
+                  );
+                }, trailText: '${age ?? 0}'),
                 Divider(),
                 TextField(
+                  controller: telInput,
                   onChanged: (String text) {
-                    model?.clientMobile = text;
+                    params['client_mobile'] = text;
                   },
                   decoration: InputDecoration(
                       icon: Text('手机号'),
@@ -141,8 +219,9 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
                 ),
                 Divider(),
                 TextField(
+                  controller: weChatInput,
                   onChanged: (String text) {
-                    model?.clientWx = text;
+                    params['client_wx'] = text;
                   },
                   decoration: InputDecoration(
                       icon: Text('微    信'),
