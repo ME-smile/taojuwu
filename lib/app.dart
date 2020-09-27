@@ -1,3 +1,11 @@
+/*
+ * @Description: 应用根节点
+ * @Author: iamsmiling
+ * @Date: 2020-09-25 12:47:45
+ * @LastEditTime: 2020-09-25 17:57:56
+ */
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
@@ -6,6 +14,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:taojuwu/event_bus/events/login_event.dart';
 import 'package:taojuwu/view/home/home_page.dart';
 import 'package:taojuwu/view/login/login_page.dart';
 
@@ -14,9 +23,46 @@ import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'application.dart';
+import 'services/base/xhr.dart';
 
-class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+class App extends StatefulWidget {
+  App({Key key}) : super(key: key);
+
+  @override
+  _AppState createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  StreamSubscription mSubscription;
+
+  /*
+   * @Author: iamsmiling
+   * @description:监听登录登出事件
+   * @param : 
+   * @return {type} 
+   * @Date: 2020-09-25 14:32:00
+   */
+  @override
+  void initState() {
+    super.initState();
+    ImageCache imageCache = PaintingBinding.instance.imageCache;
+    imageCache.maximumSize = 8;
+    imageCache.maximumSizeBytes = 50 << 20;
+    mSubscription = Application.eventBus.on<LoginEvent>().listen((event) {
+      if (event.code == 1) {
+        Xhr.refreshToken();
+      } else {
+        Xhr.clearToken();
+        Application.clearSpCache();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    mSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

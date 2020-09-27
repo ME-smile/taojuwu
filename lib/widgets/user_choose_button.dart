@@ -1,17 +1,48 @@
+/*
+ * @Description: 选择用户的按钮
+ * @Author: iamsmiling
+ * @Date: 2020-09-25 12:47:45
+ * @LastEditTime: 2020-09-27 15:41:42
+ */
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:taojuwu/application.dart';
+import 'package:taojuwu/event_bus/events/select_client_event.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 
-class UserChooseButton extends StatelessWidget {
-  final int id;
-  const UserChooseButton({Key key, this.id}) : super(key: key);
+class UserChooseButton extends StatefulWidget {
+  UserChooseButton({Key key}) : super(key: key);
+
+  @override
+  _UserChooseButtonState createState() => _UserChooseButtonState();
+}
+
+class _UserChooseButtonState extends State<UserChooseButton> {
+  StreamSubscription _streamSubscription;
+  TargetClient targetClient;
+  @override
+  void initState() {
+    _streamSubscription =
+        Application.eventBus.on<SelectClientEvent>().listen((event) {
+      setState(() {
+        targetClient = event.mTargetClient;
+      });
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _streamSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    TargetClient targetClient = TargetClient();
-
     return InkWell(
         onTap: () {
           RouteHandler.goCustomerPage(context, isForSelectedClient: 1);
@@ -26,9 +57,7 @@ class UserChooseButton extends StatelessWidget {
             Padding(
                 padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
                 child: Text(
-                  targetClient?.hasSelectedClient == true
-                      ? targetClient?.clientName ?? ''
-                      : '请选择',
+                  targetClient == null ? '请选择' : targetClient.displayName,
                   style: TextStyle(fontSize: 12),
                 ))
           ],

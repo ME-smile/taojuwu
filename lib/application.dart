@@ -16,25 +16,12 @@ import 'package:taojuwu/utils/toast_kit.dart';
 import 'repository/app_info/app_info_model.dart';
 import 'services/otp_service.dart';
 
-class NetworkCacheConfig {
-  final bool enable;
-  final int maxAge;
-  final int maxCount;
-  NetworkCacheConfig(
-      {this.enable = false, this.maxAge = 1000, this.maxCount = 100});
-
-  Map<String, dynamic> toJson() {
-    return {'enable': enable, 'maxAge': maxAge, 'maxCount': maxCount};
-  }
-}
-
 class Application {
   static Router router;
   static BuildContext context;
   static SharedPreferences sp;
   static String deviceInfo;
   static String versionInfo;
-  static NetworkCacheConfig cacheConfig = NetworkCacheConfig();
   static RouteObserver routeObserver = RouteObserver();
   static EventBus eventBus = EventBus();
   static const String appName = '淘居屋商家';
@@ -208,5 +195,9 @@ class Application {
           .then((_) {})
           .catchError((err) => err);
     } on Error catch (_) {}
+  }
+
+  static void clearSpCache() {
+    sp.clear();
   }
 }

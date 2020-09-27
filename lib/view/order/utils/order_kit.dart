@@ -3,10 +3,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
+import 'package:taojuwu/event_bus/events/select_client_event.dart';
+import 'package:taojuwu/event_bus/events/select_product_event.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/repository/order/order_model.dart';
 
 import 'package:taojuwu/repository/zy_response.dart';
+import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/view/order/order_detail_page.dart';
 import 'package:taojuwu/view/order/widgets/aftersale_button.dart';
 import 'package:taojuwu/view/order/widgets/cancel_order_button.dart';
@@ -792,8 +796,11 @@ class OrderKit {
               child: SelectedProductButton(
                 text: goods?.hasSelectedProduct == false ? '去选品' : '更换选品',
                 callback: () {
-                  TargetOrderGoods targetOrderGoods = TargetOrderGoods();
-                  targetOrderGoods?.setOrderGoodsId(goods?.orderGoodsId);
+                  Application.eventBus.fire(SelectClientEvent(
+                      TargetClient.fromLiteral(
+                          provider?.clientId, provider?.clientName)));
+                  Application.eventBus
+                      .fire(SelectProductEvent(goods?.orderGoodsId));
                   RouteHandler.goCurtainMallPage(context);
                 },
               ),

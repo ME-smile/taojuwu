@@ -69,7 +69,7 @@ class GoodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool get isFixedHeight => goods?.isFixedHeight;
+  bool get isFixedHeight => true;
   String get curInstallMode {
     List list = WindowPatternAttr.installOptionMap[windowPatternStr];
     Map<String, dynamic> map =

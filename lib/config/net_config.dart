@@ -2,12 +2,11 @@
  * @Description: 网络请求相关配置
  * @Author: iamsmiling
  * @Date: 2020-09-24 12:08:26
- * @LastEditTime: 2020-09-24 12:50:30
+ * @LastEditTime: 2020-09-25 15:36:50
  */
 import 'package:taojuwu/config/app_config.dart';
 
 import '../application.dart';
-
 
 class NetConfig {
   //为测试环境和生产环境配置不同的url

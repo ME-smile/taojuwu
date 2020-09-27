@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/event_bus/events/select_client_event.dart';
 import 'package:taojuwu/repository/user/customer_model.dart';
 
 import 'package:taojuwu/view/customer/widgets/menu_entry.dart';
@@ -170,10 +171,6 @@ class _CustomerManagePageState extends State<CustomerManagePage>
     );
   }
 
-  void saveInfoToTargetClient(CustomerModelBean model) {
-    TargetClient().saveInfo(model?.id, model?.clientName);
-  }
-
   Widget _buildListItem(CustomerModelBean model) {
     String susTag = model.getSuspensionTag();
     susTag = (susTag == "★" ? "热门城市" : susTag);
@@ -201,7 +198,8 @@ class _CustomerManagePageState extends State<CustomerManagePage>
                   onTap: () {
                     // Navigator.pop(context, model);
                     if (widget.flag == 1) {
-                      saveInfoToTargetClient(model);
+                      Application.eventBus.fire(SelectClientEvent(
+                          TargetClient.fromCustomerModelBean(model)));
                       Navigator.of(context).pop();
                     } else {
                       RouteHandler.goCustomerDetailPage(context, model?.id);

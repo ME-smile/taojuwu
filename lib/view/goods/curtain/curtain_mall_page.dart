@@ -88,9 +88,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
   bool get isFromSearch => widget.keyword.isNotEmpty ?? false;
   @override
   void initState() {
-    print("--------------------------------------------------------");
-    print(Application.sp.get('token'));
     super.initState();
+
     TargetRoute.instance.context = context;
     params['keyword'] = keyword;
     tabController = TabController(
@@ -1045,6 +1044,8 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   GridView buildGridView() {
     return GridView.builder(
         // physics: NeverScrollableScrollPhysics(),
+        addAutomaticKeepAlives: false,
+        addRepaintBoundaries: false,
         controller: scrollController,
         shrinkWrap: true,
         padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
@@ -1076,6 +1077,8 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   ListView buildListView() {
     return ListView.builder(
         // physics: NeverScrollableScrollPhysics(),
+        addAutomaticKeepAlives: false,
+        addRepaintBoundaries: false,
         controller: scrollController,
         shrinkWrap: true,
         itemCount:

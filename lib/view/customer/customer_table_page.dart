@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/event_bus/events/select_client_event.dart';
 import 'package:taojuwu/repository/user/category_customer_model.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -37,19 +39,14 @@ class CustomerTablePage extends StatelessWidget {
     // 'page_size': 20,
   };
 
-  void saveInfoToTargetClient(CategoryCustomerModelBean bean) {
-    TargetClient targetClient = TargetClient();
-    targetClient.setClientId(bean?.id);
-    targetClient.setClientName(bean?.clientName);
-  }
-
   Widget _tableCell(dynamic text, BuildContext context, int id,
       {CategoryCustomerModelBean bean}) {
     return TableCell(
         child: InkWell(
       onTap: () {
         if (flag == 1) {
-          saveInfoToTargetClient(bean);
+          Application.eventBus.fire(SelectClientEvent(
+              TargetClient.fromCategoryCustomerModelBean(bean)));
           Navigator.of(context).pop();
         } else {
           RouteHandler.goCustomerDetailPage(context, id);
@@ -93,32 +90,7 @@ class CustomerTablePage extends StatelessWidget {
                 (BuildContext context, CategoryCustomerModelListResp response) {
               wrapper = response.data;
               beans = wrapper.data;
-              // return ListView.separated(
-              //     shrinkWrap: true,
-              //     itemBuilder: (BuildContext context, int i) {
-              //       CategoryCustomerModelBean bean = beans[i];
-              //       return Row(
-              //         children: <Widget>[
-              //           _tableCell(bean?.clientName ?? '-', context, bean?.id,
-              //               bean: bean),
-              //           _tableCell(
-              //               Constants.GENDER_MAP[bean?.clientSex] ?? '未知',
-              //               context,
-              //               bean?.id,
-              //               bean: bean),
-              //           _tableCell(bean?.clientAge ?? '-', context, bean?.id,
-              //               bean: bean),
-              //           _tableCell(bean?.goodCategory ?? '-', context, bean?.id,
-              //               bean: bean),
-              //           _tableCell(bean?.enterTime ?? '-', context, bean?.id,
-              //               bean: bean),
-              //         ],
-              //       );
-              //     },
-              //     separatorBuilder: (BuildContext context, int i) {
-              //       return Divider();
-              //     },
-              //     itemCount: beans?.length ?? 0);
+
               return Container(
                 child: beans?.isEmpty == true
                     ? NoData()

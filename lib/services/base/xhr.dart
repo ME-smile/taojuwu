@@ -2,35 +2,39 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:taojuwu/application.dart';
+import 'package:taojuwu/config/net_config.dart';
 
 // import 'package:taojuwu/constants/constants.dart';
-import 'package:taojuwu/services/api_path.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 
-// import 'package:taojuwu/models/user/user_info_model.dart';
+// import 'package:taojuwu/repository/user/user_info_model.dart';
 
 class Xhr {
   static Xhr xhr = Xhr._internal();
-  static const int TIMER = 5000;
 
   static Dio dio = Dio(BaseOptions(
-      headers: {
-        "ACCEPT": 'application/json',
-        'equipment': Application.deviceInfo
-      },
-      queryParameters: {
-        'token': Application.sp.getString('token'),
-      },
-      sendTimeout: TIMER,
-      receiveTimeout: TIMER,
-      connectTimeout: TIMER,
-      baseUrl: ApiPath.HOST))
+      headers: NetConfig.headers,
+      queryParameters: NetConfig.queryParameters,
+      sendTimeout: NetConfig.TIME_OUT,
+      receiveTimeout: NetConfig.TIME_OUT,
+      connectTimeout: NetConfig.TIME_OUT,
+      baseUrl: NetConfig.baseUrl))
     ..interceptors.addAll([
       InterceptorsWrapper(onRequest: (RequestOptions options) {
         // Do something before request is sent
 
         return options; //continue
       }, onResponse: (Response response) {
+        // bool flag = response != null &&
+        //     response.data is Map &&
+        //     response.data["code"] == "-999";
+
+        // if (response != null &&
+        //     response.data is Map &&
+        //     response.data["code"] == "-999") {
+        //   RouteHandler.goLoginPage(Application.context);
+        //   return;
+        // }
         response.data = jsonDecode(response.toString());
       }),
     ]);
@@ -84,7 +88,7 @@ class Xhr {
     Response response;
 
     try {
-      // CommonKit.showLoading();
+      // ToastKit.showLoading();
       dio.options.queryParameters['token'] = Application.sp.getString('token');
 
       response = await dio.post(url,
@@ -92,6 +96,7 @@ class Xhr {
           data: formdata,
           options: options,
           cancelToken: cancelToken);
+
       // Navigator.of(context).pop(1)
     } on DioError catch (e) {
       ToastKit.showError();
@@ -106,7 +111,6 @@ class Xhr {
   downloadFile(urlPath, savePath) async {
     Response response;
     try {
-      dio.options.queryParameters['token'] = Application.sp.getString('token');
       response = await dio.download(urlPath, savePath,
           onReceiveProgress: (int count, int total) {
         //进度
@@ -154,5 +158,13 @@ class Xhr {
       print("未知错误");
       print(e);
     }
+  }
+
+  static void refreshToken() {
+    dio.options.queryParameters['token'] = Application.token;
+  }
+
+  static void clearToken() {
+    dio.options.queryParameters.remove('token');
   }
 }

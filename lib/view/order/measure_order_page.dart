@@ -1,6 +1,13 @@
+/*
+ * @Description: 下测量单
+ * @Author: iamsmiling
+ * @Date: 2020-09-25 12:47:45
+ * @LastEditTime: 2020-09-27 15:42:59
+ */
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/providers/order_provider.dart';
 import 'package:taojuwu/singleton/target_client.dart';
@@ -20,30 +27,7 @@ class MeasureOrderPage extends StatefulWidget {
   _MeasureOrderPageState createState() => _MeasureOrderPageState();
 }
 
-class _MeasureOrderPageState extends State<MeasureOrderPage> with RouteAware {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    Application.routeObserver.subscribe(this, ModalRoute.of(context));
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    Application.routeObserver.unsubscribe(this);
-    super.dispose();
-  }
-
-  @override
-  void didPopNext() {
-    setState(() {});
-    super.didPopNext();
-  }
-
+class _MeasureOrderPageState extends State<MeasureOrderPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);

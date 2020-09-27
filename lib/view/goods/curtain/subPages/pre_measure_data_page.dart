@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/repository/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/window_pattern_attr.dart';
 
-import 'package:taojuwu/view/goods/curtain/widgets/attr_options_bar.dart';
+import 'package:taojuwu/view/goods/curtain/widgets/attrs/attr_options_bar.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/sku_attr_picker.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/window_pattern_view.dart';
 import 'package:taojuwu/providers/goods_provider.dart';

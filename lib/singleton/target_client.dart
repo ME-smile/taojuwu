@@ -1,5 +1,35 @@
+/*
+ * @Description: 下单时选中的目标客户
+ * @Author: iamsmiling
+ * @Date: 2020-09-25 12:47:45
+ * @LastEditTime: 2020-09-25 15:47:46
+ */
+import 'package:taojuwu/repository/user/category_customer_model.dart';
+import 'package:taojuwu/repository/user/customer_model.dart';
+
 class TargetClient {
   TargetClient._internal();
+
+  TargetClient.fromCustomerModelBean(CustomerModelBean bean) {
+    clientId = bean.id;
+    clientName = bean.clientName;
+  }
+
+  TargetClient.fromCategoryCustomerModelBean(CategoryCustomerModelBean bean) {
+    clientId = bean.id;
+    clientName = bean.clientName;
+  }
+
+  TargetClient.fromLiteral(id, name) {
+    clientId = id;
+    clientName = name;
+  }
+
+  // 在按钮出展示的名字
+  String get displayName {
+    if (!hasSelectedClient) return '请选择';
+    return clientName;
+  }
 
   int clientId;
   String clientName;

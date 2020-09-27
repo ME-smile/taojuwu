@@ -900,47 +900,6 @@ class OrderGoodsMeasure {
     newOpenType = json['open_type'];
     newVerticalGroundHeight = json['vertical_ground_height'];
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['order_goods_id'] = this.orderGoodsId;
-    data['order_id'] = this.orderId;
-    data['goods_id'] = this.goodsId;
-    data['data'] = this.data;
-    data['remark'] = this.remark;
-    data['picture'] = this.picture;
-    data['status'] = this.status;
-    data['install_room'] = this.installRoom;
-    data['window_type'] = this.windowType;
-    data['window_measure_type'] = this.windowMeasureType;
-    data['width'] = this.width;
-    data['width_explain'] = this.widthExplain;
-    data['height'] = this.height;
-    data['height_explain'] = this.heightExplain;
-    data['extent'] = this.extent;
-    data['border_a'] = this.borderA;
-    data['border_b'] = this.borderB;
-    data['border_c'] = this.borderC;
-    data['border_d'] = this.borderD;
-    data['parts_type'] = this.partsType;
-    data['install_type'] = this.installType;
-    data['open_type'] = this.openType;
-    data['vertical_ground_height'] = this.verticalGroundHeight;
-    data['plies'] = this.plies;
-    data['curtain_head'] = this.curtainHead;
-    data['plaster_line'] = this.plasterLine;
-    data['frame_width'] = this.frameWidth;
-    data['curtain_box_size'] = this.curtainBoxSize;
-    data['top_height'] = this.topHeight;
-    data['install_face_materials'] = this.installFaceMaterials;
-    data['install_picture'] = this.installPicture;
-    data['install_remark'] = this.installRemark;
-    data['create_time'] = this.createTime;
-    data['update_time'] = this.updateTime;
-    data['parts_name'] = this.partsName;
-    return data;
-  }
 }
 
 class OrderAction {

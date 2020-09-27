@@ -1,3 +1,9 @@
+/*
+ * @Description: //TODO
+ * @Author: iamsmiling
+ * @Date: 2020-09-25 12:47:45
+ * @LastEditTime: 2020-09-25 17:27:43
+ */
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +21,7 @@ class ZYNetImage extends StatelessWidget {
   const ZYNetImage(
       {Key key,
       this.imgPath,
-      this.isCache: true,
+      this.isCache: false,
       this.height,
       this.width,
       this.callback,

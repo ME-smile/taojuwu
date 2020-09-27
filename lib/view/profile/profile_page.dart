@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/application.dart';
+import 'package:taojuwu/event_bus/events/login_event.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
@@ -110,6 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void clearUserInfo() {
     Navigator.of(context).pop();
     UserProvider user = Provider.of<UserProvider>(context, listen: false);
+    Application.eventBus.fire(LoginEvent(0));
     user.logOut();
     TargetClient().clear();
     RouteHandler.goLoginPage(context, clearStack: true);

@@ -195,27 +195,9 @@ class GoodsItemBean {
   int goodsId;
   String goodsName;
   dynamic picCoverMid;
-  String promotionPrice;
   double marketPrice;
   int goodsType;
-  int stock;
-  dynamic picId;
-  int maxBuy;
-  int state;
-  int isHot;
-  int isRecommend;
-  int isNew;
-  int sales;
-  dynamic picCoverSmall;
-  String groupIdArray;
-  String shippingFee;
-  int pointExchangeType;
-  int pointExchange;
-  int isOpenPresell;
-  String imgIdArray;
-  String introduction;
   double displayPrice;
-  String groupName;
   int goodsSpecialType;
   bool get isPromotionGoods {
     return marketPrice != 0 && marketPrice != displayPrice;
@@ -230,59 +212,14 @@ class GoodsItemBean {
     dataBean.goodsId = map['goods_id'];
     dataBean.goodsName = map['goods_name'];
     dataBean.picCoverMid = map['pic_cover_mid'];
-    dataBean.promotionPrice = map['promotion_price'];
     dataBean.marketPrice = map['market_price'].runtimeType == double
         ? map['market_price']
         : double.parse(map['market_price'] ?? '0.00');
     dataBean.goodsType = map['goods_type'];
-    dataBean.stock = map['stock'];
-    dataBean.picId = map['pic_id'];
-    dataBean.maxBuy = map['max_buy'];
-    dataBean.state = map['state'];
-    dataBean.isHot = map['is_hot'];
-    dataBean.isRecommend = map['is_recommend'];
-    dataBean.isNew = map['is_new'];
-    dataBean.sales = map['sales'];
-    dataBean.picCoverSmall = map['pic_cover_small'];
-    dataBean.groupIdArray = map['group_id_array'];
-    dataBean.shippingFee = map['shipping_fee'];
-    dataBean.pointExchangeType = map['point_exchange_type'];
-    dataBean.pointExchange = map['point_exchange'];
-    dataBean.isOpenPresell = map['is_open_presell'];
-    dataBean.imgIdArray = map['img_id_array'];
-    dataBean.introduction = map['introduction'];
     dataBean.displayPrice = map['display_price'].runtimeType == double
         ? map['display_price']
         : double.parse(map['display_price']);
-    dataBean.groupName = map['group_name'];
     dataBean.goodsSpecialType = map['goods_special_type'];
     return dataBean;
   }
-
-  Map toJson() => {
-        "goods_id": goodsId,
-        "goods_name": goodsName,
-        "pic_cover_mid": picCoverMid,
-        "promotion_price": promotionPrice,
-        "market_price": marketPrice,
-        "goods_type": goodsType,
-        "stock": stock,
-        "pic_id": picId,
-        "max_buy": maxBuy,
-        "state": state,
-        "is_hot": isHot,
-        "is_recommend": isRecommend,
-        "is_new": isNew,
-        "sales": sales,
-        "pic_cover_small": picCoverSmall,
-        "group_id_array": groupIdArray,
-        "shipping_fee": shippingFee,
-        "point_exchange_type": pointExchangeType,
-        "point_exchange": pointExchange,
-        "is_open_presell": isOpenPresell,
-        "img_id_array": imgIdArray,
-        "introduction": introduction,
-        "display_price": displayPrice,
-        "group_name": groupName,
-      };
 }

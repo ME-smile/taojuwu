@@ -150,11 +150,7 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                           (BuildContext context, bool innerBoxIsScrolled) {
                         return <Widget>[
                           SliverAppBar(
-                            actions: <Widget>[
-                              UserChooseButton(
-                                id: widget.id,
-                              )
-                            ],
+                            actions: <Widget>[UserChooseButton()],
                             expandedHeight: 360,
                             floating: false,
                             pinned: true,
@@ -224,8 +220,6 @@ class _EndProductDetailPageState extends State<EndProductDetailPage>
                                             child: LikeButton(
                                               hasLiked: false,
                                               goodsId: id,
-                                              clientId: TargetClient
-                                                  .instance.clientId,
                                             ),
                                           ),
                                           CartButton(
