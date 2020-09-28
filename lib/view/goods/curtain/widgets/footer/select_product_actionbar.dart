@@ -7,7 +7,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/viewmodel/goods/curtain_viewmodel.dart';
+import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class SelectProductActionBar extends StatelessWidget {

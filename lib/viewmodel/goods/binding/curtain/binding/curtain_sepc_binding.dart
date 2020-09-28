@@ -2,8 +2,9 @@
  * @Description: 商品属性相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-27 10:16:14
- * @LastEditTime: 2020-09-27 16:11:03
+ * @LastEditTime: 2020-09-27 17:35:50
  */
+import 'package:taojuwu/repository/order/measure_data_model.dart';
 import 'package:taojuwu/repository/shop/sku_attr/accessory_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/canopy_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/craft_attr.dart';
@@ -11,9 +12,10 @@ import 'package:taojuwu/repository/shop/sku_attr/part_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/window_gauze_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/window_shade_attr.dart';
-import 'package:taojuwu/viewmodel/goods/binding/curtain_goods_binding.dart';
+import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
 
-mixin GoodsSpecBinding on CurtainGoodsBinding {
+mixin CurtainSpecBinding on CurtainGoodsBinding {
   WindowGauzeAttr windowGauzeAttr; //窗纱  --单选
 
   CraftAttr craftAttr; //工艺  --单选
@@ -52,7 +54,47 @@ mixin GoodsSpecBinding on CurtainGoodsBinding {
   @override
   void addListener(listener) {
     // TODO: 请求网络接口
+    print("--------发起网路请求，初始阿虎商品属性");
+    fetchData();
     super.addListener(listener);
+  }
+
+  Future fetchData() async {
+    String partsType = ''; // 获取型材类型
+    await getMeasureData()
+        .then((MeasureDataModelResp response) {
+          partsType = response?.data?.measureData?.partsType;
+        })
+        .catchError((err) => err)
+        .then((_) {
+          OTPService.fetchCurtainAllAttrsData(context, params: {
+            'client_uid': clientId,
+            'parts_type': partsType,
+            'goods_id': goodsId,
+          })
+              .then((data) {
+                if (data == null || data.isEmpty) return;
+                windowGauzeAttr = data[0];
+                craftAttr = data[1];
+                partAttr = data[2];
+                windowShadeAttr = data[3];
+                canopyAttr = data[4];
+                accessoryAttr = data[5];
+                roomAttr = data[6];
+                initAttrs(
+                    windowGauzeAttr: windowGauzeAttr,
+                    craftAttr: craftAttr,
+                    partAttr: partAttr,
+                    windowShadeAttr: windowShadeAttr,
+                    canopyAttr: canopyAttr,
+                    accessoryAttr: accessoryAttr,
+                    roomAttr: roomAttr);
+              })
+              .catchError((err) => err)
+              .whenComplete(() {
+                notifyListeners();
+              });
+        });
   }
 
   //  初始化商品属性，默认选中第一个

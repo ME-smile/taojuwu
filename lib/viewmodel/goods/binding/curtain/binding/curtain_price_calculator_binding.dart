@@ -2,16 +2,17 @@
  * @Description: 声明一个mixin的类，拥有计算商品价格的功能
  * @Author: iamsmiling
  * @Date: 2020-09-27 09:06:14
- * @LastEditTime: 2020-09-27 15:23:39
+ * @LastEditTime: 2020-09-27 16:25:24
  */
 
 import 'package:taojuwu/utils/common_kit.dart';
-import 'package:taojuwu/viewmodel/goods/binding/base_goods_binding.dart';
-import 'package:taojuwu/viewmodel/goods/binding/goods_sepc_binding.dart';
-import 'package:taojuwu/viewmodel/goods/binding/size_filler_binding.dart';
+import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_binding.dart';
+import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
+import 'package:taojuwu/viewmodel/goods/binding/curtain/binding/curtain_sepc_binding.dart';
+import 'package:taojuwu/viewmodel/goods/binding/curtain/binding/curtain_size_filler_binding.dart';
 
-class PriceCalculatorBinding extends BaseGoodsBinding
-    with GoodsSpecBinding, SizeFillerBinding {
+class CurtainPriceCalculatorBinding extends BaseGoodsBinding
+    with CurtainGoodsBinding, CurtainSpecBinding, CurtainSizeFillerBinding {
   // 商品单价
   double get unitPrice {
     return CommonKit.parseDouble(bean?.price, defaultVal: 0.00);
@@ -49,6 +50,7 @@ class PriceCalculatorBinding extends BaseGoodsBinding
     return tmp;
   }
 
+  //总价
   double get totalPrice {
     double tmp = unitPrice;
 

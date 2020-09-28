@@ -6,9 +6,9 @@
  */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:taojuwu/viewmodel/goods/binding/base_goods_binding.dart';
+import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_binding.dart';
 
-import 'package:taojuwu/viewmodel/goods/curtain_viewmodel.dart';
+import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 
 import 'purchase_actionbar.dart';
 

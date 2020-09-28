@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/viewmodel/goods/binding/base_goods_binding.dart';
+import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_binding.dart';
 
 class PurchaseActionBar extends StatelessWidget {
   final BaseGoodsBinding baseGoodsBinding;
@@ -65,9 +65,9 @@ class PurchaseActionBar extends StatelessWidget {
                               child: Text(
                                 '加入购物车',
                                 textAlign: TextAlign.center,
-                                style: true
-                                    ? TextStyle()
-                                    : TextStyle(color: themeData.disabledColor),
+                                // style: true
+                                //     ? TextStyle()
+                                //     : TextStyle(color: themeData.disabledColor),
                               ),
                             ),
                           );

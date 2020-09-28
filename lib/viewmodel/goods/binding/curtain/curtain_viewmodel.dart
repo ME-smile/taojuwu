@@ -2,18 +2,19 @@
  * @Description: 商品模型
  * @Author: iamsmiling
  * @Date: 2020-09-25 15:57:46
- * @LastEditTime: 2020-09-27 15:48:34
+ * @LastEditTime: 2020-09-27 17:40:23
  */
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/viewmodel/goods/binding/price_calculator_binding.dart';
+import 'package:taojuwu/viewmodel/goods/binding/curtain/binding/curtain_price_calculator_binding.dart';
 
-import 'binding/price_calculator_binding.dart';
+import 'binding/curtain_price_calculator_binding.dart';
 
-class CurtainViewModel extends PriceCalculatorBinding {
+class CurtainViewModel extends CurtainPriceCalculatorBinding {
   final BuildContext mBuildContext;
   final int id;
 
@@ -31,11 +32,6 @@ class CurtainViewModel extends PriceCalculatorBinding {
 
   CurtainViewModel(this.mBuildContext, this.id) {
     _getCurtainDetail();
-  }
-
-  @override
-  void addListener(listener) {
-    super.addListener(listener);
   }
 
   Future _getCurtainDetail() {

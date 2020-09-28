@@ -242,6 +242,25 @@ class OTPService {
     return resp;
   }
 
+  static Future fetchCurtainAllAttrsData(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    List<Future> list = [
+      windowGauzeAttr(context, params: params),
+      craftAttr(context, params: params),
+      partAttr(context, params: params),
+      windowShadeAttr(context, params: params),
+      canopyAttr(context, params: params),
+      accessoryAttr(context, params: params),
+      roomAttr(context, params: params),
+    ];
+
+    list.forEach((v) {
+      v.catchError((err) => err);
+    });
+    List<dynamic> result = await Future.wait(list);
+    return result;
+  }
+
   static Future fetchCurtainDetailData(BuildContext context,
       {Map<String, dynamic> params}) async {
     params = params ?? {};

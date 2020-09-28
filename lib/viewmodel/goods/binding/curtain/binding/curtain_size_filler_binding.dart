@@ -2,16 +2,14 @@
  * @Description: 商品尺寸相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-27 09:16:44
- * @LastEditTime: 2020-09-27 16:12:12
+ * @LastEditTime: 2020-09-27 16:16:05
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/utils/common_kit.dart';
-import 'package:taojuwu/viewmodel/goods/binding/base_goods_binding.dart';
+import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
 
-import 'curtain_goods_binding.dart';
-
-mixin SizeFillerBinding on BaseGoodsBinding {
+mixin CurtainSizeFillerBinding on CurtainGoodsBinding {
   TextEditingController _widthController = TextEditingController();
   TextEditingController _heightController = TextEditingController();
   TextEditingController _deltaYController = TextEditingController();
