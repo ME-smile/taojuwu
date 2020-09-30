@@ -2,7 +2,7 @@
  * @Description: 商品详情
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-09-27 17:33:42
+ * @LastEditTime: 2020-09-30 11:24:36
  */
 
 import 'package:animations/animations.dart';
@@ -24,25 +24,25 @@ class CurtainDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return ChangeNotifierProvider<CurtainViewModel>(
       create: (BuildContext context) => CurtainViewModel(context, id),
-      child: Consumer<CurtainViewModel>(
-        builder: (BuildContext context, CurtainViewModel viewModel, _) {
-          return PageTransitionSwitcher(
-              transitionBuilder: (
-                Widget child,
-                Animation<double> animation,
-                Animation<double> secondaryAnimation,
-              ) {
-                return FadeThroughTransition(
-                  animation: animation,
-                  secondaryAnimation: secondaryAnimation,
-                  child: child,
-                );
-              },
-              child: viewModel.isLoading ? LoadingCircle() : _buildContent());
-        },
-      ),
+      child: Builder(builder: (BuildContext ctx) {
+        return PageTransitionSwitcher(transitionBuilder: (
+          Widget child,
+          Animation<double> animation,
+          Animation<double> secondaryAnimation,
+        ) {
+          return FadeThroughTransition(
+            animation: animation,
+            secondaryAnimation: secondaryAnimation,
+            child: child,
+          );
+        }, child: Consumer<CurtainViewModel>(
+          builder: (BuildContext context, CurtainViewModel viewModel, _) {
+            return viewModel.isLoading ? LoadingCircle() : _buildContent();
+          },
+        ));
+      }),
     );
   }
 

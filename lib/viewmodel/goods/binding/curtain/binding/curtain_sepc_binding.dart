@@ -2,132 +2,160 @@
  * @Description: 商品属性相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-27 10:16:14
- * @LastEditTime: 2020-09-27 17:35:50
+ * @LastEditTime: 2020-09-30 17:39:52
  */
 import 'package:taojuwu/repository/order/measure_data_model.dart';
-import 'package:taojuwu/repository/shop/sku_attr/accessory_attr.dart';
-import 'package:taojuwu/repository/shop/sku_attr/canopy_attr.dart';
-import 'package:taojuwu/repository/shop/sku_attr/craft_attr.dart';
-import 'package:taojuwu/repository/shop/sku_attr/part_attr.dart';
-import 'package:taojuwu/repository/shop/sku_attr/room_attr.dart';
-import 'package:taojuwu/repository/shop/sku_attr/window_gauze_attr.dart';
-import 'package:taojuwu/repository/shop/sku_attr/window_shade_attr.dart';
+
+import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
 
 mixin CurtainSpecBinding on CurtainGoodsBinding {
-  WindowGauzeAttr windowGauzeAttr; //窗纱  --单选
+  //属性列表
+  List<GoodsSkuAttr> skuList = [];
 
-  CraftAttr craftAttr; //工艺  --单选
-
-  RoomAttr roomAttr; // 空间  --单选
-
-  PartAttr partAttr; // 配件 即型材  配件==型材  --单选
-
-  WindowShadeAttr windowShadeAttr; //里布  --单选
-
-  CanopyAttr canopyAttr; //幔头 --单选
-
-  AccessoryAttr accessoryAttr; //配饰  --多选 ===窗帘订单装饰品   唯一可以多选的属性
-
-  WindowGauzeAttrBean curWindowGauzeAttrBean; // 当前选中大的窗纱
-
-  CraftAttrBean curCraftAttrBean; // 当前选中的工艺
-
-  PartAttrBean curPartAttrBean; // 当前选中的型材
-
-  WindowShadeAttrBean curWindowShadeAttrBean; // 当前选中的里布
-
-  CanopyAttrBean curCanopyAttrBean; //当前选中幔头
-
-  RoomAttrBean curRoomAttrBean; //当前选中的空间
-
-  List<AccessoryAttrBean> get selectedAccessoryBeans {
-    List<AccessoryAttrBean> data = accessoryAttr?.data;
-    if (data == null || data.isEmpty) return null;
-    return data.where((element) => element.isChecked).toList();
+  //空间属性 空间在另一个页面 所以没有存放到数组中
+  GoodsSkuAttr skuRoom;
+  // 需要获取的参数列表
+  List<int> get typeList {
+    return isWindowSunblind ? [3, 4, 5, 8, 12, 13] : [3, 4, 5, 13];
   }
+
+  //当前选中的窗帘
+  GoodsSkuAttrBean get curWindowGauzeAttrBean => getSelectedElement(3);
 
   bool get hasWindowGauze =>
-      curWindowGauzeAttrBean?.name?.contains('不要窗纱') == false;
+      curWindowGauzeAttrBean?.name?.contains('不要窗纱') == false ?? false;
+  // 当前选中的型材
+  GoodsSkuAttrBean get curPartAttrBean => getSelectedElement(5);
+  // 当前选中的里布
+  GoodsSkuAttrBean get curWindowShadeAttrBean => getSelectedElement(12);
 
+  //当前选中的幔头
+  GoodsSkuAttrBean get curCanopyAttrBean => getSelectedElement(8);
+  // 选中的配饰
+  List<GoodsSkuAttrBean> get selectedAccessoryBeans =>
+      getAllSelectedAccessories();
+
+  // 当前选中的空间
+  GoodsSkuAttrBean get curRoomAttrBean => getSelectedElement(1);
+
+  /*
+   * @Author: iamsmiling
+   * @description: 闯入一个type参数，获取当前的属性选择的属性值
+   * @param : int type
+   * @return {type}  GoodsSkuAttrBean  当前属性的选中值
+   * @Date: 2020-09-30 13:12:33
+   */
+  GoodsSkuAttrBean getSelectedElement(int type) {
+    List<GoodsSkuAttrBean> list = getSelectedElementList(type);
+    if (CommonKit.isNullOrEmpty(list)) return null;
+    return list?.firstWhere((element) => element.isChecked);
+  }
+
+  List<GoodsSkuAttrBean> getAllSelectedAccessories() {
+    List<GoodsSkuAttrBean> list = getSelectedElementList(13);
+    if (CommonKit.isNullOrEmpty(list)) return null;
+    return list?.where((element) => element.isChecked)?.toList();
+  }
+
+  List<GoodsSkuAttrBean> getSelectedElementList(int type) {
+    GoodsSkuAttr attr;
+    List<GoodsSkuAttrBean> list = [];
+    for (int i = 0; i < skuList.length; i++) {
+      GoodsSkuAttr item = skuList[i];
+      if (item?.type == type) {
+        attr = item;
+        list = attr?.data ?? [];
+        break;
+      }
+    }
+    return list;
+  }
+
+  //确保_fetchData只会被初始化一次的标识位
+  bool _hasInit = false;
   @override
   void addListener(listener) {
-    // TODO: 请求网络接口
-    print("--------发起网路请求，初始阿虎商品属性");
-    fetchData();
     super.addListener(listener);
+    if (!_hasInit)
+      _fetchData().whenComplete(() {
+        _hasInit = true;
+      });
   }
 
-  Future fetchData() async {
-    String partsType = ''; // 获取型材类型
-    await getMeasureData()
-        .then((MeasureDataModelResp response) {
-          partsType = response?.data?.measureData?.partsType;
-        })
-        .catchError((err) => err)
-        .then((_) {
-          OTPService.fetchCurtainAllAttrsData(context, params: {
-            'client_uid': clientId,
-            'parts_type': partsType,
-            'goods_id': goodsId,
-          })
-              .then((data) {
-                if (data == null || data.isEmpty) return;
-                windowGauzeAttr = data[0];
-                craftAttr = data[1];
-                partAttr = data[2];
-                windowShadeAttr = data[3];
-                canopyAttr = data[4];
-                accessoryAttr = data[5];
-                roomAttr = data[6];
-                initAttrs(
-                    windowGauzeAttr: windowGauzeAttr,
-                    craftAttr: craftAttr,
-                    partAttr: partAttr,
-                    windowShadeAttr: windowShadeAttr,
-                    canopyAttr: canopyAttr,
-                    accessoryAttr: accessoryAttr,
-                    roomAttr: roomAttr);
-              })
-              .catchError((err) => err)
-              .whenComplete(() {
-                notifyListeners();
-              });
-        });
+  Future _fetchData() async {
+    _getCommonAttrData();
+    _getRoomAttrData();
   }
 
-  //  初始化商品属性，默认选中第一个
-  void initAttrs({
-    WindowGauzeAttr windowGauzeAttr,
-    CraftAttr craftAttr,
-    PartAttr partAttr,
-    WindowShadeAttr windowShadeAttr,
-    CanopyAttr canopyAttr,
-    AccessoryAttr accessoryAttr,
-    RoomAttr roomAttr,
-  }) {
-    curWindowGauzeAttrBean = _getFirst(windowGauzeAttr); //窗纱
-    curCraftAttrBean = _getFirst(craftAttr); // 工艺
-    curPartAttrBean = _getFirst(partAttr); //型材
-    curWindowShadeAttrBean = _getFirst(windowShadeAttr); //里布
-    curCanopyAttrBean = _getFirst(canopyAttr);
+  Future _getCommonAttrData() async {
+    // 获取型材类型
+    MeasureDataModelResp response = await getMeasureData();
+    // 获取到测装数据，并保存引用
+    measureData = response?.data?.measureData;
+    String partsType = measureData?.partsType;
+    List<Future<GoodsSkuAttrWrapperResp>> futures = typeList
+        .map((e) => OTPService.skuAttr(context, params: {
+              'client_uid': clientId,
+              'parts_type': partsType,
+              'goods_id': goodsId,
+              'type': e
+            }).then((GoodsSkuAttrWrapperResp response) {
+              if (response?.valid == true) {
+                skuList.add(response?.data);
+              }
+            }).catchError((err) => err))
+        .toList();
+    await Future.wait(futures);
+    skuList?.sort((GoodsSkuAttr a, GoodsSkuAttr b) => a.type - b.type);
+    notifyListeners();
   }
 
-  dynamic _getFirst(dynamic attr) {
-    var data = attr?.data;
-    if (data == null || data.isEmpty) return null;
-    return data.first;
+  Future _getRoomAttrData() {
+    return OTPService.skuAttr(context, params: {'goods_id': goodsId, 'type': 1})
+        .then((GoodsSkuAttrWrapperResp response) {
+      if (response?.valid == true) {
+        skuRoom = response.data;
+      }
+    }).catchError((err) => err);
   }
 
-  String get accText {
-    String tmp = selectedAccessoryBeans
-        ?.map((item) => item?.name ?? '')
-        ?.toList()
-        ?.join(',');
-    if (tmp == null || tmp?.isEmpty == true) {
-      return '无';
+  /*
+   * @Author: iamsmiling
+   * @description:点击选中属性
+   * @param : GoodsSkuAttr 当前操作的属性  i 当前属性值在属性值列表中的下标
+   * @return {type} 
+   * @Date: 2020-09-30 13:15:29
+   */
+  void selectAttrBean(GoodsSkuAttr attr, int i) {
+    List<GoodsSkuAttrBean> list = attr?.data ?? [];
+    if (attr.canMultiSelect) {
+      GoodsSkuAttrBean bean = list[i];
+      bean.isChecked = !bean.isChecked;
+    } else {
+      for (int j = 0; j < list.length; j++) {
+        GoodsSkuAttrBean bean = list[j];
+        bean.isChecked = i == j;
+      }
     }
-    return tmp;
+    attr.hasSelectedAttr = true;
+  }
+
+  /*
+   * @Author: iamsmiling
+   * @description: 属性充值默认选中第一个
+   * @param : 
+   * @return {type} 
+   * @Date: 2020-09-29 09:25:09
+   */
+  void resetAttr() {
+    skuList.forEach((e) {
+      for (int i = 0; i < e.data.length; i++) {
+        e.data[i].isChecked = i == 0;
+      }
+    });
+    notifyListeners();
   }
 }

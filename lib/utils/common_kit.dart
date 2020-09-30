@@ -2,7 +2,7 @@
  * @Description:  常用工具函数的封装
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-09-25 16:41:59
+ * @LastEditTime: 2020-09-30 16:59:16
  */
 import 'dart:async';
 
@@ -62,7 +62,7 @@ class CommonKit {
 
   static double parseDouble(var variable, {double defaultVal = -1.0}) {
     if (variable == null) return defaultVal;
-    if (variable.runtimeType == int) return variable;
+    if (variable.runtimeType is double) return variable;
     if (variable.runtimeType == String) {
       variable = variable.trim(); //去除左右两端空格
       // 如果字符为空或者不是出数字则返回-1
@@ -84,7 +84,7 @@ class CommonKit {
  * @Date: 2020-09-24 13:10:03
  */
   static bool isNumString(String str) {
-    RegExp re = new RegExp(r"^[0-9]{1,}[.][0-9]*$");
+    RegExp re = new RegExp(r"^[0-9]{1,}[.]?[0-9]*$");
     return re.hasMatch(str);
   }
 
@@ -97,5 +97,33 @@ class CommonKit {
    */
   static double toDoubleAsFixed(double n, {double digits = 2}) {
     return double.parse(n.toStringAsPrecision(2));
+  }
+
+/*
+ * @Author: iamsmiling
+ * @description: 将变量解析为map并返回
+ * @param : var args
+ * @return {type} map
+ * @Date: 2020-09-28 15:01:29
+ */
+
+  static Map<String, dynamic> parseMap(var variable) {
+    if (variable == null) return {};
+    if (variable is Map) return variable;
+    return {};
+  }
+
+/*
+ * @Author: iamsmiling
+ * @description:将变量解析为数组并返回
+ * @param : 
+ * @return {type} 
+ * @Date: 2020-09-28 15:10:48
+ */
+
+  static List parseList(var variable) {
+    if (variable == null) return [];
+    if (variable is List) return variable;
+    return variable.toList();
   }
 }

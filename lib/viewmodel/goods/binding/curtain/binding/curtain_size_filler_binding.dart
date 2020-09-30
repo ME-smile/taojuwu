@@ -2,22 +2,26 @@
  * @Description: 商品尺寸相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-27 09:16:44
- * @LastEditTime: 2020-09-27 16:16:05
+ * @LastEditTime: 2020-09-30 16:36:36
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
+import 'package:taojuwu/repository/shop/sku_attr/curtain_sku_attr.dart';
 import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
 
 mixin CurtainSizeFillerBinding on CurtainGoodsBinding {
-  TextEditingController _widthController = TextEditingController();
-  TextEditingController _heightController = TextEditingController();
-  TextEditingController _deltaYController = TextEditingController();
+  List<CurtainSkuAttr> curtainSkuAttrList = [];
+
+  TextEditingController widthController = TextEditingController();
+  TextEditingController heightController = TextEditingController();
+  TextEditingController deltaYController = TextEditingController();
 
   OrderGoodsMeasure measureData; //测装数据
-  String widthCMStr; //输入框输入的宽度-->以厘米为单位
-  String heightCMStr; // 输入框输入的高度-->以厘米为单位
-  String deltaYCMStr; // 输入框输入的离地距离-->以厘米为单位
+  String get widthCMStr => widthController.text; //输入框输入的宽度-->以厘米为单位
+  String get heightCMStr => heightController.text; // 输入框输入的高度-->以厘米为单位
+  String get deltaYCMStr => deltaYController.text; // 输入框输入的离地距离-->以厘米为单位
 
   double get widthCM => CommonKit.parseDouble(widthCMStr, defaultVal: 0.0);
 
@@ -64,7 +68,6 @@ mixin CurtainSizeFillerBinding on CurtainGoodsBinding {
 
   @override
   void addListener(listener) {
-    _addListeners();
     super.addListener(listener);
   }
 
@@ -75,21 +78,51 @@ mixin CurtainSizeFillerBinding on CurtainGoodsBinding {
  * @return {type} 
  * @Date: 2020-09-27 09:34:44
  */
-  void _listenWidthChange() {
-    widthCMStr = _widthController.text;
-    notifyListeners();
+
+  // 校验宽度
+  bool _isValidWidth() {
+    if (widthCMStr == null || widthCMStr.isEmpty) {
+      ToastKit.showInfo('请填写宽度');
+      return false;
+    }
+    if (widthCM == 0) {
+      ToastKit.showInfo('宽度不能为0哦');
+      return false;
+    }
+    if (widthCM > 100 * 100) {
+      ToastKit.showInfo('宽度不能超过100米');
+      return false;
+    }
+    return true;
   }
 
-  void _listenHeightChange() {
-    heightCMStr = _widthController.text;
-    notifyListeners();
+  // 校验高度
+  bool _isValidHeight() {
+    if (heightCMStr == null || heightCMStr.isEmpty) {
+      ToastKit.showInfo('请填写高度');
+      return false;
+    }
+    if (heightCM == 0) {
+      ToastKit.showInfo('高度不能为0哦');
+      return false;
+    }
+    if (heightCM > 350) {
+      ToastKit.showInfo('暂不支持3.5m以上定制');
+      heightController.text = '350';
+      return false;
+    }
+    return true;
   }
 
-  void _listenDeltaYChange() {
-    deltaYCMStr = _widthController.text;
-    notifyListeners();
+  bool _isValidSize() {
+    return _isValidWidth() && _isValidHeight();
   }
 
+  // 提交测装数据
+  Future commitSize() async {
+    notifyListeners();
+    if (!_isValidSize()) return;
+  }
 /*
  * @Author: iamsmiling
  * @description: 添加监听器
@@ -98,27 +131,14 @@ mixin CurtainSizeFillerBinding on CurtainGoodsBinding {
  * @Date: 2020-09-27 09:38:12
  */
 
-  void _addListeners() {
-    _widthController?.addListener(_listenWidthChange);
-    _heightController?.addListener(_listenHeightChange);
-    _deltaYController?.addListener(_listenDeltaYChange);
-  }
-
-  void _removeListeners() {
-    _widthController?.removeListener(_listenWidthChange);
-    _heightController?.removeListener(_listenHeightChange);
-    _deltaYController?.removeListener(_listenDeltaYChange);
-  }
-
   void _dispose() {
-    _widthController?.dispose();
-    _heightController?.dispose();
-    _deltaYController?.dispose();
+    widthController?.dispose();
+    heightController?.dispose();
+    deltaYController?.dispose();
   }
 
   @override
   void dispose() {
-    _removeListeners();
     _dispose();
     super.dispose();
   }

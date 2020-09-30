@@ -349,7 +349,7 @@ class RouteHandler {
     BuildContext context,
     Map<String, List<Object>> params,
   ) {
-    return PreMeasureDataPage();
+    // return PreMeasureDataPage();
   });
 
   static Future goPreMeasureDataPage(BuildContext context) {

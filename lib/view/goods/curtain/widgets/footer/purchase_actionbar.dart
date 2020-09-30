@@ -9,6 +9,7 @@ class PurchaseActionBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
+
     return Container(
       color: themeData.primaryColor,
       padding: EdgeInsets.symmetric(
@@ -20,7 +21,8 @@ class PurchaseActionBar extends StatelessWidget {
             flex: 2,
             child: Text.rich(TextSpan(text: '预计:\n', children: [
               TextSpan(
-                  text: '${baseGoodsBinding.totlaPrice ?? "0.00"}',
+                  text:
+                      '${baseGoodsBinding.totalPrice.toStringAsFixed(2) ?? "0.00"}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
             ])),
           ),

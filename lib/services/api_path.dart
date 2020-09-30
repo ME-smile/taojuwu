@@ -17,7 +17,7 @@ class ApiPath {
 
   static const String loginByPwd = '/api/login/login';
 
-  static const String skuAttr = '/api/order/wcAttr';
+  static const String skuAttr = '/api/order/wcattr';
 
   static const String userAdd = '/api/client/add';
 

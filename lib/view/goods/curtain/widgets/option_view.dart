@@ -1,28 +1,34 @@
+/*
+ * @Description: 属性的选项
+ * @Author: iamsmiling
+ * @Date: 2020-09-25 12:47:45
+ * @LastEditTime: 2020-09-29 10:36:17
+ */
 import 'package:flutter/material.dart';
+import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/triangle_clipper.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
-// import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class OptionView extends StatelessWidget {
-  final String img;
-  final String text;
-  final String price;
+  final bool isRoomAttr;
+  final GoodsSkuAttrBean bean;
   final Function callback;
-  final bool showBorder;
 
-  bool get showPrice => double.parse(price ?? '0.00') != 0.0;
-  const OptionView(
-      {Key key,
-      this.img,
-      this.text: '',
-      this.callback,
-      this.showBorder: false,
-      this.price: ''})
+  bool get showPrice => CommonKit.parseDouble(bean.price) != 0.0;
+
+  bool get isChecked => bean.isChecked;
+
+  const OptionView(this.bean, {Key key, this.callback, this.isRoomAttr = false})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return isRoomAttr ? _buildButtonView(context) : _buildPictureView(context);
+  }
+
+  Widget _buildPictureView(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
@@ -41,7 +47,7 @@ class OptionView extends StatelessWidget {
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(
-                          color: showBorder
+                          color: isChecked
                               ? Theme.of(context).accentColor
                               : Colors.transparent,
                           width: 1.2),
@@ -49,11 +55,11 @@ class OptionView extends StatelessWidget {
                     width: UIKit.width(150),
                     height: UIKit.width(150),
                     child: ZYNetImage(
-                      imgPath: UIKit.getNetworkImgPath(img),
+                      imgPath: UIKit.getNetworkImgPath(bean.picture),
                     ),
                   ),
                   Positioned(
-                    child: showBorder ? TriAngle() : Container(),
+                    child: isChecked ? TriAngle() : Container(),
                     right: 0,
                     bottom: 0,
                   ),
@@ -63,11 +69,11 @@ class OptionView extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(top: UIKit.height(10)),
               child: Text(
-                text,
+                bean.name,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
-                style: showBorder
+                style: isChecked
                     ? textTheme.bodyText2.copyWith(fontSize: 12)
                     : textTheme.caption.copyWith(fontSize: 12),
               ),
@@ -77,15 +83,35 @@ class OptionView extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.only(top: UIKit.height(10)),
                 child: Text(
-                  '¥$price',
+                  '${bean.price}',
                   textAlign: TextAlign.center,
-                  style: showBorder
+                  style: isChecked
                       ? textTheme.bodyText2.copyWith(fontSize: 12)
                       : textTheme.caption.copyWith(fontSize: 12),
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButtonView(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+    return GestureDetector(
+      onTap: callback,
+      child: Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            color: isChecked ? themeData.accentColor : const Color(0xFFEDEDED)),
+        margin: EdgeInsets.symmetric(
+            horizontal: UIKit.width(10), vertical: UIKit.height(10)),
+        padding: EdgeInsets.symmetric(
+            horizontal: UIKit.width(15), vertical: UIKit.height(10)),
+        child: Text(
+          bean.name,
+          style: isChecked ? themeData.accentTextTheme.button : TextStyle(),
         ),
       ),
     );

@@ -2,20 +2,18 @@
  * @Description: 声明一个mixin的类，拥有计算商品价格的功能
  * @Author: iamsmiling
  * @Date: 2020-09-27 09:06:14
- * @LastEditTime: 2020-09-27 16:25:24
+ * @LastEditTime: 2020-09-30 17:19:10
  */
 
-import 'package:taojuwu/utils/common_kit.dart';
-import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_binding.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
 import 'package:taojuwu/viewmodel/goods/binding/curtain/binding/curtain_sepc_binding.dart';
 import 'package:taojuwu/viewmodel/goods/binding/curtain/binding/curtain_size_filler_binding.dart';
 
-class CurtainPriceCalculatorBinding extends BaseGoodsBinding
-    with CurtainGoodsBinding, CurtainSpecBinding, CurtainSizeFillerBinding {
+class CurtainPriceCalculatorBinding extends CurtainGoodsBinding
+    with CurtainSpecBinding, CurtainSizeFillerBinding {
   // 商品单价
   double get unitPrice {
-    return CommonKit.parseDouble(bean?.price, defaultVal: 0.00);
+    return bean?.price ?? 0.00;
   }
 
   // 窗纱的价格
@@ -50,6 +48,7 @@ class CurtainPriceCalculatorBinding extends BaseGoodsBinding
     return tmp;
   }
 
+  @override
   //总价
   double get totalPrice {
     double tmp = unitPrice;
@@ -75,16 +74,16 @@ class CurtainPriceCalculatorBinding extends BaseGoodsBinding
             canopyPrice * widthM +
             partPrice * widthM * 2 +
             accessoriesPrice;
-      } else {
-        tmp = unitPrice * widthM * mainHeightFactor * 2 +
-            (windowShadeClothPrice + windowGauzePrice) *
-                2 *
-                widthM *
-                heightFactor +
-            canopyPrice * widthM +
-            partPrice * widthM +
-            accessoriesPrice;
       }
+    } else {
+      tmp = unitPrice * widthM * mainHeightFactor * 2 +
+          (windowShadeClothPrice + windowGauzePrice) *
+              2 *
+              widthM *
+              heightFactor +
+          canopyPrice * widthM +
+          partPrice * widthM +
+          accessoriesPrice;
     }
 
     return tmp;

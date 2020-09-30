@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_upgrade/flutter_app_upgrade.dart';
-import 'package:taojuwu/application.dart';
 import 'package:taojuwu/repository/app_info/app_info_model.dart';
 import 'package:taojuwu/repository/logistics/logistics_data_model.dart';
 import 'package:taojuwu/repository/order/measure_data_model.dart';
@@ -23,10 +22,10 @@ import 'package:taojuwu/repository/shop/search/associative_word.dart';
 import 'package:taojuwu/repository/shop/sku_attr/accessory_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/canopy_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/craft_attr.dart';
+import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/part_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/window_gauze_attr.dart';
-// import 'package:taojuwu/repository/shop/sku_attr/window_pattern_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/window_shade_attr.dart';
 import 'package:taojuwu/repository/shop/tag_model.dart';
 import 'package:taojuwu/repository/user/category_customer_model.dart';
@@ -74,8 +73,6 @@ class OTPService {
 
   static Future mallData(BuildContext context,
       {Map<String, dynamic> params}) async {
-    print("携带的token----------------------------------------------------");
-    print(Application.sp.get('toekn'));
     List<Future> list = [
       productGoodsList(context, params: params),
       tagList(context, params: params),
@@ -87,6 +84,27 @@ class OTPService {
     });
     List result = await Future.wait(list);
     return result;
+  }
+
+  /*
+  * @Author: iamsmiling
+  * @description: 商品属性
+  * @param : 
+  * @return {type} 
+  * @Date: 2020-09-28 14:42:12
+  */
+  static Future<GoodsSkuAttrWrapperResp> skuAttr(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
+    Map<String, dynamic> json = {};
+
+    Map<String, dynamic> args = response?.request?.queryParameters;
+
+    var data = response?.data['data'];
+    json.addAll({'type': args['type'], 'data': data});
+    response?.data['data'] = json;
+
+    return GoodsSkuAttrWrapperResp.fromJson(response?.data);
   }
 
   //goods_id

@@ -1,140 +1,335 @@
 {
-  "单窗": {
-    "非飘窗": {
-      "无盒": {
-        "顶装": {
-          "满墙": {
-            "不垂地": "size_000011.png",
-            "垂地": "size_000111.png"
-          },
-          "不满墙": {
-            "不垂地": "size_000010.png",
-            "垂地": "size_000110.png"
+  "data": {
+    "install_options": [
+      {
+        "name": "单窗/飘窗/无盒",
+        "id": 13,
+        "install_mode": [
+          {
+            "name": "顶装满墙",
+            "picutre": "curtain/size_0100-1-1-SPW-H.png",
+            "is_checked": true
           }
-        },
-        "侧装": {
-          "满墙": {
-            "不垂地": "size_000001.png",
-            "垂地": "size_000101.png"
-          },
-          "不满墙": {
-            "不垂地": "size_000000.png",
-            "垂地": "size_000100.png"
+        ]
+      },
+      {
+        "name": "单窗/飘窗/有盒",
+        "id": 22,
+        "install_mode": [
+          {
+            "name": "盒内装",
+            "picutre": "curtain/size_0110-1-1-SPY-H.png",
+            "is_checked": false
           }
-        }
+        ]
       },
-      "有盒": {
-        "盒内装": {
-          "不垂地": "size_0010-1-1.png",
-          "垂地": "size_0011-1-1.png"
-        }
-      }
-    },
-    "飘窗": {
-      "无盒": {
-        "顶墙满装": {
-          "不垂地": "size_0100-1-1-SPW-H.png",
-          "垂地": "size_0101-1-1-SPW-L.png"
-        }
-      },
-      "有盒": {
-        "盒内装": {
-          "不垂地": "size_0110-1-1-SPY-H.png",
-          "垂地": "size_0111-1-1-SPY-L.png"
-        }
-      }
-    }
-  },
-  "U型窗": {
-    "非飘窗": {
-      "无盒": {
-        "顶装": {
-          "满墙": {
-            "不垂地": "size_200011.png",
-            "垂地": "size_200111.png"
-          },
-          "不满墙": {
-            "不垂地": "size_200010.png",
-            "垂地": "size_200110.png"
+      {
+        "name": "单窗/非飘窗/有盒",
+        "id": 23,
+        "install_mode": [
+          {
+            "name": "盒内装",
+            "picutre": "curtain/size_0010-1-1.png",
+            "is_checked": true
           }
-        },
-        "侧装": {
-          "满墙": {
-            "不垂地": "size_200001.png",
-            "垂地": "size_200101.png"
+        ]
+      },
+      {
+        "name": "单窗/非飘窗/无盒",
+        "id": 24,
+        "install_mode": [
+          {
+            "name": "顶装满墙",
+            "picutre": "curtain/size_0100-1-1-SPW-H.png",
+            "is_checked": true
           },
-          "不满墙": {
-            "不垂地": "size_200000.png",
-            "垂地": "size_200100.png"
-          }
-        }
-      },
-      "有盒": {
-        "盒内装": {
-          "不垂地": "size_2010-1-1.png",
-          "垂地": "size_2011-1-1.png"
-        }
-      }
-    },
-    "飘窗": {
-      "无盒": {
-        "顶墙满装": {
-          "不垂地": "size_2100-1-1.png",
-          "垂地": "size_2101-1-1.png"
-        }
-      },
-      "有盒": {
-        "盒内装": {
-          "不垂地": "size_2110-1-1.png",
-          "垂地": "size_0111-1-1-UPY-L.png"
-        }
-      }
-    }
-  },
-  "L型窗": {
-    "非飘窗": {
-      "无盒": {
-        "顶装": {
-          "满墙": {
-            "垂地": "size_100111.png",
-            "不垂地": "size_100011.png"
+          {
+            "name": "顶装",
+            "picutre": "curtain/size_000011.png",
+            "is_checked": false
           },
-          "不满墙": {
-            "垂地": "size_100110.png",
-            "不垂地": "size_100010.png"
+          {
+            "name": "侧装",
+            "picutre": "curtain/size_000001.png",
+            "is_checked": false
           }
-        },
-        "侧装": {
-          "满墙": {
-            "垂地": "size_100101.png",
-            "不垂地": "size_100001.png"
+        ]
+      },
+      {
+        "name": "L型窗/飘窗/有盒",
+        "id": 14,
+        "install_mode": [
+          {
+            "name": "盒内装",
+            "picutre": "curtain/size_0110-1-1-LPY-H.png",
+            "is_checked": true
+          }
+        ]
+      },
+      {
+        "name": "L型窗/非飘窗/有盒",
+        "id": 15,
+        "install_mode": [
+          {
+            "name": "盒内装",
+            "picutre": "curtain/size_1010-1-1.png",
+            "is_checked": true
+          }
+        ]
+      },
+      {
+        "name": "L型窗/非飘窗/无盒",
+        "id": 18,
+        "install_mode": [
+          {
+            "name": "顶装",
+            "picutre": "curtain/size_100010.png",
+            "is_checked": true
           },
-          "不满墙": {
-            "垂地": "size_100100.png",
-            "不垂地": "size_100000.png"
+          {
+            "name": "侧装",
+            "picutre": "curtain/size_100000.png",
+            "is_checked": false
           }
-        }
+        ]
       },
-      "有盒": {
-        "盒内装": {
-          "垂地": "size_1011-1-1.png",
-          "不垂地": "size_1010-1-1.png"
-        }
-      }
-    },
-    "飘窗": {
-      "无盒": {
-        "顶墙满装": {
-          "不垂地": "size_1100-1-1.png",
-          "垂地": "size_1101-1-1.png"
-        }
+      {
+        "name": "L型窗/非飘窗/无盒",
+        "id": 19,
+        "install_mode": [
+          {
+            "name": "顶装满墙",
+            "picutre": "curtain/size_1100-1-1.png",
+            "is_checked": true
+          }
+        ]
       },
-      "有盒": {
-        "盒内装": {
-          "不垂地": "size_0110-1-1-LPY-H.png",
-          "垂地": "size_0111-1-1-LPY-L.png"
-        }
+      {
+        "name": "U型窗/飘窗/有盒",
+        "id": 16,
+        "install_mode": [
+          {
+            "name": "盒内装",
+            "picutre": "curtain/size_0110-1-1-LPY-H.png",
+            "is_checked": true
+          }
+        ]
+      },
+      {
+        "name": "U型窗/非飘窗/有盒",
+        "id": 17,
+        "install_mode": [
+          {
+            "name": "盒内装",
+            "picutre": "curtain/size_2010-1-1.png",
+            "is_checked": true
+          }
+        ]
+      },
+      {
+        "name": "U型窗/飘窗/无盒",
+        "id": 20,
+        "install_mode": [
+          {
+            "name": "顶装满墙",
+            "picutre": "curtain/size_2100-1-1.png",
+            "is_checked": true
+          }
+        ]
+      },
+      {
+        "name": "U型窗/非飘窗/无盒",
+        "id": 21,
+        "install_mode": [
+          {
+            "name": "顶装",
+            "picutre": "curtain/size_200010.png",
+            "is_checked": true
+          },
+          {
+            "name": "顶装",
+            "picutre": "curtain/size_200000.png",
+            "is_checked": false
+          }
+        ]
       }
-    }
+    ],
+    "style_options": [
+      {
+        "title": "样式",
+        "id": 1,
+        "options": [
+          {
+            "text": "单窗",
+            "img": "single_window_pattern.png",
+            "is_checked": true,
+            "open_options": {
+              "text": "打开方式",
+              "list": [
+                {
+                  "name": "整体对开",
+                  "is_checked": true,
+                  "sub_options": []
+                },
+                {
+                  "name": "整体单开",
+                  "is_checked": false,
+                  "sub_options": []
+                }
+              ]
+            }
+          },
+          {
+            "text": "L型窗",
+            "img": "L_window_pattern.png",
+            "is_checked": false,
+            "open_options": {
+              "text": "打开方式",
+              "list": [
+                {
+                  "name": "整体对开",
+                  "is_checked": true,
+                  "sub_options": []
+                },
+                {
+                  "name": "整体单开",
+                  "is_checked": false,
+                  "sub_options": []
+                },
+                {
+                  "name": "分墙体打开",
+                  "is_checked": false,
+                  "sub_options": [
+                    {
+                      "name": "A面打开方式",
+                      "sub_open_options": [
+                        {
+                          "name": "单开",
+                          "is_checked": true
+                        },
+                        {
+                          "name": "对开",
+                          "is_checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "B面打开方式",
+                      "sub_options": [
+                        {
+                          "name": "单开",
+                          "is_checked": true
+                        },
+                        {
+                          "name": "对开",
+                          "is_checked": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "text": "U型窗",
+            "img": "U_window_pattern.png",
+            "is_checked": false,
+            "open_options": {
+              "text": "打开方式",
+              "list": [
+                {
+                  "name": "整体对开",
+                  "is_checked": true,
+                  "sub_options": []
+                },
+                {
+                  "name": "整体单开",
+                  "is_checked": false,
+                  "sub_options": []
+                },
+                {
+                  "name": "分墙体打开",
+                  "is_checked": false,
+                  "sub_options": [
+                    {
+                      "name": "A面打开方式",
+                      "sub_open_options": [
+                        {
+                          "name": "单开",
+                          "is_checked": true
+                        },
+                        {
+                          "name": "对开",
+                          "is_checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "B面打开方式",
+                      "sub_options": [
+                        {
+                          "name": "单开",
+                          "is_checked": true
+                        },
+                        {
+                          "name": "对开",
+                          "is_checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "C面打开方式",
+                      "sub_options": [
+                        {
+                          "name": "单开",
+                          "is_checked": true
+                        },
+                        {
+                          "name": "对开",
+                          "is_checked": false
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "title": "窗型选择",
+            "id": 2,
+            "options": [
+              {
+                "text": "非飘窗",
+                "img": "not_bay_window.png",
+                "is_checked": true
+              },
+              {
+                "text": "飘窗",
+                "img": "bay_window.png",
+                "is_checked": false
+              }
+            ]
+          },
+          {
+            "title": "窗帘盒",
+            "id": 3,
+            "options": [
+              {
+                "text": "无盒",
+                "img": "window_no_can.png",
+                "is_checked": true
+              },
+              {
+                "text": "有盒",
+                "img": "window_with_can.png",
+                "is_checked": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 }

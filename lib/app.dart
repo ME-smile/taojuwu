@@ -2,7 +2,7 @@
  * @Description: 应用根节点
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-09-25 17:57:56
+ * @LastEditTime: 2020-09-29 13:04:36
  */
 import 'dart:async';
 
@@ -45,9 +45,9 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    ImageCache imageCache = PaintingBinding.instance.imageCache;
-    imageCache.maximumSize = 8;
-    imageCache.maximumSizeBytes = 50 << 20;
+    // ImageCache imageCache = PaintingBinding.instance.imageCache;
+    // imageCache.maximumSize = 8;
+    // imageCache.maximumSizeBytes = 50 << 20;
     mSubscription = Application.eventBus.on<LoginEvent>().listen((event) {
       if (event.code == 1) {
         Xhr.refreshToken();

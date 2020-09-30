@@ -35,7 +35,7 @@ dependencies:
   flutter_screenutil: ^1.1.0
   flutter_html: ^0.11.1
   fluro: ^1.6.3
-  provider: ^4.3.1
+  provider: ^4.3.2+2
   pull_to_refresh: ^1.5.7
   charts_flutter: ^0.9.0
   barcode_scan: ^3.0.0
@@ -95,6 +95,7 @@ flutter:
     - assets/data/province.json
     - assets/data/city.json
     - assets/data/area.json
+    - assets/data/curtain.json
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 

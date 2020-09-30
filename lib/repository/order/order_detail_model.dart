@@ -822,6 +822,7 @@ class OrderGoodsMeasure {
   int updateTime;
   String partsName;
   String newOpenType;
+
   OrderGoodsMeasure(
       {this.id,
       this.orderGoodsId,
