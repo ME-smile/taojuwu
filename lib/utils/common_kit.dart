@@ -2,7 +2,7 @@
  * @Description:  常用工具函数的封装
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-09-30 16:59:16
+ * @LastEditTime: 2020-10-09 16:38:32
  */
 import 'dart:async';
 
@@ -62,8 +62,8 @@ class CommonKit {
 
   static double parseDouble(var variable, {double defaultVal = -1.0}) {
     if (variable == null) return defaultVal;
-    if (variable.runtimeType is double) return variable;
-    if (variable.runtimeType == String) {
+    if (variable is double) return variable;
+    if (variable is String) {
       variable = variable.trim(); //去除左右两端空格
       // 如果字符为空或者不是出数字则返回-1
       if (variable.isEmpty || !isNumString(variable)) return defaultVal;
@@ -125,5 +125,11 @@ class CommonKit {
     if (variable == null) return [];
     if (variable is List) return variable;
     return variable.toList();
+  }
+
+  static bool isNumNullOrZero(num n) {
+    if (n == null) return true;
+    if (n == 0) return true;
+    return false;
   }
 }

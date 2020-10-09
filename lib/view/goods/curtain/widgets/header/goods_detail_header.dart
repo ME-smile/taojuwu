@@ -2,7 +2,7 @@
  * @Description: 商品详情的头部
  * @Author: iamsmiling
  * @Date: 2020-09-27 13:38:18
- * @LastEditTime: 2020-09-27 13:53:06
+ * @LastEditTime: 2020-10-09 17:16:22
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -23,6 +23,7 @@ class GoodsDetailHeader extends StatelessWidget {
     return SliverAppBar(
       actions: <Widget>[UserChooseButton()],
       expandedHeight: 320,
+      elevation: 0.5,
       floating: false,
       pinned: true,
       flexibleSpace: bean.isEndProduct ? _buildCarousel() : _buildBanner(),

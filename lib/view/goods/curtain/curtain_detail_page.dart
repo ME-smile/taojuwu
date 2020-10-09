@@ -2,7 +2,7 @@
  * @Description: 商品详情
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-09-30 11:24:36
+ * @LastEditTime: 2020-10-09 16:00:18
  */
 
 import 'package:animations/animations.dart';
@@ -13,6 +13,9 @@ import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/footer/goods_detail_footer.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/header/goods_detail_header.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/profile/goods_detail_profile.dart';
+import 'package:taojuwu/view/goods/curtain/widgets/section/related_goods_view.dart';
+import 'package:taojuwu/view/goods/curtain/widgets/section/scene_goods_view.dart';
+import 'package:taojuwu/view/goods/curtain/widgets/section/soft_project_view.dart';
 import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 import 'package:taojuwu/widgets/loading.dart';
 
@@ -55,16 +58,20 @@ class CurtainDetailPage extends StatelessWidget {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[GoodsDetailHeader(bean)];
           },
-          body: CustomScrollView(
-            slivers: <Widget>[
-              GoodsDetailProfile(bean),
-              GoodsDetailAttrs(
-                viewModel.curtainType,
-              ),
-              SliverToBoxAdapter(
-                child: Html(data: bean?.description ?? ''),
-              )
-            ],
+          body: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            color: Theme.of(context).primaryColor,
+            child: CustomScrollView(
+              shrinkWrap: true,
+              slivers: <Widget>[
+                GoodsDetailProfile(bean),
+                GoodsDetailAttrs(viewModel.curtainType),
+                RelatedGoodsView(viewModel.relatedGoodsList),
+                SceneGoodsView(),
+                SoftProjectView(viewModel.softProjectList),
+                SliverToBoxAdapter(child: Html(data: bean?.description ?? ''))
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: GoodsDetailFooter(viewModel),

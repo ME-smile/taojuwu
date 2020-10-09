@@ -2,7 +2,7 @@
  * @Description: 商品模型
  * @Author: iamsmiling
  * @Date: 2020-09-25 15:57:46
- * @LastEditTime: 2020-09-30 17:34:25
+ * @LastEditTime: 2020-10-09 13:55:28
  */
 import 'dart:async';
 import 'dart:convert';
@@ -22,6 +22,10 @@ class CurtainViewModel extends CurtainPriceCalculatorBinding
   final BuildContext mBuildContext;
   final int id;
 
+  List<RelatedGoodsBean> relatedGoodsList; //同料商品
+
+  List<SoftProjectBean> softProjectList; // 软装方案
+
   bool isLoading = true;
 
   //购物车里面的商品数量
@@ -39,7 +43,7 @@ class CurtainViewModel extends CurtainPriceCalculatorBinding
   }
 
   void _fetchData() {
-    _initCurtainSkuAttr();
+    // _initCurtainSkuAttr();
     _getCurtainDetail();
   }
 
@@ -48,9 +52,7 @@ class CurtainViewModel extends CurtainPriceCalculatorBinding
         .loadString('assets/data/curtain.json')
         .then((String data) {
       Map json = jsonDecode(data);
-
       curtainSkuAttr = CurtainSkuAttr.fromJson(json);
-      print(curtainSkuAttr);
     }).catchError((err) {
       return err;
     });
@@ -60,6 +62,8 @@ class CurtainViewModel extends CurtainPriceCalculatorBinding
     await OTPService.productDetail(mBuildContext, params: {'goods_id': id})
         .then((ProductBeanRes response) {
           bean = response?.data?.goodsDetail;
+          relatedGoodsList = response?.data?.relatedGoodsList;
+          softProjectList = response?.data?.softProjectList;
         })
         .catchError((err) => err)
         .whenComplete(() {

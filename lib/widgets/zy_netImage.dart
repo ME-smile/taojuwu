@@ -1,8 +1,8 @@
 /*
- * @Description: //TODO
+ * @Description: 网络图片封装
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-09-25 17:27:43
+ * @LastEditTime: 2020-10-09 15:04:58
  */
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';

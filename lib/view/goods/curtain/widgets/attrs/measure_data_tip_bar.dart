@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/view/goods/curtain/subPages/pre_measure_data_page.dart';
 import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 

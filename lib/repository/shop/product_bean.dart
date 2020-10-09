@@ -45,7 +45,8 @@ class ProductBeanDataWrapper {
   String goodsId;
   int skuId;
   ProductBean goodsDetail;
-
+  List<RelatedGoodsBean> relatedGoodsList;
+  List<SoftProjectBean> softProjectList;
   static ProductBeanDataWrapper fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
     ProductBeanDataWrapper dataBean = ProductBeanDataWrapper();
@@ -53,6 +54,12 @@ class ProductBeanDataWrapper {
     dataBean.skuId =
         map['sku_id'] is String ? int.parse(map['sku_id']) : map['sku_id'];
     dataBean.goodsDetail = ProductBean.fromMap(map['goods_detail']);
+    dataBean?.relatedGoodsList = CommonKit.parseList(map['related_goods'])
+        .map((o) => RelatedGoodsBean.fromJson(o))
+        ?.toList();
+    dataBean.softProjectList = CommonKit.parseList(map['soft_project_list'])
+        ?.map((e) => SoftProjectBean.fromJson(e))
+        ?.toList();
     return dataBean;
   }
 }
@@ -139,6 +146,7 @@ class ProductBean {
     tmpBean?.picCoverMicro = map['pic_cover_micro'];
     tmpBean?.categoryName = map['category_name'];
     tmpBean?.fixHeight = map['fix_height'];
+
     return tmpBean;
   }
 }
@@ -188,14 +196,6 @@ class ProductBeanSpecListBean {
     bean.sort = map['sort'];
     return bean;
   }
-
-  Map toJson() => {
-        "spec_name": specName,
-        "spec_id": specId,
-        "spec_show_type": specShowType,
-        "value": value,
-        "sort": sort,
-      };
 }
 
 class ProductBeanSpecValueBean {
@@ -220,5 +220,73 @@ class ProductBeanSpecValueBean {
     valueBean.selected = map['selected'];
     valueBean.disabled = map['disabled'];
     return valueBean;
+  }
+}
+
+class RelatedGoodsBean {
+  int goodsId;
+  String goodsName;
+  int goodsType;
+  double price;
+  double marketPrice;
+  String picture;
+  String unit;
+
+  bool get isOnSale => price < marketPrice;
+
+  RelatedGoodsBean.fromJson(Map<String, dynamic> json) {
+    goodsId = json['goods_id'];
+    goodsName = json['goods_name'];
+    goodsType = json['goods_type'];
+    price = CommonKit.parseDouble(json['price']);
+    marketPrice = CommonKit.parseDouble(json['market_price']);
+    picture = json['picture'];
+    unit = json['unit'];
+  }
+}
+
+class SoftProjectBean {
+  int scenesId;
+  String scenesName;
+  String picture;
+  String name;
+
+  List<SoftProjectGoodsBean> goodsList;
+  double totalPrice;
+
+  double get marketPrice {
+    double tmp = 0.0;
+    if (!CommonKit.isNullOrEmpty(goodsList)) {
+      goodsList?.forEach((el) {
+        tmp += el.price;
+      });
+      return tmp;
+    }
+    return tmp;
+  }
+
+  SoftProjectBean.fromJson(Map<String, dynamic> json) {
+    scenesId = json['scenes_id'];
+    scenesName = json['scenes_name'];
+    picture = json['picture'];
+    name = json['name'];
+    goodsList = CommonKit.parseList(json['goods_list'])
+        ?.map((e) => SoftProjectGoodsBean.fromJson(e))
+        ?.toList();
+    totalPrice = CommonKit.parseDouble(json['total_price']);
+  }
+}
+
+class SoftProjectGoodsBean {
+  int goodsId;
+  String goodsName;
+  double marketPrice;
+  double price;
+
+  SoftProjectGoodsBean.fromJson(Map<String, dynamic> json) {
+    goodsId = json['goods_id'];
+    goodsName = json['goods_name'];
+    marketPrice = CommonKit.parseDouble(json['market_price']);
+    price = CommonKit.parseDouble(json['price']);
   }
 }

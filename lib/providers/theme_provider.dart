@@ -1,3 +1,9 @@
+/*
+ * @Description: 主题 颜色 字体相关配置
+ * @Author: iamsmiling
+ * @Date: 2020-09-25 12:47:45
+ * @LastEditTime: 2020-10-09 09:07:51
+ */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -71,7 +77,7 @@ class ThemeProvider with ChangeNotifier {
 
 class TaojuwuColors {
   static const Color HEADLINE_COLOR = Color(0xFF2E2E2E);
-  static const Color TITLE_COLOR = Color(0xFF131313);
+  static const Color TITLE_COLOR = Color(0xFF1B1B1B);
   static const Color SUBTITLE_COLOR = Color(0xFF898989);
   static const Color BUTTON_COLOR = Colors.white;
   static const Color SUBHEAD_COLOR = Color(0xFF4A4A4A);
