@@ -13,7 +13,7 @@ class MeasureDataModelResp extends ZYResponse<MeasureDataModelData> {
 
 class MeasureDataModelData {
   List<OrderProductAttrWrapper> wcAttr;
-  OrderGoodsMeasure measureData;
+  OrderGoodsMeasureData measureData;
   ClientInfo clientInfo;
 
   MeasureDataModelData.fromJson(Map<String, dynamic> json) {
@@ -29,7 +29,7 @@ class MeasureDataModelData {
 
     wcAttr =
         wrapper.map((item) => OrderProductAttrWrapper.fromJson(item)).toList();
-    measureData = OrderGoodsMeasure.fromJson(json['order_goods_measure']);
+    measureData = OrderGoodsMeasureData.fromJson(json['order_goods_measure']);
     clientInfo = ClientInfo.fromJson(json['client_info']);
   }
 }

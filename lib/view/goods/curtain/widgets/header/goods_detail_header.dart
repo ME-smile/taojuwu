@@ -2,7 +2,7 @@
  * @Description: 商品详情的头部
  * @Author: iamsmiling
  * @Date: 2020-09-27 13:38:18
- * @LastEditTime: 2020-10-09 17:16:22
+ * @LastEditTime: 2020-10-12 13:52:30
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -26,7 +26,8 @@ class GoodsDetailHeader extends StatelessWidget {
       elevation: 0.5,
       floating: false,
       pinned: true,
-      flexibleSpace: bean.isEndProduct ? _buildCarousel() : _buildBanner(),
+      flexibleSpace:
+          bean?.isEndProduct == true ? _buildCarousel() : _buildBanner(),
     );
   }
 

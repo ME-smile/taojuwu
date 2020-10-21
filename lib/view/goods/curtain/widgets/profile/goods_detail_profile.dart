@@ -2,7 +2,7 @@
  * @Description: //商品图片下方的简介
  * @Author: iamsmiling
  * @Date: 2020-09-27 13:54:32
- * @LastEditTime: 2020-09-27 14:57:01
+ * @LastEditTime: 2020-10-15 15:03:04
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
@@ -24,9 +24,8 @@ class GoodsDetailProfile extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         color: themeData.primaryColor,
-        padding: EdgeInsets.symmetric(
-          horizontal: UIKit.width(20),
-        ),
+        margin: EdgeInsets.only(bottom: 8),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -47,14 +46,9 @@ class GoodsDetailProfile extends StatelessWidget {
                     children: [
                       Padding(
                         padding: EdgeInsets.only(right: 20),
-                        child: LikeButton(
-                          goodsId: bean?.goodsId,
-                          hasLiked: bean?.hasLiked ?? false,
-                        ),
+                        child: LikeButton(),
                       ),
-                      CartButton(
-                        count: goodsNumInCart,
-                      )
+                      CartButton()
                     ],
                   ),
                 ),

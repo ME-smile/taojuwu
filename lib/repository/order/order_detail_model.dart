@@ -516,7 +516,7 @@ class OrderGoods {
   PictureInfo pictureInfo;
   List<String> refundOperation;
   String statusName;
-  OrderGoodsMeasure orderGoodsMeasure;
+  OrderGoodsMeasureData orderGoodsMeasureData;
   String goodsAttrStr;
   int parentOrderStatus;
   String earnestMoney;
@@ -584,7 +584,7 @@ class OrderGoods {
       this.pictureInfo,
       this.refundOperation,
       this.statusName,
-      this.orderGoodsMeasure,
+      this.orderGoodsMeasureData,
       this.earnestMoney,
       this.parentOrderStatus});
 
@@ -663,8 +663,8 @@ class OrderGoods {
       // json['refund_operation'].forEach((v) { refundOperation.add(new Null.fromJson(v)); });
     }
     statusName = json['status_name'];
-    orderGoodsMeasure = json['order_goods_measure'] != null
-        ? new OrderGoodsMeasure.fromJson(json['order_goods_measure'])
+    orderGoodsMeasureData = json['order_goods_measure'] != null
+        ? new OrderGoodsMeasureData.fromJson(json['order_goods_measure'])
         : null;
     earnestMoney = json['earnest_money'];
   }
@@ -783,7 +783,7 @@ class PictureInfo {
   }
 }
 
-class OrderGoodsMeasure {
+class OrderGoodsMeasureData {
   int id;
   int orderGoodsId;
   int orderId;
@@ -823,7 +823,7 @@ class OrderGoodsMeasure {
   String partsName;
   String newOpenType;
 
-  OrderGoodsMeasure(
+  OrderGoodsMeasureData(
       {this.id,
       this.orderGoodsId,
       this.orderId,
@@ -861,7 +861,7 @@ class OrderGoodsMeasure {
       this.partsName,
       this.updateTime});
 
-  OrderGoodsMeasure.fromJson(Map<String, dynamic> json) {
+  OrderGoodsMeasureData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     orderGoodsId = json['order_goods_id'];
     orderId = json['order_id'];

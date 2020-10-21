@@ -2,7 +2,7 @@
  * @Description: 商品尺寸相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-27 09:16:44
- * @LastEditTime: 2020-09-30 16:36:36
+ * @LastEditTime: 2020-10-15 09:47:08
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
@@ -17,8 +17,6 @@ mixin CurtainSizeFillerBinding on CurtainGoodsBinding {
   TextEditingController widthController = TextEditingController();
   TextEditingController heightController = TextEditingController();
   TextEditingController deltaYController = TextEditingController();
-
-  OrderGoodsMeasure measureData; //测装数据
   String get widthCMStr => widthController.text; //输入框输入的宽度-->以厘米为单位
   String get heightCMStr => heightController.text; // 输入框输入的高度-->以厘米为单位
   String get deltaYCMStr => deltaYController.text; // 输入框输入的离地距离-->以厘米为单位
@@ -34,10 +32,10 @@ mixin CurtainSizeFillerBinding on CurtainGoodsBinding {
 
   double get heightM => CommonKit.toDoubleAsFixed(heightCM / 100);
 
-  bool hasSetSize = false;
+  String get widthMStr => '$widthM';
+  String get heightMStr => '$heightM';
 
-  String get sizeText =>
-      hasSetSize ? '宽 ${widthM ?? ''}米 高${heightM ?? ''}米' : '尺寸';
+  bool hasSetSize = false;
 
   String get dyCMStr => '$deltaYCM cm';
   // 是否为定高
@@ -120,8 +118,16 @@ mixin CurtainSizeFillerBinding on CurtainGoodsBinding {
 
   // 提交测装数据
   Future commitSize() async {
-    notifyListeners();
     if (!_isValidSize()) return;
+    _initSize();
+    notifyListeners();
+  }
+
+  void _initSize() {
+    hasSetSize = true;
+    measureData = OrderGoodsMeasureData();
+    measureData?.width = widthMStr;
+    measureData?.height = heightMStr;
   }
 /*
  * @Author: iamsmiling

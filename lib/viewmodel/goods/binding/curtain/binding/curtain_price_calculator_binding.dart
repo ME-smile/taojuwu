@@ -2,7 +2,7 @@
  * @Description: 声明一个mixin的类，拥有计算商品价格的功能
  * @Author: iamsmiling
  * @Date: 2020-09-27 09:06:14
- * @LastEditTime: 2020-09-30 17:19:10
+ * @LastEditTime: 2020-10-15 10:22:35
  */
 
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
@@ -87,5 +87,15 @@ class CurtainPriceCalculatorBinding extends CurtainGoodsBinding
     }
 
     return tmp;
+  }
+
+  @override
+  Future addToCart() {
+    return Future.value(0);
+  }
+
+  @override
+  Future purchase() {
+    return Future.value(0);
   }
 }

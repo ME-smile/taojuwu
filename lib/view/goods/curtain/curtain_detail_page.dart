@@ -2,24 +2,27 @@
  * @Description: 商品详情
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-09 16:00:18
+ * @LastEditTime: 2020-10-19 13:19:09
  */
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:provider/provider.dart';
+
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/footer/goods_detail_footer.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/header/goods_detail_header.dart';
-import 'package:taojuwu/view/goods/curtain/widgets/profile/goods_detail_profile.dart';
-import 'package:taojuwu/view/goods/curtain/widgets/section/related_goods_view.dart';
-import 'package:taojuwu/view/goods/curtain/widgets/section/scene_goods_view.dart';
-import 'package:taojuwu/view/goods/curtain/widgets/section/soft_project_view.dart';
+import 'package:taojuwu/view/goods/curtain/widgets/section/related_goods_section_view.dart';
+import 'package:taojuwu/view/goods/curtain/widgets/section/scene_project_section_view.dart';
+import 'package:taojuwu/view/goods/curtain/widgets/section/soft_project_section_view.dart';
+import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
 import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 import 'package:taojuwu/widgets/loading.dart';
 
-import 'widgets/attrs/goods_detail_attrs.dart';
+import 'widgets/profile/goods_detail_profile.dart';
+import 'widgets/section/goods_attrs_section_view.dart';
+import 'widgets/section/goods_html_desc_section_view.dart';
+import 'widgets/section/recommended_goods_section_view.dart';
 
 class CurtainDetailPage extends StatelessWidget {
   final int id;
@@ -27,8 +30,8 @@ class CurtainDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<CurtainViewModel>(
-      create: (BuildContext context) => CurtainViewModel(context, id),
+    return ChangeNotifierProvider<BaseGoodsViewModel>(
+      create: (BuildContext context) => CurtainViewModel.fromId(context, id),
       child: Builder(builder: (BuildContext ctx) {
         return PageTransitionSwitcher(transitionBuilder: (
           Widget child,
@@ -40,9 +43,11 @@ class CurtainDetailPage extends StatelessWidget {
             secondaryAnimation: secondaryAnimation,
             child: child,
           );
-        }, child: Consumer<CurtainViewModel>(
-          builder: (BuildContext context, CurtainViewModel viewModel, _) {
-            return viewModel.isLoading ? LoadingCircle() : _buildContent();
+        }, child: Consumer<BaseGoodsViewModel>(
+          builder: (BuildContext context, BaseGoodsViewModel viewModel, _) {
+            return (viewModel as CurtainViewModel).isLoading
+                ? LoadingCircle()
+                : _buildContent();
           },
         ));
       }),
@@ -50,28 +55,27 @@ class CurtainDetailPage extends StatelessWidget {
   }
 
   Widget _buildContent() {
-    return Consumer<CurtainViewModel>(
-        builder: (BuildContext context, CurtainViewModel viewModel, _) {
+    return Consumer<BaseGoodsViewModel>(
+        builder: (BuildContext context, BaseGoodsViewModel viewModel, _) {
       ProductBean bean = viewModel.bean;
       return Scaffold(
+        backgroundColor: const Color(0xFFF8F8F8),
         body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[GoodsDetailHeader(bean)];
           },
-          body: Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            color: Theme.of(context).primaryColor,
-            child: CustomScrollView(
-              shrinkWrap: true,
-              slivers: <Widget>[
-                GoodsDetailProfile(bean),
-                GoodsDetailAttrs(viewModel.curtainType),
-                RelatedGoodsView(viewModel.relatedGoodsList),
-                SceneGoodsView(),
-                SoftProjectView(viewModel.softProjectList),
-                SliverToBoxAdapter(child: Html(data: bean?.description ?? ''))
-              ],
-            ),
+          body: CustomScrollView(
+            shrinkWrap: true,
+            slivers: <Widget>[
+              GoodsDetailProfile(bean),
+              GoodsAttrsSectionView(
+                  (viewModel as CurtainViewModel).curtainType),
+              RelatedGoodsSectionView(viewModel.relatedGoodsList),
+              SceneProjectSectionView(viewModel.sceneProjectList),
+              SoftProjectSectionView(viewModel.softProjectList),
+              GoodsHtmlDescSectionView(viewModel.bean?.description),
+              RecommendGoodsSectionView(viewModel.recommendGoodsList),
+            ],
           ),
         ),
         bottomNavigationBar: GoodsDetailFooter(viewModel),

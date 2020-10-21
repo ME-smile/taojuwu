@@ -63,7 +63,7 @@ class ApiPath {
 
   static const String createMeasureOrder = '/api/order/orderMeasureCreate';
 
-  static const String getMeasureData = '/api/order/orderGoodsMeasureData';
+  static const String getMeasureData = '/api/order/OrderGoodsMeasureDataData';
 
   static const String selectProduct = '/api/order/addMeasureOrderGoods';
 
@@ -85,7 +85,7 @@ class ApiPath {
 
   static const String windowStyle = '/api/order/wcCategory';
 
-  static const String measureData = '/api/order/orderGoodsMeasureData';
+  static const String measureData = '/api/order/OrderGoodsMeasureDataData';
 
   static const String mainfest = '/api/order/productList';
 
@@ -102,4 +102,13 @@ class ApiPath {
   static const String protocal = '/api/login/registerAgreement';
 
   static const String editCartCount = '/api/goods/modifyCartNum';
+
+  //场景详情
+  static const String sceneDetail = '/api/goods/scenesDetail';
+
+  //软装方案
+  static const String softProjectList = '/api/goods/softProjectList';
+
+  // 软装方案详情
+  static const String softDetail = '/api/goods/softProjectGoodsDetail';
 }

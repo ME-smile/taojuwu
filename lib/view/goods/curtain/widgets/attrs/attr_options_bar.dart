@@ -2,7 +2,7 @@
  * @Description: 属性选泽
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-09-30 17:37:15
+ * @LastEditTime: 2020-10-19 14:58:11
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,7 @@ import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
 import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 
 import '../option_view.dart';
@@ -25,7 +26,7 @@ import '../sku_attr_picker.dart';
  */
 class AttrOptionsBar extends StatefulWidget {
   final int index; // 在skulist中的索引位置
-  final GoodsSkuAttr skuAttr;
+  final ProductSkuAttr skuAttr;
   final Function callback;
   const AttrOptionsBar(this.skuAttr, {Key key, this.callback, this.index = 0})
       : super(key: key);
@@ -39,13 +40,14 @@ class _AttrOptionsBarState extends State<AttrOptionsBar> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         // FocusManager.instance.primaryFocus.unfocus();
         // callback();
         pickAttr(context);
       },
       child: Container(
+        color: Theme.of(context).primaryColor,
         padding: EdgeInsets.symmetric(vertical: UIKit.height(16)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,13 +87,13 @@ class _AttrOptionsBarState extends State<AttrOptionsBar> {
     setState(() {});
   }
 
-  GoodsSkuAttr get skuAttr => widget.skuAttr;
+  ProductSkuAttr get skuAttr => widget.skuAttr;
 
   Future pickAttr(BuildContext ctx) {
     return showCupertinoModalPopup(
         context: ctx,
         builder: (BuildContext context) {
-          CurtainViewModel viewModel = Provider.of<CurtainViewModel>(ctx);
+          BaseGoodsViewModel viewModel = Provider.of<BaseGoodsViewModel>(ctx);
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return WillPopScope(
@@ -107,7 +109,7 @@ class _AttrOptionsBarState extends State<AttrOptionsBar> {
                         : _buildCommonAttrOptionView(setState)),
                 onWillPop: () {
                   if (!skuAttr.hasSelectedAttr) {
-                    viewModel.resetAttr();
+                    (viewModel as CurtainViewModel).resetAttr();
                   }
 
                   Navigator.of(context).pop();
@@ -126,7 +128,7 @@ class _AttrOptionsBarState extends State<AttrOptionsBar> {
    */
   Widget _buildCommonAttrOptionView(StateSetter setState) {
     CurtainViewModel viewModel =
-        Provider.of<CurtainViewModel>(context, listen: false);
+        Provider.of<BaseGoodsViewModel>(context, listen: false);
     return SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Container(
@@ -142,7 +144,7 @@ class _AttrOptionsBarState extends State<AttrOptionsBar> {
               ),
               itemCount: widget.skuAttr.data.length,
               itemBuilder: (BuildContext context, int i) {
-                GoodsSkuAttrBean item = widget.skuAttr.data[i];
+                ProductSkuAttrBean item = widget.skuAttr.data[i];
                 return OptionView(
                   item,
                   callback: () {
@@ -169,7 +171,7 @@ class _AttrOptionsBarState extends State<AttrOptionsBar> {
     return SingleChildScrollView(
       child: Wrap(
         children: List.generate(list.length, (int i) {
-          GoodsSkuAttrBean bean = list[i];
+          ProductSkuAttrBean bean = list[i];
           return OptionView(
             bean,
             isRoomAttr: true,

@@ -2,7 +2,7 @@
  * @Description: 商品属性相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-27 10:16:14
- * @LastEditTime: 2020-09-30 17:39:52
+ * @LastEditTime: 2020-10-19 18:01:24
  */
 import 'package:taojuwu/repository/order/measure_data_model.dart';
 
@@ -12,59 +12,57 @@ import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
 
 mixin CurtainSpecBinding on CurtainGoodsBinding {
-  //属性列表
-  List<GoodsSkuAttr> skuList = [];
-
   //空间属性 空间在另一个页面 所以没有存放到数组中
-  GoodsSkuAttr skuRoom;
+  ProductSkuAttr skuRoom;
+
   // 需要获取的参数列表
   List<int> get typeList {
     return isWindowSunblind ? [3, 4, 5, 8, 12, 13] : [3, 4, 5, 13];
   }
 
   //当前选中的窗帘
-  GoodsSkuAttrBean get curWindowGauzeAttrBean => getSelectedElement(3);
+  ProductSkuAttrBean get curWindowGauzeAttrBean => getSelectedElement(3);
 
   bool get hasWindowGauze =>
       curWindowGauzeAttrBean?.name?.contains('不要窗纱') == false ?? false;
   // 当前选中的型材
-  GoodsSkuAttrBean get curPartAttrBean => getSelectedElement(5);
+  ProductSkuAttrBean get curPartAttrBean => getSelectedElement(5);
   // 当前选中的里布
-  GoodsSkuAttrBean get curWindowShadeAttrBean => getSelectedElement(12);
+  ProductSkuAttrBean get curWindowShadeAttrBean => getSelectedElement(12);
 
   //当前选中的幔头
-  GoodsSkuAttrBean get curCanopyAttrBean => getSelectedElement(8);
+  ProductSkuAttrBean get curCanopyAttrBean => getSelectedElement(8);
   // 选中的配饰
-  List<GoodsSkuAttrBean> get selectedAccessoryBeans =>
+  List<ProductSkuAttrBean> get selectedAccessoryBeans =>
       getAllSelectedAccessories();
 
   // 当前选中的空间
-  GoodsSkuAttrBean get curRoomAttrBean => getSelectedElement(1);
+  ProductSkuAttrBean get curRoomAttrBean => getSelectedElement(1);
 
   /*
    * @Author: iamsmiling
    * @description: 闯入一个type参数，获取当前的属性选择的属性值
    * @param : int type
-   * @return {type}  GoodsSkuAttrBean  当前属性的选中值
+   * @return {type}  ProductSkuAttrBean  当前属性的选中值
    * @Date: 2020-09-30 13:12:33
    */
-  GoodsSkuAttrBean getSelectedElement(int type) {
-    List<GoodsSkuAttrBean> list = getSelectedElementList(type);
+  ProductSkuAttrBean getSelectedElement(int type) {
+    List<ProductSkuAttrBean> list = getSelectedElementList(type);
     if (CommonKit.isNullOrEmpty(list)) return null;
     return list?.firstWhere((element) => element.isChecked);
   }
 
-  List<GoodsSkuAttrBean> getAllSelectedAccessories() {
-    List<GoodsSkuAttrBean> list = getSelectedElementList(13);
+  List<ProductSkuAttrBean> getAllSelectedAccessories() {
+    List<ProductSkuAttrBean> list = getSelectedElementList(13);
     if (CommonKit.isNullOrEmpty(list)) return null;
     return list?.where((element) => element.isChecked)?.toList();
   }
 
-  List<GoodsSkuAttrBean> getSelectedElementList(int type) {
-    GoodsSkuAttr attr;
-    List<GoodsSkuAttrBean> list = [];
+  List<ProductSkuAttrBean> getSelectedElementList(int type) {
+    ProductSkuAttr attr;
+    List<ProductSkuAttrBean> list = [];
     for (int i = 0; i < skuList.length; i++) {
-      GoodsSkuAttr item = skuList[i];
+      ProductSkuAttr item = skuList[i];
       if (item?.type == type) {
         attr = item;
         list = attr?.data ?? [];
@@ -75,14 +73,11 @@ mixin CurtainSpecBinding on CurtainGoodsBinding {
   }
 
   //确保_fetchData只会被初始化一次的标识位
-  bool _hasInit = false;
+
   @override
   void addListener(listener) {
     super.addListener(listener);
-    if (!_hasInit)
-      _fetchData().whenComplete(() {
-        _hasInit = true;
-      });
+    _fetchData();
   }
 
   Future _fetchData() async {
@@ -96,28 +91,30 @@ mixin CurtainSpecBinding on CurtainGoodsBinding {
     // 获取到测装数据，并保存引用
     measureData = response?.data?.measureData;
     String partsType = measureData?.partsType;
-    List<Future<GoodsSkuAttrWrapperResp>> futures = typeList
+    List<Future<ProductSkuAttrWrapperResp>> futures = typeList
         .map((e) => OTPService.skuAttr(context, params: {
               'client_uid': clientId,
               'parts_type': partsType,
               'goods_id': goodsId,
               'type': e
-            }).then((GoodsSkuAttrWrapperResp response) {
-              if (response?.valid == true) {
+            }).then((ProductSkuAttrWrapperResp response) {
+              if (response?.valid == true &&
+                  skuList?.contains(response?.data) == false) {
                 skuList.add(response?.data);
               }
             }).catchError((err) => err))
         .toList();
     await Future.wait(futures);
-    skuList?.sort((GoodsSkuAttr a, GoodsSkuAttr b) => a.type - b.type);
+    skuList?.sort((ProductSkuAttr a, ProductSkuAttr b) => a.type - b.type);
     notifyListeners();
   }
 
   Future _getRoomAttrData() {
     return OTPService.skuAttr(context, params: {'goods_id': goodsId, 'type': 1})
-        .then((GoodsSkuAttrWrapperResp response) {
+        .then((ProductSkuAttrWrapperResp response) {
       if (response?.valid == true) {
-        skuRoom = response.data;
+        skuRoom = response?.data;
+        print(skuRoom);
       }
     }).catchError((err) => err);
   }
@@ -125,22 +122,28 @@ mixin CurtainSpecBinding on CurtainGoodsBinding {
   /*
    * @Author: iamsmiling
    * @description:点击选中属性
-   * @param : GoodsSkuAttr 当前操作的属性  i 当前属性值在属性值列表中的下标
+   * @param : ProductSkuAttr 当前操作的属性  i 当前属性值在属性值列表中的下标
    * @return {type} 
    * @Date: 2020-09-30 13:15:29
    */
-  void selectAttrBean(GoodsSkuAttr attr, int i) {
-    List<GoodsSkuAttrBean> list = attr?.data ?? [];
+  void selectAttrBean(ProductSkuAttr attr, int i) {
+    List<ProductSkuAttrBean> list = attr?.data ?? [];
     if (attr.canMultiSelect) {
-      GoodsSkuAttrBean bean = list[i];
+      ProductSkuAttrBean bean = list[i];
       bean.isChecked = !bean.isChecked;
     } else {
       for (int j = 0; j < list.length; j++) {
-        GoodsSkuAttrBean bean = list[j];
+        ProductSkuAttrBean bean = list[j];
         bean.isChecked = i == j;
       }
     }
     attr.hasSelectedAttr = true;
+  }
+
+  ProductSkuAttrBean get curRoomSkuAttrBean {
+    List<ProductSkuAttrBean> list = skuRoom?.data;
+    return list?.firstWhere((element) => element.isChecked,
+        orElse: () => list?.first);
   }
 
   /*
@@ -157,5 +160,22 @@ mixin CurtainSpecBinding on CurtainGoodsBinding {
       }
     });
     notifyListeners();
+  }
+
+  Map<String, dynamic> get attrsMap {
+    List<Map<String, dynamic>> list = [];
+    skuList?.forEach((element) {
+      list.add(element?.toMap());
+    });
+    return {'list': list, 'room': skuRoom?.toMap()};
+  }
+
+  List<Map<String, dynamic>> get attrsList {
+    List<Map<String, dynamic>> list = [];
+    skuList?.forEach((element) {
+      list.add(element?.toMap());
+    });
+
+    return list;
   }
 }

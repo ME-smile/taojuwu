@@ -8,12 +8,12 @@ import 'package:taojuwu/view/after_sale_service/after_sale_service_page.dart';
 
 import 'package:taojuwu/view/cart/cart_page.dart';
 import 'package:taojuwu/view/collect/collect_page.dart';
+import 'package:taojuwu/view/goods/curtain/curtain_mall_page.dart';
 import 'package:taojuwu/view/goods/curtain/subPages/edit_goods_attr_page.dart';
 import 'package:taojuwu/view/goods/curtain/curtain_detail_page.dart';
-import 'package:taojuwu/view/goods/curtain/curtain_mall_page.dart';
 import 'package:taojuwu/view/goods/curtain/subPages/edit_open_mode_page.dart';
 import 'package:taojuwu/view/goods/curtain/subPages/measure_data_preview_page.dart';
-import 'package:taojuwu/view/goods/curtain/subPages/pre_measure_data_page.dart';
+
 import 'package:taojuwu/view/customer/customer_detail_page.dart';
 import 'package:taojuwu/view/customer/customer_edit_page.dart';
 import 'package:taojuwu/view/customer/customer_manage_page.dart';
@@ -34,6 +34,8 @@ import 'package:taojuwu/view/order/subPages/order_commit_success_page.dart';
 import 'package:taojuwu/view/order/subPages/order_edit_log_page.dart';
 import 'package:taojuwu/view/order/subPages/order_mainfest_page.dart';
 import 'package:taojuwu/view/order/subPages/order_search_page.dart';
+import 'package:taojuwu/view/product/curtain/curtain_product_detail_page.dart';
+import 'package:taojuwu/view/product/detail/product_detail_page.dart';
 import 'package:taojuwu/view/profile/profile_page.dart';
 import 'package:taojuwu/view/profile/subPages/forget_pwd_page.dart';
 import 'package:taojuwu/view/profile/subPages/reset_pwd_page.dart';
@@ -116,6 +118,19 @@ class RouteHandler {
       goodsId,
     );
   });
+
+  static Handler productDetail = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int goodsId = int.parse(params['id']?.first);
+    return CurtainProductDetailPage(
+      goodsId,
+    );
+  });
+  static Future goProductDetailPage(BuildContext context, int id,
+      {bool replace: false}) {
+    return _jumpTo(context, '${Routes.productDetail}?id=$id',
+        maintainState: true, replace: replace);
+  }
 
   static Future goCurtainDetailPage(BuildContext context, int id,
       {bool replace: false}) {
@@ -554,7 +569,8 @@ class RouteHandler {
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int id = int.parse(params['id']?.first);
 
-    return EndProductDetailPage(id: id);
+    // return EndProductDetailPage(id: id);
+    return null;
   });
   static Future goEndProductDetail(BuildContext context, int id) {
     return _jumpTo(context, '${Routes.endProductDetail}?id=$id',

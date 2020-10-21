@@ -1,3 +1,9 @@
+/*
+ * @Description: 按钮封装
+ * @Author: iamsmiling
+ * @Date: 2020-09-25 12:47:45
+ * @LastEditTime: 2020-10-15 15:54:06
+ */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -11,7 +17,7 @@ class ZYRaisedButton extends StatelessWidget {
   final double fontsize;
   const ZYRaisedButton(this.text, this.callback,
       {Key key,
-      this.isActive: true,
+      this.isActive = true,
       this.horizontalPadding,
       this.verticalPadding,
       this.fontsize = 13})

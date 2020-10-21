@@ -2,7 +2,7 @@
  * @Description: 网络图片封装
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-09 15:04:58
+ * @LastEditTime: 2020-10-16 10:54:47
  */
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -26,16 +26,17 @@ class ZYNetImage extends StatelessWidget {
       this.width,
       this.callback,
       this.needAnimation = true,
-      this.fit: BoxFit.fill})
+      this.fit: BoxFit.contain})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
         onTap: callback,
         child: FadeInImage(
             width: width,
             height: height,
+            fit: fit,
             fadeInDuration: Duration(milliseconds: needAnimation ? 200 : 10),
             placeholder: AssetImage(UIKit.getAssetsImagePath(
               'goods_placeholder.png',

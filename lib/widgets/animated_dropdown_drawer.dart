@@ -1,3 +1,9 @@
+/*
+ * @Description: 
+ * @Author: iamsmiling
+ * @Date: 2020-09-25 12:47:45
+ * @LastEditTime: 2020-10-12 09:59:39
+ */
 import 'package:flutter/material.dart';
 
 class AniamatedDropdownDrawer extends StatefulWidget {
@@ -31,10 +37,9 @@ class AniamatedDropdownDrawerState extends State<AniamatedDropdownDrawer>
   @override
   void initState() {
     animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 375),
-      reverseDuration: Duration(milliseconds: 375),
-    );
+        duration: Duration(milliseconds: 375),
+        reverseDuration: Duration(milliseconds: 375),
+        vsync: this);
 
     sizeAnimation = animationController?.drive(
         Tween(begin: 0.0, end: 1.0)?.chain(CurveTween(curve: Curves.ease)));

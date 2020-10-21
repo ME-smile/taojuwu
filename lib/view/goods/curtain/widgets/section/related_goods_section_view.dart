@@ -2,19 +2,22 @@
  * @Description: 同料商品视图
  * @Author: iamsmiling
  * @Date: 2020-10-09 13:05:48
- * @LastEditTime: 2020-10-09 16:29:26
+ * @LastEditTime: 2020-10-16 09:17:55
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:taojuwu/repository/shop/product_bean.dart';
+import 'package:taojuwu/repository/shop/curtain_product_list_model.dart';
+
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/view/goods/base/title_tip.dart';
 import 'package:taojuwu/view/goods/base/trailing_tip.dart';
+import 'package:taojuwu/view/goods/curtain/widgets/popup_window/related_goods_popup_window.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
-class RelatedGoodsView extends StatelessWidget {
-  final List<RelatedGoodsBean> relatedGoodsList;
-  const RelatedGoodsView(this.relatedGoodsList, {Key key}) : super(key: key);
+class RelatedGoodsSectionView extends StatelessWidget {
+  final List<GoodsItemBean> relatedGoodsList;
+  const RelatedGoodsSectionView(this.relatedGoodsList, {Key key})
+      : super(key: key);
 
   int get len => (relatedGoodsList ?? []).length;
 
@@ -32,13 +35,22 @@ class RelatedGoodsView extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Visibility(
         child: Container(
+          margin: const EdgeInsets.only(top: 8),
+          padding: EdgeInsets.only(bottom: 16),
+          color: Theme.of(context).primaryColor,
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.symmetric(vertical: 12),
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [TitleTip(title: '同料商品'), TrailingTip()]),
+                    children: [
+                      TitleTip(title: '同料商品'),
+                      TrailingTip(
+                        callback: () => showRelateGoodsPopupWindow(
+                            context, relatedGoodsList),
+                      )
+                    ]),
               ),
               Container(
                 height: 160,
@@ -57,7 +69,7 @@ class RelatedGoodsView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: relatedGoodsList
                           .sublist(i, i + 3)
-                          .map((e) => _RelatedGoodsCard(e))
+                          .map((e) => RelatedGoodsCard(e))
                           ?.toList(),
                     ));
                   },
@@ -72,26 +84,30 @@ class RelatedGoodsView extends StatelessWidget {
   }
 }
 
-class _RelatedGoodsCard extends StatelessWidget {
-  final RelatedGoodsBean bean;
-  const _RelatedGoodsCard(this.bean, {Key key}) : super(key: key);
+class RelatedGoodsCard extends StatelessWidget {
+  final GoodsItemBean bean;
+  const RelatedGoodsCard(this.bean, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Container(
+        alignment: Alignment.center,
+        color: Theme.of(context).primaryColor,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
               width: 108,
               child: AspectRatio(
                 aspectRatio: 1.0,
                 child: ZYNetImage(
-                  imgPath: bean.picture,
+                  imgPath: bean.picCoverMid,
                 ),
               ),
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   bean.goodsName,
@@ -105,16 +121,17 @@ class _RelatedGoodsCard extends StatelessWidget {
                     horizontalPadding: 2,
                     fontSize: 8,
                   ),
-                  visible: bean.isOnSale,
+                  visible: bean.isPromotionGoods,
                 )
               ],
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text.rich(
                   TextSpan(
-                      text: '¥${bean.price}',
+                      text: '¥${bean.displayPrice}',
                       children: [
                         TextSpan(
                             text: '/米',

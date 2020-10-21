@@ -2,22 +2,49 @@
  * @Description:  常用工具函数的封装
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-10-09 16:38:32
+ * @LastEditTime: 2020-10-19 14:23:53
  */
 import 'dart:async';
 
 import 'dart:math';
 
 class CommonKit {
-  static Function debounce(Function callback, [int delay = 300]) {
-    Timer _debounce;
-    Function fn = () {
-      if (_debounce?.isActive ?? false) _debounce.cancel();
-      _debounce = Timer(Duration(milliseconds: delay), () {
-        callback();
+  /// [func]: 要执行的方法  节流
+  static Function throttle(
+    Future Function() func,
+  ) {
+    if (func == null) {
+      return func;
+    }
+    bool enable = true;
+    Function target = () {
+      if (enable == true) {
+        enable = false;
+        func().then((_) {
+          enable = true;
+        });
+      }
+    };
+    return target;
+  }
+
+  /// 防抖
+  /// [func]: 要执行的方法
+  /// [delay]: 要迟延的时长
+  Function debounce(
+    Function func, [
+    Duration delay = const Duration(milliseconds: 2000),
+  ]) {
+    Timer timer;
+    Function target = () {
+      if (timer?.isActive ?? false) {
+        timer?.cancel();
+      }
+      timer = Timer(delay, () {
+        func?.call();
       });
     };
-    return fn();
+    return target;
   }
 
   static String getRandomStr({int length: 30}) {
@@ -62,6 +89,7 @@ class CommonKit {
 
   static double parseDouble(var variable, {double defaultVal = -1.0}) {
     if (variable == null) return defaultVal;
+    if (variable is int) return variable.toDouble();
     if (variable is double) return variable;
     if (variable is String) {
       variable = variable.trim(); //去除左右两端空格
@@ -95,8 +123,8 @@ class CommonKit {
    * @return double
    * @Date: 2020-09-27 09:52:17
    */
-  static double toDoubleAsFixed(double n, {double digits = 2}) {
-    return double.parse(n.toStringAsPrecision(2));
+  static double toDoubleAsFixed(double n, {int digits = 3}) {
+    return double.parse(n.toStringAsPrecision(digits));
   }
 
 /*

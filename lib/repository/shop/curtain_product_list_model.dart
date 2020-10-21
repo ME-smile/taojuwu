@@ -1,4 +1,7 @@
+import 'package:taojuwu/utils/common_kit.dart';
+
 import '../zy_response.dart';
+import 'product_bean.dart';
 
 /// code : 0
 /// message : "success"
@@ -153,7 +156,7 @@ class CurtainGoodsListWrapper {
     CurtainGoodsListWrapper goodsListBean = CurtainGoodsListWrapper();
     goodsListBean.data = List()
       ..addAll(
-          (map['data'] as List ?? []).map((o) => GoodsItemBean.fromMap(o)));
+          (map['data'] as List ?? []).map((o) => GoodsItemBean.fromJson(o)));
     goodsListBean.totalCount = map['total_count'];
     goodsListBean.pageCount = map['page_count'];
     return goodsListBean;
@@ -191,7 +194,7 @@ class CurtainGoodsListWrapper {
 /// display_price : "￥0.00"
 /// group_name : ""
 
-class GoodsItemBean {
+class GoodsItemBean extends ProductBean {
   int goodsId;
   String goodsName;
   dynamic picCoverMid;
@@ -199,6 +202,7 @@ class GoodsItemBean {
   int goodsType;
   double displayPrice;
   int goodsSpecialType;
+
   bool get isPromotionGoods {
     return marketPrice != 0 && marketPrice != displayPrice;
   }
@@ -206,20 +210,17 @@ class GoodsItemBean {
   bool get isProduct => goodsSpecialType == 0;
 
   bool get isCustomizedProduct => !isProduct;
-  static GoodsItemBean fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-    GoodsItemBean dataBean = GoodsItemBean();
-    dataBean.goodsId = map['goods_id'];
-    dataBean.goodsName = map['goods_name'];
-    dataBean.picCoverMid = map['pic_cover_mid'];
-    dataBean.marketPrice = map['market_price'].runtimeType == double
-        ? map['market_price']
-        : double.parse(map['market_price'] ?? '0.00');
-    dataBean.goodsType = map['goods_type'];
-    dataBean.displayPrice = map['display_price'].runtimeType == double
-        ? map['display_price']
-        : double.parse(map['display_price']);
-    dataBean.goodsSpecialType = map['goods_special_type'];
-    return dataBean;
+
+  bool get isEndProduct => goodsType == 0;
+
+  GoodsItemBean.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    goodsId = json['goods_id'];
+    goodsName = json['goods_name'];
+    picCoverMid = json['pic_cover_mid'];
+    marketPrice = CommonKit.parseDouble(json['market_price']);
+    goodsType = CommonKit.parseInt(json['goods_type']);
+    displayPrice = CommonKit.parseDouble(
+        json['price'] ?? json['display_price'] ?? json['market_price']);
+    goodsSpecialType = json['goods_special_type'];
   }
 }

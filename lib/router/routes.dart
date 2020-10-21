@@ -1,4 +1,4 @@
-import 'package:fluro/fluro.dart';
+import 'package:fluro/fluro.dart' as fluro;
 import 'package:flutter/material.dart';
 
 import 'handlers.dart';
@@ -51,8 +51,11 @@ class Routes {
   static const String endProductDetail = '/endProductDetail';
   static const String editGoodsAttr = '/editGoodsAttr';
   static const String protocal = '/protocal';
-  static void configureRoutes(Router router) {
-    router.notFoundHandler = new Handler(
+
+  static const String productDetail = '/productDetail';
+
+  static void configureRoutes(fluro.Router router) {
+    router.notFoundHandler = new fluro.Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
       return Scaffold(
         appBar: AppBar(
@@ -102,5 +105,6 @@ class Routes {
     router.define(endProductDetail, handler: RouteHandler.endProductDetail);
     router.define(editGoodsAttr, handler: RouteHandler.editGoodsAttr);
     router.define(protocal, handler: RouteHandler.protocal);
+    router.define(productDetail, handler: RouteHandler.productDetail);
   }
 }

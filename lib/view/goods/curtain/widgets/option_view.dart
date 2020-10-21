@@ -13,7 +13,7 @@ import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class OptionView extends StatelessWidget {
   final bool isRoomAttr;
-  final GoodsSkuAttrBean bean;
+  final ProductSkuAttrBean bean;
   final Function callback;
 
   bool get showPrice => CommonKit.parseDouble(bean.price) != 0.0;

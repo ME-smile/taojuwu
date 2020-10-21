@@ -1,10 +1,16 @@
+/*
+ * @Description: 加入购物车
+ * @Author: iamsmiling
+ * @Date: 2020-09-27 15:11:12
+ * @LastEditTime: 2020-10-15 10:28:10
+ */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_binding.dart';
+import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
 
 class PurchaseActionBar extends StatelessWidget {
-  final BaseGoodsBinding baseGoodsBinding;
-  const PurchaseActionBar(this.baseGoodsBinding, {Key key}) : super(key: key);
+  final BaseGoodsViewModel baseGoodsViewModel;
+  const PurchaseActionBar(this.baseGoodsViewModel, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +28,7 @@ class PurchaseActionBar extends StatelessWidget {
             child: Text.rich(TextSpan(text: '预计:\n', children: [
               TextSpan(
                   text:
-                      '${baseGoodsBinding.totalPrice.toStringAsFixed(2) ?? "0.00"}',
+                      '${baseGoodsViewModel.totalPrice.toStringAsFixed(2) ?? "0.00"}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
             ])),
           ),
@@ -35,25 +41,7 @@ class PurchaseActionBar extends StatelessWidget {
                       child: Builder(
                         builder: (BuildContext ctx) {
                           return InkWell(
-                            onTap: baseGoodsBinding.addToFunc
-                            // OverlayEntry entry =
-                            //     OverlayEntry(builder: (_) {
-                            //   RenderBox box = ctx.findRenderObject();
-                            //   startPoint =
-                            //       box.localToGlobal(Offset.zero);
-
-                            //   return RedDotPage(
-                            //       startPosition: startPoint,
-                            //       endPosition: endPoint);
-                            // });
-                            // Overlay.of(context).insert(entry);
-                            // // 等待动画结束
-                            // Future.delayed(Duration(milliseconds: 800),
-                            //     () {
-                            //   entry.remove();
-                            //   entry = null;
-                            // });
-                            ,
+                            onTap: baseGoodsViewModel.addToCart,
                             child: Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: UIKit.width(20),
@@ -79,7 +67,7 @@ class PurchaseActionBar extends StatelessWidget {
                     ),
                     Expanded(
                         child: InkWell(
-                          onTap: baseGoodsBinding.purchase,
+                          onTap: baseGoodsViewModel.purchase,
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 vertical: UIKit.height(11)),

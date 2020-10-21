@@ -30,7 +30,7 @@ class GoodsProvider with ChangeNotifier {
   WindowShadeAttr _windowShadeAttr;
   CanopyAttr _canopyAttr;
   AccessoryAttr _accessoryAttr;
-  OrderGoodsMeasure _measureData;
+  OrderGoodsMeasureData _measureData;
 
   WindowGauzeAttrBean _curwindowGauzeAttrBean;
   CraftAttrBean _curCraftAttrBean;
@@ -92,7 +92,7 @@ class GoodsProvider with ChangeNotifier {
     return '打开方式未确认';
   }
 
-  OrderGoodsMeasure get measureData => _measureData;
+  OrderGoodsMeasureData get measureData => _measureData;
 
   bool get isWindowGauze => goods?.goodsSpecialType == 3;
   bool get isWindowRoller => goods?.goodsSpecialType == 2;
@@ -207,7 +207,7 @@ class GoodsProvider with ChangeNotifier {
   }
 
   void initDataWithFilter(
-      {OrderGoodsMeasure measureData,
+      {OrderGoodsMeasureData measureData,
       ProductBean bean,
       WindowGauzeAttr windowGauzeAttr,
       CraftAttr craftAttr,
@@ -294,7 +294,7 @@ class GoodsProvider with ChangeNotifier {
   }
 
   void initData(
-      {OrderGoodsMeasure measureData,
+      {OrderGoodsMeasureData measureData,
       ProductBean bean,
       WindowGauzeAttr windowGauzeAttr,
       CraftAttr craftAttr,
@@ -569,7 +569,7 @@ class GoodsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set measureData(OrderGoodsMeasure data) {
+  set measureData(OrderGoodsMeasureData data) {
     _measureData = data;
     notifyListeners();
   }
@@ -665,7 +665,7 @@ class GoodsProvider with ChangeNotifier {
   //   );
   // }
 
-  void initSize(OrderGoodsMeasure measureData) {
+  void initSize(OrderGoodsMeasureData measureData) {
     _width = measureData?.width;
     _height = measureData?.height;
     _dy = measureData?.verticalGroundHeight;

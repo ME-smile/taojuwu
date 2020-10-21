@@ -1,31 +1,14 @@
 PODS:
-  - amap_core_fluttify (0.0.1):
-    - AMapFoundation-NO-IDFA (~> 1.6.4)
-    - Flutter
-    - foundation_fluttify
-  - amap_location_fluttify (0.0.1):
-    - amap_core_fluttify
-    - AMapLocation-NO-IDFA (~> 2.6.5)
-    - Flutter
-    - foundation_fluttify
-  - AMapFoundation-NO-IDFA (1.6.4)
-  - AMapLocation-NO-IDFA (2.6.7):
-    - AMapFoundation-NO-IDFA (~> 1.6.4)
   - barcode_scan (0.0.1):
     - Flutter
     - MTBBarcodeScanner
     - SwiftProtobuf
   - city_pickers (0.0.1):
     - Flutter
-  - core_location_fluttify (0.0.1):
-    - Flutter
-    - foundation_fluttify
   - device_info (0.0.1):
     - Flutter
   - Flutter (1.0.0)
   - flutter_app_upgrade (0.0.1):
-    - Flutter
-  - foundation_fluttify (0.0.1):
     - Flutter
   - install_plugin (0.0.1):
     - Flutter
@@ -36,20 +19,16 @@ PODS:
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
-  - SwiftProtobuf (1.8.0)
+  - SwiftProtobuf (1.11.0)
   - url_launcher (0.0.1):
     - Flutter
 
 DEPENDENCIES:
-  - amap_core_fluttify (from `.symlinks/plugins/amap_core_fluttify/ios`)
-  - amap_location_fluttify (from `.symlinks/plugins/amap_location_fluttify/ios`)
   - barcode_scan (from `.symlinks/plugins/barcode_scan/ios`)
   - city_pickers (from `.symlinks/plugins/city_pickers/ios`)
-  - core_location_fluttify (from `.symlinks/plugins/core_location_fluttify/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - Flutter (from `Flutter`)
   - flutter_app_upgrade (from `.symlinks/plugins/flutter_app_upgrade/ios`)
-  - foundation_fluttify (from `.symlinks/plugins/foundation_fluttify/ios`)
   - install_plugin (from `.symlinks/plugins/install_plugin/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -58,30 +37,20 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - AMapFoundation-NO-IDFA
-    - AMapLocation-NO-IDFA
     - MTBBarcodeScanner
     - SwiftProtobuf
 
 EXTERNAL SOURCES:
-  amap_core_fluttify:
-    :path: ".symlinks/plugins/amap_core_fluttify/ios"
-  amap_location_fluttify:
-    :path: ".symlinks/plugins/amap_location_fluttify/ios"
   barcode_scan:
     :path: ".symlinks/plugins/barcode_scan/ios"
   city_pickers:
     :path: ".symlinks/plugins/city_pickers/ios"
-  core_location_fluttify:
-    :path: ".symlinks/plugins/core_location_fluttify/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   Flutter:
     :path: Flutter
   flutter_app_upgrade:
     :path: ".symlinks/plugins/flutter_app_upgrade/ios"
-  foundation_fluttify:
-    :path: ".symlinks/plugins/foundation_fluttify/ios"
   install_plugin:
     :path: ".symlinks/plugins/install_plugin/ios"
   package_info:
@@ -94,25 +63,19 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
-  amap_core_fluttify: 832331914f028c32aebf1dab23474a82aff828e8
-  amap_location_fluttify: f5d913fcc8fc4a933dc62ec20046f4f20d11a498
-  AMapFoundation-NO-IDFA: 68a24362b110b8e0a3677605d0fd36bdf521f2bb
-  AMapLocation-NO-IDFA: 2a3edfee336b38481b892e1ecc85df0f6b365851
   barcode_scan: a5c27959edfafaa0c771905bad0b29d6d39e4479
   city_pickers: b0370f4c35c201723b5b7fcce10ec29b59d5bc35
-  core_location_fluttify: 9466a411ea7d22c6349c7e6a767ae4623f01eb1d
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_app_upgrade: a62fbe2a09a2176a7b44211c8355adfcfb969779
-  foundation_fluttify: 0c45145e3fad1fb99188e4979daed5b24cd9b278
   install_plugin: a13e7ddd2bab0c701b48cd359c26d0394125b6fb
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  SwiftProtobuf: 2cbd9409689b7df170d82a92a33443c8e3e14a70
+  SwiftProtobuf: f889fe5772f90ef7d7b8aac352d1fddf39650713
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.9.3

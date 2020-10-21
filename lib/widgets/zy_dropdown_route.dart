@@ -325,27 +325,18 @@ class _AnyTapGestureRecognizer extends BaseTapGestureRecognizer {
     return super.isPointerAllowed(event);
   }
 
-  @protected
-  @override
-  void handleTapDown({PointerDownEvent down}) {
-    // Do nothing.
-  }
-
-  @protected
-  @override
-  void handleTapUp({PointerDownEvent down, PointerUpEvent up}) {
-    if (onAnyTapUp != null) onAnyTapUp();
-  }
-
-  @protected
-  @override
-  void handleTapCancel(
-      {PointerDownEvent down, PointerCancelEvent cancel, String reason}) {
-    // Do nothing.
-  }
-
   @override
   String get debugDescription => 'any tap';
+
+  @override
+  void handleTapCancel(
+      {PointerDownEvent down, PointerCancelEvent cancel, String reason}) {}
+
+  @override
+  void handleTapDown({PointerDownEvent down}) {}
+
+  @override
+  void handleTapUp({PointerDownEvent down, PointerUpEvent up}) {}
 }
 
 class _MaskSemanticsDelegate extends SemanticsGestureDelegate {

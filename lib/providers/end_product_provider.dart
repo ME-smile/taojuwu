@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/cart_list_model.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
-import 'package:taojuwu/repository/shop/sku_bean.dart';
+import 'package:taojuwu/repository/shop/product_sku_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -39,20 +39,21 @@ class EndProductProvider with ChangeNotifier {
     return goods?.specList;
   }
 
-  List<SkuBean> get skuList => _goods?.skuList;
+  List<ProductSkuBean> get skuList => _goods?.skuList;
 
   int get skuId => goods?.skuId;
 
   bool canAddToCart = true;
 
-  SkuBean get curSkubean {
+  ProductSkuBean get curProductSkuBean {
     if (skuId == null) return null;
     return skuList?.firstWhere((element) => element?.skuId == skuId);
   }
 
-  int get count => curSkubean?.count ?? 1;
-  double get price =>
-      curSkubean == null ? 0.0 : double.parse(curSkubean?.price ?? '0.0');
+  int get count => curProductSkuBean?.count ?? 1;
+  double get price => curProductSkuBean == null
+      ? 0.0
+      : double.parse(curProductSkuBean?.price ?? '0.0');
   double get totalPrice {
     if (price == null) return 0.0;
     print('总价');
@@ -151,10 +152,10 @@ class EndProductProvider with ChangeNotifier {
           'data': [
             {
               'tag': goods?.goodsName ?? '',
-              'img': curSkubean?.coverUrl ?? '',
+              'img': curProductSkuBean?.coverUrl ?? '',
               'goods_name': goods?.goodsName,
               'price': goods?.price,
-              'desc': '$checkedAttrText\n数量x${curSkubean?.count ?? 1}',
+              'desc': '$checkedAttrText\n数量x${curProductSkuBean?.count ?? 1}',
               'sku_id': goods?.skuId,
               'goods_id': goods?.goodsId ?? '',
               'total_price': totalPrice ?? 0.0,
@@ -196,7 +197,7 @@ class EndProductProvider with ChangeNotifier {
       CartModel cartModel,
       Function callback}) async {
     params = params ?? {};
-    curSkubean?.count = cartModel?.count;
+    curProductSkuBean?.count = cartModel?.count;
     params?.addAll({'cart_id': cartModel?.cartId, 'sku_id': cartModel?.skuId});
     params?.addAll(productAttrArg);
     OTPService.modifyCartAttr(context, params)

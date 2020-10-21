@@ -6,7 +6,6 @@ import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/router/handlers.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/widgets/v_spacing.dart';
 
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -85,9 +84,10 @@ class GridCard extends StatelessWidget {
   }
 
   jump(BuildContext context) {
-    if (bean?.isCustomizedProduct == true)
-      return RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
-    return RouteHandler.goEndProductDetail(context, bean?.goodsId);
+    return RouteHandler.goProductDetailPage(context, bean?.goodsId);
+    // if (bean?.isCustomizedProduct == true)
+    //   return RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
+    // return RouteHandler.goEndProductDetail(context, bean?.goodsId);
   }
 
   @override
@@ -151,7 +151,7 @@ class GridCard extends StatelessWidget {
                   // TextSpan(text: '\n'),
                   // TextSpan(text: '11324'),
                 ]))),
-            VSpacing(20),
+            // VSpacing(20),
           ],
         ),
       ),
@@ -173,7 +173,7 @@ class GoodsGridView extends StatelessWidget {
         padding: EdgeInsets.all(5),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 1.0,
+            childAspectRatio: 0.8,
             crossAxisSpacing: 10,
             mainAxisSpacing: 8),
         itemCount:

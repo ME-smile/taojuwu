@@ -90,16 +90,16 @@ class OrderProvider with ChangeNotifier {
   }
 
   // set dy(String h) {
-  //   _orderGoodsMeasure?.verticalGroundHeight = h;
+  //   _OrderGoodsMeasureData?.verticalGroundHeight = h;
   //   notifyListeners();
   // }
 
   // set openMode(String mode) {
-  //   if (_orderGoodsMeasure?.openType == mode) return;
+  //   if (_OrderGoodsMeasureData?.openType == mode) return;
   //   if (_oldOpenMode == null) {
-  //     _oldOpenMode = _orderGoodsMeasure?.openType;
+  //     _oldOpenMode = _OrderGoodsMeasureData?.openType;
   //   }
-  //   _orderGoodsMeasure?.openType = mode;
+  //   _OrderGoodsMeasureData?.openType = mode;
   //   notifyListeners();
   // }
 
@@ -309,15 +309,15 @@ class OrderProvider with ChangeNotifier {
     BuildContext context, {
     OrderGoods orderGoods,
   }) {
-    // _orderGoodsMeasure = orderGoods?.orderGoodsMeasure;
-    // goodsProvider?.measureData = _orderGoodsMeasure;
-    // goodsProvider?.initSize(_orderGoodsMeasure
-    //     // _orderGoodsMeasure?.width ?? '0.00',
-    //     // _orderGoodsMeasure?.height ?? '0.00',
-    //     // _orderGoodsMeasure?.verticalGroundHeight ?? '0.00',
-    //     // installMode: _orderGoodsMeasure?.installType ?? '顶装满墙',
-    //     // openMode: _orderGoodsMeasure?.openType ?? '整体对开'
-    //     // _orderGoodsMeasure?.
+    // _OrderGoodsMeasureData = orderGoods?.OrderGoodsMeasureData;
+    // goodsProvider?.measureData = _OrderGoodsMeasureData;
+    // goodsProvider?.initSize(_OrderGoodsMeasureData
+    //     // _OrderGoodsMeasureData?.width ?? '0.00',
+    //     // _OrderGoodsMeasureData?.height ?? '0.00',
+    //     // _OrderGoodsMeasureData?.verticalGroundHeight ?? '0.00',
+    //     // installMode: _OrderGoodsMeasureData?.installType ?? '顶装满墙',
+    //     // openMode: _OrderGoodsMeasureData?.openType ?? '整体对开'
+    //     // _OrderGoodsMeasureData?.
     //     );
 
     RouteHandler.goCurtainMallPage(context);

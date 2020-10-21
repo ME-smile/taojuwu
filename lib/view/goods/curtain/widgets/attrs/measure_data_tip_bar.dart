@@ -2,13 +2,14 @@
  * @Description: 属性选择上方的提示文字
  * @Author: iamsmiling
  * @Date: 2020-09-29 13:07:04
- * @LastEditTime: 2020-09-29 17:16:14
+ * @LastEditTime: 2020-10-15 14:23:14
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/view/goods/curtain/subPages/pre_measure_data_page.dart';
+import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
 import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 
 class MeasureDataTipBar extends StatelessWidget {
@@ -17,49 +18,68 @@ class MeasureDataTipBar extends StatelessWidget {
   void _jump(BuildContext context, CurtainViewModel viewModel) {
     Navigator.push(context, CupertinoPageRoute(builder: (BuildContext context) {
       return PreMeasureDataPage(viewModel);
-    }));
+    })).then((value) {
+      viewModel?.refresh();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<CurtainViewModel>(
-        builder: (BuildContext context, CurtainViewModel viewModel, _) {
-      return viewModel?.isMeasureOrder == true
-          ? _buildMeasureOrderTip(context, viewModel)
-          : _buildNotMeasureOrderTip(context, viewModel);
+    return Consumer<BaseGoodsViewModel>(
+        builder: (BuildContext context, BaseGoodsViewModel viewModel, _) {
+      return Container(
+          margin: EdgeInsets.only(top: 16),
+          child: Column(
+            children: [
+              (viewModel as CurtainViewModel)?.isMeasureOrder == true
+                  ? _buildMeasureOrderTip(context)
+                  : _buildNotMeasureOrderTip(context, viewModel),
+              Divider()
+            ],
+          ));
     });
   }
 
   //测量单时的提示文字
   Widget _buildMeasureOrderTip(
-      BuildContext context, CurtainViewModel curtainViewModel) {
+    BuildContext context,
+  ) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     return GestureDetector(
         onTap: () {
-          _jump(context, curtainViewModel);
+          CurtainViewModel viewModel = Provider.of(context);
+          _jump(context, viewModel);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            Text.rich(
-              TextSpan(
-                  text: '*  ',
-                  style: TextStyle(color: Color(0xFFE02020)),
-                  children: [
-                    TextSpan(
-                        text: curtainViewModel.hasConfirmSize
-                            ? '已确认测装数据'
-                            : '请确认测装数据',
-                        style: textTheme.bodyText2),
-                  ]),
+            Selector<CurtainViewModel, bool>(
+              selector: (BuildContext context, CurtainViewModel viewModel) =>
+                  viewModel.hasConfirmSize,
+              builder: (BuildContext context, bool flag, _) {
+                return Text.rich(
+                  TextSpan(
+                      text: '*  ',
+                      style: TextStyle(color: Color(0xFFE02020)),
+                      children: [
+                        TextSpan(
+                            text: flag ? '已确认测装数据' : '请确认测装数据',
+                            style: textTheme.bodyText2),
+                      ]),
+                );
+              },
             ),
             Spacer(),
-            Text(
-              curtainViewModel.hasConfirmSize == true
-                  ? curtainViewModel?.measureDataStr ?? ''
-                  : '',
-              textAlign: TextAlign.end,
+            Selector<CurtainViewModel, String>(
+              selector: (BuildContext context, CurtainViewModel viewModel) =>
+                  viewModel.measureDataStr,
+              builder: (BuildContext context, String text, _) {
+                return Text(
+                  text ?? '',
+                  textAlign: TextAlign.end,
+                );
+              },
             ),
             Icon(ZYIcon.next)
           ],
@@ -75,30 +95,35 @@ class MeasureDataTipBar extends StatelessWidget {
       onTap: () {
         _jump(context, curtainViewModel);
       },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text.rich(
-            TextSpan(
-                text: '*  ',
-                style: TextStyle(color: Color(0xFFE02020)),
-                children: [
-                  TextSpan(
-                      text: curtainViewModel?.hasSetSize == true
-                          ? '已预填测装数据'
-                          : '请预填测装数据',
-                      style: textTheme.bodyText2),
-                ]),
-          ),
-          Spacer(),
-          Text(
-            curtainViewModel?.hasSetSize == true
-                ? curtainViewModel?.measureDataStr ?? ''
-                : '',
-            textAlign: TextAlign.end,
-          ),
-          Icon(ZYIcon.next)
-        ],
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Text.rich(
+              TextSpan(
+                  text: '*  ',
+                  style: TextStyle(color: Color(0xFFE02020)),
+                  children: [
+                    TextSpan(
+                        text: curtainViewModel?.hasSetSize == true
+                            ? '已预填测装数据'
+                            : '请预填测装数据',
+                        style: textTheme.bodyText2),
+                  ]),
+            ),
+            Spacer(),
+            Text(
+              curtainViewModel?.hasSetSize == true
+                  ? curtainViewModel?.measureDataStr ?? ''
+                  : '',
+              textAlign: TextAlign.end,
+            ),
+            Icon(
+              ZYIcon.next,
+              size: 20,
+            )
+          ],
+        ),
       ),
     );
   }

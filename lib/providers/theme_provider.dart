@@ -2,7 +2,7 @@
  * @Description: 主题 颜色 字体相关配置
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-09 09:07:51
+ * @LastEditTime: 2020-10-14 14:53:51
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -97,5 +97,33 @@ class TaojuwuColors {
   static const Color ACCENT_COLOR = Color(0xFF171717);
   static const Color SCAFFOLD_BG_COLOR = Color(0xFFF8F8F8);
   static const Color DISABLED_COLOR = Colors.grey;
+
+  static const Color EMPHASIS_TEXT_COLOR = Color(0xFF1B1B1B);
+  static const Color SUB_COLOR = Color(0xFF6D6D6D);
+
+  //红色
+  static const Color RED_COLOR = Color(0xFFFF6161);
+
+  //白色
+  static const Color WHITE_COLOR = Colors.white;
+
+  //浅黄色
+  static const Color LIGHT_YELLOW_COLOR = Color(0xFFFCF3E8);
+  //深黄色
+  static const Color DEEP_YELLOW_COLOR = Color(0xFFFFB861);
+
+  //黄色
+  static const Color YELLOW_COLOR = Color(0xFFFFB861);
+
+  // 副标题颜色
+  static const Color SUB_TITLE_COLOR = Color(0xFF444444);
+
+  //浅灰色
+  static const Color LIGHT_GREY_COLOR = Color(0xFFF7F7FA);
+
+  // 灰色
+  static const Color GREY_COLOR = Color(0xFF999999);
+
+  //
   // static const Color ACCENT_BUTTON_BORDER = Color(0xFF2B2B2B);
 }

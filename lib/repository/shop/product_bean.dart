@@ -1,10 +1,14 @@
+import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
-import 'sku_bean.dart';
+import 'curtain_product_list_model.dart';
+import 'product_sku_bean.dart';
+import 'sku_attr/window_style_sku_option.dart';
 
-class ProductBeanResList extends ZYResponse<ListDataWrapperProductBean> {
-  ProductBeanResList.fromJson(Map<String, dynamic> json)
+class ProductBeanRespList extends ZYResponse<ListDataWrapperProductBean> {
+  ProductBeanRespList.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
     this.data =
         !this.valid ? null : ListDataWrapperProductBean.fromJson(json['data']);
@@ -14,7 +18,7 @@ class ProductBeanResList extends ZYResponse<ListDataWrapperProductBean> {
 class LikedProductList extends ZYResponse<List<ProductBean>> {
   LikedProductList.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     this.data = this.valid && json['data'] != null
-        ? List.of(json['data']).map((v) => ProductBean.fromMap(v)).toList()
+        ? List.of(json['data']).map((v) => ProductBean.fromJson(v)).toList()
         : null;
   }
 }
@@ -28,39 +32,44 @@ class ListDataWrapperProductBean {
 
   ListDataWrapperProductBean.fromJson(Map<String, dynamic> json) {
     this.data =
-        List.of(json['data']).map((v) => ProductBean.fromMap(v)).toList();
+        List.of(json['data']).map((v) => ProductBean.fromJson(v)).toList();
     this.totalCount = json['total_count'];
     this.pageCount = json['page_count'];
   }
 }
 
-class ProductBeanRes extends ZYResponse<ProductBeanDataWrapper> {
-  ProductBeanRes.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+class ProductBeanResp extends ZYResponse<ProductBeanDataWrapper> {
+  ProductBeanResp.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     this.data =
-        !this.valid ? null : ProductBeanDataWrapper.fromMap(json['data']);
+        !this.valid ? null : ProductBeanDataWrapper.fromJson(json['data']);
   }
 }
 
 class ProductBeanDataWrapper {
   String goodsId;
   int skuId;
-  ProductBean goodsDetail;
+  FabricCurtainProductBean goodsDetail;
   List<RelatedGoodsBean> relatedGoodsList;
   List<SoftProjectBean> softProjectList;
-  static ProductBeanDataWrapper fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-    ProductBeanDataWrapper dataBean = ProductBeanDataWrapper();
-    dataBean.goodsId = map['goods_id'];
-    dataBean.skuId =
-        map['sku_id'] is String ? int.parse(map['sku_id']) : map['sku_id'];
-    dataBean.goodsDetail = ProductBean.fromMap(map['goods_detail']);
-    dataBean?.relatedGoodsList = CommonKit.parseList(map['related_goods'])
+  List<RecommendGoodsBean> recommendGoodsList;
+  List<SceneProjectBean> sceneProjectList;
+  ProductBeanDataWrapper.fromJson(Map<String, dynamic> map) {
+    goodsId = map['goods_id'];
+    skuId = CommonKit.parseInt(map['sku_id']);
+    goodsDetail = FabricCurtainProductBean.fromJson(map['goods_detail']);
+    relatedGoodsList = CommonKit.parseList(map['related_goods'])
         .map((o) => RelatedGoodsBean.fromJson(o))
         ?.toList();
-    dataBean.softProjectList = CommonKit.parseList(map['soft_project_list'])
+
+    softProjectList = CommonKit.parseList(map['soft_project_list'])
         ?.map((e) => SoftProjectBean.fromJson(e))
         ?.toList();
-    return dataBean;
+    sceneProjectList = CommonKit.parseList(map['scenes_list'])
+        ?.map((e) => SceneProjectBean.fromJson(e))
+        ?.toList();
+    recommendGoodsList = CommonKit.parseList(map['referrals_goods'])
+        ?.map((e) => RecommendGoodsBean.fromJson(e))
+        ?.toList();
   }
 }
 
@@ -73,13 +82,13 @@ class ProductBean {
   int goodsType;
   double marketPrice;
   double price;
-  int picture;
+  dynamic picture;
   int goodsSpecialType;
   String description;
   int isStockVisible;
   int isHot;
   List<ProductBeanSpecListBean> specList;
-  List<SkuBean> skuList;
+  List<ProductSkuBean> skuList;
   List<ProductBeanGoodsImageBean> goodsImgList;
   String skuName;
   int skuId;
@@ -110,44 +119,40 @@ class ProductBean {
     return [];
   }
 
-  static ProductBean fromMap(Map<String, dynamic> map) {
-    if (map == null) return null;
-    ProductBean tmpBean = ProductBean();
-    tmpBean.goodsId = map['goods_id'];
-    tmpBean.goodsName = map['goods_name'];
-    tmpBean.shopId = map['shop_id'];
-    tmpBean.isCollect = map['is_collect'];
-    tmpBean.goodsType = map['goods_type'];
-    tmpBean?.skuId = CommonKit.parseInt(map['sku_id']);
+  ProductBean.fromJson(Map<String, dynamic> map) {
+    goodsId = map['goods_id'];
+    goodsName = map['goods_name'];
+    shopId = map['shop_id'];
+    isCollect = map['is_collect'];
+    goodsType = map['goods_type'];
+    skuId = CommonKit.parseInt(map['sku_id']);
 
-    tmpBean.marketPrice = CommonKit.parseDouble(map['market_price']);
+    marketPrice = CommonKit.parseDouble(map['market_price']);
 
-    tmpBean.price = CommonKit.parseDouble(map['price']);
+    price = CommonKit.parseDouble(map['price']);
+    picture = map['picture'];
 
-    tmpBean.picture = map['picture'];
+    description = map['description'];
 
-    tmpBean.description = map['description'];
+    isStockVisible = map['is_stock_visible'];
+    isHot = map['is_hot'];
+    goodsSpecialType = map['goods_special_type'];
 
-    tmpBean.isStockVisible = map['is_stock_visible'];
-    tmpBean.isHot = map['is_hot'];
-    tmpBean.goodsSpecialType = map['goods_special_type'];
-
-    tmpBean.specList = List()
+    specList = List()
       ..addAll((map['spec_list'] as List ?? [])
           .map((o) => ProductBeanSpecListBean.fromMap(o)));
-    tmpBean.skuList = List()
-      ..addAll((map['sku_list'] as List ?? []).map((o) => SkuBean.fromJson(o)));
-    tmpBean.goodsImgList = List()
+    skuList = List()
+      ..addAll((map['sku_list'] as List ?? [])
+          .map((o) => ProductSkuBean.fromJson(o)));
+    goodsImgList = List()
       ..addAll((map['goods_img_list'] as List ?? [])
           .map((o) => ProductBeanGoodsImageBean.fromMap(o)));
 
-    tmpBean.skuName = map['sku_name'];
+    skuName = map['sku_name'];
 
-    tmpBean?.picCoverMicro = map['pic_cover_micro'];
-    tmpBean?.categoryName = map['category_name'];
-    tmpBean?.fixHeight = map['fix_height'];
-
-    return tmpBean;
+    picCoverMicro = map['pic_cover_micro'];
+    categoryName = map['category_name'];
+    fixHeight = map['fix_height'];
   }
 }
 
@@ -223,70 +228,96 @@ class ProductBeanSpecValueBean {
   }
 }
 
-class RelatedGoodsBean {
-  int goodsId;
-  String goodsName;
-  int goodsType;
-  double price;
-  double marketPrice;
-  String picture;
+class RelatedGoodsBean extends GoodsItemBean {
   String unit;
-
-  bool get isOnSale => price < marketPrice;
-
-  RelatedGoodsBean.fromJson(Map<String, dynamic> json) {
-    goodsId = json['goods_id'];
-    goodsName = json['goods_name'];
-    goodsType = json['goods_type'];
-    price = CommonKit.parseDouble(json['price']);
-    marketPrice = CommonKit.parseDouble(json['market_price']);
-    picture = json['picture'];
+  RelatedGoodsBean.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    picCoverMid = json['picture'];
     unit = json['unit'];
   }
 }
 
-class SoftProjectBean {
+class ProjectGoodsBean extends GoodsItemBean {
+  dynamic picCoverMid;
+
+  String unit;
+
+  ProjectGoodsBean.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    picCoverMid = json['picture'];
+    unit = json['unit'];
+  }
+}
+
+class ProjectBean {
   int scenesId;
   String scenesName;
+  String goodsDetail;
+  String space;
+  String style;
   String picture;
   String name;
-
-  List<SoftProjectGoodsBean> goodsList;
+  List<ProjectGoodsBean> goodsList;
   double totalPrice;
 
   double get marketPrice {
     double tmp = 0.0;
     if (!CommonKit.isNullOrEmpty(goodsList)) {
       goodsList?.forEach((el) {
-        tmp += el.price;
+        tmp += el.displayPrice;
       });
       return tmp;
     }
     return tmp;
   }
 
-  SoftProjectBean.fromJson(Map<String, dynamic> json) {
+  ProjectBean.fromJson(Map<String, dynamic> json) {
     scenesId = json['scenes_id'];
     scenesName = json['scenes_name'];
     picture = json['picture'];
     name = json['name'];
+    space = json['space'];
+    style = json['style'];
+    goodsDetail = json['scenes_detail'];
     goodsList = CommonKit.parseList(json['goods_list'])
-        ?.map((e) => SoftProjectGoodsBean.fromJson(e))
+        ?.map((e) => ProjectGoodsBean.fromJson(e))
         ?.toList();
     totalPrice = CommonKit.parseDouble(json['total_price']);
   }
 }
 
-class SoftProjectGoodsBean {
-  int goodsId;
-  String goodsName;
-  double marketPrice;
-  double price;
+class SoftProjectBean extends ProjectBean {
+  SoftProjectBean.fromJson(Map<String, dynamic> json) : super.fromJson(json);
+}
 
-  SoftProjectGoodsBean.fromJson(Map<String, dynamic> json) {
-    goodsId = json['goods_id'];
-    goodsName = json['goods_name'];
-    marketPrice = CommonKit.parseDouble(json['market_price']);
-    price = CommonKit.parseDouble(json['price']);
+class SoftProjectGoodsBean extends GoodsItemBean {
+  dynamic picCoverMid;
+  double width;
+  double height;
+  String unit;
+  List<ProductSkuBean> skuList;
+  List<ProductSkuAttr> attrList;
+  ProductSkuAttr roomAttr;
+  //窗帘样式列表
+  WindowStyleSkuOption styleSkuOption;
+
+  SoftProjectGoodsBean.fromJson(Map<String, dynamic> json)
+      : super.fromJson(json) {
+    picCoverMid = json['picture'];
+    width = CommonKit.parseDouble(json['width']);
+    height = CommonKit.parseDouble(json['height']);
+    unit = json['unit'];
+    skuList = CommonKit.parseList(json['sku_list'])
+        ?.map((e) => ProductSkuBean.fromJson(e))
+        ?.toList();
   }
+}
+
+class RecommendGoodsBean extends GoodsItemBean {
+  RecommendGoodsBean.fromJson(Map<String, dynamic> json)
+      : super.fromJson(json) {
+    picCoverMid = json['picture'];
+  }
+}
+
+class SceneProjectBean extends ProjectBean {
+  SceneProjectBean.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 }

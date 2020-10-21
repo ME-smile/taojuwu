@@ -2,84 +2,130 @@
  * @Description: 处理窗帘样式 安装选项 打开方式相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-29 16:08:31
- * @LastEditTime: 2020-09-30 14:41:58
+ * @LastEditTime: 2020-10-20 11:21:12
  */
-import 'package:taojuwu/repository/shop/sku_attr/curtain_sku_attr.dart';
+import 'package:taojuwu/repository/shop/sku_attr/window_style_sku_option.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
 
 mixin CurtainStyleSelectorBinding on CurtainGoodsBinding {
-  //当前的窗帘样式 单窗 L窗 U窗
-  StyleOptionAttrBean get curCurtainStyleBean =>
-      getSelectedStyleOptionBeanById(1);
-  // 获取当前样式的名称 单窗 L窗 U窗
-  String get curCurtainStyleBeanName => curCurtainStyleBean?.text ?? '';
+  //窗型列表
+  List<WindowAttrOptionBean> typeOptions = [
+    WindowAttrOptionBean('单窗', 'single_window_pattern.png', isChecked: true),
+    WindowAttrOptionBean('L型窗', 'L_window_pattern.png'),
+    WindowAttrOptionBean('U型窗', 'U_window_pattern.png')
+  ];
+
+  // 有无飘窗
+  List<WindowAttrOptionBean> bayOptions = [
+    WindowAttrOptionBean('非飘窗', 'not_bay_window.png', isChecked: true),
+    WindowAttrOptionBean('飘窗', 'bay_window.png'),
+  ];
+
+  // 是否有盒
+  List<WindowAttrOptionBean> boxOptions = [
+    WindowAttrOptionBean('无盒', 'window_no_can.png', isChecked: true),
+    WindowAttrOptionBean('有盒', 'not_bay_window.png')
+  ];
+  //当前的窗帘样式 单窗 L窗 U窗,默认单窗
+  String get windowType => getSelectedOption(typeOptions)?.name ?? '单窗';
 
   //当前的窗帘样式 有无飘窗
-  StyleOptionAttrBean get curCurtainPatternBean =>
-      getSelectedStyleOptionBeanById(2);
+  String get windowBay => getSelectedOption(bayOptions)?.name ?? '非飘窗';
 
-  String get curCurtainPatternBeanName => curCurtainPatternBean?.text ?? '';
+  //有无窗帘盒
+  String get windowBox => getSelectedOption(boxOptions)?.name ?? '无盒';
 
-  //当前的窗帘样式 是否带盒
-  StyleOptionAttrBean get curCurtainModeBean =>
-      getSelectedStyleOptionBeanById(3);
-  String get curCurtainModeBeanName => curCurtainModeBean?.text ?? '';
+  //窗帘样式
+  String get windowStyleStr => '$windowType/$windowBay/$windowBox';
 
-  //拼接字符串 -->单窗/飘窗/有盒 格式
-  String get stylePatternMode =>
-      '$curCurtainStyleBeanName/$curCurtainPatternBean/$curCurtainModeBeanName';
-  /*
-   * @Author: iamsmiling
-   * @description: 通过id获取到样式 窗型 盒的有无 属性 1 样式 2 窗型 3 盒
-   * @param : id
-   * @return CurtainStyleOptionAttr
-   * @Date: 2020-09-30 14:04:06
-   */
-  CurtainStyleOptionAttr getCurtainStyleOptionAttrById(int id) {
-    List<CurtainStyleOptionAttr> list = curtainSkuAttr?.styleOptionAttrs;
-    if (CommonKit.isNullOrEmpty(list)) return null;
-    return list.firstWhere((el) => el.id == id);
-  }
-/*  
- * @Author: iamsmiling
- * @description: 传入一个属性获取到当前的选中的样式
- * @param : 
- * @return {type} 
- * @Date: 2020-09-30 14:19:04
- */
-
-  StyleOptionAttrBean getSelectedStyleOptionBean(CurtainStyleOptionAttr attr) {
-    if (CommonKit.isNullOrEmpty(attr?.options) ?? true) return null;
-    return attr.options.firstWhere((element) => element.isChecked);
+  //顶部展示的主图
+  String get mainImg {
+    return curInstallMode == null
+        ? 'curtain/size_0100-1-1-SPW-H.png'
+        : curInstallMode.img;
   }
 
-  StyleOptionAttrBean getSelectedStyleOptionBeanById(int id) {
-    return getSelectedStyleOptionBean(getCurtainStyleOptionAttrById(id));
+  //获取当前选中的样式选项--->WindowStyleProductSkuBean对象
+  WindowStyleProductSkuBean get curStyleProductSkuBean {
+    List<WindowStyleProductSkuBean> list = styleSkuOption?.options;
+    if (!CommonKit.isNullOrEmpty(list)) {
+      WindowStyleProductSkuBean bean = list.firstWhere(
+          (element) => element.name == windowStyleStr,
+          orElse: () => getFirst(list));
+      return bean;
+    }
+    return null;
   }
 
-  // 当前的安装选项
-  CurtainInstallOptionAttr get curInstallModeOption =>
-      getCurtainInstallOptionAttrByName(stylePatternMode);
-
-  //通过name匹配安装选项
-  CurtainInstallOptionAttr getCurtainInstallOptionAttrByName(name) {
-    List list = curtainSkuAttr.installOptionAttrs;
-    if (CommonKit.isNullOrEmpty(list)) return null;
-    return list.firstWhere((element) => element.name == name);
+  // 当前的安装方式
+  WindowInstallModeOptionBean get curInstallMode {
+    List<WindowInstallModeOptionBean> array =
+        curStyleProductSkuBean?.installModeOptionBeans;
+    if (!CommonKit.isNullOrEmpty(array)) {
+      WindowInstallModeOptionBean bean = array.firstWhere(
+          (element) => element.isChecked,
+          orElse: () => getFirst(array));
+      return bean;
+    }
+    return null;
   }
 
-  // 获取当前选中的安装选项
-  InstallModeOptionBean get curInstallModeOptionBean {
-    List<CurtainInstallOptionAttr> list = curtainSkuAttr?.installOptionAttrs;
-    if (CommonKit.isNullOrEmpty(list)) return null;
-    int index = list.indexOf(curInstallModeOption);
-    if (index == -1) return null;
-    return curInstallModeOption.options
-        .firstWhere((element) => element.isChecked);
+  //获取选中的选项
+  WindowAttrOptionBean getSelectedOption(List<WindowAttrOptionBean> options) {
+    return options.firstWhere((element) => element.isChecked,
+        orElse: () => null);
   }
 
-  String get mainImg => curInstallModeOptionBean == null
-      ? 'curtain/size_0100-1-1-SPW-H.png'
-      : curInstallModeOptionBean.picture;
+  // 获取当前应该显示的安装方式
+  List<WindowInstallModeOptionBean> get installOptions =>
+      curStyleProductSkuBean?.installModeOptionBeans ?? [];
+  // 获取当前应该显示的打开方式
+  List<WindowOpenModeOptionBean> get openOptions =>
+      curStyleProductSkuBean?.openModeOptionBeans ?? [];
+
+  //选择安装方式
+  void selectInstallMode(WindowInstallModeOptionBean bean) {
+    installOptions.forEach((element) {
+      element.isChecked = element == bean;
+    });
+    notifyListeners();
+  }
+
+  //选择打开方式
+  void selectOpenMode(WindowOpenModeOptionBean bean) {
+    openOptions.forEach((element) {
+      element.isChecked = element == bean;
+    });
+  }
+
+  // 获取选中的安装选项
+  WindowInstallModeOptionBean get selectedInstallModeOption {
+    return installOptions?.firstWhere((element) => element.isChecked,
+        orElse: () => getFirst(installOptions));
+  }
+
+  // 获取选中的打开方式
+  WindowOpenModeOptionBean get selectedOpenModeOption {
+    return openOptions?.firstWhere((element) => element.isChecked,
+        orElse: () => getFirst(openOptions));
+  }
+
+  getFirst(List list) {
+    return CommonKit.isNullOrEmpty(list) ? null : list?.first;
+  }
+
+  //获取当前选中的打开方式的子选项
+  List<WindowOpenModeSubOption> get subOpenModeOptions =>
+      selectedOpenModeOption?.subOptions ?? [];
+
+  //选中子选项
+  void selectSubOpenMode(
+      WindowOpenModeSubOption option, WindowOpenModeSubOptionBean optionBean) {
+    option.options.forEach((element) {
+      element.isChecked = element == optionBean;
+    });
+  }
+
+  int get styleOptionId => curStyleProductSkuBean?.id;
 }

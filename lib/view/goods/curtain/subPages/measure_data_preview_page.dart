@@ -25,7 +25,7 @@ class MeasureDataPreviewPage extends StatefulWidget {
 }
 
 class _MeasureDataPreviewPageState extends State<MeasureDataPreviewPage> {
-  OrderGoodsMeasure measureData;
+  OrderGoodsMeasureData measureData;
   @override
   void initState() {
     super.initState();

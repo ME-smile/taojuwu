@@ -2,7 +2,7 @@
  * @Description: 输入框  宽 高 离地距离 在测装页面的输入框
  * @Author: iamsmiling
  * @Date: 2020-09-30 15:52:59
- * @LastEditTime: 2020-09-30 15:55:00
+ * @LastEditTime: 2020-10-14 14:48:27
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -39,8 +39,8 @@ class SizeInputBox extends StatelessWidget {
                     EdgeInsets.symmetric(vertical: 3, horizontal: 2),
               ),
             ),
-            margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-            width: UIKit.width(160),
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            width: 80,
             height: 28,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(4)),

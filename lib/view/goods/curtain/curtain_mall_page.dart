@@ -841,6 +841,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
               body: TabBarView(
                 children: List.generate(tabs?.length ?? 0, (int i) {
                   return GoodsTabBarView(
+                    tabController,
                     key: ObjectKey(tabs[i]),
                     sort: sortData,
                     tab: i,
@@ -879,7 +880,7 @@ class GoodsTabBarView extends StatefulWidget {
   final bool isGridMode;
 
   final Map<String, dynamic> params;
-  GoodsTabBarView(
+  GoodsTabBarView(TabController tabController,
       {Key key, this.sort, this.params, this.tab, this.isGridMode = true})
       : super(key: key);
 

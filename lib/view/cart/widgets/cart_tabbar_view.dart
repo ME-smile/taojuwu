@@ -203,9 +203,9 @@ class CustomizedProductCardState extends State<CustomizedProductCard>
   @override
   void initState() {
     slideAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
     sizeAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     slideAnimation = Tween(begin: Offset(0.0, 0.0), end: Offset(1.0, 0.0))
         .animate(slideAnimationController)
           ..addStatusListener((status) {
@@ -396,9 +396,9 @@ class _ProductCardState extends State<ProductCard>
   @override
   void initState() {
     slideAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
     sizeAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
     slideAnimation = Tween(begin: Offset(0.0, 0.0), end: Offset(1.0, 0.0))
         .animate(slideAnimationController)
           ..addStatusListener((status) {

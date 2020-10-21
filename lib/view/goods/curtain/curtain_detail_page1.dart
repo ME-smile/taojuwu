@@ -599,9 +599,9 @@
 
 //   ProductBean bean;
 //   void initData(data, GoodsProvider goodsProvider) {
-//     OrderGoodsMeasure measureData = data[0];
-//     ProductBeanRes productBeanRes = data[1];
-//     ProductBeanDataWrapper wrapper = productBeanRes.data;
+//     OrderGoodsMeasureData measureData = data[0];
+//     ProductBeanResp ProductBeanResp = data[1];
+//     ProductBeanDataWrapper wrapper = ProductBeanResp.data;
 //     bean = wrapper.goodsDetail;
 //     CartCountResp cartCountResp = data[9];
 //     goodsProvider?.initDataWithFilter(

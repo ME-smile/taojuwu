@@ -18,6 +18,7 @@ import 'package:taojuwu/repository/shop/collect_list_model.dart';
 import 'package:taojuwu/repository/shop/curtain_product_list_model.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/repository/shop/product_tag_model.dart';
+import 'package:taojuwu/repository/shop/scene_detail_model.dart';
 import 'package:taojuwu/repository/shop/search/associative_word.dart';
 import 'package:taojuwu/repository/shop/sku_attr/accessory_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/canopy_attr.dart';
@@ -27,6 +28,8 @@ import 'package:taojuwu/repository/shop/sku_attr/part_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/room_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/window_gauze_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/window_shade_attr.dart';
+import 'package:taojuwu/repository/shop/soft_project_bean.dart';
+import 'package:taojuwu/repository/shop/soft_project_list_model.dart';
 import 'package:taojuwu/repository/shop/tag_model.dart';
 import 'package:taojuwu/repository/user/category_customer_model.dart';
 import 'package:taojuwu/repository/user/customer_detail_model.dart';
@@ -93,7 +96,7 @@ class OTPService {
   * @return {type} 
   * @Date: 2020-09-28 14:42:12
   */
-  static Future<GoodsSkuAttrWrapperResp> skuAttr(BuildContext context,
+  static Future<ProductSkuAttrWrapperResp> skuAttr(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
     Map<String, dynamic> json = {};
@@ -104,7 +107,7 @@ class OTPService {
     json.addAll({'type': args['type'], 'data': data});
     response?.data['data'] = json;
 
-    return GoodsSkuAttrWrapperResp.fromJson(response?.data);
+    return ProductSkuAttrWrapperResp.fromJson(response?.data);
   }
 
   //goods_id
@@ -222,11 +225,11 @@ class OTPService {
     return result;
   }
 
-  static Future<ProductBeanRes> productDetail(BuildContext context,
+  static Future<ProductBeanResp> productDetail(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.productDetail, params: params ?? {});
-    return ProductBeanRes.fromJson(response.data);
+    return ProductBeanResp.fromJson(response.data);
   }
 
   static Future<ZYResponse> getSms(
@@ -393,11 +396,7 @@ class OTPService {
       data: params,
     );
     ZYResponse resp = ZYResponse.fromJsonWithData(response.data);
-    if (resp?.valid == true) {
-      ToastKit.showSuccessDIYInfo('加入购物车成功');
-    } else {
-      ToastKit.showErrorInfo(resp?.message);
-    }
+
     return resp;
   }
 
@@ -449,16 +448,11 @@ class OTPService {
     return ZYResponse.fromJsonWithData(response.data);
   }
 
-  static Future<ZYResponse<dynamic>> saveMeasure(BuildContext context,
+  static Future<ZYResponse> saveMeasure(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.saveMesure, params: params);
-    ZYResponse<dynamic> resp =
-        ZYResponse<dynamic>.fromJsonWithData(response.data);
-    if (resp?.valid == false) {
-      ToastKit.showErrorInfo(resp?.message ?? '');
-    }
-    return resp;
+    return ZYResponse.fromJsonWithData(response?.data);
   }
 
   static Future<ZYResponse<dynamic>> createOrder(
@@ -592,7 +586,7 @@ class OTPService {
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
-  static Future<OrderGoodsMeasure> measureData(context,
+  static Future<OrderGoodsMeasureData> measureData(context,
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.measureData, params: params);
@@ -600,7 +594,7 @@ class OTPService {
     if (response?.data != null && response?.data['data'] != null) {
       response?.data = response?.data['data']['order_goods_measure'];
     }
-    return OrderGoodsMeasure.fromJson(response.data);
+    return OrderGoodsMeasureData.fromJson(response.data);
   }
 
   static Future<OrderMainfestModelResp> mainfest(context,
@@ -675,5 +669,29 @@ class OTPService {
             contents: [model?.log],
             force: true,
             apkDownloadUrl: model?.downloadUrl));
+  }
+
+  static Future<SceneDetailModelResp> sceneDetail(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.sceneDetail, params: params);
+
+    return SceneDetailModelResp.fromJson(response?.data);
+  }
+
+  static Future<SoftProjectListResp> softProjectList(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.softProjectList, params: params);
+
+    return SoftProjectListResp.fromJson(response?.data);
+  }
+
+  static Future<SoftProjectDetailBeanResp> softDetail(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.softDetail, params: params);
+
+    return SoftProjectDetailBeanResp.fromJson(response?.data);
   }
 }

@@ -366,7 +366,7 @@ class _LoginPageState extends State<LoginPage> {
                     model.login(context);
                     // loginByPwd(context);
                   },
-                  isActive: model.isValidTel,
+                  isActive: true,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: UIKit.width(50)),

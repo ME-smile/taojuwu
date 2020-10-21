@@ -2,7 +2,7 @@
  * @Description: 自定义listtile提示
  * @Author: iamsmiling
  * @Date: 2020-10-09 15:50:55
- * @LastEditTime: 2020-10-09 16:01:55
+ * @LastEditTime: 2020-10-10 13:30:43
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
@@ -15,7 +15,8 @@ class TrailingTip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return GestureDetector(
+      onTap: callback,
       child: Row(
         children: [
           Text(

@@ -13,7 +13,7 @@ class CollectListWrapper {
 
   CollectListWrapper.fromJson(Map<String, dynamic> json) {
     data = (json['data'] as List ?? [])
-            .map((o) => ProductBean.fromMap(o))
+            .map((o) => ProductBean.fromJson(o))
             ?.toList() ??
         [];
     totalCount = json['total_count'];
