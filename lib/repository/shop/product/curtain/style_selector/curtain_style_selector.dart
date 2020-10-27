@@ -366,35 +366,37 @@ class CurtainStyleSelector {
       }
     ]
   };
-  static WindowStyleSkuOption styleSkuOption =
-      WindowStyleSkuOption.fromJson(json);
+  WindowStyleSkuOption styleSkuOption = WindowStyleSkuOption.fromJson(json);
 
   //窗型列表
-  List<WindowAttrOptionBean> typeOptions = [
+  List<WindowAttrOptionBean> typeOptionList = [
     WindowAttrOptionBean('单窗', 'single_window_pattern.png', isChecked: true),
     WindowAttrOptionBean('L型窗', 'L_window_pattern.png'),
     WindowAttrOptionBean('U型窗', 'U_window_pattern.png')
   ];
 
   // 有无飘窗
-  List<WindowAttrOptionBean> bayOptions = [
+  List<WindowAttrOptionBean> bayOptionList = [
     WindowAttrOptionBean('非飘窗', 'not_bay_window.png', isChecked: true),
     WindowAttrOptionBean('飘窗', 'bay_window.png'),
   ];
 
   // 是否有盒
-  List<WindowAttrOptionBean> boxOptions = [
+  List<WindowAttrOptionBean> boxOptionList = [
     WindowAttrOptionBean('无盒', 'window_no_can.png', isChecked: true),
     WindowAttrOptionBean('有盒', 'not_bay_window.png')
   ];
   //当前的窗帘样式 单窗 L窗 U窗,默认单窗
-  String get windowType => getSelectedOption(typeOptions)?.name ?? '单窗';
+  String get windowType =>
+      getSelectedOption(typeOptions ?? typeOptionList)?.name ?? '单窗';
 
   //当前的窗帘样式 有无飘窗
-  String get windowBay => getSelectedOption(bayOptions)?.name ?? '非飘窗';
+  String get windowBay =>
+      getSelectedOption(bayOptions ?? bayOptionList)?.name ?? '非飘窗';
 
   //有无窗帘盒
-  String get windowBox => getSelectedOption(boxOptions)?.name ?? '无盒';
+  String get windowBox =>
+      getSelectedOption(boxOptions ?? boxOptionList)?.name ?? '无盒';
 
   //窗帘样式
   String get windowStyleStr => '$windowType/$windowBay/$windowBox';
@@ -418,6 +420,18 @@ class CurtainStyleSelector {
     return null;
   }
 
+  set curStyleProductSkuBean(WindowStyleProductSkuBean bean) {
+    // curStyleProductSkuBean = bean;
+    List<WindowStyleProductSkuBean> list = styleSkuOption?.options;
+    if (!CommonKit.isNullOrEmpty(list)) {
+      WindowStyleProductSkuBean item = list.firstWhere(
+          (element) => element?.id == bean?.id,
+          orElse: () => getFirst(list));
+      item?.installModeOptionBeans = bean?.installModeOptionBeans;
+      item?.openModeOptionBeans = bean?.openModeOptionBeans;
+    }
+  }
+
   // 当前的安装方式
   WindowInstallModeOptionBean get curInstallMode {
     List<WindowInstallModeOptionBean> array =
@@ -433,6 +447,7 @@ class CurtainStyleSelector {
 
   //获取选中的选项
   WindowAttrOptionBean getSelectedOption(List<WindowAttrOptionBean> options) {
+    if (CommonKit.isNullOrEmpty(options)) return null;
     return options.firstWhere((element) => element.isChecked,
         orElse: () => null);
   }
@@ -443,6 +458,14 @@ class CurtainStyleSelector {
   // 获取当前应该显示的打开方式
   List<WindowOpenModeOptionBean> get openOptions =>
       curStyleProductSkuBean?.openModeOptionBeans ?? [];
+
+  set installOptions(List<WindowInstallModeOptionBean> list) {
+    curStyleProductSkuBean?.installModeOptionBeans = list;
+  }
+
+  set openOptions(List<WindowOpenModeOptionBean> list) {
+    curStyleProductSkuBean?.openModeOptionBeans = list;
+  }
 
   //选择安装方式
   void selectInstallMode(WindowInstallModeOptionBean bean) {
@@ -478,6 +501,10 @@ class CurtainStyleSelector {
   List<WindowOpenModeSubOption> get subOpenModeOptions =>
       curOpenMode?.subOptions ?? [];
 
+  set subOpenModeOptions(List<WindowOpenModeSubOption> list) {
+    curOpenMode?.subOptions = list;
+  }
+
   //选中子选项
   void selectSubOpenMode(
       WindowOpenModeSubOption option, WindowOpenModeSubOptionBean optionBean) {
@@ -488,34 +515,75 @@ class CurtainStyleSelector {
 
   int get styleOptionId => curStyleProductSkuBean?.id;
 
-  WindowInstallModeOptionBean installMode;
-  WindowOpenModeOptionBean openMode;
+  List<WindowInstallModeOptionBean> installModes;
+  List<WindowOpenModeOptionBean> openModes;
   List<WindowOpenModeSubOption> subOpenModes;
+  List<WindowAttrOptionBean> typeOptions;
+  List<WindowAttrOptionBean> bayOptions;
+  List<WindowAttrOptionBean> boxOptions;
   CurtainStyleSelector(
       {this.typeOptions,
       this.bayOptions,
       this.boxOptions,
-      this.installMode,
-      this.openMode,
-      this.subOpenModes});
+      this.installModes,
+      this.openModes,
+      this.subOpenModes}) {
+    typeOptions ??= typeOptionList;
+    bayOptions ??= bayOptionList;
+    boxOptions ??= boxOptionList;
+    // installModes ??= curInstallMode;
+    // openModes ??= curOpenMode;
+    subOpenModes ??= subOpenModeOptions;
+  }
 
-  List<WindowAttrOptionBean> _copyOptions(List<WindowAttrOptionBean> list) {
+  List<WindowAttrOptionBean> copyOptions(List<WindowAttrOptionBean> list) {
     return list
-        ?.map((e) => WindowAttrOptionBean(
-              e.name,
-              e.img,
-              isChecked: e.isChecked,
-            ))
+        ?.map((e) => WindowAttrOptionBean.fromJson(e.toJson()))
         ?.toList();
   }
 
   CurtainStyleSelector copy() {
-    return CurtainStyleSelector(
-        typeOptions: _copyOptions(typeOptions),
-        bayOptions: _copyOptions(bayOptions),
-        boxOptions: _copyOptions(boxOptions),
-        installMode: curInstallMode,
-        openMode: curOpenMode,
-        subOpenModes: subOpenModeOptions);
+    CurtainStyleSelector selector = CurtainStyleSelector();
+    // Map<String, dynamic> subOpenModeOptionMap = {};
+
+    selector.typeOptions = copyOptions(typeOptionList);
+    selector.bayOptionList = copyOptions(bayOptionList);
+    selector.boxOptions = copyOptions(boxOptionList);
+
+    selector.installOptions = installOptions
+        ?.map((e) => WindowInstallModeOptionBean.fromJson(e.toJson()))
+        ?.toList();
+
+    selector.openOptions = openOptions
+        ?.map((e) => WindowOpenModeOptionBean.fromJson(e.toJson()))
+        ?.toList();
+    selector.subOpenModeOptions = subOpenModeOptions
+        ?.map((e) => WindowOpenModeSubOption.fromJson(e.toJson()))
+        ?.toList();
+    return selector;
+  }
+
+  // 打开方式参数
+  get openModeData {
+    //当前打开方式的名称
+    String name = curOpenMode?.name ?? '';
+    // 如果是 分墙体打开
+    if (curOpenMode?.index == 2) {
+      return {name: subOpenModeData};
+    }
+    return [name];
+  }
+
+  // 打开方式子选项数据
+  Map<String, dynamic> get subOpenModeData {
+    Map<String, dynamic> data = {};
+    for (WindowOpenModeSubOption option in subOpenModeOptions) {
+      List<WindowOpenModeSubOptionBean> list = option?.options;
+      WindowOpenModeSubOptionBean bean = list?.firstWhere(
+          (element) => element.isChecked,
+          orElse: () => list?.first);
+      data['${option?.title}'] = bean?.name;
+    }
+    return data;
   }
 }

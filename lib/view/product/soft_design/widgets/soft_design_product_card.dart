@@ -1,0 +1,106 @@
+/*
+ * @Description: 软装方案卡片布局
+ * @Author: iamsmiling
+ * @Date: 2020-10-23 10:37:53
+ * @LastEditTime: 2020-10-23 11:04:33
+ */
+import 'package:flutter/material.dart';
+import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
+import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/widgets/relative_product_card.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
+
+import 'package:taojuwu/utils/extensions/object_kit.dart';
+
+class SoftDesignProductCard extends StatelessWidget {
+  final SoftDesignProductBean bean;
+  const SoftDesignProductCard(this.bean, {Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          ZYNetImage(
+            imgPath: bean.picture,
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 12),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  bean?.designName ?? '',
+                  style: TaojuwuTextStyle.EMPHASIS_TEXT_STYLE_BOLD,
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      bean?.name ?? '',
+                      style: TaojuwuTextStyle.EMPHASIS_TEXT_STYLE,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(top: 8, bottom: 8),
+            child: Text(
+              bean?.desc ?? '',
+              textAlign: TextAlign.left,
+              style: TaojuwuTextStyle.SUB_TEXT_STYLE,
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '¥1001',
+                style: TaojuwuTextStyle.RED_TEXT_STYLE,
+              ),
+              ZYRaisedButton(
+                '立即购买',
+                () {
+                  // showSoftProjectPopupWindow(context,
+                  //     Provider.of(context, listen: false), bean.scenesId);
+                },
+                horizontalPadding: 12,
+              )
+            ],
+          ),
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.only(top: 8, bottom: 8),
+            child: Text(
+              '包含商品',
+              textAlign: TextAlign.left,
+            ),
+          ),
+          Visibility(
+              child: Container(
+                color: Theme.of(context).primaryColor,
+                child: GridView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 0.9,
+                  ),
+                  itemBuilder: (BuildContext context, int i) {
+                    return RelativeProductCard(bean?.goodsList[i]);
+                  },
+                  itemCount: bean.goodsList.length,
+                ),
+              ),
+              visible: !isNullOrEmpty(bean?.goodsList))
+        ],
+      ),
+    );
+  }
+}

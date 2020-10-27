@@ -152,7 +152,7 @@ class EndProductProvider with ChangeNotifier {
           'data': [
             {
               'tag': goods?.goodsName ?? '',
-              'img': curProductSkuBean?.coverUrl ?? '',
+              'img': curProductSkuBean?.image ?? '',
               'goods_name': goods?.goodsName,
               'price': goods?.price,
               'desc': '$checkedAttrText\n数量x${curProductSkuBean?.count ?? 1}',

@@ -2,7 +2,7 @@
  * @Description: 属性选择项的类
  * @Author: iamsmiling
  * @Date: 2020-09-28 09:14:34
- * @LastEditTime: 2020-10-21 13:50:30
+ * @LastEditTime: 2020-10-27 14:28:50
  */
 
 import 'package:taojuwu/repository/zy_response.dart';
@@ -23,31 +23,33 @@ class ProductSkuAttr {
   bool canMultiSelect = false;
 
   bool hasSelectedAttr = false;
-  Map<int, String> type2name = {
-    1: '空间',
-    2: '窗型',
-    3: '窗纱',
-    4: '工艺',
-    5: '型材',
-    8: '幔头',
-    12: '里布',
-    13: '配饰'
-  };
+  // Map<int, String> type2name = {
+  //   1: '空间',
+  //   2: '窗型',
+  //   3: '窗纱',
+  //   4: '工艺',
+  //   5: '型材',
+  //   8: '幔头',
+  //   12: '里布',
+  //   13: '配饰'
+  // };
 
-  Map<int, String> type2title = {
-    1: '空间选择',
-    2: '窗型选择',
-    3: '窗纱选择',
-    4: '工艺选择',
-    5: '型材更换',
-    8: '幔头选择',
-    12: '里布选择',
-    13: '配饰选择'
-  };
+  // Map<int, String> type2title = {
+  //   1: '空间选择',
+  //   2: '窗型选择',
+  //   3: '窗纱选择',
+  //   4: '工艺选择',
+  //   5: '型材更换',
+  //   8: '幔头选择',
+  //   12: '里布选择',
+  //   13: '配饰选择'
+  // };
   ProductSkuAttr.fromJson(Map<String, dynamic> json) {
     type = CommonKit.parseInt(json['type']);
-    name = type2name[type];
-    title = type2title[type];
+    // name = type2name[type];
+    // title = type2title[type];
+    name = json['name'];
+    title = json['title'];
     List list = CommonKit.parseList(json['data']);
 
     // 默认选中第一个
@@ -71,8 +73,7 @@ class ProductSkuAttr {
   }
 
   ProductSkuAttrBean get selcetedAttrBean {
-    return data?.firstWhere((element) => element.isChecked,
-        orElse: () => data?.first);
+    return data?.firstWhere((element) => element.isChecked, orElse: () => null);
   }
 
   Map<String, dynamic> toMap() {
@@ -84,7 +85,7 @@ class ProductSkuAttr {
     };
   }
 
-  Map<dynamic, dynamic> toJson() => {type: selcetedAttrBean.toJson()};
+  Map<dynamic, dynamic> toJson() => {type: selcetedAttrBean?.toJson()};
 }
 
 class ProductSkuAttrBean {

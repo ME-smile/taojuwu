@@ -2,13 +2,12 @@
  * @Description: 复合商品
  * @Author: iamsmiling
  * @Date: 2020-10-19 10:00:54
- * @LastEditTime: 2020-10-21 13:31:31
+ * @LastEditTime: 2020-10-23 15:46:19
  */
 import 'package:flutter/cupertino.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/repository/shop/soft_project_bean.dart';
-import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
 import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 

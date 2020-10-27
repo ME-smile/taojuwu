@@ -1,9 +1,13 @@
+import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'curtain_product_list_model.dart';
+import 'product/relative_product/relative_product_bean.dart';
 import 'product_sku_bean.dart';
 import 'sku_attr/window_style_sku_option.dart';
 
@@ -49,6 +53,10 @@ class ProductBeanDataWrapper {
   String goodsId;
   int skuId;
   FabricCurtainProductBean goodsDetail;
+  List<RelativeProductBean> relativeProductList = [];
+  List<SceneDesignProductBean> sceneDesignProductList = [];
+  List<SoftDesignProductBean> softDesignProductList = [];
+  List<BaseProductBean> recommendProductList = [];
   List<RelatedGoodsBean> relatedGoodsList;
   List<SoftProjectBean> softProjectList;
   List<RecommendGoodsBean> recommendGoodsList;
@@ -57,10 +65,18 @@ class ProductBeanDataWrapper {
     goodsId = map['goods_id'];
     skuId = CommonKit.parseInt(map['sku_id']);
     goodsDetail = FabricCurtainProductBean.fromJson(map['goods_detail']);
-    relatedGoodsList = CommonKit.parseList(map['related_goods'])
-        .map((o) => RelatedGoodsBean.fromJson(o))
+    relativeProductList = CommonKit.parseList(map['related_goods'])
+        .map((o) => RelativeProductBean.fromJson(o))
         ?.toList();
-
+    sceneDesignProductList = CommonKit.parseList(map['scenes_list'])
+        ?.map((e) => SceneDesignProductBean.fromJson(e))
+        ?.toList();
+    softDesignProductList = CommonKit.parseList(map['soft_project_list'])
+        ?.map((e) => SoftDesignProductBean.fromJson(e))
+        ?.toList();
+    // recommendProductList = CommonKit.parseList(map['referrals_goods'])
+    //     ?.map((e) => BaseProductBean.fromJson(e))
+    //     ?.toList();
     softProjectList = CommonKit.parseList(map['soft_project_list'])
         ?.map((e) => SoftProjectBean.fromJson(e))
         ?.toList();

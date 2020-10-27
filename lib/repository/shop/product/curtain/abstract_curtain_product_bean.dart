@@ -7,7 +7,9 @@
 
 import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
 
-class AbstractCurtainProductBean extends SingleProductBean {
+abstract class AbstractCurtainProductBean extends SingleProductBean {
   AbstractCurtainProductBean.fromJson(Map<String, dynamic> json)
       : super.fromJson(json);
+
+  double get totalPrice;
 }

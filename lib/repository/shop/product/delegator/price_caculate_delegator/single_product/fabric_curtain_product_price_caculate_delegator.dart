@@ -2,7 +2,7 @@
  * @Description: 窗帘单价格计算
  * @Author: iamsmiling
  * @Date: 2020-10-21 11:11:48
- * @LastEditTime: 2020-10-21 14:48:02
+ * @LastEditTime: 2020-10-22 17:02:50
  */
 import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
 
@@ -15,6 +15,5 @@ class FabricCurtainProductPriceCaculator
   }
 
   @override
-  // TODO: implement totalPrice
   double get totalPrice => throw UnimplementedError();
 }

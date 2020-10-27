@@ -2,7 +2,7 @@
  * @Description: 商品属性选择控件
  * @Author: iamsmiling
  * @Date: 2020-09-27 14:14:01
- * @LastEditTime: 2020-10-15 14:21:13
+ * @LastEditTime: 2020-10-23 17:28:10
  */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,14 +32,14 @@ class GoodsAttrsSectionView extends StatelessWidget {
           child: Column(
             children: [
               MeasureDataTipBar(),
-              ListBody(
-                children: List<Widget>.generate(
-                    skuList.length,
-                    (index) => AttrOptionsBar(
-                          skuList[index],
-                          index: index,
-                        )),
-              ),
+              // ListBody(
+              //   children: List<Widget>.generate(
+              //       skuList.length,
+              //       (index) => AttrOptionsBar(
+              //             skuList[index],
+              //             index: index,
+              //           )),
+              // ),
             ],
           )),
     );

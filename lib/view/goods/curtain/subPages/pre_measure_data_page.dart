@@ -2,17 +2,13 @@
  * @Description: 测装数据填写页面
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-19 17:34:52
+ * @LastEditTime: 2020-10-26 10:49:33
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/view/goods/curtain/widgets/attrs/attr_options_bar.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/attrs/size_input_box.dart';
-import 'package:taojuwu/view/goods/curtain/widgets/attrs/window_install_mode_option_bar.dart';
-import 'package:taojuwu/view/goods/curtain/widgets/attrs/window_open_mode_option_bar.dart';
-import 'package:taojuwu/view/goods/curtain/widgets/attrs/window_style_option_bar.dart';
 import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
@@ -55,9 +51,9 @@ class PreMeasureDataPage extends StatelessWidget {
                 Divider(),
 
                 // AttrOptionsBar(viewModel.skuRoom),
-                WindowStyleOptionBar(),
-                WindowInstallOptionBar(),
-                WindowOpenOptionBar(),
+                // WindowStyleOptionBar(),
+                // WindowInstallOptionBar(),
+                // WindowOpenOptionBar(),
                 SizeInputBox(viewModel.widthController, hintText: '宽(cm):'),
                 SizeInputBox(viewModel.heightController, hintText: '高(cm):'),
                 SizeInputBox(viewModel.deltaYController, hintText: '离地距离:'),

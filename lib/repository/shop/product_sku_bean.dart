@@ -2,7 +2,7 @@
  * @Description: //sku详情
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-21 15:29:25
+ * @LastEditTime: 2020-10-27 16:04:48
  */
 import 'package:taojuwu/repository/base/count_model.dart';
 
@@ -13,40 +13,44 @@ class ProductSkuBean extends CountModel {
   String marketPrice;
   String price;
   String promotePrice;
-
+  String image;
   String skuImgArray;
+  int picId;
 
   int skuId;
   int goodsId;
   int stock;
-  dynamic picture;
-  ProductSkuBeanImgBucket imgBucket;
+  // dynamic picture;
+  // ProductSkuBeanImgBucket imgBucket;
 
   int count = 1;
 
-  String get bigPicUrl => imgBucket?.bigPicUrl;
-  String get midPicUrl => imgBucket?.midPicUrl;
-  String get coverUrl => imgBucket?.cover;
-  String get tinyPicUrl => imgBucket?.smallPicUrl;
-  ProductSkuBean({
-    this.skuName,
-    this.attrValueItems,
-    this.attrValueItemsFormat,
-    this.marketPrice,
-    this.price,
-    this.promotePrice,
-    this.skuImgArray,
-    this.skuId,
-    this.goodsId,
-    this.stock,
-    this.picture,
-  });
+  // String get bigPicUrl => imgBucket?.bigPicUrl;
+  // String get midPicUrl => imgBucket?.midPicUrl;
+  // String get coverUrl => imgBucket?.cover;
+  // String get tinyPicUrl => imgBucket?.smallPicUrl;
+  ProductSkuBean(
+      {this.skuName,
+      this.attrValueItems,
+      this.attrValueItemsFormat,
+      this.marketPrice,
+      this.price,
+      this.promotePrice,
+      this.skuImgArray,
+      this.skuId,
+      this.goodsId,
+      this.stock,
+      this.picId
+      // this.picture,
+      });
 
   ProductSkuBean.fromJson(Map<String, dynamic> json) {
-    this.skuName = json['sku_name'];
+    skuName = json['sku_name']?.trim();
+
     this.attrValueItems = json['attr_value_items'];
     this.attrValueItemsFormat = json['attr_value_items_format'];
     this.marketPrice = json['market_price'];
+    this.image = json['image'];
     String str = json['price'];
     str = str == null || str?.isEmpty == true ? '0.00' : str;
     this.price = str;
@@ -58,11 +62,12 @@ class ProductSkuBean extends CountModel {
     this.skuId = json['sku_id'];
     this.goodsId = json['goods_id'];
     this.stock = json['stock'];
-    this.picture = json['picture'];
+    this.picId = json['pic_id'];
+    // this.picture = json['picture'];
 
-    this.imgBucket = json['sku_img_main'] == null
-        ? null
-        : ProductSkuBeanImgBucket.fromJson(json['sku_img_main']);
+    // this.imgBucket = json['sku_img_main'] == null
+    //     ? null
+    //     : ProductSkuBeanImgBucket.fromJson(json['sku_img_main']);
   }
 
   Map<String, dynamic> toJson() {
@@ -79,7 +84,7 @@ class ProductSkuBean extends CountModel {
     data['sku_id'] = this.skuId;
     data['goods_id'] = this.goodsId;
     data['stock'] = this.stock;
-    data['picture'] = this.picture;
+    // data['picture'] = this.picture;
     return data;
   }
 }

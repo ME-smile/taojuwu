@@ -2,7 +2,7 @@
  * @Description:所有商品下单基类
  * @Author: iamsmiling
  * @Date: 2020-10-20 17:46:48
- * @LastEditTime: 2020-10-21 14:07:00
+ * @LastEditTime: 2020-10-23 13:31:57
  */
 
 import 'package:flutter/material.dart';
@@ -16,4 +16,6 @@ abstract class AbstractBaseProductProvider {
 
   TargetClient targetClient; // 目标客户
 
+  // 购物车数量
+  int goodsCountInCart = 0;
 }

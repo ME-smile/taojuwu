@@ -96,15 +96,20 @@ class OTPService {
   * @return {type} 
   * @Date: 2020-09-28 14:42:12
   */
-  static Future<ProductSkuAttrWrapperResp> skuAttr(BuildContext context,
+  static Future<ProductSkuAttrWrapperResp> skuAttr(
       {Map<String, dynamic> params}) async {
-    Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
+    Response response = await xhr.post(ApiPath.skuAttr, data: params);
     Map<String, dynamic> json = {};
 
     Map<String, dynamic> args = response?.request?.queryParameters;
 
     var data = response?.data['data'];
-    json.addAll({'type': args['type'], 'data': data});
+    json.addAll({
+      'type': args['type'],
+      'data': data,
+      'name': args['name'],
+      'title': args['title']
+    });
     response?.data['data'] = json;
 
     return ProductSkuAttrWrapperResp.fromJson(response?.data);
@@ -114,9 +119,7 @@ class OTPService {
   static Future<WindowGauzeAttr> windowGauzeAttr(BuildContext context,
       {Map<String, dynamic> params}) async {
     params = params ?? {};
-    params.addAll({
-      'type': 3,
-    });
+    params.addAll({'type': 3, 'name': '窗纱', 'title': '窗纱选择'});
     Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
 
     return WindowGauzeAttr.fromJson(response.data);
@@ -126,9 +129,7 @@ class OTPService {
   static Future<RoomAttr> roomAttr(BuildContext context,
       {Map<String, dynamic> params}) async {
     params = params ?? {};
-    params.addAll({
-      'type': 1,
-    });
+    params.addAll({'type': 1, 'name': '空间', 'title': '空间选择'});
     Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
 
     return RoomAttr.fromJson(response.data);
@@ -138,9 +139,7 @@ class OTPService {
   static Future<CraftAttr> craftAttr(BuildContext context,
       {Map<String, dynamic> params}) async {
     params = params ?? {};
-    params.addAll({
-      'type': 4,
-    });
+    params.addAll({'type': 4, 'name': '工艺', 'title': '工艺选择'});
 
     Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
     return CraftAttr.fromJson(response.data);
@@ -168,9 +167,7 @@ class OTPService {
   static Future<PartAttr> partAttr(BuildContext context,
       {Map<String, dynamic> params}) async {
     params = params ?? {};
-    params.addAll({
-      'type': 5,
-    });
+    params.addAll({'type': 5, 'name': '型材', 'title': '型材更换'});
 
     Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
 
@@ -181,9 +178,7 @@ class OTPService {
   static Future<WindowShadeAttr> windowShadeAttr(BuildContext context,
       {Map<String, dynamic> params}) async {
     params = params ?? {};
-    params.addAll({
-      'type': 12,
-    });
+    params.addAll({'type': 12, 'name': '里布', 'title': '里布选择'});
     Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
 
     return WindowShadeAttr.fromJson(response.data);
@@ -193,9 +188,7 @@ class OTPService {
   static Future<CanopyAttr> canopyAttr(BuildContext context,
       {Map<String, dynamic> params}) async {
     params = params ?? {};
-    params.addAll({
-      'type': 8,
-    });
+    params.addAll({'type': 8, 'name': '幔头', 'title': '幔头选择'});
     Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
     return CanopyAttr.fromJson(response.data);
   }
@@ -203,9 +196,7 @@ class OTPService {
   static Future<AccessoryAttr> accessoryAttr(BuildContext context,
       {Map<String, dynamic> params}) async {
     params = params ?? {};
-    params.addAll({
-      'type': 13,
-    });
+    params.addAll({'type': 13, 'name': '配饰', 'title': '配饰选择'});
     Response response = await xhr.get(context, ApiPath.skuAttr, params: params);
 
     return AccessoryAttr.fromJson(response.data);
@@ -693,5 +684,11 @@ class OTPService {
         await xhr.get(context, ApiPath.softDetail, params: params);
 
     return SoftProjectDetailBeanResp.fromJson(response?.data);
+  }
+
+  // 软装方案 场景设计 加入购物车
+  static Future<ZYResponse> addCartList(Map<String, dynamic> params) async {
+    Response response = await xhr.post(ApiPath.addCartList, data: params ?? {});
+    return ZYResponse.fromJsonWithData(response?.data);
   }
 }

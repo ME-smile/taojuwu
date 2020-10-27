@@ -2,8 +2,9 @@
  * @Description: 软装方案列表
  * @Author: iamsmiling
  * @Date: 2020-10-16 14:29:28
- * @LastEditTime: 2020-10-16 15:31:14
+ * @LastEditTime: 2020-10-23 13:36:27
  */
+import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -17,10 +18,13 @@ class SoftProjectListResp extends ZYResponse<SoftProjectListWrapper> {
 
 class SoftProjectListWrapper {
   List<SoftProjectBean> list;
+  List<SoftDesignProductBean> goodsList;
   SoftProjectListWrapper.fromJson(Map<String, dynamic> json) {
-    print(json);
     list = CommonKit.parseList(json['data'])
         ?.map((e) => SoftProjectBean.fromJson(e))
+        ?.toList();
+    goodsList = CommonKit.parseList(json['data'])
+        ?.map((e) => SoftDesignProductBean.fromJson(e))
         ?.toList();
   }
 }

@@ -111,4 +111,6 @@ class ApiPath {
 
   // 软装方案详情
   static const String softDetail = '/api/goods/softProjectGoodsDetail';
+
+  static const String addCartList = '/api/goods/addCartList';
 }

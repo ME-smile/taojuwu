@@ -2,7 +2,7 @@
  * @Description: 应用根节点
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-16 14:41:02
+ * @LastEditTime: 2020-10-22 17:33:52
  */
 import 'dart:async';
 
@@ -45,7 +45,6 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    print(Application.sp.get('token'));
 
     mSubscription = Application.eventBus.on<LoginEvent>().listen((event) {
       if (event.code == 1) {
@@ -66,6 +65,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     Application.context = context;
+
     return Consumer2<ThemeProvider, UserProvider>(builder:
         (BuildContext context, ThemeProvider provider,
             UserProvider userProvider, _) {

@@ -22,7 +22,6 @@ import 'package:taojuwu/view/customer/subPages/customer_search_page.dart';
 
 import 'package:taojuwu/view/data_center/data_center_page.dart';
 import 'package:taojuwu/view/edit_address/edit_address_page.dart';
-import 'package:taojuwu/view/goods/end_product/end_product_detail.dart';
 import 'package:taojuwu/view/login/login_page.dart';
 import 'package:taojuwu/view/logistics/logistics_page.dart';
 import 'package:taojuwu/view/order/commit_order_page.dart';
@@ -35,7 +34,6 @@ import 'package:taojuwu/view/order/subPages/order_edit_log_page.dart';
 import 'package:taojuwu/view/order/subPages/order_mainfest_page.dart';
 import 'package:taojuwu/view/order/subPages/order_search_page.dart';
 import 'package:taojuwu/view/product/curtain/curtain_product_detail_page.dart';
-import 'package:taojuwu/view/product/detail/product_detail_page.dart';
 import 'package:taojuwu/view/profile/profile_page.dart';
 import 'package:taojuwu/view/profile/subPages/forget_pwd_page.dart';
 import 'package:taojuwu/view/profile/subPages/reset_pwd_page.dart';

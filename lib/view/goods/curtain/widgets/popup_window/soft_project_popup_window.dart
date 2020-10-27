@@ -2,7 +2,7 @@
  * @Description: 软装方案立即购买弹窗
  * @Author: iamsmiling
  * @Date: 2020-10-10 16:04:27
- * @LastEditTime: 2020-10-20 17:08:15
+ * @LastEditTime: 2020-10-23 15:33:16
  */
 
 import 'package:flutter/cupertino.dart';
@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
-import 'package:taojuwu/repository/shop/soft_project_bean.dart';
 import 'package:taojuwu/view/goods/base/title_tip.dart';
 import 'package:taojuwu/view/goods/curtain/subPages/eidt_curtain_attr_page.dart';
 import 'package:taojuwu/view/goods/curtain/subPages/pre_measure_data_page.dart';
@@ -38,7 +37,6 @@ Future showSoftProjectPopupWindow(
   return showCupertinoModalPopup(
       context: ctx,
       builder: (BuildContext context) {
-        print(id);
         ThemeData themeData = Theme.of(context);
 
         return SkuAttrPicker(
@@ -363,63 +361,4 @@ class _CurtainAttrEditableCardState extends State<CurtainAttrEditableCard> {
       ),
     );
   }
-}
-
-Container _buildHeader(SoftProjectDetailBean bean) {
-  return Container(
-    child: Row(
-      children: [
-        SizedBox(
-          width: 90,
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: ZYNetImage(
-              imgPath: bean?.picture,
-            ),
-          ),
-        ),
-        Container(
-            height: 90,
-            padding: EdgeInsets.only(left: 12.0),
-            child: AspectRatio(
-              aspectRatio: 2.8,
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text.rich(TextSpan(
-                          text: '${bean?.sceneName}\n',
-                          style: TaojuwuTextStyle.TITLE_TEXT_STYLE,
-                          children: [
-                            TextSpan(
-                                text: '${bean?.name}',
-                                style: TaojuwuTextStyle.SUB_TITLE_TEXT_STYLE)
-                          ])),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          '¥${bean?.totalPrice}',
-                          style: TaojuwuTextStyle.RED_TEXT_STYLE,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: Text(
-                            '¥${bean?.marketPrice}',
-                            style: TaojuwuTextStyle.GREY_TEXT_STYLE.copyWith(
-                                decoration: TextDecoration.lineThrough),
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ))
-      ],
-    ),
-  );
 }

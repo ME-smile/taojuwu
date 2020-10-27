@@ -792,11 +792,14 @@ class OrderGoodsMeasureData {
   String remark;
   String picture;
   int status;
+  int roomId;
   String installRoom;
   String windowType;
   String windowMeasureType;
-  String width;
+  double widthCM;
   String widthExplain;
+  double heightCM;
+  String width;
   String height;
   String heightExplain;
   String extent;
@@ -807,6 +810,7 @@ class OrderGoodsMeasureData {
   String partsType;
   String installType;
   String openType;
+  double deltaYCM;
   String verticalGroundHeight;
   String newVerticalGroundHeight;
   int plies;
@@ -822,12 +826,33 @@ class OrderGoodsMeasureData {
   int updateTime;
   String partsName;
   String newOpenType;
+  // 测装数据是否确认过
+  bool hasConfirmed = false;
+
+  double get widthM => widthCM == 0 || widthCM == null ? 0 : widthCM / 100;
+
+  double get heightM => heightCM == 0 || heightCM == null ? 0 : heightCM / 100;
+
+  String get widthMStr => widthM?.toStringAsFixed(2) ?? '0.00';
+
+  String get heightMStr => heightM?.toStringAsFixed(2) ?? '0.00';
+
+  // 是否填写过宽高
+  bool get hasSetSize => widthCM != null && heightCM != null;
+
+  String get measureDataStr =>
+      '${installRoom ?? ''}\n宽 ${widthMStr ?? ''}米 高${heightMStr ?? ''}米';
 
   OrderGoodsMeasureData(
       {this.id,
       this.orderGoodsId,
       this.orderId,
       this.goodsId,
+      this.width,
+      this.widthCM,
+      this.heightCM,
+      this.deltaYCM,
+      this.height,
       this.data,
       this.remark,
       this.picture,
@@ -835,9 +860,7 @@ class OrderGoodsMeasureData {
       this.installRoom,
       this.windowType,
       this.windowMeasureType,
-      this.width,
       this.widthExplain,
-      this.height,
       this.heightExplain,
       this.extent,
       this.borderA,
@@ -873,9 +896,9 @@ class OrderGoodsMeasureData {
     installRoom = json['install_room'];
     windowType = json['window_type'];
     windowMeasureType = json['window_measure_type'];
-    width = json['width'];
+
     widthExplain = json['width_explain'];
-    height = json['height'];
+
     heightExplain = json['height_explain'];
     extent = json['extent'];
     borderA = json['border_a'];

@@ -2,12 +2,9 @@
  * @Description: 商品属性相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-27 10:16:14
- * @LastEditTime: 2020-10-19 18:01:24
+ * @LastEditTime: 2020-10-23 13:37:04
  */
-import 'package:taojuwu/repository/order/measure_data_model.dart';
-
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
-import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
 
@@ -87,36 +84,36 @@ mixin CurtainSpecBinding on CurtainGoodsBinding {
 
   Future _getCommonAttrData() async {
     // 获取型材类型
-    MeasureDataModelResp response = await getMeasureData();
-    // 获取到测装数据，并保存引用
-    measureData = response?.data?.measureData;
-    String partsType = measureData?.partsType;
-    List<Future<ProductSkuAttrWrapperResp>> futures = typeList
-        .map((e) => OTPService.skuAttr(context, params: {
-              'client_uid': clientId,
-              'parts_type': partsType,
-              'goods_id': goodsId,
-              'type': e
-            }).then((ProductSkuAttrWrapperResp response) {
-              if (response?.valid == true &&
-                  skuList?.contains(response?.data) == false) {
-                skuList.add(response?.data);
-              }
-            }).catchError((err) => err))
-        .toList();
-    await Future.wait(futures);
-    skuList?.sort((ProductSkuAttr a, ProductSkuAttr b) => a.type - b.type);
-    notifyListeners();
+    // MeasureDataModelResp response = await getMeasureData();
+    // // 获取到测装数据，并保存引用
+    // measureData = response?.data?.measureData;
+    // String partsType = measureData?.partsType;
+    // List<Future<ProductSkuAttrWrapperResp>> futures = typeList
+    //     .map((e) => OTPService.skuAttr(context, params: {
+    //           'client_uid': clientId,
+    //           'parts_type': partsType,
+    //           'goods_id': goodsId,
+    //           'type': e
+    //         }).then((ProductSkuAttrWrapperResp response) {
+    //           if (response?.valid == true &&
+    //               skuList?.contains(response?.data) == false) {
+    //             skuList.add(response?.data);
+    //           }
+    //         }).catchError((err) => err))
+    //     .toList();
+    // await Future.wait(futures);
+    // skuList?.sort((ProductSkuAttr a, ProductSkuAttr b) => a.type - b.type);
+    // notifyListeners();
   }
 
   Future _getRoomAttrData() {
-    return OTPService.skuAttr(context, params: {'goods_id': goodsId, 'type': 1})
-        .then((ProductSkuAttrWrapperResp response) {
-      if (response?.valid == true) {
-        skuRoom = response?.data;
-        print(skuRoom);
-      }
-    }).catchError((err) => err);
+    // return OTPService.skuAttr(context, params: {'goods_id': goodsId, 'type': 1})
+    //     .then((ProductSkuAttrWrapperResp response) {
+    //   if (response?.valid == true) {
+    //     skuRoom = response?.data;
+    //     print(skuRoom);
+    //   }
+    // }).catchError((err) => err);
   }
 
   /*

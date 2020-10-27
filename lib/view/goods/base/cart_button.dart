@@ -2,7 +2,7 @@
  * @Description: 购物车图标
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-15 14:43:09
+ * @LastEditTime: 2020-10-22 09:49:41
  */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -36,30 +36,46 @@ class CartButton extends StatelessWidget {
         height: UIKit.width(60),
         margin: EdgeInsets.only(bottom: 5),
         alignment: Alignment(0.8, -0.8),
-        child: Selector(
-          selector: (BuildContext context, BaseGoodsViewModel viewModel) =>
-              viewModel.goodsNumInCart,
-          builder: (BuildContext context, int count, _) {
-            return count == 0
-                ? SizedBox.shrink()
-                : Container(
-                    width: 16,
-                    height: 16,
-                    alignment: Alignment.center,
-                    child: Text(
-                      '$count',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: count > 10 ? 10 : 12,
-                          fontFamily: 'Roboto'),
-                    ),
-                    decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                  );
-          },
+        child: Container(
+          width: 16,
+          height: 16,
+          alignment: Alignment.center,
+          child: Text(
+            '$count',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: count > 10 ? 10 : 12,
+                fontFamily: 'Roboto'),
+          ),
+          decoration: BoxDecoration(
+              color: Colors.red,
+              borderRadius: BorderRadius.all(Radius.circular(8))),
         ),
+        // child: Selector(
+        //   selector: (BuildContext context, BaseGoodsViewModel viewModel) =>
+        //       viewModel.goodsNumInCart,
+        //   builder: (BuildContext context, int count, _) {
+        //     return count == 0
+        //         ? SizedBox.shrink()
+        //         : Container(
+        //             width: 16,
+        //             height: 16,
+        //             alignment: Alignment.center,
+        //             child: Text(
+        //               '$count',
+        //               textAlign: TextAlign.center,
+        //               style: TextStyle(
+        //                   color: Colors.white,
+        //                   fontSize: count > 10 ? 10 : 12,
+        //                   fontFamily: 'Roboto'),
+        //             ),
+        //             decoration: BoxDecoration(
+        //                 color: Colors.red,
+        //                 borderRadius: BorderRadius.all(Radius.circular(8))),
+        //           );
+        //   },
+        // ),
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(
