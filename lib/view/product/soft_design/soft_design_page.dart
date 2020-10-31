@@ -2,24 +2,20 @@
  * @Description: 软装方案列表页面布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:33:58
- * @LastEditTime: 2020-10-23 11:02:49
+ * @LastEditTime: 2020-10-31 07:36:24
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
 import 'package:taojuwu/repository/shop/soft_project_list_model.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/view/product/soft_design/widgets/soft_design_product_card.dart';
-import 'package:taojuwu/viewmodel/product/base/provider/base_product_provider.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/user_choose_button.dart';
 
 class SoftDesignPage extends StatefulWidget {
-  final BaseProductProvider provider;
-  final int goodsId;
   final int scenesId;
-  const SoftDesignPage(this.provider, this.goodsId, this.scenesId, {Key key})
-      : super(key: key);
+  const SoftDesignPage(this.scenesId, {Key key}) : super(key: key);
 
   @override
   _SoftDesignPageState createState() => _SoftDesignPageState();
@@ -62,27 +58,23 @@ class _SoftDesignPageState extends State<SoftDesignPage> {
         },
         child: isLoading
             ? LoadingCircle()
-            : ChangeNotifierProvider<BaseProductProvider>.value(
-                value: widget.provider,
-                builder: (BuildContext context, _) {
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: Text('软装方案'),
-                      centerTitle: true,
-                    ),
-                    body: ListView.separated(
-                      separatorBuilder: (BuildContext context, int i) {
-                        return Divider(
-                          thickness: 10,
-                        );
-                      },
-                      itemBuilder: (BuildContext context, int i) {
-                        return SoftDesignProductCard(list[i]);
-                      },
-                      itemCount: list.length,
-                    ),
-                  );
-                },
+            : Scaffold(
+                appBar: AppBar(
+                  title: Text('软装方案'),
+                  centerTitle: true,
+                  actions: [const UserChooseButton()],
+                ),
+                body: ListView.separated(
+                  separatorBuilder: (BuildContext context, int i) {
+                    return Divider(
+                      thickness: 10,
+                    );
+                  },
+                  itemBuilder: (BuildContext context, int i) {
+                    return SoftDesignProductCard(list[i]);
+                  },
+                  itemCount: list.length,
+                ),
               ));
   }
 }

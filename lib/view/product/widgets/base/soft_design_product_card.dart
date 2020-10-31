@@ -101,11 +101,10 @@ class SoftDesignProductCard extends StatelessWidget {
                             ZYPlainButton(
                               '立即购买',
                               callback: () {
-                                var provider = Provider.of<BaseProductProvider>(
-                                    context,
-                                    listen: false);
-                                return showSoftDesignDetailModalPopup(
-                                    context, bean, provider);
+                                return showDesignProductDetailModal(
+                                    context, bean?.id);
+                                // return showSoftDesignDetailModalPopup(
+                                //     context, bean, provider);
                               },
                             )
                           ],

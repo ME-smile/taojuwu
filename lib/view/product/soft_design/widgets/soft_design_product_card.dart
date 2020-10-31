@@ -2,11 +2,12 @@
  * @Description: 软装方案卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:37:53
- * @LastEditTime: 2020-10-23 11:04:33
+ * @LastEditTime: 2020-10-31 07:35:29
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/view/product/popup_modal/pop_up_modal.dart';
 import 'package:taojuwu/widgets/relative_product_card.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
@@ -67,6 +68,7 @@ class SoftDesignProductCard extends StatelessWidget {
               ZYRaisedButton(
                 '立即购买',
                 () {
+                  return showDesignProductDetailModal(context, bean?.id);
                   // showSoftProjectPopupWindow(context,
                   //     Provider.of(context, listen: false), bean.scenesId);
                 },

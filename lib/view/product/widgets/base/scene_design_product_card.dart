@@ -2,7 +2,7 @@
  * @Description: 场景轮播图卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:42:58
- * @LastEditTime: 2020-10-23 09:45:43
+ * @LastEditTime: 2020-10-31 08:26:25
  */
 import 'dart:math';
 
@@ -11,6 +11,8 @@ import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
+import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class SceneDesignProductCard extends StatelessWidget {
@@ -37,14 +39,25 @@ class SceneDesignProductCard extends StatelessWidget {
                     imgPath: bean.picture,
                   ),
                 ),
-                Container(
-                  color: Color.fromARGB(125, 0, 0, 0),
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.all(16),
-                  child: Text(
-                    '${bean?.room},${bean?.style}',
-                    style: TaojuwuTextStyle.WHITE_TEXT_STYLE,
+                Positioned(
+                  child: ZYAssetImage(
+                    'mask.jpg',
+                    height: 56,
+                    width: MediaQuery.of(context).size.width,
                   ),
+                  top: 0,
+                ),
+                Positioned(
+                  child: Container(
+                    color: Color.fromARGB(125, 0, 0, 0),
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      '${bean?.room},${bean?.style}',
+                      style: TaojuwuTextStyle.WHITE_TEXT_STYLE,
+                    ),
+                  ),
+                  top: 0,
                 )
               ]),
             ),
@@ -62,23 +75,29 @@ class SceneDesignProductCard extends StatelessWidget {
                   return Container(
                     child: Column(
                       children: [
-                        Stack(
-                          children: [
-                            ZYNetImage(
-                              imgPath: item?.cover,
-                            ),
-                            Container(
-                              color: index == 4
-                                  ? Colors.black.withAlpha(80)
-                                  : null,
-                              width: MediaQuery.of(context).size.width,
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child:
-                                    index == 4 ? Icon(ZYIcon.three_dot) : null,
+                        GestureDetector(
+                          onTap: () {
+                            RouteHandler.goSceneDesignPage(context, bean?.id);
+                          },
+                          child: Stack(
+                            children: [
+                              ZYNetImage(
+                                imgPath: item?.cover,
                               ),
-                            )
-                          ],
+                              Container(
+                                color: index == 4
+                                    ? Colors.black.withAlpha(80)
+                                    : null,
+                                width: MediaQuery.of(context).size.width,
+                                child: AspectRatio(
+                                  aspectRatio: 1,
+                                  child: index == 4
+                                      ? Icon(ZYIcon.three_dot)
+                                      : null,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 8.0),

@@ -2,7 +2,7 @@
  * @Description: 场景推荐
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:23:42
- * @LastEditTime: 2020-10-23 13:22:49
+ * @LastEditTime: 2020-10-31 08:21:38
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,6 @@ import 'package:taojuwu/view/goods/base/title_tip.dart';
 import 'package:taojuwu/view/goods/base/trailing_tip.dart';
 import 'package:taojuwu/view/product/scene_design/scene_design_page.dart';
 import 'package:taojuwu/view/product/widgets/base/scene_design_product_card.dart';
-import 'package:taojuwu/viewmodel/product/base/provider/base_product_provider.dart';
 
 class SceneDesignProductSectionView extends StatefulWidget {
   final List<SceneDesignProductBean> list;
@@ -29,6 +28,20 @@ class SceneDesignProductSectionView extends StatefulWidget {
 class _SceneDesignProductSectionViewState
     extends State<SceneDesignProductSectionView> {
   List<SceneDesignProductBean> get list => widget.list;
+  int get currentId => list[swiperController?.index ?? 0]?.id;
+  SwiperController swiperController;
+  @override
+  void initState() {
+    swiperController = SwiperController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    swiperController?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Visibility(
@@ -50,12 +63,12 @@ class _SceneDesignProductSectionViewState
                     TrailingTip(
                       text: '查看',
                       callback: () {
-                        var provider = Provider.of<BaseProductProvider>(context,
-                            listen: false);
+                        // var provider = Provider.of<BaseProductProvider>(context,
+                        //     listen: false);
+                        // int goodsId = provider?.productBean?.goodsId;
                         Navigator.of(context).push(
                             CupertinoPageRoute(builder: (BuildContext context) {
-                          return SceneDesignPage(
-                              provider, provider?.goodsId, 44);
+                          return SceneDesignPage(currentId);
                         }));
                       },
                     )

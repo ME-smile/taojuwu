@@ -43,10 +43,18 @@ class ListCard extends StatelessWidget {
     );
   }
 
-  jump(BuildContext context) {
-    if (bean?.isCustomizedProduct == true)
-      return RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
-    return RouteHandler.goEndProductDetail(context, bean?.goodsId);
+  jump(BuildContext context, int type) {
+    if (type == 0) {
+      return RouteHandler.goEndProductDetail(context, bean?.goodsId);
+    }
+    if (type == 1) {
+      return RouteHandler.goFabricCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
+    if (type == 2) {
+      return RouteHandler.goRollingCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
   }
 
   @override
@@ -94,7 +102,7 @@ class ListCard extends StatelessWidget {
     // );
     return InkWell(
       onTap: () {
-        jump(context);
+        jump(context, bean?.goodsType);
       },
       child: Container(
         width: double.infinity,
@@ -106,7 +114,7 @@ class ListCard extends StatelessWidget {
                 bean?.picCoverMid,
               ),
               callback: () {
-                jump(context);
+                jump(context, bean?.goodsType);
               },
               fit: BoxFit.fill,
               width: width - 2 * UIKit.width(20),

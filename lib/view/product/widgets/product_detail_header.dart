@@ -18,7 +18,7 @@ class ProductDetailHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAppBar(
       actions: [
-        UserChooseButton(),
+        const UserChooseButton(),
       ],
       expandedHeight: 320,
       elevation: .5,

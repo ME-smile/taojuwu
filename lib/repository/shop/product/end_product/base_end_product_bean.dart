@@ -2,7 +2,7 @@
  * @Description: 所有成品商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:17:00
- * @LastEditTime: 2020-10-27 16:23:36
+ * @LastEditTime: 2020-10-28 16:02:13
  */
 import 'package:taojuwu/repository/shop/product/base/spec/product_spec_bean.dart';
 import 'package:taojuwu/repository/shop/product_sku_bean.dart';
@@ -30,11 +30,23 @@ abstract class BaseEndProductBean extends AbstractBaseEndProductBean {
   String get mainImg => currentSkuBean?.image;
 
   String get selectedOptionsName =>
-      specList?.map((e) => e?.selectedOptionsName)?.toList()?.join(' ');
+      specList?.map((e) => e?.selectedOptionsName)?.toList()?.join(' ') ?? '';
 
   void selectSpecOption(ProductSpecBean spec, ProductSpecOptionBean option) {
     spec?.options?.forEach((el) {
       el?.isSelected = el == option;
     });
+  }
+
+  String get detailDescription {
+    List<String> list = [];
+    specList?.forEach((el) {
+      String selectedOptionName = el?.options
+              ?.firstWhere((o) => o?.isSelected, orElse: () => null)
+              ?.name ??
+          '';
+      list.add('${el.name}: $selectedOptionName ');
+    });
+    return list.join(',');
   }
 }

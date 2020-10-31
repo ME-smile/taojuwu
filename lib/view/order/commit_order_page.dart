@@ -86,7 +86,7 @@ class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      BuyerInfoBar(),
+                      // BuyerInfoBar(),
                       Divider(
                         height: 1,
                         indent: UIKit.width(20),

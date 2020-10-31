@@ -382,6 +382,7 @@ class OTPService {
   }
 
   static Future<ZYResponse> addCart({Map<String, dynamic> params}) async {
+    print(params);
     Response response = await xhr.post(
       ApiPath.addCart,
       data: params,
@@ -689,6 +690,13 @@ class OTPService {
   // 软装方案 场景设计 加入购物车
   static Future<ZYResponse> addCartList(Map<String, dynamic> params) async {
     Response response = await xhr.post(ApiPath.addCartList, data: params ?? {});
+    return ZYResponse.fromJsonWithData(response?.data);
+  }
+
+  // 软装方案 场景设计 加入购物车
+  static Future<ZYResponse> hasCollect({Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.post(ApiPath.hasCollect, formdata: params ?? {});
     return ZYResponse.fromJsonWithData(response?.data);
   }
 }

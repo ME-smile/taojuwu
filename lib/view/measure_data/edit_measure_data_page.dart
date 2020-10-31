@@ -2,7 +2,7 @@
  * @Description: 测装数据填写页面
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-27 13:03:29
+ * @LastEditTime: 2020-10-29 09:13:53
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +98,7 @@ class _EditMeasureDataPageState extends State<EditMeasureDataPage> {
                 ),
               ),
               Divider(),
-              AttrOptionsBar(bean, bean.roomAttr),
+              AttrOptionsBar(bean, bean?.roomAttr),
               WindowStyleOptionBar(bean, notifier: valueNotifier),
               ValueListenableBuilder(
                 valueListenable: valueNotifier,
@@ -134,7 +134,10 @@ class _EditMeasureDataPageState extends State<EditMeasureDataPage> {
         margin: EdgeInsets.symmetric(vertical: 8),
         child: ZYSubmitButton('确认', () {
           bean?.setSize(widthCM, heightCM, deltaYCM);
-          Navigator.of(context).pop();
+          if (bean?.isValidSize == true) {
+            Navigator.of(context).pop();
+          }
+
           // print(viewModel.measureDataStr);
           // viewModel.commitSize();
           // Navigator.of(context).pop();

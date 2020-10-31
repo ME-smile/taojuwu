@@ -2,8 +2,13 @@
  * @Description: 卷帘商品
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:13:51
- * @LastEditTime: 2020-10-26 14:03:28
+ * @LastEditTime: 2020-10-31 11:36:35
  */
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
+
 import 'base_curtain_product_bean.dart';
 
 class RollingCurtainProductBean extends BaseCurtainProductBean {
@@ -14,18 +19,48 @@ class RollingCurtainProductBean extends BaseCurtainProductBean {
   double get totalPrice => unitPrice * area;
 
   @override
-  Future addToCart() {
-    // TODO: implement addToCart
-    throw UnimplementedError();
+  Future addToCart(BuildContext context) {
+    print(cartArgs);
+    return Future.value(false);
   }
 
   @override
-  Future buy() {
-    // TODO: implement buy
-    throw UnimplementedError();
+  Future buy(BuildContext context) {
+    return Future.value(false);
   }
 
   @override
-  // TODO: implement cartArgs
-  Map<String, dynamic> get cartArgs => throw UnimplementedError();
+  get cartArgs => {
+        // 'measure_data': mesaureDataArg,
+        // 'wc_attr': attrArgs,
+        // 'sku_id': '$skuId',
+        // 'goods_id': '$goodsId',
+        // 'goods_name': '$goodsName',
+        // 'shop_id': '$shopId',
+        // 'picture': '$picture',
+        // 'num': '$count',
+        // 'estimated_price': totalPrice,
+        // '13': attrList?.last?.toJson(),
+
+        'wc_attr': jsonEncode(attrArgs),
+        'measure_id': measureData?.id,
+        'estimated_price': totalPrice,
+        'client_uid': clientId,
+        'is_shade': 1,
+        'cart_detail': jsonEncode({
+          'sku_id': '$skuId',
+          'goods_id': '$goodsId',
+          'goods_name': '$goodsName',
+          'shop_id': '$shopId',
+          'price': '$price',
+          'picture': '$picture',
+          'num': '$count',
+        })
+      };
+
+  @override
+  ProductType get productType => ProductType.RollingCurtainProductType;
+
+  @override
+  String get detailDescription => '';
 }

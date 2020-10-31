@@ -2,7 +2,7 @@
  * @Description: 同料商品视图
  * @Author: iamsmiling
  * @Date: 2020-10-09 13:05:48
- * @LastEditTime: 2020-10-27 14:16:11
+ * @LastEditTime: 2020-10-31 08:30:25
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -58,7 +58,7 @@ class RelativeProductSectionView extends StatelessWidget {
               Container(
                 height: 160,
                 child: Swiper(
-                  itemCount: 1,
+                  itemCount: groupCount,
                   pagination: new SwiperPagination(
                       margin: EdgeInsets.symmetric(horizontal: 5),
                       builder: DotSwiperPaginationBuilder(
@@ -70,8 +70,9 @@ class RelativeProductSectionView extends StatelessWidget {
                     return Container(
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: list
-                                ?.sublist(i, i + 3)
+                            children: (list.length > 3
+                                    ? list?.sublist(i, i + 3)
+                                    : list)
                                 ?.map((e) => RelativeProductCard(e))
                                 ?.toList()));
                   },

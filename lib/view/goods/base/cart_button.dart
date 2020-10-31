@@ -52,30 +52,6 @@ class CartButton extends StatelessWidget {
               color: Colors.red,
               borderRadius: BorderRadius.all(Radius.circular(8))),
         ),
-        // child: Selector(
-        //   selector: (BuildContext context, BaseGoodsViewModel viewModel) =>
-        //       viewModel.goodsNumInCart,
-        //   builder: (BuildContext context, int count, _) {
-        //     return count == 0
-        //         ? SizedBox.shrink()
-        //         : Container(
-        //             width: 16,
-        //             height: 16,
-        //             alignment: Alignment.center,
-        //             child: Text(
-        //               '$count',
-        //               textAlign: TextAlign.center,
-        //               style: TextStyle(
-        //                   color: Colors.white,
-        //                   fontSize: count > 10 ? 10 : 12,
-        //                   fontFamily: 'Roboto'),
-        //             ),
-        //             decoration: BoxDecoration(
-        //                 color: Colors.red,
-        //                 borderRadius: BorderRadius.all(Radius.circular(8))),
-        //           );
-        //   },
-        // ),
         decoration: BoxDecoration(
             image: DecorationImage(
                 image: AssetImage(

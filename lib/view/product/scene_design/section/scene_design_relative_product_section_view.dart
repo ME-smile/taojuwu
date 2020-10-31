@@ -2,26 +2,29 @@
  * @Description: 场景详情 相关商品视图
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:16:05
- * @LastEditTime: 2020-10-23 13:18:57
+ * @LastEditTime: 2020-10-31 07:32:09
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
-
-import 'package:taojuwu/view/goods/base/cart_button.dart';
+import 'package:taojuwu/view/product/popup_modal/pop_up_modal.dart';
+import 'package:taojuwu/view/product/widgets/base/cart_button.dart';
 import 'package:taojuwu/view/goods/base/title_tip.dart';
+import 'package:taojuwu/widgets/relative_product_card.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 import 'package:taojuwu/utils/extensions/object_kit.dart';
 
 class SceneDesignRelativeProductSectionView extends StatelessWidget {
+  final int id;
   final List<SingleProductBean> goodsList;
-  const SceneDesignRelativeProductSectionView(this.goodsList, {Key key})
+  const SceneDesignRelativeProductSectionView(this.id, this.goodsList,
+      {Key key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Visibility(
-      visible: isNullOrEmpty(goodsList),
+      visible: !isNullOrEmpty(goodsList),
       child: Container(
         child: Column(
           children: [
@@ -41,8 +44,8 @@ class SceneDesignRelativeProductSectionView extends StatelessWidget {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 8),
               itemBuilder: (BuildContext context, int index) {
-                return Text('12345678');
-                // return RelativeProductCard(goodsList[index]);
+                // return Text('12345678');
+                return RelativeProductCard(goodsList[index]);
               },
               itemCount: goodsList.length,
             ),
@@ -54,8 +57,12 @@ class SceneDesignRelativeProductSectionView extends StatelessWidget {
                   width: 16,
                 ),
                 ZYRaisedButton(
-                  '立即购买',
-                  () {},
+                  '立即购买(${goodsList.length})',
+                  () {
+                    showDesignProductDetailModal(context, id);
+                    // showDesignProductDetailModal(context, fromProductBean)
+                    // showDesignProductDetailModal(context, bean, fromProductBean)
+                  },
                   horizontalPadding: 12,
                 )
               ],

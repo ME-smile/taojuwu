@@ -2,7 +2,7 @@
  * @Description: 为你推荐商品列表视图
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:59:48
- * @LastEditTime: 2020-10-23 10:13:51
+ * @LastEditTime: 2020-10-28 16:46:39
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
@@ -17,6 +17,7 @@ class RecommendedProductSectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(list);
     return Visibility(
       child: Container(
         color: Theme.of(context).primaryColor,

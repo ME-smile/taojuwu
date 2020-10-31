@@ -2,7 +2,7 @@
  * @Description: 修改窗帘商品属性叶脉你
  * @Author: iamsmiling
  * @Date: 2020-10-26 13:04:29
- * @LastEditTime: 2020-10-26 13:18:04
+ * @LastEditTime: 2020-10-31 13:12:58
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
@@ -26,23 +26,24 @@ class _EditCurtainProductAttrPageState
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
+          backgroundColor: Theme.of(context).primaryColor,
           appBar: AppBar(
             title: Text('修改属性'),
             centerTitle: true,
           ),
           body: ListView.separated(
               itemBuilder: (BuildContext context, int i) {
-                return AttrOptionsBar(bean, list[i]);
-              },
-              separatorBuilder: (BuildContext context, int i) {
                 return Container(
                   padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Divider(
-                    indent: 16,
-                    endIndent: 16,
-                    thickness: 1,
-                    height: 1,
-                  ),
+                  child: AttrOptionsBar(bean, list[i]),
+                );
+              },
+              separatorBuilder: (BuildContext context, int i) {
+                return Divider(
+                  indent: 16,
+                  endIndent: 16,
+                  thickness: .5,
+                  height: 1,
                 );
               },
               itemCount: list?.length ?? 0),

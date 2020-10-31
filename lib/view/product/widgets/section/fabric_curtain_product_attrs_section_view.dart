@@ -2,7 +2,7 @@
  * @Description: 属性选择相关视图
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:15:26
- * @LastEditTime: 2020-10-23 17:28:24
+ * @LastEditTime: 2020-10-31 09:16:35
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
@@ -11,9 +11,10 @@ import 'package:taojuwu/view/goods/curtain/widgets/attrs/attr_options_bar.dart';
 
 import '../measure_data_tip_bar.dart';
 
-class ProductAttrSectionView extends StatelessWidget {
+class FabricCurtainProductAttrSectionView extends StatelessWidget {
   final BaseCurtainProductBean bean;
-  const ProductAttrSectionView(this.bean, {Key key}) : super(key: key);
+  const FabricCurtainProductAttrSectionView(this.bean, {Key key})
+      : super(key: key);
 
   List<ProductSkuAttr> get attrList => bean?.attrList;
   @override

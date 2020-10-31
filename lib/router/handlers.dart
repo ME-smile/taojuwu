@@ -33,7 +33,10 @@ import 'package:taojuwu/view/order/subPages/order_commit_success_page.dart';
 import 'package:taojuwu/view/order/subPages/order_edit_log_page.dart';
 import 'package:taojuwu/view/order/subPages/order_mainfest_page.dart';
 import 'package:taojuwu/view/order/subPages/order_search_page.dart';
-import 'package:taojuwu/view/product/curtain/curtain_product_detail_page.dart';
+import 'package:taojuwu/view/product/curtain/fabric_curtain_product_detail_page.dart';
+import 'package:taojuwu/view/product/curtain/rolling_curtain_product_detail_page.dart';
+import 'package:taojuwu/view/product/end_product/end_product_detail_page.dart';
+import 'package:taojuwu/view/product/scene_design/scene_design_page.dart';
 import 'package:taojuwu/view/profile/profile_page.dart';
 import 'package:taojuwu/view/profile/subPages/forget_pwd_page.dart';
 import 'package:taojuwu/view/profile/subPages/reset_pwd_page.dart';
@@ -117,16 +120,42 @@ class RouteHandler {
     );
   });
 
-  static Handler productDetail = Handler(
+  static Handler fabricCurtainProductDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int goodsId = int.parse(params['id']?.first);
-    return CurtainProductDetailPage(
+    return FabricCurtainProductDetailPage(
       goodsId,
     );
   });
-  static Future goProductDetailPage(BuildContext context, int id,
+  static Future goFabricCurtainProductDetailPage(BuildContext context, int id,
       {bool replace: false}) {
-    return _jumpTo(context, '${Routes.productDetail}?id=$id',
+    return _jumpTo(context, '${Routes.fabricCurtainProductDetail}?id=$id',
+        maintainState: true, replace: replace);
+  }
+
+  static Handler rollingCurtainProductDetail = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int goodsId = int.parse(params['id']?.first);
+    return RollingCurtainProductDetailPage(
+      goodsId,
+    );
+  });
+  static Future goRollingCurtainProductDetailPage(BuildContext context, int id,
+      {bool replace: false}) {
+    return _jumpTo(context, '${Routes.rollingCurtainProducDetail}?id=$id',
+        maintainState: true, replace: replace);
+  }
+
+  static Handler sceneDesign = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int id = int.parse(params['id']?.first);
+    return SceneDesignPage(
+      id,
+    );
+  });
+  static Future goSceneDesignPage(BuildContext context, int id,
+      {bool replace: false}) {
+    return _jumpTo(context, '${Routes.sceneDesign}?id=$id',
         maintainState: true, replace: replace);
   }
 
@@ -567,8 +596,7 @@ class RouteHandler {
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int id = int.parse(params['id']?.first);
 
-    // return EndProductDetailPage(id: id);
-    return null;
+    return EndProductDetailPage(id);
   });
   static Future goEndProductDetail(BuildContext context, int id) {
     return _jumpTo(context, '${Routes.endProductDetail}?id=$id',

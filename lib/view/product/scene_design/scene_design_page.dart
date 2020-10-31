@@ -2,25 +2,26 @@
  * @Description: 软装方案详情
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:05:49
- * @LastEditTime: 2020-10-23 13:19:24
+ * @LastEditTime: 2020-10-31 07:32:48
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
 import 'package:taojuwu/repository/shop/scene_detail_model.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/view/product/scene_design/section/recommend_scene_design_product_section_view.dart';
 import 'package:taojuwu/view/product/scene_design/section/scene_design_product_detail_section_view.dart';
 import 'package:taojuwu/view/product/scene_design/section/scene_design_relative_product_section_view.dart';
-import 'package:taojuwu/viewmodel/product/base/provider/base_product_provider.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/user_choose_button.dart';
 
 class SceneDesignPage extends StatefulWidget {
-  final BaseProductProvider provider;
-  final int goodsId;
   final int scenesId;
-  SceneDesignPage(this.provider, this.goodsId, this.scenesId, {Key key})
+
+  ///[fromProductBean]从哪个商品点进来看的
+  final AbstractBaseProductBean fromProductBean;
+  SceneDesignPage(this.scenesId, {Key key, this.fromProductBean})
       : super(key: key);
 
   @override
@@ -29,6 +30,7 @@ class SceneDesignPage extends StatefulWidget {
 
 class _SceneDesignPageState extends State<SceneDesignPage> {
   bool isLoading = true;
+  int get id => widget.scenesId;
   SceneDesignProductBean currentBean;
   List<SceneDesignProductBean> list;
   @override
@@ -38,8 +40,7 @@ class _SceneDesignPageState extends State<SceneDesignPage> {
   }
 
   void _fetchData() {
-    OTPService.sceneDetail(context,
-            params: {'goods_id': widget.goodsId, 'scenes_id': widget.scenesId})
+    OTPService.sceneDetail(context, params: {'scenes_id': widget.scenesId})
         .then((SceneDetailModelResp response) {
           if (response?.valid == true) {
             SceneProjectDetailWrapper detailWrapper = response?.data;
@@ -71,34 +72,29 @@ class _SceneDesignPageState extends State<SceneDesignPage> {
         },
         child: isLoading
             ? LoadingCircle()
-            : ChangeNotifierProvider<BaseProductProvider>.value(
-                value: widget.provider,
-                builder: (BuildContext context, _) {
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: Text('相关场景'),
-                      centerTitle: true,
-                    ),
-                    body: Container(
-                      color: Theme.of(context).primaryColor,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: CustomScrollView(
-                        shrinkWrap: true,
-                        slivers: [
-                          SliverToBoxAdapter(
-                              child: SceneDesignProductDetailSectionView(
-                                  currentBean)),
-                          SliverToBoxAdapter(
-                              child: SceneDesignRelativeProductSectionView(
-                                  currentBean?.goodsList)),
-                          SliverToBoxAdapter(
-                              child:
-                                  RecommendSceneDesignProductSectionView(list))
-                        ],
-                      ),
-                    ),
-                  );
-                },
+            : Scaffold(
+                appBar: AppBar(
+                  title: Text('相关场景'),
+                  centerTitle: true,
+                  actions: [const UserChooseButton()],
+                ),
+                body: Container(
+                  color: Theme.of(context).primaryColor,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: CustomScrollView(
+                    shrinkWrap: true,
+                    slivers: [
+                      SliverToBoxAdapter(
+                          child:
+                              SceneDesignProductDetailSectionView(currentBean)),
+                      SliverToBoxAdapter(
+                          child: SceneDesignRelativeProductSectionView(
+                              id, currentBean?.goodsList)),
+                      SliverToBoxAdapter(
+                          child: RecommendSceneDesignProductSectionView(list))
+                    ],
+                  ),
+                ),
               ));
   }
 }

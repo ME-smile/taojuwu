@@ -2,7 +2,7 @@
  * @Description: 窗帘 商品 多了测装数据
  * @Author: iamsmiling
  * @Date: 2020-09-27 16:19:01
- * @LastEditTime: 2020-10-15 09:39:41
+ * @LastEditTime: 2020-10-28 10:08:20
  */
 import 'dart:async';
 
@@ -19,7 +19,10 @@ enum CurtainType {
 
   WindowGauzeType, //窗纱
 
-  WindowRollerType //卷帘
+  WindowRollerType, //卷帘
+
+  FabricCurtainType,
+  RollingCurtainType //卷帘
 }
 
 abstract class CurtainGoodsBinding extends BaseGoodsViewModel {

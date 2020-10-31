@@ -2,21 +2,20 @@
  * @Description: 布艺帘商品
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:12:26
- * @LastEditTime: 2020-10-27 16:41:29
+ * @LastEditTime: 2020-10-31 12:13:33
  */
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'base_curtain_product_bean.dart';
-import 'style_selector/curtain_style_selector.dart';
 
 class FabricCurtainProductBean extends BaseCurtainProductBean {
-  CurtainStyleSelector styleSelector =
-      CurtainStyleSelector(); // 样式选择  只有布艺帘才需要选择 这些属性
-
   FabricCurtainProductBean.fromJson(Map<String, dynamic> json)
       : super.fromJson(json);
 
@@ -95,6 +94,7 @@ class FabricCurtainProductBean extends BaseCurtainProductBean {
   //窗帘样式
   String get windowStyleStr => styleSelector?.windowStyleStr;
   // 测装数据参数
+  @override
   Map<String, dynamic> get mesaureDataArg {
     return {
       'dataId': styleOptionId,
@@ -103,40 +103,71 @@ class FabricCurtainProductBean extends BaseCurtainProductBean {
       'vertical_ground_height': deltaYCM,
       'goods_id': goodsId,
       'install_room': roomAttr?.selcetedAttrBean?.id,
-      '$styleOptionId': jsonEncode({
-        'name': windowStyleStr,
-        'selected': {
-          '安装选项': [styleSelector?.curInstallMode?.name ?? ''],
-          '打开方式': styleSelector?.openModeData
+      // 'install_room': roomAttr?.selcetedAttrBean?.id,
+      'data': jsonEncode({
+        '$styleOptionId': {
+          'name': windowStyleStr,
+          "install_room": "0",
+          'w': '$widthCM',
+          'h': '$heightCM',
+          '13': attrList?.last?.toJson(),
+          'selected': {
+            '安装选项': [styleSelector?.curInstallMode?.name ?? ''],
+            '打开方式': styleSelector?.openModeData
+          }
         }
       })
     };
   }
 
   @override
-  Future addToCart() {
-    // TODO: implement addToCart
-    throw UnimplementedError();
+  Future addToCart(BuildContext context) {
+    return hasSetSize
+        ? saveMeasure(context)
+            .then((value) => value != false ? addToCartRequest() : '')
+        : Future.value(false);
   }
 
   @override
-  Future buy() {
-    print(attrArgs);
-    print(mesaureDataArg);
-    return Future.value(false);
+  Future buy(BuildContext context) {
+    return hasSetSize
+        ? saveMeasure(context)
+            .then((value) => value != false ? super.buy(context) : '')
+        : Future.value(false);
     // throw UnimplementedError();
+  }
+
+  bool get hasSetSize {
+    if (measureData?.hasSetSize == false) {
+      ToastKit.showInfo('请先填写测装数据哦');
+      return false;
+    }
+    return true;
   }
 
   @override
   get cartArgs => {
-        'measure_data': mesaureDataArg,
-        'wc_attr': attrArgs,
-        'sku_id': '$skuId',
-        'goods_id': '$goodsId',
-        'goods_name': '$goodsName',
-        'shop_id': '$shopId',
-        'picture': '$picture',
-        'num': '$count',
-        'estimated_price': totalPrice
+        // 'measure_data': mesaureDataArg,
+        'wc_attr': jsonEncode(attrArgs),
+        'measure_id': measureData?.id,
+        'estimated_price': totalPrice,
+        'client_uid': clientId,
+        'is_shade': 1,
+        'cart_detail': jsonEncode({
+          'sku_id': '$skuId',
+          'goods_id': '$goodsId',
+          'goods_name': '$goodsName',
+          'shop_id': '$shopId',
+          'price': '$price',
+          'picture': '$picture',
+          'num': '$count',
+        })
       };
+
+  @override
+  ProductType get productType => ProductType.FabricCurtainProductType;
+
+  String get detailDescription {
+    return '宽:${widthMStr ?? ''}米 高:${heightMStr ?? ''}米、${roomAttr?.selectedAttrName ?? ''}、${styleSelector?.windowStyleStr ?? ''}、${styleSelector?.curInstallMode?.name ?? ''}、${styleSelector?.openModeStr ?? ''}';
+  }
 }

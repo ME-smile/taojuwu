@@ -2,7 +2,7 @@
  * @Description: 软装方案
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:50:07
- * @LastEditTime: 2020-10-23 10:59:43
+ * @LastEditTime: 2020-10-31 07:27:59
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -60,12 +60,9 @@ class _SoftDesignProductSectionViewState
                     TrailingTip(
                       text: '全部',
                       callback: () {
-                        var provider = Provider.of<BaseProductProvider>(context,
-                            listen: false);
                         Navigator.of(context).push(
                             CupertinoPageRoute(builder: (BuildContext conext) {
-                          return SoftDesignPage(
-                              provider, provider?.goodsId, currentSceneId);
+                          return SoftDesignPage(currentSceneId);
                         }));
                       },
                     )

@@ -103,6 +103,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
   }
 
   void saveInfoToTargetClient(int addressId) {
+    targetClient.setClientId(widget.id);
     targetClient.setClientName(bean?.clientName);
 
     targetClient.setAddressId(addressId);
@@ -386,7 +387,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                         if (response.valid) {
                           int id = int.parse('${response.data}' ?? '-1');
                           saveInfoToTargetClient(id);
-                          Navigator.of(context).pop();
+                          Navigator.of(context).pop(targetClient);
                         } else {
                           ToastKit.showToast('${response?.message ?? ''}');
                         }

@@ -2,12 +2,12 @@
  * @Description: 属性选泽
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-22 15:48:50
+ * @LastEditTime: 2020-10-31 09:47:27
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/style_selector/curtain_style_selector.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/window_style_option_view.dart';
@@ -15,7 +15,7 @@ import 'package:taojuwu/view/goods/curtain/widgets/window_style_option_view.dart
 import '../sku_attr_picker.dart';
 
 class WindowStyleOptionBar extends StatefulWidget {
-  final FabricCurtainProductBean bean;
+  final BaseCurtainProductBean bean;
   final ValueNotifier<String> notifier; //用于更新图片
   const WindowStyleOptionBar(this.bean, {Key key, this.notifier})
       : super(key: key);
@@ -70,7 +70,7 @@ class _WindowStyleOptionBarState extends State<WindowStyleOptionBar> {
   }
 
   Future pickWindowStyleOption(
-      BuildContext ctx, FabricCurtainProductBean bean) async {
+      BuildContext ctx, BaseCurtainProductBean bean) async {
     return showCupertinoModalPopup(
         context: ctx,
         builder: (BuildContext context) {

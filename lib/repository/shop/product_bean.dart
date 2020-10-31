@@ -1,5 +1,7 @@
 import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
+import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
@@ -7,6 +9,7 @@ import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'curtain_product_list_model.dart';
+import 'product/end_product/concrete_end_product_bean.dart';
 import 'product/relative_product/relative_product_bean.dart';
 import 'product_sku_bean.dart';
 import 'sku_attr/window_style_sku_option.dart';
@@ -52,19 +55,27 @@ class ProductBeanResp extends ZYResponse<ProductBeanDataWrapper> {
 class ProductBeanDataWrapper {
   String goodsId;
   int skuId;
-  FabricCurtainProductBean goodsDetail;
+  SingleProductBean goodsDetail;
   List<RelativeProductBean> relativeProductList = [];
   List<SceneDesignProductBean> sceneDesignProductList = [];
   List<SoftDesignProductBean> softDesignProductList = [];
   List<BaseProductBean> recommendProductList = [];
-  List<RelatedGoodsBean> relatedGoodsList;
-  List<SoftProjectBean> softProjectList;
-  List<RecommendGoodsBean> recommendGoodsList;
-  List<SceneProjectBean> sceneProjectList;
+
   ProductBeanDataWrapper.fromJson(Map<String, dynamic> map) {
     goodsId = map['goods_id'];
     skuId = CommonKit.parseInt(map['sku_id']);
-    goodsDetail = FabricCurtainProductBean.fromJson(map['goods_detail']);
+    Map<String, dynamic> json = map['goods_detail'];
+    int type = json['goods_type'];
+    if (type == 0) {
+      goodsDetail = ConcreteEndProductBean.fromJson(json);
+    }
+    if (type == 1) {
+      goodsDetail = FabricCurtainProductBean.fromJson(json);
+    }
+    if (type == 2) {
+      goodsDetail = RollingCurtainProductBean.fromJson(json);
+    }
+    // goodsDetail = FabricCurtainProductBean.fromJson(map['goods_detail']);
     relativeProductList = CommonKit.parseList(map['related_goods'])
         .map((o) => RelativeProductBean.fromJson(o))
         ?.toList();
@@ -74,18 +85,15 @@ class ProductBeanDataWrapper {
     softDesignProductList = CommonKit.parseList(map['soft_project_list'])
         ?.map((e) => SoftDesignProductBean.fromJson(e))
         ?.toList();
-    // recommendProductList = CommonKit.parseList(map['referrals_goods'])
-    //     ?.map((e) => BaseProductBean.fromJson(e))
-    //     ?.toList();
-    softProjectList = CommonKit.parseList(map['soft_project_list'])
-        ?.map((e) => SoftProjectBean.fromJson(e))
-        ?.toList();
-    sceneProjectList = CommonKit.parseList(map['scenes_list'])
-        ?.map((e) => SceneProjectBean.fromJson(e))
-        ?.toList();
-    recommendGoodsList = CommonKit.parseList(map['referrals_goods'])
-        ?.map((e) => RecommendGoodsBean.fromJson(e))
-        ?.toList();
+    recommendProductList =
+        CommonKit.parseList(map['referrals_goods'])?.map((e) {
+      int type = e == null ? null : e['goods_type'];
+      return type == 0
+          ? ConcreteEndProductBean.fromJson(e)
+          : type == 1
+              ? FabricCurtainProductBean.fromJson(e)
+              : RollingCurtainProductBean.fromJson(e);
+    })?.toList();
   }
 }
 

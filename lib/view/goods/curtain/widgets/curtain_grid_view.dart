@@ -83,11 +83,18 @@ class GridCard extends StatelessWidget {
     );
   }
 
-  jump(BuildContext context) {
-    return RouteHandler.goProductDetailPage(context, bean?.goodsId);
-    // if (bean?.isCustomizedProduct == true)
-    //   return RouteHandler.goCurtainDetailPage(context, bean?.goodsId);
-    // return RouteHandler.goEndProductDetail(context, bean?.goodsId);
+  jump(BuildContext context, int type) {
+    if (type == 0) {
+      return RouteHandler.goEndProductDetail(context, bean?.goodsId);
+    }
+    if (type == 1) {
+      return RouteHandler.goFabricCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
+    if (type == 2) {
+      return RouteHandler.goRollingCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
   }
 
   @override
@@ -96,7 +103,7 @@ class GridCard extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     return InkWell(
       onTap: () {
-        jump(context);
+        jump(context, bean?.goodsType);
       },
       child: Container(
         alignment: Alignment.center,
@@ -111,7 +118,7 @@ class GridCard extends StatelessWidget {
               height: (width - 20) / 2,
               fit: BoxFit.cover,
               callback: () {
-                jump(context);
+                jump(context, bean?.goodsType);
               },
             ),
             Expanded(

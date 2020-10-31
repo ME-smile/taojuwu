@@ -2,11 +2,11 @@
  * @Description: 商品属性选择控件
  * @Author: iamsmiling
  * @Date: 2020-09-27 14:14:01
- * @LastEditTime: 2020-10-23 17:28:10
+ * @LastEditTime: 2020-10-31 09:17:38
  */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:taojuwu/view/goods/curtain/widgets/attrs/attr_options_bar.dart';
+
 import 'package:taojuwu/view/goods/curtain/widgets/attrs/measure_data_tip_bar.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';

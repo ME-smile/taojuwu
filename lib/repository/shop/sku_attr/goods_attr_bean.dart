@@ -2,7 +2,7 @@
  * @Description: 属性选择项的类
  * @Author: iamsmiling
  * @Date: 2020-09-28 09:14:34
- * @LastEditTime: 2020-10-27 14:28:50
+ * @LastEditTime: 2020-10-31 12:08:30
  */
 
 import 'package:taojuwu/repository/zy_response.dart';
@@ -23,6 +23,22 @@ class ProductSkuAttr {
   bool canMultiSelect = false;
 
   bool hasSelectedAttr = false;
+  ProductSkuAttr();
+  ProductSkuAttr copy() {
+    ProductSkuAttr obj = ProductSkuAttr();
+    obj.type = type;
+    obj.name = name;
+    obj.data = data
+            ?.map((e) => e?.toMap())
+            ?.toList()
+            ?.map((e) => ProductSkuAttrBean.fromJson(e))
+            ?.toList() ??
+        [];
+    obj.title = title;
+    obj.canMultiSelect = canMultiSelect;
+    obj.hasSelectedAttr = hasSelectedAttr;
+    return obj;
+  }
   // Map<int, String> type2name = {
   //   1: '空间',
   //   2: '窗型',
@@ -76,6 +92,10 @@ class ProductSkuAttr {
     return data?.firstWhere((element) => element.isChecked, orElse: () => null);
   }
 
+  List<ProductSkuAttrBean> get selcetedAttrBeanList {
+    return data?.where((element) => element?.isChecked)?.toList() ?? [];
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'type': type,
@@ -85,7 +105,14 @@ class ProductSkuAttr {
     };
   }
 
-  Map<dynamic, dynamic> toJson() => {type: selcetedAttrBean?.toJson()};
+  Map<String, dynamic> toJson() {
+    if (type == 13) {
+      return {'13': selcetedAttrBeanList?.map((e) => e?.toJson())?.toList()};
+    }
+    return {
+      '$type': selcetedAttrBean?.toJson() ?? {'name': '', 'id': ''}
+    };
+  }
 }
 
 class ProductSkuAttrBean {

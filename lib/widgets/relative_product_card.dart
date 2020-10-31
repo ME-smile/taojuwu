@@ -2,10 +2,11 @@
  * @Description: 相关产品卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:40:20
- * @LastEditTime: 2020-10-23 13:36:41
+ * @LastEditTime: 2020-10-31 08:17:19
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
+import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -13,9 +14,24 @@ class RelativeProductCard extends StatelessWidget {
   final BaseProductBean bean;
   const RelativeProductCard(this.bean, {Key key}) : super(key: key);
 
+  jump(BuildContext context, int type) {
+    if (type == 0) {
+      return RouteHandler.goEndProductDetail(context, bean?.goodsId);
+    }
+    if (type == 1) {
+      return RouteHandler.goFabricCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
+    if (type == 2) {
+      return RouteHandler.goRollingCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () => jump(context, bean?.goodsType),
       child: Container(
         alignment: Alignment.center,
         color: Theme.of(context).primaryColor,
@@ -28,6 +44,7 @@ class RelativeProductCard extends StatelessWidget {
                 aspectRatio: 1.0,
                 child: ZYNetImage(
                   imgPath: bean.cover,
+                  callback: () => jump(context, bean?.goodsType),
                 ),
               ),
             ),

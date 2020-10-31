@@ -2,7 +2,7 @@
  * @Description: 普通窗帘单
  * @Author: iamsmiling
  * @Date: 2020-10-09 09:33:19
- * @LastEditTime: 2020-10-09 10:21:36
+ * @LastEditTime: 2020-10-29 15:41:22
  */
 
 import 'base_curtain_order_creator.dart';
@@ -28,7 +28,7 @@ class CommonCurtainOrderCreator extends BaseCurtainOrderCreator {
       };
 
   @override
-  bool isOrderInfoValid() {
+  bool get isOrderInfoValid {
     return isMeasureTimeValid() &&
         isInstallTimeValid() &&
         isDepositMoneyValid();

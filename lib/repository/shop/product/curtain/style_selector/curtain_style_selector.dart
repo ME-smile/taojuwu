@@ -586,4 +586,22 @@ class CurtainStyleSelector {
     }
     return data;
   }
+
+  String get openModeStr {
+    if (curOpenMode.index == 2) {
+      return '${curOpenMode?.name}:$checkedSubOpenModeOptionStr';
+    }
+    return curOpenMode?.name;
+  }
+
+  String get checkedSubOpenModeOptionStr {
+    List<String> list = [];
+    subOpenModeOptions?.forEach((element) {
+      list.add(element?.options
+              ?.firstWhere((o) => o.isChecked, orElse: () => null)
+              ?.name ??
+          '');
+    });
+    return list?.join('');
+  }
 }

@@ -113,4 +113,6 @@ class ApiPath {
   static const String softDetail = '/api/goods/softProjectGoodsDetail';
 
   static const String addCartList = '/api/goods/addCartList';
+
+  static const String hasCollect = '/api/goods/whetherCollection';
 }

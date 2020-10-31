@@ -2,7 +2,7 @@
  * @Description: //收货人信息
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-09 17:52:15
+ * @LastEditTime: 2020-10-31 13:26:41
  */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,11 +19,12 @@ class BuyerInfoBar extends StatelessWidget {
     ThemeData themeData = Theme.of(context);
 
     TextTheme accentTextTheme = themeData.accentTextTheme;
+
     return Consumer<BaseOrderCreator>(
       builder: (BuildContext context, BaseOrderCreator orderCreator, _) {
         return GestureDetector(
             onTap: () {
-              if (orderCreator.hasSelectedClient()) {
+              if (orderCreator.hasSelectedClient) {
                 RouteHandler.goEditAddressPage(context,
                     id: orderCreator?.clientId);
               }

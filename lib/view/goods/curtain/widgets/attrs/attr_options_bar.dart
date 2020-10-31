@@ -2,7 +2,7 @@
  * @Description: 属性选泽
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-26 11:09:34
+ * @LastEditTime: 2020-10-28 17:52:31
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +62,7 @@ class _AttrOptionsBarState extends State<AttrOptionsBar> {
           children: <Widget>[
             Expanded(
               child: Text(
-                widget.skuAttr.name ?? '',
+                widget.skuAttr?.name ?? '',
                 style: TextStyle(color: const Color(0xFF333333), fontSize: 14),
               ),
               flex: 1,

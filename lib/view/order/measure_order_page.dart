@@ -2,7 +2,7 @@
  * @Description: 下测量单
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-09 17:48:06
+ * @LastEditTime: 2020-10-30 10:03:52
  */
 
 import 'package:flutter/material.dart';
@@ -12,12 +12,14 @@ import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/viewmodel/order/base/base_order_creator.dart';
 import 'package:taojuwu/viewmodel/order/curtain/measure_curtain_order_creator.dart';
+import 'package:taojuwu/viewmodel/order/order_creator.dart';
 
 import 'package:taojuwu/widgets/user_choose_button.dart';
+import 'package:taojuwu/widgets/zy_future_button.dart';
 
-import 'widgets/buyer_info_bar.dart';
+import 'widgets/order_buyer_card.dart';
+import 'widgets/order_remark_card/measure_order_remark_card.dart';
 import 'widgets/seller_info_bar.dart';
-import 'widgets/submit_order_button.dart';
 
 class MeasureOrderPage extends StatefulWidget {
   MeasureOrderPage({Key key}) : super(key: key);
@@ -27,6 +29,14 @@ class MeasureOrderPage extends StatefulWidget {
 }
 
 class _MeasureOrderPageState extends State<MeasureOrderPage> {
+  OrderCreator orderCreator;
+
+  @override
+  void initState() {
+    orderCreator = OrderCreator();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -47,7 +57,8 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
             child: Container(
               child: Column(
                 children: <Widget>[
-                  BuyerInfoBar(),
+                  // BuyerInfoBar(),
+                  OrderBuyerCard(orderCreator),
                   Divider(
                     height: 1,
                     indent: UIKit.width(20),
@@ -61,6 +72,7 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
                   //   padding: EdgeInsets.only(bottom: 10),
                   //   child: CustomerNeedBar(),
                   // ),
+                  MeasureOrderRemarkCard(orderCreator),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
                     child: Text(
@@ -78,7 +90,11 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
               height: 96,
               padding: EdgeInsets.only(right: 10),
               alignment: Alignment.bottomRight,
-              child: SubmitOrderButton(ctx.watch<BaseOrderCreator>()),
+              child: ZYFutureButton(
+                isActive: true,
+                text: '提交订单',
+                callback: () => orderCreator.createMeasureOrder(context),
+              ),
             );
           }),
         );

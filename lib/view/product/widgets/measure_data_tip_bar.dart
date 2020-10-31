@@ -2,7 +2,7 @@
  * @Description: 商品属性测装数据提示文字
  * @Author: iamsmiling
  * @Date: 2020-10-22 09:53:45
- * @LastEditTime: 2020-10-22 14:44:37
+ * @LastEditTime: 2020-10-31 10:43:44
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

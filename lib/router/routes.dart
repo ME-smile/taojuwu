@@ -52,7 +52,11 @@ class Routes {
   static const String editGoodsAttr = '/editGoodsAttr';
   static const String protocal = '/protocal';
 
-  static const String productDetail = '/productDetail';
+  static const String fabricCurtainProductDetail =
+      '/fabricCurtainProductDetail';
+  static const String rollingCurtainProducDetail =
+      '/rollingCurtainProducDetail';
+  static const String sceneDesign = '/sceneDesign';
 
   static void configureRoutes(fluro.Router router) {
     router.notFoundHandler = new fluro.Handler(
@@ -105,6 +109,10 @@ class Routes {
     router.define(endProductDetail, handler: RouteHandler.endProductDetail);
     router.define(editGoodsAttr, handler: RouteHandler.editGoodsAttr);
     router.define(protocal, handler: RouteHandler.protocal);
-    router.define(productDetail, handler: RouteHandler.productDetail);
+    router.define(fabricCurtainProductDetail,
+        handler: RouteHandler.fabricCurtainProductDetail);
+    router.define(rollingCurtainProducDetail,
+        handler: RouteHandler.rollingCurtainProductDetail);
+    router.define(sceneDesign, handler: RouteHandler.sceneDesign);
   }
 }

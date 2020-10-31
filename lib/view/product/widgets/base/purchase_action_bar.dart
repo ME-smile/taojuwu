@@ -2,7 +2,7 @@
  * @Description: //加入购物车 立即购买按钮
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:17:00
- * @LastEditTime: 2020-10-27 14:53:32
+ * @LastEditTime: 2020-10-29 09:30:04
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
@@ -22,7 +22,7 @@ class PurchaseActionBar extends StatelessWidget {
             child: Builder(
               builder: (BuildContext ctx) {
                 return GestureDetector(
-                  onTap: bean?.addToCart,
+                  onTap: () => bean?.addToCartAction(context),
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
@@ -46,7 +46,7 @@ class PurchaseActionBar extends StatelessWidget {
           ),
           Expanded(
               child: GestureDetector(
-                onTap: bean?.buy,
+                onTap: () => bean?.buyAction(context),
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   decoration: BoxDecoration(

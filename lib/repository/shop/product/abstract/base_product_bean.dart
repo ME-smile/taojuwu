@@ -2,7 +2,7 @@
  * @Description: 所有类抽象类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:05:09
- * @LastEditTime: 2020-10-27 18:07:41
+ * @LastEditTime: 2020-10-31 11:31:57
  */
 
 import 'package:taojuwu/repository/shop/product_sku_bean.dart';
@@ -23,11 +23,11 @@ abstract class BaseProductBean extends AbstractBaseProductBean {
   List<ProductSkuBean> skuList;
   List<String> goodsImgList;
   String skuName;
-  int skuId;
+
   String picture;
   num width;
   num height;
-
+  int picId;
   int count = 1;
   String cover;
 
@@ -47,7 +47,7 @@ abstract class BaseProductBean extends AbstractBaseProductBean {
     shopId = json['shop_id'];
     isCollect = json['is_collect'];
     goodsType = json['goods_type'];
-    skuId = CommonKit.parseInt(json['sku_id']);
+    picId = json['pic_id'];
     marketPrice = CommonKit.parseDouble(json['market_price']);
     price = CommonKit.parseDouble(json['price']);
     description = json['description'];
@@ -63,5 +63,7 @@ abstract class BaseProductBean extends AbstractBaseProductBean {
 
     width = json['width'];
     height = json['height'];
+    skuName = json['sku_name'];
+    picture = '${json['picture']}';
   }
 }

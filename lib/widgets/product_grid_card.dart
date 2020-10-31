@@ -2,10 +2,11 @@
  * @Description: 商品列表片
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:10:18
- * @LastEditTime: 2020-10-23 10:13:14
+ * @LastEditTime: 2020-10-31 08:14:53
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
+import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -13,13 +14,27 @@ class ProductGridCard extends StatelessWidget {
   final BaseProductBean bean;
   const ProductGridCard(this.bean, {Key key}) : super(key: key);
 
+  jump(BuildContext context, int type) {
+    if (type == 0) {
+      return RouteHandler.goEndProductDetail(context, bean?.goodsId);
+    }
+    if (type == 1) {
+      return RouteHandler.goFabricCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
+    if (type == 2) {
+      return RouteHandler.goRollingCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
-        // jump(context);
+        jump(context, bean?.goodsType);
       },
       child: Container(
         alignment: Alignment.center,
@@ -34,7 +49,7 @@ class ProductGridCard extends StatelessWidget {
               height: (width - 20) / 2,
               fit: BoxFit.cover,
               callback: () {
-                // jump(context);
+                jump(context, bean?.goodsType);
               },
             ),
             Expanded(

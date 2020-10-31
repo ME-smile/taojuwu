@@ -2,7 +2,7 @@
  * @Description: 选择用户的按钮
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-09-27 15:41:42
+ * @LastEditTime: 2020-10-30 12:16:40
  */
 import 'dart:async';
 
@@ -15,7 +15,7 @@ import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 class UserChooseButton extends StatefulWidget {
-  UserChooseButton({Key key}) : super(key: key);
+  const UserChooseButton({Key key}) : super(key: key);
 
   @override
   _UserChooseButtonState createState() => _UserChooseButtonState();
@@ -23,7 +23,7 @@ class UserChooseButton extends StatefulWidget {
 
 class _UserChooseButtonState extends State<UserChooseButton> {
   StreamSubscription _streamSubscription;
-  TargetClient targetClient;
+  static TargetClient targetClient;
   @override
   void initState() {
     _streamSubscription =
@@ -38,6 +38,7 @@ class _UserChooseButtonState extends State<UserChooseButton> {
   @override
   void dispose() {
     _streamSubscription?.cancel();
+    targetClient = null;
     super.dispose();
   }
 

@@ -155,7 +155,7 @@ class _HomePageState extends State<HomePage> {
                     child: AspectRatio(
                       aspectRatio: 1.4,
                       child: Image.network(
-                        'http://106.14.219.213:8001/upload/master.jpg',
+                        UIKit.getNetworkImgPath('upload/master.jpg'),
                         fit: BoxFit.fitWidth,
                         width: MediaQuery.of(context).size.width,
                         // height: UIKit.height(500),
