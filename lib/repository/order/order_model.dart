@@ -130,30 +130,30 @@ class OrderModel {
         ? json['goods_picture']
         : int.parse(json['goods_picture']);
 
-    List list = json['wc_attr'] == null
-        ? []
-        : json['wc_attr'].runtimeType == Map
-            ? json['wc_attr'].values.toList()
-            : [];
-    attrs = list.map((item) => OrderProductAttr.fromJson(item)).toList();
-    if (json['wc_attr'] != null && json['wc_attr'] is Map) {
-      roomName = json['wc_attr']['1'] == null
-          ? ''
-          : json['wc_attr']['1']['name'] ?? '';
-      width = json['wc_attr']['9'] == null
-          ? 0.0
-          : json['wc_attr']['9'][0] != null
-              ? double.parse(json['wc_attr']['9'][0]['value'] ?? '0.0')
-              : 0.0;
-      height = json['wc_attr']['9'] == null
-          ? 0.0
-          : json['wc_attr']['9'][1] != null
-              ? double.parse(json['wc_attr']['9'][1]['value'] ?? '0.0')
-              : 0.0;
-      style = json['wc_attr']['2'] == null
-          ? ''
-          : json['wc_attr']['2']['name'] ?? '';
-    }
+    // List list = json['wc_attr'] == null
+    //     ? []
+    //     : json['wc_attr'].runtimeType == Map
+    //         ? json['wc_attr'].values.toList()
+    //         : [];
+    // attrs = list.map((item) => OrderProductAttr.fromJson(item)).toList();
+    // if (json['wc_attr'] != null && json['wc_attr'] is Map) {
+    //   roomName = json['wc_attr']['1'] == null
+    //       ? ''
+    //       : json['wc_attr']['1']['name'] ?? '';
+    //   width = json['wc_attr']['9'] == null
+    //       ? 0.0
+    //       : json['wc_attr']['9'][0] != null
+    //           ? double.parse(json['wc_attr']['9'][0]['value'] ?? '0.0')
+    //           : 0.0;
+    //   height = json['wc_attr']['9'] == null
+    //       ? 0.0
+    //       : json['wc_attr']['9'][1] != null
+    //           ? double.parse(json['wc_attr']['9'][1]['value'] ?? '0.0')
+    //           : 0.0;
+    //   style = json['wc_attr']['2'] == null
+    //       ? ''
+    //       : json['wc_attr']['2']['name'] ?? '';
+    // }
     mode = json['measure_data'] ?? '';
     orderStatus = json['order_status'].runtimeType == int
         ? json['order_status']

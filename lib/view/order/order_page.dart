@@ -342,6 +342,8 @@ class _OrderPageState extends State<OrderPage>
     });
     // rotateArrow();
     setState(() {});
+    updateTabNums();
+    fetchData();
   }
 
   @override

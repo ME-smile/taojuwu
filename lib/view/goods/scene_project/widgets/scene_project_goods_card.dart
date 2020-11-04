@@ -24,47 +24,51 @@ class SceneProjectGoodsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
-            boxShadow: [BoxShadow(color: Color.fromARGB(100, 0, 0, 0))],
-            border: Border.all(color: const Color(0xFFF2F2F2))),
-        child: Column(
-          children: [
-            Flexible(
-                flex: imgFlex,
-                child: ZYNetImage(
-                  width: size.width,
-                  height: size.height,
-                  fit: BoxFit.cover,
-                  imgPath: bean?.picture,
-                )),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: List.generate(min(bean?.goodsList?.length ?? 0, 3),
-                    (int index) {
-                  return Flexible(
-                      child: Container(
-                    margin: const EdgeInsets.all(4.0),
-                    child: ThumbnailCard(bean?.goodsList[index]?.picCoverMid),
-                  ));
-                }),
+    return GestureDetector(
+      onTap: () {},
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              boxShadow: [BoxShadow(color: Color.fromARGB(100, 0, 0, 0))],
+              border: Border.all(color: const Color(0xFFF2F2F2))),
+          child: Column(
+            children: [
+              Flexible(
+                  flex: imgFlex,
+                  child: ZYNetImage(
+                    width: size.width,
+                    height: size.height,
+                    fit: BoxFit.cover,
+                    imgPath: bean?.picture,
+                  )),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: List.generate(min(bean?.goodsList?.length ?? 0, 3),
+                      (int index) {
+                    return Flexible(
+                        child: Container(
+                      margin: const EdgeInsets.all(4.0),
+                      child: ThumbnailCard(bean?.goodsList[index]?.picCoverMid),
+                    ));
+                  }),
+                ),
               ),
-            ),
-            Container(
-              child: Text(
-                '${bean?.space ?? ''},${bean?.style ?? ''}',
-                textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 16),
-              ),
-              alignment: Alignment.centerLeft,
-              padding: EdgeInsets.only(bottom: 12, left: 8),
-            )
-          ],
+              Container(
+                child: Text(
+                  '${bean?.space ?? ''},${bean?.style ?? ''}',
+                  textAlign: TextAlign.start,
+                  style: TextStyle(fontSize: 16),
+                ),
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(bottom: 12, left: 8),
+              )
+            ],
+          ),
         ),
       ),
     );

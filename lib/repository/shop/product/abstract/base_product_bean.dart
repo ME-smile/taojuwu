@@ -2,7 +2,7 @@
  * @Description: 所有类抽象类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:05:09
- * @LastEditTime: 2020-10-31 11:31:57
+ * @LastEditTime: 2020-11-04 14:01:24
  */
 
 import 'package:taojuwu/repository/shop/product_sku_bean.dart';
@@ -30,6 +30,7 @@ abstract class BaseProductBean extends AbstractBaseProductBean {
   int picId;
   int count = 1;
   String cover;
+  List<String> detailImgList;
 
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
 
@@ -65,5 +66,19 @@ abstract class BaseProductBean extends AbstractBaseProductBean {
     height = json['height'];
     skuName = json['sku_name'];
     picture = '${json['picture']}';
+    // json['new_description'] = [
+    //   'http://buyi.taoju5.com/upload/1.webp',
+    //   'http://buyi.taoju5.com/upload/2.webp',
+    //   'http://buyi.taoju5.com/upload/3.webp',
+    //   'http://buyi.taoju5.com/upload/4.webp',
+    //   'http://buyi.taoju5.com/upload/5.webp',
+    //   'http://buyi.taoju5.com/upload/6.webp',
+    //   'http://buyi.taoju5.com/upload/7.webp',
+    //   'http://buyi.taoju5.com/upload/8.webp'
+    //   // 'http://buyi.taoju5.com/upload/11.webp',
+    // ];
+    detailImgList = CommonKit.parseList(json['new_description'])
+        ?.map((e) => e?.toString())
+        ?.toList();
   }
 }

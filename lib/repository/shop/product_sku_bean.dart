@@ -2,7 +2,7 @@
  * @Description: //sku详情
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-27 16:04:48
+ * @LastEditTime: 2020-11-02 15:22:27
  */
 import 'package:taojuwu/repository/base/count_model.dart';
 
@@ -14,7 +14,6 @@ class ProductSkuBean extends CountModel {
   String price;
   String promotePrice;
   String image;
-  String skuImgArray;
   int picId;
 
   int skuId;
@@ -36,7 +35,6 @@ class ProductSkuBean extends CountModel {
       this.marketPrice,
       this.price,
       this.promotePrice,
-      this.skuImgArray,
       this.skuId,
       this.goodsId,
       this.stock,
@@ -50,14 +48,13 @@ class ProductSkuBean extends CountModel {
     this.attrValueItems = json['attr_value_items'];
     this.attrValueItemsFormat = json['attr_value_items_format'];
     this.marketPrice = json['market_price'];
-    this.image = json['image'];
+    Map<String, dynamic> map = json['sku_img_list']?.first ?? {};
+    this.image = json['image'] ?? map['pic_cover_small'] ?? '';
     String str = json['price'];
     str = str == null || str?.isEmpty == true ? '0.00' : str;
     this.price = str;
 
     this.promotePrice = json['promote_price'];
-
-    this.skuImgArray = json['sku_img_array'];
 
     this.skuId = json['sku_id'];
     this.goodsId = json['goods_id'];
@@ -78,8 +75,6 @@ class ProductSkuBean extends CountModel {
     data['market_price'] = this.marketPrice;
     data['price'] = this.price;
     data['promote_price'] = this.promotePrice;
-
-    data['sku_img_array'] = this.skuImgArray;
 
     data['sku_id'] = this.skuId;
     data['goods_id'] = this.goodsId;

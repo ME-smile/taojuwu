@@ -2,7 +2,7 @@
  * @Description: 商品详情页
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:55:05
- * @LastEditTime: 2020-10-31 10:56:50
+ * @LastEditTime: 2020-11-04 13:56:41
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ import 'package:taojuwu/view/product/widgets/product_detail_footer.dart';
 import 'package:taojuwu/view/product/widgets/section/fabric_curtain_product_attrs_section_view.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_header.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_profile.dart';
-import 'package:taojuwu/view/product/widgets/section/product_html_section_view.dart';
+import 'package:taojuwu/view/product/widgets/section/product_detail_img_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/recommend_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/relative_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/scene_design_product_section_view.dart';
@@ -33,21 +33,21 @@ class _CurtainProductDetailPageState
     extends BaseCurtainProductDetailState<FabricCurtainProductDetailPage> {
 // 发起请求
   Future sendRequest() {
-    return fetchData(context, widget.goodsId).whenComplete(() {
-      // 初始化商品属性
+    return fetchData(context, widget.goodsId).then((_) {
       (productBean as FabricCurtainProductBean)?.fetchAttrsData(() {
-        setState(() {});
+        setState(() {
+          isLoading = false;
+        });
       });
+    }).then((_) {
+      // 初始化商品属性
+
       (productBean as FabricCurtainProductBean)
           .fetchRoomAttrData()
           .whenComplete(() {
         copyData();
       });
-    }).whenComplete(() {
-      setState(() {
-        isLoading = false;
-      });
-    });
+    }).catchError((err) => err);
   }
 
   @override
@@ -67,8 +67,9 @@ class _CurtainProductDetailPageState
         child: isLoading
             ? LoadingCircle()
             : Scaffold(
-                backgroundColor: const Color(0xFFF8F8F8),
+                backgroundColor: const Color(0xFFF8F8FB),
                 body: NestedScrollView(
+                    controller: scrollController,
                     headerSliverBuilder:
                         (BuildContext context, bool innerBoxIsScrolled) {
                       return <Widget>[ProductDetailHeader(productBean)];
@@ -85,16 +86,25 @@ class _CurtainProductDetailPageState
                         ),
                         SliverToBoxAdapter(
                           child: SoftDesignProductSectionView(
-                              softDesignProductList),
+                            softDesignProductList,
+                            goodsId: productBean?.goodsId,
+                          ),
                         ),
-                        ProductHtmlDescSectionView(productBean?.description),
+                        SliverToBoxAdapter(
+                          child: ProductDetailImgSectionView(
+                              productBean?.detailImgList),
+                        ),
+                        // ProductHtmlDescSectionView(productBean?.description),
                         SliverToBoxAdapter(
                           child: RecommendedProductSectionView(
                               recommendProductList),
                         ),
                       ],
                     )),
-                bottomNavigationBar: ProductDeatilFooter(productBean),
+                bottomNavigationBar: ProductDeatilFooter(
+                  productBean,
+                  callback: scrollToTop,
+                ),
               ));
     // return ChangeNotifierProvider<SingleProductProvider>(
     //   create: (context)=>(),

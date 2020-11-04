@@ -2,7 +2,7 @@
  * @Description: 订单创建的模型
  * @Author: iamsmiling
  * @Date: 2020-10-29 17:22:23
- * @LastEditTime: 2020-10-31 12:19:35
+ * @LastEditTime: 2020-11-03 18:12:39
  */
 
 import 'dart:convert';
@@ -10,7 +10,6 @@ import 'dart:convert';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/abstract/multi_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
@@ -100,9 +99,7 @@ class OrderCreator {
   List<String> get attrStrList {
     List<String> list = [];
     goodsList?.forEach((e) {
-      String attr = e is BaseCurtainProductBean
-          ? jsonEncode(jsonEncode(e.attrArgs))
-          : '0';
+      String attr = e is BaseCurtainProductBean ? jsonEncode(e.attrArgs) : '0';
       list.add(attr);
     });
     return list;
@@ -117,6 +114,26 @@ class OrderCreator {
   }
 
   Map<String, dynamic> get orderArgs {
+    print({
+      'order_earnest_money': depositAmount,
+      'client_uid': clientId,
+      'vertical_ground_height': deltaYCM,
+      'measure_id': measureId,
+      'measure_time': measureTimeStr,
+      'install_time': installTime,
+      'order_remark': extraRemark,
+      'wc_attr': jsonEncode(attrStrList),
+      'data': '''{
+          "order_type": "1",
+          "point": "0",
+          "pay_type": "10",
+          "shipping_info": {"shipping_type": "1", "shipping_company_id": "0"},
+          "address_id": "$addressId",
+          "coupon_id": "0",
+          "order_tag": "2",
+          "goods_sku_list":"$goodsSkuListStr"
+      }''',
+    });
     return {
       'order_earnest_money': depositAmount,
       'client_uid': clientId,
@@ -176,6 +193,7 @@ class OrderCreator {
   Future _sendCreateOrderRequest(BuildContext context) {
     return OTPService.createOrder(params: orderArgs)
         .then((ZYResponse response) {
+      print(response?.data);
       if (response?.valid == true) {
         return RouteHandler.goOrderCommitSuccessPage(context, '$clientId',
             orderType: 2, showTip: 1);

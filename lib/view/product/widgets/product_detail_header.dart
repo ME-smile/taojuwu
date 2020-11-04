@@ -2,7 +2,7 @@
  * @Description: //商品详情顶部appbar
  * @Author: iamsmiling
  * @Date: 2020-10-21 16:10:17
- * @LastEditTime: 2020-10-22 09:36:34
+ * @LastEditTime: 2020-10-31 16:38:05
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -52,6 +52,7 @@ class ProductDetailHeader extends StatelessWidget {
           margin: EdgeInsets.only(top: 80),
           child: Swiper(
             key: ValueKey(bean?.goodsId),
+            loop: false,
             itemCount: bean?.goodsImgList?.length,
             itemBuilder: (BuildContext context, int index) {
               return ZYNetImage(

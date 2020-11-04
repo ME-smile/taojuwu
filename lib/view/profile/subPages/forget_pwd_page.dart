@@ -22,7 +22,7 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
   @override
   void initState() {
     super.initState();
-    smsInput = TextEditingController();
+    telInput = TextEditingController();
     smsInput = TextEditingController();
   }
 

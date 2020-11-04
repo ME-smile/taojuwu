@@ -2,12 +2,11 @@
  * @Description: 场景推荐
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:23:42
- * @LastEditTime: 2020-10-31 08:21:38
+ * @LastEditTime: 2020-11-04 09:48:14
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:provider/provider.dart';
 import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
 
 import 'package:taojuwu/utils/extensions/object_kit.dart';
@@ -61,7 +60,7 @@ class _SceneDesignProductSectionViewState
                   children: [
                     TitleTip(title: '场景推荐'),
                     TrailingTip(
-                      text: '查看',
+                      text: '查看全部',
                       callback: () {
                         // var provider = Provider.of<BaseProductProvider>(context,
                         //     listen: false);
@@ -80,6 +79,7 @@ class _SceneDesignProductSectionViewState
                 margin: const EdgeInsets.only(bottom: 16),
                 child: Swiper(
                   itemCount: list.length,
+                  loop: false,
                   viewportFraction: .96,
                   pagination: new SwiperPagination(
                       margin: EdgeInsets.symmetric(horizontal: 5),

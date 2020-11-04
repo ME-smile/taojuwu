@@ -670,6 +670,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     ThemeData themeData = Theme.of(context);
     return WillPopScope(
         child: Scaffold(
+          backgroundColor: const Color(0xFFFF2F2F2),
           floatingActionButton: AnimatedOpacity(
             opacity: showFloatingButton ? 1.0 : 0.0,
             duration: Duration(milliseconds: 500),
@@ -995,7 +996,9 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
           // return _refreshController?.refreshCompleted();
         } else {
           beans?.forEach((item) {
-            goodsList?.add(item);
+            if (goodsList?.contains(item) == false) {
+              goodsList?.add(item);
+            }
           });
         }
 

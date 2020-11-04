@@ -2,7 +2,7 @@
  * @Description: 软装方案卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:37:53
- * @LastEditTime: 2020-10-31 07:35:29
+ * @LastEditTime: 2020-11-04 10:58:55
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
@@ -20,88 +20,96 @@ class SoftDesignProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        children: [
-          ZYNetImage(
-            imgPath: bean.picture,
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 12),
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
+    return GestureDetector(
+      onTap: () => showDesignProductDetailModal(context, bean?.id),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          children: [
+            ZYNetImage(
+              imgPath: bean.picture,
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 12),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(
+                    bean?.designName ?? '',
+                    style: TaojuwuTextStyle.EMPHASIS_TEXT_STYLE_BOLD,
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        bean?.name ?? '',
+                        style: TaojuwuTextStyle.EMPHASIS_TEXT_STYLE,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(top: 8, bottom: 8),
+              child: Text(
+                bean?.desc ?? '',
+                textAlign: TextAlign.left,
+                style: TaojuwuTextStyle.SUB_TEXT_STYLE,
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  bean?.designName ?? '',
-                  style: TaojuwuTextStyle.EMPHASIS_TEXT_STYLE_BOLD,
+                  '¥${bean?.totalPrice}',
+                  style: TaojuwuTextStyle.RED_TEXT_STYLE,
                 ),
-                Expanded(
-                  flex: 2,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Text(
-                      bean?.name ?? '',
-                      style: TaojuwuTextStyle.EMPHASIS_TEXT_STYLE,
-                    ),
-                  ),
+                ZYRaisedButton(
+                  '立即购买',
+                  () {
+                    return showDesignProductDetailModal(context, bean?.id);
+                    // showSoftProjectPopupWindow(context,
+                    //     Provider.of(context, listen: false), bean.scenesId);
+                  },
+                  horizontalPadding: 16,
+                  verticalPadding: 7.2,
                 )
               ],
             ),
-          ),
-          Container(
-            width: double.infinity,
-            margin: EdgeInsets.only(top: 8, bottom: 8),
-            child: Text(
-              bean?.desc ?? '',
-              textAlign: TextAlign.left,
-              style: TaojuwuTextStyle.SUB_TEXT_STYLE,
+            Divider(
+              thickness: 1,
+              color: const Color(0xFFF1F1F1),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '¥1001',
-                style: TaojuwuTextStyle.RED_TEXT_STYLE,
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(top: 8, bottom: 8),
+              child: Text(
+                '包含商品',
+                textAlign: TextAlign.left,
               ),
-              ZYRaisedButton(
-                '立即购买',
-                () {
-                  return showDesignProductDetailModal(context, bean?.id);
-                  // showSoftProjectPopupWindow(context,
-                  //     Provider.of(context, listen: false), bean.scenesId);
-                },
-                horizontalPadding: 12,
-              )
-            ],
-          ),
-          Container(
-            width: double.infinity,
-            margin: EdgeInsets.only(top: 8, bottom: 8),
-            child: Text(
-              '包含商品',
-              textAlign: TextAlign.left,
             ),
-          ),
-          Visibility(
-              child: Container(
-                color: Theme.of(context).primaryColor,
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 0.9,
+            Visibility(
+                child: Container(
+                  color: Theme.of(context).primaryColor,
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      childAspectRatio: 0.9,
+                    ),
+                    itemBuilder: (BuildContext context, int i) {
+                      return RelativeProductCard(bean?.goodsList[i]);
+                    },
+                    itemCount: bean.goodsList.length,
                   ),
-                  itemBuilder: (BuildContext context, int i) {
-                    return RelativeProductCard(bean?.goodsList[i]);
-                  },
-                  itemCount: bean.goodsList.length,
                 ),
-              ),
-              visible: !isNullOrEmpty(bean?.goodsList))
-        ],
+                visible: !isNullOrEmpty(bean?.goodsList))
+          ],
+        ),
       ),
     );
   }

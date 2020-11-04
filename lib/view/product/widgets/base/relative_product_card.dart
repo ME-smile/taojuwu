@@ -2,7 +2,7 @@
  * @Description: 相关商品卡片
  * @Author: iamsmiling
  * @Date: 2020-10-22 17:09:43
- * @LastEditTime: 2020-10-31 08:12:50
+ * @LastEditTime: 2020-11-04 10:22:09
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/relative_product/relative_product_bean.dart';
@@ -24,6 +24,10 @@ class RelativeProductCard extends StatelessWidget {
     }
     if (type == 2) {
       return RouteHandler.goRollingCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
+    if (type == 3) {
+      return RouteHandler.goGauzeCurtainProductDetailPage(
           context, bean?.goodsId);
     }
   }
@@ -82,7 +86,7 @@ class RelativeProductCard extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 13,
                           color: const Color(0xFF1B1B1B),
-                          fontWeight: FontWeight.bold)),
+                          fontWeight: FontWeight.w400)),
                   textAlign: TextAlign.center,
                 ),
                 Padding(

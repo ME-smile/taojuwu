@@ -23,7 +23,6 @@ import 'package:taojuwu/providers/order_detail_provider.dart';
 
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';

@@ -2,7 +2,7 @@
  * @Description: 提交订单 统统商品卡片样式
  * @Author: iamsmiling
  * @Date: 2020-10-28 14:24:58
- * @LastEditTime: 2020-10-29 15:01:51
+ * @LastEditTime: 2020-11-02 14:28:27
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
@@ -41,13 +41,28 @@ class CommonProductOrderCardHeader extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(bean?.goodsName ?? ''),
-                        Text('${bean?.price}')
+                        Text(
+                          bean?.goodsName ?? '',
+                          style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF1B1B1B)),
+                        ),
+                        Text(
+                          '¥${bean?.price}',
+                          style: TextStyle(
+                              fontSize: 13, color: const Color(0xFF1B1B1B)),
+                        )
                       ],
                     ),
                     Expanded(
-                        child: Text(
-                      bean?.detailDescription ?? '',
+                        child: Container(
+                      margin: EdgeInsets.only(top: 6),
+                      child: Text(
+                        bean?.detailDescription ?? '',
+                        style: TextStyle(
+                            color: const Color(0xFF6D6D6D), fontSize: 13),
+                      ),
                     ))
                   ],
                 ),
@@ -58,7 +73,16 @@ class CommonProductOrderCardHeader extends StatelessWidget {
             alignment: Alignment.centerRight,
             width: MediaQuery.of(context).size.width,
             child: Text.rich(TextSpan(
-                text: '小计', children: [TextSpan(text: '${bean?.totalPrice}')])),
+                text: '小计:',
+                style: TextStyle(
+                    color: const Color(0xFF1B1B1B),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500),
+                children: [
+                  TextSpan(
+                    text: '¥${bean?.totalPrice}',
+                  )
+                ])),
           )
         ],
       ),

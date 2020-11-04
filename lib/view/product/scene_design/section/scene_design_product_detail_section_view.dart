@@ -2,7 +2,7 @@
  * @Description: 场景详情
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:13:05
- * @LastEditTime: 2020-10-23 13:17:50
+ * @LastEditTime: 2020-11-04 10:15:43
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
@@ -20,10 +20,9 @@ class SceneDesignProductDetailSectionView extends StatelessWidget {
     return Container(
       child: Column(
         children: [
-          AspectRatio(
-            aspectRatio: 1.7,
+          Container(
             child: ZYNetImage(
-              imgPath: 'https://i.loli.net/2020/10/10/ri4RfE1kgqh8GXc.jpg',
+              imgPath: bean?.picture,
             ),
           ),
           Container(

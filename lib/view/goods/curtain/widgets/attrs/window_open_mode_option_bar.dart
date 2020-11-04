@@ -2,10 +2,10 @@
  * @Description: 打开方式选项
  * @Author: iamsmiling
  * @Date: 2020-10-14 14:38:41
- * @LastEditTime: 2020-10-23 14:35:14
+ * @LastEditTime: 2020-10-31 17:37:32
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/style_selector/curtain_style_selector.dart';
 import 'package:taojuwu/repository/shop/sku_attr/window_style_sku_option.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -13,7 +13,7 @@ import 'package:taojuwu/widgets/zy_outline_button.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class WindowOpenOptionBar extends StatefulWidget {
-  final FabricCurtainProductBean bean;
+  final BaseCurtainProductBean bean;
   const WindowOpenOptionBar(
     this.bean, {
     Key key,

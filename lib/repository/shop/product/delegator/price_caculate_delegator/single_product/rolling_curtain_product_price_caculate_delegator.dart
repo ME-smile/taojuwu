@@ -1,15 +1,6 @@
 /*
- * @Description: 卷帘价格计算代理
+ * @Description: //TODO
  * @Author: iamsmiling
- * @Date: 2020-10-21 11:13:33
- * @LastEditTime: 2020-10-21 13:28:15
+ * @Date: 2020-10-31 13:34:35
+ * @LastEditTime: 2020-11-02 10:23:21
  */
-
-import 'curtain_product_price_caculate_delegator.dart';
-
-class RollingCurtainProductPriceCaculateDelegator
-    extends CurtainProductPriceCaculateDelegator {
-  @override
-  // TODO: implement totalPrice
-  double get totalPrice => throw UnimplementedError();
-}

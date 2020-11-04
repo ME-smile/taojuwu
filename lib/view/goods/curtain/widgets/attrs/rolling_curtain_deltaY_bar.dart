@@ -2,11 +2,12 @@
  * @Description: 卷帘详情 离地距离
  * @Author: iamsmiling
  * @Date: 2020-10-31 10:01:31
- * @LastEditTime: 2020-10-31 10:03:22
+ * @LastEditTime: 2020-10-31 17:59:55
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
+import 'package:taojuwu/view/product/dialog/dialog.dart';
 
 class RollingCurtainDeltaYBar extends StatefulWidget {
   final RollingCurtainProductBean bean;
@@ -19,6 +20,8 @@ class RollingCurtainDeltaYBar extends StatefulWidget {
 
 class _RollingCurtainDeltaYBarState extends State<RollingCurtainDeltaYBar> {
   RollingCurtainProductBean get bean => widget.bean;
+
+  bool get isDeltaYNull => bean?.measureData?.deltaYCM == null;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -32,6 +35,9 @@ class _RollingCurtainDeltaYBarState extends State<RollingCurtainDeltaYBar> {
         //   print(bean?.measureData?.hasSetSize);
         //   setState(() {});
         // });
+        setDeltaY(context, bean).whenComplete(() {
+          setState(() {});
+        });
       },
       child: Container(
         color: Theme.of(context).primaryColor,
@@ -53,7 +59,9 @@ class _RollingCurtainDeltaYBarState extends State<RollingCurtainDeltaYBar> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Text(
-                    '${bean?.measureData?.height}米',
+                    isDeltaYNull
+                        ? '离地距离(cm)'
+                        : '${bean?.measureData?.deltaYCM}cm',
                     style: TextStyle(fontSize: 14, color: Color(0xFF1B1B1B)),
                   ),
                   Icon(

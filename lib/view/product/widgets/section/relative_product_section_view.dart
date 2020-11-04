@@ -2,7 +2,7 @@
  * @Description: 同料商品视图
  * @Author: iamsmiling
  * @Date: 2020-10-09 13:05:48
- * @LastEditTime: 2020-10-31 08:30:25
+ * @LastEditTime: 2020-10-31 16:36:31
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -59,6 +59,7 @@ class RelativeProductSectionView extends StatelessWidget {
                 height: 160,
                 child: Swiper(
                   itemCount: groupCount,
+                  loop: false,
                   pagination: new SwiperPagination(
                       margin: EdgeInsets.symmetric(horizontal: 5),
                       builder: DotSwiperPaginationBuilder(

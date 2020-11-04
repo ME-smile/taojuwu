@@ -2,7 +2,7 @@
  * @Description: 商品属性测装数据提示文字
  * @Author: iamsmiling
  * @Date: 2020-10-22 09:53:45
- * @LastEditTime: 2020-10-31 10:43:44
+ * @LastEditTime: 2020-10-31 17:35:35
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +82,7 @@ class NonMeasureOrderTip extends StatelessWidget {
       onTap: () {
         Navigator.push(context,
             CupertinoPageRoute(builder: (BuildContext context) {
-          return EditMeasureDataPage(bean as FabricCurtainProductBean);
+          return EditMeasureDataPage(bean);
         }));
       },
       child: Container(

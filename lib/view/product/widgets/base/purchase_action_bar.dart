@@ -2,14 +2,16 @@
  * @Description: //加入购物车 立即购买按钮
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:17:00
- * @LastEditTime: 2020-10-29 09:30:04
+ * @LastEditTime: 2020-11-03 16:29:57
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
 
 class PurchaseActionBar extends StatelessWidget {
   final AbstractBaseProductBean bean;
-  const PurchaseActionBar(this.bean, {Key key}) : super(key: key);
+  final Function callback;
+  const PurchaseActionBar(this.bean, {Key key, this.callback})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,8 @@ class PurchaseActionBar extends StatelessWidget {
             child: Builder(
               builder: (BuildContext ctx) {
                 return GestureDetector(
-                  onTap: () => bean?.addToCartAction(context),
+                  onTap: () =>
+                      bean?.addToCartAction(context, callback: callback),
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
@@ -46,7 +49,7 @@ class PurchaseActionBar extends StatelessWidget {
           ),
           Expanded(
               child: GestureDetector(
-                onTap: () => bean?.buyAction(context),
+                onTap: () => bean?.buyAction(context, callback: callback),
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   decoration: BoxDecoration(

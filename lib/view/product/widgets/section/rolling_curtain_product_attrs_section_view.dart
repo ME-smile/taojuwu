@@ -1,12 +1,13 @@
 /*
- * @Description: //TODO
+ * @Description: 卷帘商品属性选择视图
  * @Author: iamsmiling
  * @Date: 2020-10-31 09:15:45
- * @LastEditTime: 2020-10-31 09:51:52
+ * @LastEditTime: 2020-10-31 17:42:42
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/attrs/attr_options_bar.dart';
+import 'package:taojuwu/view/goods/curtain/widgets/attrs/rolling_curtain_deltaY_bar.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/attrs/rolling_curtain_size_bar.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/attrs/window_style_option_bar.dart';
 
@@ -47,6 +48,7 @@ class _RollingCurtainProductAttrsSectionViewState
             AttrOptionsBar(bean, bean?.roomAttr),
             WindowStyleOptionBar(bean, notifier: valueNotifier),
             RollingCurtainSizeBar(bean),
+            RollingCurtainDeltaYBar(bean),
           ],
         ),
       ),

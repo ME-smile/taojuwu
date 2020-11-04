@@ -2,13 +2,19 @@
  * @Description: 卷帘商品修改 宽高
  * @Author: iamsmiling
  * @Date: 2020-10-28 10:19:33
- * @LastEditTime: 2020-10-28 11:11:28
+ * @LastEditTime: 2020-10-31 17:58:59
  */
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/providers/theme_provider.dart';
 import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
+import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/view/product/dialog/widgets/edit_curtain_deltaY_android_view.dart';
 import 'package:taojuwu/view/product/dialog/widgets/edit_rolling_curtain_size_android_view.dart';
+
+import 'widgets/edit_curtain_deltaY_ios_view.dart';
 
 Future setSize(BuildContext ctx, BaseProductBean bean) {
   return showDialog(
@@ -75,4 +81,19 @@ Future setSize(BuildContext ctx, BaseProductBean bean) {
   //         );
   //       });
   // }
+}
+
+Future setDeltaY(BuildContext context, BaseCurtainProductBean bean) {
+  if (Platform.isAndroid) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return EditCurtainDeltaYAndroidView(bean);
+        });
+  }
+  return showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return EditCurtainDeltaYIosView(bean);
+      });
 }

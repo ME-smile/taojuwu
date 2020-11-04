@@ -2,7 +2,7 @@
  * @Description: 属性的选项
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-09-29 10:36:17
+ * @LastEditTime: 2020-11-04 11:26:31
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
@@ -29,13 +29,11 @@ class OptionView extends StatelessWidget {
   }
 
   Widget _buildPictureView(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     return GestureDetector(
       onTap: callback,
       child: Container(
-        width: width / 5,
         alignment: Alignment.center,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,9 +51,11 @@ class OptionView extends StatelessWidget {
                           width: 1.2),
                     ),
                     width: UIKit.width(150),
-                    height: UIKit.width(150),
-                    child: ZYNetImage(
-                      imgPath: UIKit.getNetworkImgPath(bean.picture),
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: ZYNetImage(
+                        imgPath: UIKit.getNetworkImgPath(bean.picture),
+                      ),
                     ),
                   ),
                   Positioned(
@@ -78,19 +78,19 @@ class OptionView extends StatelessWidget {
                     : textTheme.caption.copyWith(fontSize: 12),
               ),
             ),
-            Offstage(
-              offstage: !showPrice,
-              child: Padding(
-                padding: EdgeInsets.only(top: UIKit.height(10)),
-                child: Text(
-                  '${bean.price}',
-                  textAlign: TextAlign.center,
-                  style: isChecked
-                      ? textTheme.bodyText2.copyWith(fontSize: 12)
-                      : textTheme.caption.copyWith(fontSize: 12),
-                ),
-              ),
-            ),
+            // Offstage(
+            //   offstage: !showPrice,
+            //   child: Padding(
+            //     padding: EdgeInsets.only(top: UIKit.height(10)),
+            //     child: Text(
+            //       '${bean.price}',
+            //       textAlign: TextAlign.center,
+            //       style: isChecked
+            //           ? textTheme.bodyText2.copyWith(fontSize: 12)
+            //           : textTheme.caption.copyWith(fontSize: 12),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

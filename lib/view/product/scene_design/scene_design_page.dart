@@ -2,7 +2,7 @@
  * @Description: 软装方案详情
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:05:49
- * @LastEditTime: 2020-10-31 07:32:48
+ * @LastEditTime: 2020-11-04 10:55:26
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';

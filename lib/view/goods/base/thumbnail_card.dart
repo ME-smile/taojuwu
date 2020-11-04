@@ -2,7 +2,7 @@
  * @Description: 缩略图 
  * @Author: iamsmiling
  * @Date: 2020-10-13 09:29:46
- * @LastEditTime: 2020-10-16 13:30:50
+ * @LastEditTime: 2020-11-04 10:54:02
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
@@ -14,9 +14,14 @@ class ThumbnailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: 50,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(4)),
-          boxShadow: [BoxShadow(color: Colors.black.withAlpha(50))]),
+          boxShadow: [
+            BoxShadow(
+                offset: Offset(-.5, -.5), color: Colors.black.withAlpha(50)),
+            BoxShadow(offset: Offset(.5, .5), color: Colors.black.withAlpha(50))
+          ]),
       child: AspectRatio(
         aspectRatio: 1.0,
         child: ZYNetImage(

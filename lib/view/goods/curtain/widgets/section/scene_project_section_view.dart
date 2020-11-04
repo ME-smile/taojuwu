@@ -2,22 +2,19 @@
  * @Description: 场景推荐
  * @Author: iamsmiling
  * @Date: 2020-10-09 14:27:32
- * @LastEditTime: 2020-10-16 11:15:26
+ * @LastEditTime: 2020-11-02 10:28:05
  */
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:provider/provider.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/goods/base/title_tip.dart';
 import 'package:taojuwu/view/goods/base/trailing_tip.dart';
-import 'package:taojuwu/view/goods/scene_project/scene_project_page.dart';
-import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class SceneProjectSectionView extends StatelessWidget {
@@ -44,7 +41,7 @@ class SceneProjectSectionView extends StatelessWidget {
                     children: [
                       TitleTip(title: '场景推荐'),
                       TrailingTip(
-                        text: '查看',
+                        text: '查看全部',
                         // callback: () => showRelateGoodsPopupWindow(
                         //     context, relatedGoodsList),
                       )
@@ -82,13 +79,7 @@ class SceneProjectCard extends StatelessWidget {
   final SceneProjectBean bean;
   const SceneProjectCard(this.bean, {Key key}) : super(key: key);
 
-  void _jumpTo(BuildContext ctx, int sceneId) {
-    BaseGoodsViewModel viewModel =
-        Provider.of<BaseGoodsViewModel>(ctx, listen: false);
-    Navigator.push(ctx, CupertinoPageRoute(builder: (BuildContext context) {
-      return SceneProjectPage(viewModel, viewModel.bean?.goodsId, sceneId);
-    }));
-  }
+  void _jumpTo(BuildContext ctx, int sceneId) {}
 
   @override
   Widget build(BuildContext context) {

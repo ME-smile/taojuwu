@@ -2,7 +2,7 @@
  * @Description: 提交订单 卷帘视图
  * @Author: iamsmiling
  * @Date: 2020-10-28 13:38:36
- * @LastEditTime: 2020-10-28 14:29:34
+ * @LastEditTime: 2020-11-02 14:17:47
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
@@ -15,7 +15,12 @@ class RollingCurtainProductOrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: CommonProductOrderCardHeader(bean),
+      child: Column(
+        children: [
+          CommonProductOrderCardHeader(bean),
+          // CurtainProductAttrsCardView(bean),
+        ],
+      ),
     );
   }
 }

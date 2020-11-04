@@ -55,6 +55,10 @@ class ListCard extends StatelessWidget {
       return RouteHandler.goRollingCurtainProductDetailPage(
           context, bean?.goodsId);
     }
+    if (type == 3) {
+      return RouteHandler.goGauzeCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
   }
 
   @override

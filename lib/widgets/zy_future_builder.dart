@@ -83,7 +83,7 @@ class _ZYFutureBuilderState<T> extends State<ZYFutureBuilder<T>> {
   @override
   Widget build(BuildContext context) {
     return _future == null
-        ? widget.loadingWidget
+        ? widget.loadingWidget ?? LoadingCircle()
         : FutureBuilder(
             future: _future,
             builder: (context, snapshot) {
@@ -91,7 +91,7 @@ class _ZYFutureBuilderState<T> extends State<ZYFutureBuilder<T>> {
                 case ConnectionState.none:
                 case ConnectionState.waiting:
                 case ConnectionState.active:
-                  return widget.loadingWidget;
+                  return widget.loadingWidget ?? LoadingCircle();
                 case ConnectionState.done:
                   if (snapshot.hasData) {
                     return widget.builder(context, snapshot.data);

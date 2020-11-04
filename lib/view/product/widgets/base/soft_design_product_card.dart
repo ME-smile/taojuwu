@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/product/popup_modal/pop_up_modal.dart';
-import 'package:taojuwu/viewmodel/product/base/provider/base_product_provider.dart';
-import 'package:taojuwu/widgets/zy_netImage.dart';
+import 'package:taojuwu/widgets/zy_photo_view.dart';
 import 'package:taojuwu/widgets/zy_plain_button.dart';
 
 class SoftDesignProductCard extends StatelessWidget {
@@ -13,18 +13,24 @@ class SoftDesignProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // onTap: () => jumpTo(context, bean),
+      onTap: () => showDesignProductDetailModal(context, bean?.id),
       child: Container(
-        margin: EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 32),
+        margin: EdgeInsets.only(top: 4, bottom: 32),
         decoration: BoxDecoration(
             color: Theme.of(context).primaryColor,
             borderRadius: BorderRadius.all(Radius.circular(4)),
             border: Border.all(width: 1, color: const Color(0xFFE8E8E8)),
             boxShadow: [
               BoxShadow(
-                  color: Color.fromARGB(25, 0, 0, 0),
-                  blurRadius: 4,
-                  spreadRadius: 2),
+                  offset: Offset(0, 2),
+                  color: Color.fromARGB(16, 0, 0, 0),
+                  blurRadius: 3,
+                  spreadRadius: 1),
+              // BoxShadow(
+              //     offset: Offset(0, 2),
+              //     color: Color.fromARGB(25, 0, 0, 0),
+              //     blurRadius: 4,
+              //     spreadRadius: 2)
             ]),
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         child: Row(
@@ -32,8 +38,9 @@ class SoftDesignProductCard extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 1.0,
-              child: ZYNetImage(
-                imgPath: bean.picture,
+              child: ZYPhotoView(
+                UIKit.getNetworkImgPath(bean.picture),
+                tag: bean?.picture,
               ),
             ),
             Expanded(
@@ -41,6 +48,7 @@ class SoftDesignProductCard extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.only(left: 12),
                   child: Column(
+                    mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
@@ -52,7 +60,7 @@ class SoftDesignProductCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 13,
                                   color: const Color(0xFF1B1B1B),
                                   fontWeight: FontWeight.bold),
                             ),
@@ -70,44 +78,51 @@ class SoftDesignProductCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(top: 6),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '¥${bean.totalPrice}',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: const Color(0xFF1B1B1B),
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 8),
-                                    child: Text(
-                                      '¥${bean.marketPrice}',
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.bottomCenter,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(top: 6),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      '¥${bean.totalPrice}',
                                       style: TextStyle(
-                                          fontSize: 10,
-                                          color: const Color(0xFF999999)),
+                                          fontSize: 14,
+                                          color: const Color(0xFF1B1B1B),
+                                          fontWeight: FontWeight.bold),
                                     ),
-                                  )
-                                ],
+                                    Visibility(
+                                      visible: !CommonKit.isNumNullOrZero(
+                                          bean.marketPrice),
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 8),
+                                        child: Text(
+                                          '¥${bean.marketPrice}',
+                                          style: TextStyle(
+                                              fontSize: 10,
+                                              color: const Color(0xFF999999)),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            ZYPlainButton(
-                              '立即购买',
-                              callback: () {
-                                return showDesignProductDetailModal(
-                                    context, bean?.id);
-                                // return showSoftDesignDetailModalPopup(
-                                //     context, bean, provider);
-                              },
-                            )
-                          ],
+                              ZYPlainButton(
+                                '立即购买',
+                                callback: () {
+                                  return showDesignProductDetailModal(
+                                      context, bean?.id);
+                                  // return showSoftDesignDetailModalPopup(
+                                  //     context, bean, provider);
+                                },
+                              )
+                            ],
+                          ),
                         ),
                       )
                     ],

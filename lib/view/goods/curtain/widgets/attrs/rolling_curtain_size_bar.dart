@@ -2,7 +2,7 @@
  * @Description: 卷帘尺寸信息
  * @Author: iamsmiling
  * @Date: 2020-10-31 09:47:55
- * @LastEditTime: 2020-10-31 09:59:49
+ * @LastEditTime: 2020-11-02 17:31:56
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
@@ -19,6 +19,8 @@ class RollingCurtainSizeBar extends StatefulWidget {
 
 class _RollingCurtainSizeBarState extends State<RollingCurtainSizeBar> {
   RollingCurtainProductBean get bean => widget.bean;
+
+  bool get hasSetSize => bean?.measureData?.hasSetSize ?? false;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -53,7 +55,9 @@ class _RollingCurtainSizeBarState extends State<RollingCurtainSizeBar> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
                   Text(
-                    '宽:${bean?.measureData?.width}米;高:${bean?.measureData?.height}米',
+                    hasSetSize
+                        ? '宽:${bean?.measureData?.widthM}米;高:${bean?.measureData?.heightM}米'
+                        : '尺寸',
                     style: TextStyle(fontSize: 14, color: Color(0xFF1B1B1B)),
                   ),
                   Icon(

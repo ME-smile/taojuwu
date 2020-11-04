@@ -2,7 +2,7 @@
  * @Description: 软装方案卡片
  * @Author: iamsmiling
  * @Date: 2020-10-10 15:19:46
- * @LastEditTime: 2020-10-19 14:05:19
+ * @LastEditTime: 2020-11-04 11:03:31
  */
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -62,7 +62,7 @@ class SoftProjectCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '¥1001',
+                '¥${bean?.totalPrice}',
                 style: TaojuwuTextStyle.RED_TEXT_STYLE,
               ),
               ZYRaisedButton(
@@ -72,6 +72,7 @@ class SoftProjectCard extends StatelessWidget {
                       Provider.of(context, listen: false), bean.scenesId);
                 },
                 horizontalPadding: 12,
+                verticalPadding: 7.2,
               )
             ],
           ),
@@ -91,7 +92,7 @@ class SoftProjectCard extends StatelessWidget {
                   physics: NeverScrollableScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    childAspectRatio: 0.9,
+                    childAspectRatio: 1.2,
                   ),
                   itemBuilder: (BuildContext context, int i) {
                     return RelatedGoodsCard(bean.goodsList[i]);

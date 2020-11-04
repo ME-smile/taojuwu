@@ -2,7 +2,7 @@
  * @Description: 商品属性相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-27 10:16:14
- * @LastEditTime: 2020-10-23 13:37:04
+ * @LastEditTime: 2020-11-02 10:24:30
  */
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -107,6 +107,7 @@ mixin CurtainSpecBinding on CurtainGoodsBinding {
   }
 
   Future _getRoomAttrData() {
+    return Future.value(false);
     // return OTPService.skuAttr(context, params: {'goods_id': goodsId, 'type': 1})
     //     .then((ProductSkuAttrWrapperResp response) {
     //   if (response?.valid == true) {

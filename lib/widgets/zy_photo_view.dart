@@ -65,6 +65,8 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class ZYPhotoView extends StatelessWidget {
   final String imgUrl;
@@ -102,8 +104,8 @@ class ZYPhotoView extends StatelessWidget {
             child: Container(
               alignment: Alignment.centerLeft,
               child: isNetworkImg
-                  ? Image.network(
-                      imgUrl,
+                  ? ZYNetImage(
+                      imgPath: imgUrl,
                       width: width,
                       fit: fit,
                       height: height,
@@ -133,7 +135,7 @@ class ZYPhotoPreviewer extends StatelessWidget {
       this.backgroundDecoration,
       this.heroTag,
       this.imageProvider,
-      this.loadingWidget,
+      this.loadingWidget = const LoadingCircle(),
       this.maxScale,
       this.minScale})
       : super(key: key);

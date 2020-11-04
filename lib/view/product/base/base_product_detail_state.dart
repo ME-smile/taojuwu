@@ -2,10 +2,11 @@
  * @Description: 商品详情数据转态的基类
  * @Author: iamsmiling
  * @Date: 2020-10-29 14:10:44
- * @LastEditTime: 2020-10-30 13:51:30
+ * @LastEditTime: 2020-11-04 12:30:42
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
+import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/view/product/mixin/base_product_holder.dart';
 import 'package:taojuwu/view/product/mixin/client_select_listener.dart';
@@ -48,6 +49,7 @@ class BaseProductDetailPageState<T> extends State<BaseProductDetailPage>
     super.relase();
     super.clear();
     Application.routeObserver.unsubscribe(this);
+    Application.eventBus.fire(AddToCartEvent(0));
     super.dispose();
   }
 
@@ -60,5 +62,11 @@ class BaseProductDetailPageState<T> extends State<BaseProductDetailPage>
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+
+  @override
+  void didPop() {
+    super.clear();
+    super.didPop();
   }
 }

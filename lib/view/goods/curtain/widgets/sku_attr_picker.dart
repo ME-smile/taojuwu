@@ -2,7 +2,7 @@
  * @Description: //弹窗
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-10 17:58:57
+ * @LastEditTime: 2020-11-02 15:14:44
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +64,7 @@ class SkuAttrPicker extends StatelessWidget {
                   ],
                 )),
             Positioned(
-              child: InkWell(
+              child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).pop();
                 },

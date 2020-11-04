@@ -2,7 +2,7 @@
  * @Description: 软装方案立即购买弹窗
  * @Author: iamsmiling
  * @Date: 2020-10-10 16:04:27
- * @LastEditTime: 2020-10-23 15:33:16
+ * @LastEditTime: 2020-11-04 11:59:16
  */
 
 import 'package:flutter/cupertino.dart';
@@ -287,7 +287,9 @@ class _CurtainAttrEditableCardState extends State<CurtainAttrEditableCard> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         child: Text(
-                            '默认数据：宽${widget.bean?.width ?? 0.0}米，高${widget.bean?.height ?? 0.0}米'),
+                          '默认数据:宽:${widget.bean?.width ?? 0.0}米、高:${widget.bean?.height ?? 0.0}米、${widget.bean?.roomAttr?.selectedAttrName}',
+                          style: TextStyle(fontSize: 13),
+                        ),
                       ),
                       GestureDetector(
                         onTap: () {

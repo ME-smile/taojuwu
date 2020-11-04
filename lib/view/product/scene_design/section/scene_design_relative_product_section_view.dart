@@ -2,7 +2,7 @@
  * @Description: 场景详情 相关商品视图
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:16:05
- * @LastEditTime: 2020-10-31 07:32:09
+ * @LastEditTime: 2020-11-03 17:51:57
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
@@ -40,7 +40,7 @@ class SceneDesignRelativeProductSectionView extends StatelessWidget {
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  childAspectRatio: 0.8,
+                  childAspectRatio: 0.75,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 8),
               itemBuilder: (BuildContext context, int index) {
@@ -64,6 +64,7 @@ class SceneDesignRelativeProductSectionView extends StatelessWidget {
                     // showDesignProductDetailModal(context, bean, fromProductBean)
                   },
                   horizontalPadding: 12,
+                  verticalPadding: 7.2,
                 )
               ],
             )

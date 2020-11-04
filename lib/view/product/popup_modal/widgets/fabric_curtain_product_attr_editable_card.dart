@@ -2,7 +2,7 @@
  * @Description:布艺帘商品商品编辑卡片
  * @Author: iamsmiling
  * @Date: 2020-10-23 14:17:14
- * @LastEditTime: 2020-10-28 10:02:37
+ * @LastEditTime: 2020-11-02 10:15:19
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +36,7 @@ class _FabricCurtainProductAttrEditableCardState
             CurtainType.FabricCurtainType,
             setState: setState,
           ),
-          BaseCurtainProductAttrGridViewCard(bean?.attrList),
+          BaseCurtainProductAttrGridViewCard(bean, setState),
         ],
       ),
     );

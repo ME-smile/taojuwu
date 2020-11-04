@@ -2,7 +2,7 @@
  * @Description: 窗帘  窗型 飘窗 盒 的选择
  * @Author: iamsmiling
  * @Date: 2020-10-14 10:03:41
- * @LastEditTime: 2020-10-26 10:21:04
+ * @LastEditTime: 2020-11-02 09:25:28
  */
 import 'package:taojuwu/utils/common_kit.dart';
 
@@ -10,7 +10,8 @@ class WindowAttrOptionBean {
   String name;
   String img;
   bool isChecked;
-  WindowAttrOptionBean(this.name, this.img, {this.isChecked = false});
+  int id;
+  WindowAttrOptionBean(this.id, this.name, this.img, {this.isChecked = false});
 
   WindowAttrOptionBean.fromJson(Map<String, dynamic> json) {
     name = json['name'];

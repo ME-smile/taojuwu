@@ -2,7 +2,7 @@
  * @Description: 相关商品 数据模型  同料商品
  * @Author: iamsmiling
  * @Date: 2020-10-22 16:28:55
- * @LastEditTime: 2020-10-29 09:23:16
+ * @LastEditTime: 2020-11-03 15:48:48
  */
 import 'package:flutter/cupertino.dart';
 import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
@@ -16,12 +16,12 @@ class RelativeProductBean extends BaseProductBean {
   double get totalPrice => 0.0;
 
   @override
-  Future addToCart(BuildContext context) {
+  Future addToCart(BuildContext context, {Function callback}) {
     throw UnimplementedError();
   }
 
   @override
-  Future buy(BuildContext context) {
+  Future buy(BuildContext context, {Function callback}) {
     return Future.value(false);
   }
 

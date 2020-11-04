@@ -2,7 +2,7 @@
  * @Description: 处理窗帘样式 安装选项 打开方式相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-29 16:08:31
- * @LastEditTime: 2020-10-20 11:21:12
+ * @LastEditTime: 2020-11-02 09:27:58
  */
 import 'package:taojuwu/repository/shop/sku_attr/window_style_sku_option.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -11,21 +11,21 @@ import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart'
 mixin CurtainStyleSelectorBinding on CurtainGoodsBinding {
   //窗型列表
   List<WindowAttrOptionBean> typeOptions = [
-    WindowAttrOptionBean('单窗', 'single_window_pattern.png', isChecked: true),
-    WindowAttrOptionBean('L型窗', 'L_window_pattern.png'),
-    WindowAttrOptionBean('U型窗', 'U_window_pattern.png')
+    WindowAttrOptionBean(1, '单窗', 'single_window_pattern.png', isChecked: true),
+    WindowAttrOptionBean(2, 'L型窗', 'L_window_pattern.png'),
+    WindowAttrOptionBean(3, 'U型窗', 'U_window_pattern.png')
   ];
 
   // 有无飘窗
   List<WindowAttrOptionBean> bayOptions = [
-    WindowAttrOptionBean('非飘窗', 'not_bay_window.png', isChecked: true),
-    WindowAttrOptionBean('飘窗', 'bay_window.png'),
+    WindowAttrOptionBean(1, '非飘窗', 'not_bay_window.png', isChecked: true),
+    WindowAttrOptionBean(2, '飘窗', 'bay_window.png'),
   ];
 
   // 是否有盒
   List<WindowAttrOptionBean> boxOptions = [
-    WindowAttrOptionBean('无盒', 'window_no_can.png', isChecked: true),
-    WindowAttrOptionBean('有盒', 'not_bay_window.png')
+    WindowAttrOptionBean(1, '无盒', 'window_no_can.png', isChecked: true),
+    WindowAttrOptionBean(2, '有盒', 'not_bay_window.png')
   ];
   //当前的窗帘样式 单窗 L窗 U窗,默认单窗
   String get windowType => getSelectedOption(typeOptions)?.name ?? '单窗';

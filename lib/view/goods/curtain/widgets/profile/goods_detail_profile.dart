@@ -2,13 +2,11 @@
  * @Description: //商品图片下方的简介
  * @Author: iamsmiling
  * @Date: 2020-09-27 13:54:32
- * @LastEditTime: 2020-10-15 15:03:04
+ * @LastEditTime: 2020-11-02 10:23:05
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
-import 'package:taojuwu/view/goods/base/cart_button.dart';
-import 'package:taojuwu/view/goods/base/like_button.dart';
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 
 class GoodsDetailProfile extends StatelessWidget {
@@ -40,18 +38,18 @@ class GoodsDetailProfile extends StatelessWidget {
                       TextSpan(
                           text: bean?.goodsName ?? '', style: textTheme.caption)
                     ])),
-                Container(
-                  padding: EdgeInsets.only(bottom: 10),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: 20),
-                        child: LikeButton(),
-                      ),
-                      CartButton()
-                    ],
-                  ),
-                ),
+                // Container(
+                //   padding: EdgeInsets.only(bottom: 10),
+                //   child: Row(
+                //     children: [
+                //       Padding(
+                //         padding: EdgeInsets.only(right: 20),
+                //         child: LikeButton(),
+                //       ),
+                //       CartButton()
+                //     ],
+                //   ),
+                // ),
               ],
             ),
             Text.rich(TextSpan(

@@ -2,7 +2,7 @@
  * @Description: 为你推荐商品
  * @Author: iamsmiling
  * @Date: 2020-10-12 14:04:03
- * @LastEditTime: 2020-10-16 10:27:30
+ * @LastEditTime: 2020-11-02 17:22:50
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
@@ -32,21 +32,24 @@ class RecommendGoodsSectionView extends StatelessWidget {
                       TitleTip(title: '为你推荐'),
                     ]),
               ),
-              GridView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  padding: EdgeInsets.all(5),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.72,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 8),
-                  itemCount: goodsList != null && goodsList.isNotEmpty
-                      ? goodsList.length
-                      : 0,
-                  itemBuilder: (BuildContext context, int i) {
-                    return GridCard(goodsList[i]);
-                  })
+              Container(
+                color: const Color(0xFFF2F2F2),
+                child: GridView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(5),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.72,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 8),
+                    itemCount: goodsList != null && goodsList.isNotEmpty
+                        ? goodsList.length
+                        : 0,
+                    itemBuilder: (BuildContext context, int i) {
+                      return GridCard(goodsList[i]);
+                    }),
+              )
 
               // Flexible(child: )
             ],

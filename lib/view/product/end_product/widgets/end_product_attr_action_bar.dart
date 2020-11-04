@@ -2,7 +2,7 @@
  * @Description: 成品属性选择栏目
  * @Author: iamsmiling
  * @Date: 2020-10-28 15:41:54
- * @LastEditTime: 2020-10-28 16:58:25
+ * @LastEditTime: 2020-11-04 11:13:20
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
@@ -22,7 +22,7 @@ class EndProductAttrActionBar extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         color: themeData.primaryColor,
-        margin: EdgeInsets.only(bottom: 8),
+        // margin: EdgeInsets.only(bottom: 8),
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         // padding: EdgeInsets.symmetric(vertical: 10),
         child: Row(
@@ -39,7 +39,7 @@ class EndProductAttrActionBar extends StatelessWidget {
                         width: 10,
                       )),
                       TextSpan(
-                        text: bean?.selectedOptionsName,
+                        text: bean?.selectedOptionsName ?? '请选择商品规格',
                       )
                     ]),
                 maxLines: 1,
@@ -48,7 +48,10 @@ class EndProductAttrActionBar extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                showEndProductDetailModalPopup(context, bean).whenComplete(() {
+                showEndProductDetailModalPopup(
+                  context,
+                  bean,
+                ).whenComplete(() {
                   setState(() {});
                 });
                 // selectAttrOption(provider, () {

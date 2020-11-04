@@ -2,8 +2,10 @@
  * @Description: 所有窗帘类的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:11:06
- * @LastEditTime: 2020-10-31 13:05:14
+ * @LastEditTime: 2020-11-04 11:06:56
  */
+
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
@@ -39,7 +41,10 @@ abstract class BaseCurtainProductBean extends AbstractCurtainProductBean {
   //是否为测量单选品
   bool get isMeasureOrder => measureData?.orderGoodsId != null;
   BaseCurtainProductBean.fromJson(Map<String, dynamic> json)
-      : super.fromJson(json); //空间属性
+      : super.fromJson(json) {
+    measureData.widthCM = width == null ? null : width * 100;
+    measureData.heightCM = height == null ? null : height * 100;
+  } //空间属性
 
   Map<dynamic, dynamic> get attrArgs {
     Map<dynamic, dynamic> params = {};
@@ -238,8 +243,6 @@ abstract class BaseCurtainProductBean extends AbstractCurtainProductBean {
   bool get isValidSize => _isValidWidth() && _isValidHeight();
 
   Future addToCartRequest() {
-    print(cartArgs);
-    print('__________++++++++++');
     return OTPService.addCart(params: cartArgs).then((ZYResponse response) {
       if (response?.valid == true) {
         ToastKit.showSuccessDIYInfo('加入购物车成功');
@@ -250,16 +253,16 @@ abstract class BaseCurtainProductBean extends AbstractCurtainProductBean {
     }).catchError((err) => err);
   }
 
-  // 测装数据参数
-  Map<String, dynamic> get mesaureDataArg {
-    return {
-      'width': widthCM,
-      'height': heightCM,
-      'vertical_ground_height': deltaYCM,
-      'goods_id': goodsId,
-      'install_room': roomAttr?.selcetedAttrBean?.id,
-    };
-  }
+  // // 测装数据参数
+  // Map<String, dynamic> get mesaureDataArg {
+  //   return {
+  //     'width': widthCM,
+  //     'height': heightCM,
+  //     'vertical_ground_height': deltaYCM,
+  //     'goods_id': goodsId,
+  //     'install_room': roomAttr?.selcetedAttrBean?.id,
+  //   };
+  // }
 
   //保存侧窗数据接口
   Future saveMeasure(BuildContext context) {
@@ -275,4 +278,118 @@ abstract class BaseCurtainProductBean extends AbstractCurtainProductBean {
 
   @override
   int get skuId => skuList?.first?.skuId ?? 0;
+
+  @override
+  Future addToCart(BuildContext context, {Function callback}) {
+    if (hasSetSize()) {
+      return saveMeasure(context)
+          .then((value) => value != false ? addToCartRequest() : '');
+    }
+    if (callback != null) callback();
+    return Future.value(false);
+  }
+
+  @override
+  Future buy(BuildContext context, {Function callback}) {
+    if (hasSetSize()) {
+      return saveMeasure(context)
+          .then((value) => value != false ? super.buy(context) : '');
+    }
+    if (callback != null) callback();
+    return Future.value(false);
+    // throw UnimplementedError();
+  }
+
+  bool hasSetSize() {
+    if (measureData?.hasSetSize == false) {
+      ToastKit.showInfo('请先填写测装数据哦');
+      return false;
+    }
+    return true;
+  }
+
+  // 测装数据参数
+  Map<String, dynamic> get mesaureDataArg {
+    return {
+      'dataId': styleSelector.styleOptionId,
+      'width': widthCM,
+      'height': heightCM,
+      'vertical_ground_height': deltaYCM,
+      'goods_id': goodsId,
+      'install_room': roomAttr?.selcetedAttrBean?.id,
+      // 'install_room': roomAttr?.selcetedAttrBean?.id,
+      'data': jsonEncode({
+        '${styleSelector.styleOptionId}': {
+          'name': styleSelector.windowStyleStr,
+          "install_room": "0",
+          'w': '$widthCM',
+          'h': '$heightCM',
+          '13': attrList?.last?.toJson(),
+          'selected': {
+            '安装选项': [styleSelector?.curInstallMode?.name ?? ''],
+            '打开方式': styleSelector?.openModeData
+          }
+        }
+      })
+    };
+  }
+
+  @override
+  get cartArgs => {
+        // 'measure_data': mesaureDataArg,
+        'wc_attr': jsonEncode(attrArgs),
+        'measure_id': measureData?.id,
+        'estimated_price': totalPrice,
+        'client_uid': clientId,
+        'is_shade': 1,
+        'cart_detail': jsonEncode({
+          'sku_id': '$skuId',
+          'goods_id': '$goodsId',
+          'goods_name': '$goodsName',
+          'shop_id': '$shopId',
+          'price': '$price',
+          'picture': '$picture',
+          'num': '$count',
+        })
+      };
+  @override
+  List<ProductSkuAttrBean> filterCraft(List<ProductSkuAttrBean> list) {
+    if (list?.isNotEmpty != true) return [];
+    // 进行第一步筛选 根据有义务轨道
+    String keyword0 = 'GD';
+    List<ProductSkuAttrBean> temp1 = [];
+    // 有盒
+    if (styleSelector?.getFirst(styleSelector?.boxOptionList)?.id == 2) {
+      for (int i = 0; i < list?.length; i++) {
+        ProductSkuAttrBean bean = list[i];
+        if (bean?.name?.contains(keyword0) == true) {
+          temp1.add(bean);
+        }
+      }
+    } else {
+      temp1 = list;
+    }
+    // 进行第二步过滤
+    List<ProductSkuAttrBean> temp2 = [];
+    String keyword1 = '打孔';
+    String keyword2 = 'LMG';
+    // 如果需要打孔
+    if (temp1?.isNotEmpty != true) return [];
+    if (curCanopyAttrBean?.name?.contains(keyword1) == true) {
+      for (int i = 0; i < temp1.length; i++) {
+        ProductSkuAttrBean bean = list[i];
+        if (bean?.name?.contains(keyword2) == true) {
+          temp2.add(bean);
+        }
+      }
+    } else {
+      temp2 = temp1;
+    }
+    return temp2;
+  }
+
+  ProductSkuAttr get craftSkuAttr {
+    if (attrList?.isNotEmpty != true) return null;
+    return attrList?.firstWhere((e) => e.type == 4, orElse: () => null);
+  }
 }

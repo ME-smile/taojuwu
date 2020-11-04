@@ -9,21 +9,21 @@ import 'window_style_sku_option.dart';
 class WindowStyle {
   //窗型列表
   List<WindowAttrOptionBean> typeOptions = [
-    WindowAttrOptionBean('单窗', 'single_window_pattern.png', isChecked: true),
-    WindowAttrOptionBean('L型窗', 'L_window_pattern.png'),
-    WindowAttrOptionBean('U型窗', 'U_window_pattern.png')
+    WindowAttrOptionBean(1, '单窗', 'single_window_pattern.png', isChecked: true),
+    WindowAttrOptionBean(2, 'L型窗', 'L_window_pattern.png'),
+    WindowAttrOptionBean(3, 'U型窗', 'U_window_pattern.png')
   ];
 
   // 有无飘窗
   List<WindowAttrOptionBean> bayOptions = [
-    WindowAttrOptionBean('非飘窗', 'not_bay_window.png', isChecked: true),
-    WindowAttrOptionBean('飘窗', 'bay_window.png'),
+    WindowAttrOptionBean(1, '非飘窗', 'not_bay_window.png', isChecked: true),
+    WindowAttrOptionBean(2, '飘窗', 'bay_window.png'),
   ];
 
   // 是否有盒
   List<WindowAttrOptionBean> boxOptions = [
-    WindowAttrOptionBean('无盒', 'window_no_can.png', isChecked: true),
-    WindowAttrOptionBean('有盒', 'not_bay_window.png')
+    WindowAttrOptionBean(1, '无盒', 'window_no_can.png', isChecked: true),
+    WindowAttrOptionBean(2, '有盒', 'not_bay_window.png')
   ];
 
   //获取选中的选项

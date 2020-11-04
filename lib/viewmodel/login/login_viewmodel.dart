@@ -41,7 +41,7 @@ class LoginViewModel with ChangeNotifier {
   }
 
   // 登录模式 0代表手机登录 1代表密码登录
-  bool isPwdMode = true;
+  bool isPwdMode = false;
 
   /*
   *

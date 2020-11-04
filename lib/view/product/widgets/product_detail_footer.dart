@@ -2,7 +2,7 @@
  * @Description: 商品详情底部
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:15:20
- * @LastEditTime: 2020-10-29 13:36:20
+ * @LastEditTime: 2020-11-03 15:55:32
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
@@ -10,7 +10,9 @@ import 'package:taojuwu/view/product/widgets/base/purchase_action_bar.dart';
 
 class ProductDeatilFooter extends StatelessWidget {
   final BaseProductBean bean;
-  const ProductDeatilFooter(this.bean, {Key key}) : super(key: key);
+  final Function callback;
+  const ProductDeatilFooter(this.bean, {Key key, this.callback})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +35,12 @@ class ProductDeatilFooter extends StatelessWidget {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
             ])),
           ),
-          Expanded(flex: 3, child: PurchaseActionBar(bean))
+          Expanded(
+              flex: 3,
+              child: PurchaseActionBar(
+                bean,
+                callback: callback,
+              ))
         ],
       ),
     );

@@ -2,12 +2,13 @@
  * @Description: 软装方案弹窗详情头部
  * @Author: iamsmiling
  * @Date: 2020-10-23 15:30:27
- * @LastEditTime: 2020-10-23 15:32:15
+ * @LastEditTime: 2020-11-04 12:18:51
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
-import 'package:taojuwu/widgets/zy_netImage.dart';
+import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/zy_photo_view.dart';
 
 class SoftDesignModalHeader extends StatelessWidget {
   final SoftDesignProductBean bean;
@@ -22,8 +23,9 @@ class SoftDesignModalHeader extends StatelessWidget {
             width: 90,
             child: AspectRatio(
               aspectRatio: 1,
-              child: ZYNetImage(
-                imgPath: bean?.picture,
+              child: ZYPhotoView(
+                UIKit.getNetworkImgPath(bean?.picture),
+                tag: bean?.picture,
               ),
             ),
           ),

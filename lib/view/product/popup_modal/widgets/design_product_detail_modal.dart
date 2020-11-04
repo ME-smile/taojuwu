@@ -2,16 +2,14 @@
  * @Description: 软装方案详情
  * @Author: iamsmiling
  * @Date: 2020-10-23 15:34:30
- * @LastEditTime: 2020-10-31 12:10:40
+ * @LastEditTime: 2020-11-03 16:49:45
  */
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
-import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/repository/shop/soft_project_bean.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
@@ -22,6 +20,7 @@ import 'package:taojuwu/view/product/mixin/style_selector_holder.dart';
 import 'package:taojuwu/view/product/popup_modal/widgets/end_product_attr_editable_card.dart';
 import 'package:taojuwu/view/product/popup_modal/widgets/rolling_curtain_product_attr_editable_card.dart';
 import 'package:taojuwu/view/product/widgets/base/purchase_action_bar.dart';
+import 'package:taojuwu/widgets/loading.dart';
 
 import 'fabric_curtain_product_attr_editable_card.dart';
 import 'soft_design_modal_header.dart';
@@ -56,7 +55,7 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
   }
 
   void _fetchData() {
-    OTPService.softDetail(context, params: {'scenes_id': 47})
+    OTPService.softDetail(context, params: {'scenes_id': id})
         .then((SoftProjectDetailBeanResp response) {
           if (response?.valid == true) {
             bean = response?.data;
@@ -77,9 +76,7 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
     goodsList?.forEach((e) {
       if (e is BaseCurtainProductBean) {
         e.attrList = ProductAttrHolder.copy();
-        print('_____________++++++++++++++');
-        print(roomAttr);
-        print(roomAttr?.toJson());
+
         e.roomAttr = roomAttr?.copy();
 
         // ignore: unnecessary_statements
@@ -116,41 +113,60 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            SoftDesignModalHeader(bean),
-            Divider(
-              thickness: 8,
-              color: const Color(0xFFF8F8F8),
+    return PageTransitionSwitcher(
+      transitionBuilder: (
+        Widget child,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+      ) {
+        return FadeThroughTransition(
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          child: child,
+        );
+      },
+      child: isLoading
+          ? LoadingCircle()
+          : Scaffold(
+              backgroundColor: Theme.of(context).primaryColor,
+              body: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    SoftDesignModalHeader(bean),
+                    Divider(
+                      thickness: 8,
+                      color: const Color(0xFFF8F8F8),
+                    ),
+                    Expanded(
+                        child: ListView.separated(
+                            shrinkWrap: true,
+                            itemBuilder: (BuildContext context, int i) {
+                              SingleProductBean item = goodsList[i];
+                              return item.productType ==
+                                      ProductType.EndProductType
+                                  ? EndProductAttrEditableCard(item)
+                                  : item.productType ==
+                                          ProductType.FabricCurtainProductType
+                                      ? FabricCurtainProductAttrEditableCard(
+                                          item)
+                                      : RollingCurtainProductAttrEditableCard(
+                                          item);
+                            },
+                            separatorBuilder: (BuildContext context, int i) =>
+                                Divider(
+                                  thickness: 8,
+                                  color: const Color(0xFFF8F8F8),
+                                ),
+                            itemCount: goodsList?.length ?? 0))
+                  ],
+                ),
+              ),
+              bottomNavigationBar: Container(
+                margin: EdgeInsets.all(16),
+                child: PurchaseActionBar(bean),
+              ),
             ),
-            Expanded(
-                child: ListView.separated(
-                    shrinkWrap: true,
-                    itemBuilder: (BuildContext context, int i) {
-                      SingleProductBean item = goodsList[i];
-                      return item.productType == ProductType.EndProductType
-                          ? EndProductAttrEditableCard(item)
-                          : item.productType ==
-                                  ProductType.FabricCurtainProductType
-                              ? FabricCurtainProductAttrEditableCard(item)
-                              : RollingCurtainProductAttrEditableCard(item);
-                    },
-                    separatorBuilder: (BuildContext context, int i) => Divider(
-                          thickness: 8,
-                          color: const Color(0xFFF8F8F8),
-                        ),
-                    itemCount: goodsList?.length ?? 0))
-          ],
-        ),
-      ),
-      bottomNavigationBar: Container(
-        margin: EdgeInsets.all(16),
-        child: PurchaseActionBar(bean),
-      ),
     );
   }
 

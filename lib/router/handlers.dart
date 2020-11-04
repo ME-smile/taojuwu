@@ -6,7 +6,7 @@ import 'package:taojuwu/application.dart';
 import 'package:taojuwu/export/export_pages.dart';
 import 'package:taojuwu/view/after_sale_service/after_sale_service_page.dart';
 
-import 'package:taojuwu/view/cart/cart_page.dart';
+import 'package:taojuwu/view/cart/cart_page2.dart';
 import 'package:taojuwu/view/collect/collect_page.dart';
 import 'package:taojuwu/view/goods/curtain/curtain_mall_page.dart';
 import 'package:taojuwu/view/goods/curtain/subPages/edit_goods_attr_page.dart';
@@ -34,6 +34,7 @@ import 'package:taojuwu/view/order/subPages/order_edit_log_page.dart';
 import 'package:taojuwu/view/order/subPages/order_mainfest_page.dart';
 import 'package:taojuwu/view/order/subPages/order_search_page.dart';
 import 'package:taojuwu/view/product/curtain/fabric_curtain_product_detail_page.dart';
+import 'package:taojuwu/view/product/curtain/gauze_curtain_product_detail_page.dart';
 import 'package:taojuwu/view/product/curtain/rolling_curtain_product_detail_page.dart';
 import 'package:taojuwu/view/product/end_product/end_product_detail_page.dart';
 import 'package:taojuwu/view/product/scene_design/scene_design_page.dart';
@@ -143,6 +144,19 @@ class RouteHandler {
   static Future goRollingCurtainProductDetailPage(BuildContext context, int id,
       {bool replace: false}) {
     return _jumpTo(context, '${Routes.rollingCurtainProducDetail}?id=$id',
+        maintainState: true, replace: replace);
+  }
+
+  static Handler gauzeCurtainProductDetail = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int goodsId = int.parse(params['id']?.first);
+    return GauzeCurtainProductDetailPage(
+      goodsId,
+    );
+  });
+  static Future goGauzeCurtainProductDetailPage(BuildContext context, int id,
+      {bool replace: false}) {
+    return _jumpTo(context, '${Routes.gauzeCurtainProductDetail}?id=$id',
         maintainState: true, replace: replace);
   }
 

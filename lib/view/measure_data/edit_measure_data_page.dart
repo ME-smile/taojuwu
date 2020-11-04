@@ -2,10 +2,11 @@
  * @Description: 测装数据填写页面
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-29 09:13:53
+ * @LastEditTime: 2020-10-31 17:36:21
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/style_selector/curtain_style_selector.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -18,7 +19,7 @@ import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
 
 class EditMeasureDataPage extends StatefulWidget {
-  final FabricCurtainProductBean bean;
+  final BaseCurtainProductBean bean;
   const EditMeasureDataPage(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -26,7 +27,7 @@ class EditMeasureDataPage extends StatefulWidget {
 }
 
 class _EditMeasureDataPageState extends State<EditMeasureDataPage> {
-  FabricCurtainProductBean get bean => widget.bean;
+  BaseCurtainProductBean get bean => widget.bean;
   CurtainStyleSelector get styleSelector => widget?.bean?.styleSelector;
 
   ValueNotifier<String> valueNotifier;

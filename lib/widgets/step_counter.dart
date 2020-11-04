@@ -5,9 +5,9 @@ import 'package:taojuwu/repository/base/count_model.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 
-class StepCounter extends StatefulWidget {
+class StepCounter<T> extends StatefulWidget {
   final int count;
-  final CountModel model;
+  final T model;
   final Function callback;
   StepCounter({Key key, this.count = 1, this.model, this.callback})
       : super(key: key);

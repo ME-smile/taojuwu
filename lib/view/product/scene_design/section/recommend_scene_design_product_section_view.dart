@@ -2,7 +2,7 @@
  * @Description: 瀑布流视图
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:23:34
- * @LastEditTime: 2020-10-23 11:25:55
+ * @LastEditTime: 2020-11-04 10:42:20
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -35,11 +35,11 @@ class RecommendSceneDesignProductSectionView extends StatelessWidget {
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) =>
                 SceneProjectGoodsCard(
-              imgFlex: index.isEven ? 5 : 1,
+              imgFlex: index.isEven ? 3 : 1,
               bean: list[index],
             ),
             staggeredTileBuilder: (int index) =>
-                new StaggeredTile.count(2, index.isEven ? 2.5 : 3.5),
+                new StaggeredTile.count(2, index == 0 ? 2.4 : 3.0),
             mainAxisSpacing: 12,
             crossAxisSpacing: 12.0,
           )

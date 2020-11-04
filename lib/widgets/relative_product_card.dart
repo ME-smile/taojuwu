@@ -2,11 +2,12 @@
  * @Description: 相关产品卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:40:20
- * @LastEditTime: 2020-10-31 08:17:19
+ * @LastEditTime: 2020-11-04 11:01:03
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
 import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -24,6 +25,10 @@ class RelativeProductCard extends StatelessWidget {
     }
     if (type == 2) {
       return RouteHandler.goRollingCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
+    if (type == 3) {
+      return RouteHandler.goGauzeCurtainProductDetailPage(
           context, bean?.goodsId);
     }
   }
@@ -83,17 +88,20 @@ class RelativeProductCard extends StatelessWidget {
                       style: TextStyle(
                           fontSize: 13,
                           color: const Color(0xFF1B1B1B),
-                          fontWeight: FontWeight.bold)),
+                          fontWeight: FontWeight.w500)),
                   textAlign: TextAlign.center,
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 4),
-                  child: Text('¥${bean.marketPrice}',
-                      style: TextStyle(
-                        fontSize: 8,
-                        color: const Color(0xFF999999),
-                        decoration: TextDecoration.lineThrough,
-                      )),
+                Visibility(
+                  visible: !CommonKit.isNumNullOrZero(bean?.marketPrice),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 4),
+                    child: Text('¥${bean.marketPrice}',
+                        style: TextStyle(
+                          fontSize: 8,
+                          color: const Color(0xFF999999),
+                          decoration: TextDecoration.lineThrough,
+                        )),
+                  ),
                 )
               ],
             )

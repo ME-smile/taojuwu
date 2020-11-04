@@ -18,32 +18,34 @@ class SoftProjectRecommendationSectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: TaojuwuColors.LIGHT_GREY_COLOR,
-      child: Column(
-        children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: TitleTip(
-              title: '场景推荐',
+    return GestureDetector(
+      child: Container(
+        color: TaojuwuColors.LIGHT_GREY_COLOR,
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: TitleTip(
+                title: '场景推荐',
+              ),
             ),
-          ),
-          StaggeredGridView.countBuilder(
-            crossAxisCount: 4,
-            itemCount: list.length,
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (BuildContext context, int index) =>
-                SceneProjectGoodsCard(
-              imgFlex: index.isEven ? 5 : 1,
-              bean: list[index],
-            ),
-            staggeredTileBuilder: (int index) =>
-                new StaggeredTile.count(2, index.isEven ? 2.5 : 3.5),
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12.0,
-          )
-        ],
+            StaggeredGridView.countBuilder(
+              crossAxisCount: 4,
+              itemCount: list.length,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) =>
+                  SceneProjectGoodsCard(
+                imgFlex: index.isEven ? 5 : 1,
+                bean: list[index],
+              ),
+              staggeredTileBuilder: (int index) =>
+                  new StaggeredTile.count(2, index.isEven ? 2.5 : 3.5),
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12.0,
+            )
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product/curtain/gauze_curtain_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
@@ -56,6 +57,7 @@ class ProductBeanDataWrapper {
   String goodsId;
   int skuId;
   SingleProductBean goodsDetail;
+  ProductBean goods;
   List<RelativeProductBean> relativeProductList = [];
   List<SceneDesignProductBean> sceneDesignProductList = [];
   List<SoftDesignProductBean> softDesignProductList = [];
@@ -64,6 +66,7 @@ class ProductBeanDataWrapper {
   ProductBeanDataWrapper.fromJson(Map<String, dynamic> map) {
     goodsId = map['goods_id'];
     skuId = CommonKit.parseInt(map['sku_id']);
+    goods = ProductBean.fromJson(map['goods_detail']);
     Map<String, dynamic> json = map['goods_detail'];
     int type = json['goods_type'];
     if (type == 0) {
@@ -74,6 +77,9 @@ class ProductBeanDataWrapper {
     }
     if (type == 2) {
       goodsDetail = RollingCurtainProductBean.fromJson(json);
+    }
+    if (type == 3) {
+      goodsDetail = GauzeCurtainProductBean.fromJson(json);
     }
     // goodsDetail = FabricCurtainProductBean.fromJson(map['goods_detail']);
     relativeProductList = CommonKit.parseList(map['related_goods'])

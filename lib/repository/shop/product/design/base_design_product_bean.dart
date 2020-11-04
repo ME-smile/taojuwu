@@ -2,14 +2,15 @@
  * @Description: 软装方案 场景设计商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:22:16
- * @LastEditTime: 2020-10-31 13:19:07
+ * @LastEditTime: 2020-11-03 15:49:32
  */
 
 import 'dart:convert';
 
-import 'package:common_utils/common_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/application.dart';
+import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
 import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
@@ -55,7 +56,7 @@ abstract class BaseDesignProductBean extends AbstractDesignProductBean {
   }
 
   @override
-  Future addToCart(BuildContext context) {
+  Future addToCart(BuildContext context, {Function callback}) {
     print('软装方案加入购物车');
 
     // Map<String, dynamic> params = {'client_uid': 395, 'cart_list': "$cartArgs"};
@@ -65,6 +66,7 @@ abstract class BaseDesignProductBean extends AbstractDesignProductBean {
     //     print('加入购物车成功');
     //   }
     // }).whenComplete(() {});
+
     return _addToCartRequest();
   }
 
@@ -73,21 +75,21 @@ abstract class BaseDesignProductBean extends AbstractDesignProductBean {
     // print({'client_uid': clientId, 'cart_list': cartArgs});
     // LogUtil.e({'client_uid': clientId, 'cart_list': cartArgs});
 
-    cartArgs?.forEach((e) {
-      print('________________________________________________');
-      print(e);
-      print('________________________________________________');
-    });
     return OTPService.addCartList(
             {'client_uid': clientId, 'cart_list': jsonEncode(cartArgs)})
         .then((ZYResponse response) {
-      print(response?.code);
-      ToastKit.showInfo(response?.message);
+      if (response?.valid == true) {
+        ToastKit.showInfo(response?.message);
+        Application.eventBus.fire(AddToCartEvent(response?.data));
+      }
+      // ToastKit.showInfo(response?.data);
+
+      // ToastKit.showInfo(response?.message);
     }).catchError((err) => err);
   }
 
   @override
-  Future buy(BuildContext context) {
+  Future buy(BuildContext context, {Function callback}) {
     _getMeasureIds(context).then((_) {
       super.buy(context);
     }).catchError((err) {

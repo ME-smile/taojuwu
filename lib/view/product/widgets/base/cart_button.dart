@@ -2,7 +2,7 @@
  * @Description: 加入购物车按钮
  * @Author: iamsmiling
  * @Date: 2020-10-28 15:04:13
- * @LastEditTime: 2020-10-31 13:16:15
+ * @LastEditTime: 2020-11-04 14:37:37
  */
 import 'dart:async';
 
@@ -19,6 +19,7 @@ import 'package:taojuwu/utils/ui_kit.dart';
 
 class CartButton extends StatefulWidget {
   final int count;
+
   const CartButton({Key key, this.count = 0}) : super(key: key);
 
   @override
@@ -28,7 +29,7 @@ class CartButton extends StatefulWidget {
 class _CartButtonState extends State<CartButton> {
   static int count = 0;
 
-  int clientId;
+  static int clientId;
 
   //监听选择客户的事件
   StreamSubscription _subscription;

@@ -95,6 +95,10 @@ class GridCard extends StatelessWidget {
       return RouteHandler.goRollingCurtainProductDetailPage(
           context, bean?.goodsId);
     }
+    if (type == 3) {
+      return RouteHandler.goGauzeCurtainProductDetailPage(
+          context, bean?.goodsId);
+    }
   }
 
   @override
@@ -105,61 +109,73 @@ class GridCard extends StatelessWidget {
       onTap: () {
         jump(context, bean?.goodsType);
       },
-      child: Container(
-        alignment: Alignment.center,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          // mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ZYNetImage(
-              imgPath: bean?.picCoverMid ?? '',
-              width: (width - 20) / 2,
-              height: (width - 20) / 2,
-              fit: BoxFit.cover,
-              callback: () {
-                jump(context, bean?.goodsType);
-              },
-            ),
-            Expanded(
-              child: Row(
-                children: <Widget>[
-                  Text(bean?.goodsName ?? '',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: UIKit.sp(30))),
-                  Offstage(
-                    offstage: bean?.isPromotionGoods == false,
-                    child: OnSaleTag(),
-                  ),
-                ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+        child: Container(
+          margin: EdgeInsets.only(top: 8),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: Theme.of(context).primaryColor,
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            // mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+                child: ZYNetImage(
+                  imgPath: bean?.picCoverMid ?? '',
+                  width: (width - 20) / 2,
+                  height: (width - 20) / 2,
+                  fit: BoxFit.cover,
+                  callback: () {
+                    jump(context, bean?.goodsType);
+                  },
+                ),
               ),
-            ),
-            Expanded(
-                child: Text.rich(TextSpan(
-                    text: '￥${bean.displayPrice ?? "0.00"}',
-                    style: TextStyle(fontSize: UIKit.sp(32)),
-                    children: [
-                  TextSpan(
-                    text: '起',
-                    style: themeData.textTheme.caption
-                        .copyWith(fontSize: UIKit.sp(22)),
-                  ),
-                  TextSpan(
-                    text: ' ',
-                  ),
-                  TextSpan(
-                      text: bean?.isPromotionGoods == true
-                          ? '￥${bean?.marketPrice}起'
-                          : '',
+              Expanded(
+                child: Row(
+                  children: <Widget>[
+                    Text(bean?.goodsName ?? '',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontSize: UIKit.sp(30))),
+                    Offstage(
+                      offstage: bean?.isPromotionGoods == false,
+                      child: OnSaleTag(),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                  child: Text.rich(TextSpan(
+                      text: '￥${bean.displayPrice ?? "0.00"}',
+                      style: TextStyle(fontSize: UIKit.sp(32)),
+                      children: [
+                    TextSpan(
+                      text: '起',
                       style: themeData.textTheme.caption
-                          .copyWith(decoration: TextDecoration.lineThrough)),
-                  // TextSpan(text: '\n'),
-                  // TextSpan(text: '11324'),
-                ]))),
-            // VSpacing(20),
-          ],
+                          .copyWith(fontSize: UIKit.sp(22)),
+                    ),
+                    TextSpan(
+                      text: ' ',
+                    ),
+                    TextSpan(
+                        text: bean?.isPromotionGoods == true
+                            ? '￥${bean?.marketPrice}起'
+                            : '',
+                        style: themeData.textTheme.caption
+                            .copyWith(decoration: TextDecoration.lineThrough)),
+                    // TextSpan(text: '\n'),
+                    // TextSpan(text: '11324'),
+                  ]))),
+              // VSpacing(20),
+            ],
+          ),
         ),
       ),
     );

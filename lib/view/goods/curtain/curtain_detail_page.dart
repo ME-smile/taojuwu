@@ -2,7 +2,7 @@
  * @Description: 商品详情
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-19 13:19:09
+ * @LastEditTime: 2020-11-02 10:19:01
  */
 
 import 'package:animations/animations.dart';

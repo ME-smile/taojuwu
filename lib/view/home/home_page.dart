@@ -67,16 +67,16 @@ class _HomePageState extends State<HomePage> {
         },
         'color': const Color(0xffDDE0E1)
       },
-      // {
-      //   'title': '数据中心',
-      //   'subtitle': '销售统计，清晰明了',
-      //   'icon': 'data@2x.png',
-      //   'callback': () {
-      //     ToastKit.showInfo('暂未开放');
-      //     // RouteHandler.goDataCenterPage(context);
-      //   },
-      //   'color': const Color(0xff0D0B14)
-      // },
+      {
+        'title': '数据中心',
+        'subtitle': '销售统计，清晰明了',
+        'icon': 'data@2x.png',
+        'callback': () {
+          // ToastKit.showInfo('暂未开放');
+          RouteHandler.goDataCenterPage(context);
+        },
+        'color': const Color(0xff0D0B14)
+      },
       {
         'title': '设置',
         'subtitle': '问题反馈，软件帮助',

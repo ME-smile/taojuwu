@@ -56,6 +56,7 @@ class Routes {
       '/fabricCurtainProductDetail';
   static const String rollingCurtainProducDetail =
       '/rollingCurtainProducDetail';
+  static const String gauzeCurtainProductDetail = '/gauzeCurtainProductDetail';
   static const String sceneDesign = '/sceneDesign';
 
   static void configureRoutes(fluro.Router router) {
@@ -113,6 +114,8 @@ class Routes {
         handler: RouteHandler.fabricCurtainProductDetail);
     router.define(rollingCurtainProducDetail,
         handler: RouteHandler.rollingCurtainProductDetail);
+    router.define(gauzeCurtainProductDetail,
+        handler: RouteHandler.gauzeCurtainProductDetail);
     router.define(sceneDesign, handler: RouteHandler.sceneDesign);
   }
 }

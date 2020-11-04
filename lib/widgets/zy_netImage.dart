@@ -2,7 +2,7 @@
  * @Description: 网络图片封装
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-16 10:54:47
+ * @LastEditTime: 2020-11-02 11:02:12
  */
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,7 +39,7 @@ class ZYNetImage extends StatelessWidget {
             fit: fit,
             fadeInDuration: Duration(milliseconds: needAnimation ? 200 : 10),
             placeholder: AssetImage(UIKit.getAssetsImagePath(
-              'goods_placeholder.png',
+              'placeholder_img.jpg',
             )),
             image: ExtendedNetworkImageProvider(
                 UIKit.getNetworkImgPath(imgPath),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/application.dart';
 
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/repository/shop/cart_list_model.dart';
@@ -1215,7 +1216,10 @@ class GoodsProvider with ChangeNotifier {
 
   void modifyCartAttr(BuildContext context,
       {Function callback, Map<String, dynamic> params}) {
+    print(params);
     params.addAll({'wc_attr': jsonEncode(cartAttrArg)});
+    print(params);
+    print(Application.sp.get('token'));
     OTPService.modifyCartAttr(context, params).then((ZYResponse response) {
       if (response?.valid == true) {
         GoodsAttrWrapper goodsAttrWrapper =

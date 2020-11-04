@@ -2,7 +2,7 @@
  * @Description: //所有商品的抽象类基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:03:47
- * @LastEditTime: 2020-10-30 15:17:56
+ * @LastEditTime: 2020-11-03 16:10:45
  */
 
 import 'dart:async';
@@ -32,17 +32,21 @@ enum ProductType {
 abstract class AbstractBaseProductBean {
   double get totalPrice;
 
-  Future addToCartAction(BuildContext context) {
-    return isClientIdNull ? Future.value(false) : addToCart(context);
+  Future addToCartAction(BuildContext context, {Function callback}) {
+    return isClientIdNull
+        ? Future.value(false)
+        : addToCart(context, callback: callback);
   }
 
-  Future buyAction(BuildContext context) {
-    return isClientIdNull ? Future.value(false) : buy(context);
+  Future buyAction(BuildContext context, {Function callback}) {
+    return isClientIdNull
+        ? Future.value(false)
+        : buy(context, callback: callback);
   }
 
-  Future addToCart(BuildContext context);
+  Future addToCart(BuildContext context, {Function callback});
 
-  Future buy(BuildContext context) {
+  Future buy(BuildContext context, {Function callback}) {
     return Navigator.of(context)
         .push(CupertinoPageRoute(builder: (BuildContext context) {
       return SubmitOrderPage(this);

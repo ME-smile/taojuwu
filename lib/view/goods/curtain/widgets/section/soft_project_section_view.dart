@@ -2,7 +2,7 @@
  * @Description: 软装方案
  * @Author: iamsmiling
  * @Date: 2020-10-09 14:30:06
- * @LastEditTime: 2020-10-20 10:07:34
+ * @LastEditTime: 2020-11-04 12:02:20
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ import 'package:taojuwu/view/goods/base/trailing_tip.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/popup_window/soft_project_popup_window.dart';
 import 'package:taojuwu/view/goods/soft_project/soft_project_page.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
-import 'package:taojuwu/widgets/zy_netImage.dart';
+import 'package:taojuwu/widgets/zy_photo_view.dart';
 import 'package:taojuwu/widgets/zy_plain_button.dart';
 
 class SoftProjectSectionView extends StatelessWidget {
@@ -99,8 +99,8 @@ class SoftProjectBeanCard extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 1.0,
-              child: ZYNetImage(
-                imgPath: bean.picture,
+              child: ZYPhotoView(
+                bean.picture,
               ),
             ),
             Expanded(

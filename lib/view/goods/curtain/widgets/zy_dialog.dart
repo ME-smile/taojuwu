@@ -63,199 +63,199 @@ class ZYDialog {
                 ),
               ),
               builder: (BuildContext context, ProductBeanResp response) {
-                // ProductBeanDataWrapper wrapper = response?.data;
-                // ProductBean bean = wrapper?.goodsDetail;
-                // return ChangeNotifierProvider(
-                //     create: (BuildContext context) => EndProductProvider(bean),
-                //     child: Consumer(builder: (BuildContext context,
-                //         EndProductProvider provider, __) {
-                //       return ClipRRect(
-                //         borderRadius: BorderRadius.only(
-                //             topRight: Radius.circular(10),
-                //             topLeft: Radius.circular(10)),
-                //         child: Container(
-                //           width: width,
-                //           height: height * .7,
-                //           child: Scaffold(
-                //             body: Stack(
-                //               children: <Widget>[
-                //                 Container(
-                //                     padding: EdgeInsets.all(16),
-                //                     child: StatefulBuilder(builder:
-                //                         (BuildContext context,
-                //                             StateSetter setState) {
-                //                       return Column(
-                //                         children: <Widget>[
-                //                           Row(
-                //                             children: <Widget>[
-                //                               Padding(
-                //                                 padding:
-                //                                     EdgeInsets.only(right: 14),
-                //                                 child: ZYNetImage(
-                //                                   imgPath: provider
-                //                                       ?.curProductSkuBean
-                //                                       ?.coverUrl,
-                //                                   width: UIKit.width(180),
-                //                                   height: UIKit.width(180),
-                //                                 ),
-                //                               ),
-                //                               Expanded(
-                //                                   child: Column(
-                //                                 crossAxisAlignment:
-                //                                     CrossAxisAlignment.start,
-                //                                 mainAxisAlignment:
-                //                                     MainAxisAlignment.end,
-                //                                 children: <Widget>[
-                //                                   Text(
-                //                                     '¥${provider?.curProductSkuBean?.price ?? ''}',
-                //                                     style: TextStyle(
-                //                                         color:
-                //                                             Color(0xFFFF6161),
-                //                                         fontSize: 18,
-                //                                         fontWeight:
-                //                                             FontWeight.w500),
-                //                                   ),
-                //                                   Text(
-                //                                     '已选:${provider?.checkedAttrText ?? ''}',
-                //                                     style: TextStyle(
-                //                                         fontSize: 14,
-                //                                         color:
-                //                                             Color(0xFF6D6D6D)),
-                //                                   )
-                //                                 ],
-                //                               ))
-                //                             ],
-                //                           ),
-                //                           Container(
-                //                             alignment: Alignment.centerLeft,
-                //                             child: Column(
-                //                               crossAxisAlignment:
-                //                                   CrossAxisAlignment.start,
-                //                               mainAxisAlignment:
-                //                                   MainAxisAlignment.start,
-                //                               children: <Widget>[
-                //                                 Padding(
-                //                                   padding: EdgeInsets.symmetric(
-                //                                       vertical:
-                //                                           UIKit.height(16)),
-                //                                   child: Text('数量'),
-                //                                 ),
-                //                                 StepCounter(
-                //                                   count: cartModel?.count,
-                //                                   model: cartModel,
-                //                                 ),
-                //                               ],
-                //                             ),
-                //                           ),
-                //                           Flexible(
-                //                             child: ListView.builder(
-                //                               shrinkWrap: true,
-                //                               padding: EdgeInsets.all(0),
-                //                               itemBuilder:
-                //                                   (BuildContext context,
-                //                                       int i) {
-                //                                 ProductBeanSpecListBean item =
-                //                                     provider?.specList[i];
+                ProductBeanDataWrapper wrapper = response?.data;
+                ProductBean bean = wrapper?.goods;
+                return ChangeNotifierProvider(
+                    create: (BuildContext context) => EndProductProvider(bean),
+                    child: Consumer(builder: (BuildContext context,
+                        EndProductProvider provider, __) {
+                      return ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(10),
+                            topLeft: Radius.circular(10)),
+                        child: Container(
+                          width: width,
+                          height: height * .7,
+                          child: Scaffold(
+                            body: Stack(
+                              children: <Widget>[
+                                Container(
+                                    padding: EdgeInsets.all(16),
+                                    child: StatefulBuilder(builder:
+                                        (BuildContext context,
+                                            StateSetter setState) {
+                                      return Column(
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                    EdgeInsets.only(right: 14),
+                                                child: ZYNetImage(
+                                                  imgPath: provider
+                                                      ?.curProductSkuBean
+                                                      ?.image,
+                                                  width: UIKit.width(180),
+                                                  height: UIKit.width(180),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                  child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: <Widget>[
+                                                  Text(
+                                                    '¥${provider?.curProductSkuBean?.price ?? ''}',
+                                                    style: TextStyle(
+                                                        color:
+                                                            Color(0xFFFF6161),
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  Text(
+                                                    '已选:${provider?.checkedAttrText ?? ''}',
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        color:
+                                                            Color(0xFF6D6D6D)),
+                                                  )
+                                                ],
+                                              ))
+                                            ],
+                                          ),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical:
+                                                          UIKit.height(16)),
+                                                  child: Text('数量'),
+                                                ),
+                                                StepCounter(
+                                                  count: cartModel?.count,
+                                                  model: cartModel,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Flexible(
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              padding: EdgeInsets.all(0),
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int i) {
+                                                ProductBeanSpecListBean item =
+                                                    provider?.specList[i];
 
-                //                                 return Column(
-                //                                   mainAxisAlignment:
-                //                                       MainAxisAlignment.start,
-                //                                   crossAxisAlignment:
-                //                                       CrossAxisAlignment.start,
-                //                                   children: <Widget>[
-                //                                     Padding(
-                //                                       padding:
-                //                                           EdgeInsets.symmetric(
-                //                                               vertical:
-                //                                                   UIKit.height(
-                //                                                       16)),
-                //                                       child:
-                //                                           Text(item?.specName),
-                //                                     ),
-                //                                     Wrap(
-                //                                       runSpacing: UIKit.sp(16),
-                //                                       spacing: UIKit.sp(24),
-                //                                       children: List.generate(
-                //                                           item?.value?.length,
-                //                                           (index) {
-                //                                         ProductBeanSpecValueBean
-                //                                             e =
-                //                                             item?.value[index];
-                //                                         return Container(
-                //                                           height: 26,
-                //                                           child: AspectRatio(
-                //                                             aspectRatio: 3,
-                //                                             child: ZYActionChip(
-                //                                               callback: () {
-                //                                                 item?.value
-                //                                                     ?.forEach(
-                //                                                         (element) {
-                //                                                   element?.selected =
-                //                                                       false;
-                //                                                 });
-                //                                                 setState(() {
-                //                                                   e.selected = !e
-                //                                                       .selected;
-                //                                                 });
-                //                                                 provider
-                //                                                     ?.skuList
-                //                                                     ?.forEach(
-                //                                                         (element) {
-                //                                                   if (element
-                //                                                           ?.attrValueItemsFormat ==
-                //                                                       provider
-                //                                                           ?.checkedOptionsValueStr) {
-                //                                                     provider?.skuId =
-                //                                                         element
-                //                                                             ?.skuId;
-                //                                                   }
-                //                                                 });
-                //                                               },
-                //                                               bean: ActionBean
-                //                                                   .fromJson({
-                //                                                 'text': e
-                //                                                     .specValueName,
-                //                                                 'is_checked':
-                //                                                     e.selected
-                //                                               }),
-                //                                             ),
-                //                                           ),
-                //                                         );
-                //                                       }),
-                //                                     )
-                //                                   ],
-                //                                 );
-                //                               },
-                //                               itemCount:
-                //                                   provider?.specList?.length ??
-                //                                       0,
-                //                             ),
-                //                           )
-                //                         ],
-                //                       );
-                //                     })),
-                //                 Positioned(
-                //                     top: 10,
-                //                     right: 10,
-                //                     child: InkWell(
-                //                       child: Icon(ZYIcon.close),
-                //                       onTap: () {
-                //                         Navigator.of(context).pop();
-                //                       },
-                //                     ))
-                //               ],
-                //             ),
-                //             bottomNavigationBar: Container(
-                //               margin: EdgeInsets.symmetric(vertical: 8),
-                //               child: ZYSubmitButton('确定', () {
-                //                 provider?.modifyEndProductAttr(context,
-                //                     cartModel: cartModel, callback: callback);
-                //               }),
-                //             ),
-                //           ),
-                //         ),
-                //       );
-                //     }));
+                                                return Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              vertical:
+                                                                  UIKit.height(
+                                                                      16)),
+                                                      child:
+                                                          Text(item?.specName),
+                                                    ),
+                                                    Wrap(
+                                                      runSpacing: UIKit.sp(16),
+                                                      spacing: UIKit.sp(24),
+                                                      children: List.generate(
+                                                          item?.value?.length,
+                                                          (index) {
+                                                        ProductBeanSpecValueBean
+                                                            e =
+                                                            item?.value[index];
+                                                        return Container(
+                                                          height: 26,
+                                                          child: AspectRatio(
+                                                            aspectRatio: 3,
+                                                            child: ZYActionChip(
+                                                              callback: () {
+                                                                item?.value
+                                                                    ?.forEach(
+                                                                        (element) {
+                                                                  element?.selected =
+                                                                      false;
+                                                                });
+                                                                setState(() {
+                                                                  e.selected = !e
+                                                                      .selected;
+                                                                });
+                                                                provider
+                                                                    ?.skuList
+                                                                    ?.forEach(
+                                                                        (element) {
+                                                                  if (element
+                                                                          ?.attrValueItemsFormat ==
+                                                                      provider
+                                                                          ?.checkedOptionsValueStr) {
+                                                                    provider?.skuId =
+                                                                        element
+                                                                            ?.skuId;
+                                                                  }
+                                                                });
+                                                              },
+                                                              bean: ActionBean
+                                                                  .fromJson({
+                                                                'text': e
+                                                                    .specValueName,
+                                                                'is_checked':
+                                                                    e.selected
+                                                              }),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }),
+                                                    )
+                                                  ],
+                                                );
+                                              },
+                                              itemCount:
+                                                  provider?.specList?.length ??
+                                                      0,
+                                            ),
+                                          )
+                                        ],
+                                      );
+                                    })),
+                                Positioned(
+                                    top: 10,
+                                    right: 10,
+                                    child: InkWell(
+                                      child: Icon(ZYIcon.close),
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ))
+                              ],
+                            ),
+                            bottomNavigationBar: Container(
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              child: ZYSubmitButton('确定', () {
+                                provider?.modifyEndProductAttr(context,
+                                    cartModel: cartModel, callback: callback);
+                              }),
+                            ),
+                          ),
+                        ),
+                      );
+                    }));
               });
         });
   }
@@ -380,18 +380,92 @@ class _CheckAttrModalState extends State<CheckAttrModal> {
                 runSpacing: 20,
                 children: List.generate(dict[title]['list'].length, (int i) {
                   var item = dict[title]['list'][i];
-                  // return OptionView(
-                  //   img: item.picture,
-                  //   text: item.name,
-                  //   price: '${item.price ?? ''}',
-                  //   showBorder:
-                  //       title != '配饰选择' ? tmp?.id == item?.id : item.isChecked,
-                  //   callback: () {
-                  //     dict[title]['tap'](item);
-                  //   },
-                  // );
+                  return OptionView(
+                    img: item.picture,
+                    text: item.name,
+                    price: '${item.price ?? ''}',
+                    showBorder:
+                        title != '配饰选择' ? tmp?.id == item?.id : item.isChecked,
+                    callback: () {
+                      dict[title]['tap'](item);
+                    },
+                  );
                 }),
               ),
             )));
+  }
+}
+
+class OptionView extends StatelessWidget {
+  final String img;
+  final String text;
+  final String price;
+  final Function callback;
+  final bool showBorder;
+
+  bool get showPrice => double.parse(price ?? '0.00') != 0.0;
+  const OptionView(
+      {Key key,
+      this.img,
+      this.text: '',
+      this.callback,
+      this.showBorder: false,
+      this.price: ''})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
+    return InkWell(
+      onTap: callback,
+      child: Container(
+        width: width / 5,
+        alignment: Alignment.center,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                        color: showBorder
+                            ? Theme.of(context).accentColor
+                            : Colors.transparent,
+                        width: 1.2)),
+                child: ZYNetImage(
+                  imgPath: img,
+                  callback: callback,
+                  width: UIKit.width(150),
+                  height: UIKit.width(150),
+                )),
+            Padding(
+              padding: EdgeInsets.only(top: UIKit.height(10)),
+              child: Text(
+                text,
+                textAlign: TextAlign.center,
+                style: showBorder
+                    ? textTheme.body1.copyWith(fontSize: 12)
+                    : textTheme.caption,
+              ),
+            ),
+            Offstage(
+              offstage: !showPrice,
+              child: Padding(
+                padding: EdgeInsets.only(top: UIKit.height(10)),
+                child: Text(
+                  '¥$price',
+                  textAlign: TextAlign.center,
+                  style: showBorder
+                      ? textTheme.body1.copyWith(fontSize: 12)
+                      : textTheme.caption,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

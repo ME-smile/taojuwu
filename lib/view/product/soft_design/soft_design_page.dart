@@ -2,7 +2,7 @@
  * @Description: 软装方案列表页面布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:33:58
- * @LastEditTime: 2020-10-31 07:36:24
+ * @LastEditTime: 2020-11-04 10:55:37
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +14,8 @@ import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/user_choose_button.dart';
 
 class SoftDesignPage extends StatefulWidget {
-  final int scenesId;
-  const SoftDesignPage(this.scenesId, {Key key}) : super(key: key);
+  final int goodsId;
+  const SoftDesignPage(this.goodsId, {Key key}) : super(key: key);
 
   @override
   _SoftDesignPageState createState() => _SoftDesignPageState();
@@ -26,8 +26,7 @@ class _SoftDesignPageState extends State<SoftDesignPage> {
   List<SoftDesignProductBean> list;
   @override
   void initState() {
-    OTPService.softProjectList(context,
-            params: {'goods_id': 961, 'scenes_id': widget.scenesId})
+    OTPService.softProjectList(context, params: {'goods_id': widget.goodsId})
         .then((SoftProjectListResp response) {
           if (response?.valid == true) {
             list = response?.data?.goodsList;
@@ -59,6 +58,7 @@ class _SoftDesignPageState extends State<SoftDesignPage> {
         child: isLoading
             ? LoadingCircle()
             : Scaffold(
+                backgroundColor: Theme.of(context).primaryColor,
                 appBar: AppBar(
                   title: Text('软装方案'),
                   centerTitle: true,

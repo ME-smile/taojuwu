@@ -2,16 +2,12 @@
  * @Description: 布艺帘商品
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:12:26
- * @LastEditTime: 2020-10-31 12:13:33
+ * @LastEditTime: 2020-10-31 16:10:15
  */
 
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/services/otp_service.dart';
-import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'base_curtain_product_bean.dart';
 
@@ -88,81 +84,6 @@ class FabricCurtainProductBean extends BaseCurtainProductBean {
 
     return tmp;
   }
-
-  int get styleOptionId => styleSelector?.styleOptionId;
-
-  //窗帘样式
-  String get windowStyleStr => styleSelector?.windowStyleStr;
-  // 测装数据参数
-  @override
-  Map<String, dynamic> get mesaureDataArg {
-    return {
-      'dataId': styleOptionId,
-      'width': widthCM,
-      'height': heightCM,
-      'vertical_ground_height': deltaYCM,
-      'goods_id': goodsId,
-      'install_room': roomAttr?.selcetedAttrBean?.id,
-      // 'install_room': roomAttr?.selcetedAttrBean?.id,
-      'data': jsonEncode({
-        '$styleOptionId': {
-          'name': windowStyleStr,
-          "install_room": "0",
-          'w': '$widthCM',
-          'h': '$heightCM',
-          '13': attrList?.last?.toJson(),
-          'selected': {
-            '安装选项': [styleSelector?.curInstallMode?.name ?? ''],
-            '打开方式': styleSelector?.openModeData
-          }
-        }
-      })
-    };
-  }
-
-  @override
-  Future addToCart(BuildContext context) {
-    return hasSetSize
-        ? saveMeasure(context)
-            .then((value) => value != false ? addToCartRequest() : '')
-        : Future.value(false);
-  }
-
-  @override
-  Future buy(BuildContext context) {
-    return hasSetSize
-        ? saveMeasure(context)
-            .then((value) => value != false ? super.buy(context) : '')
-        : Future.value(false);
-    // throw UnimplementedError();
-  }
-
-  bool get hasSetSize {
-    if (measureData?.hasSetSize == false) {
-      ToastKit.showInfo('请先填写测装数据哦');
-      return false;
-    }
-    return true;
-  }
-
-  @override
-  get cartArgs => {
-        // 'measure_data': mesaureDataArg,
-        'wc_attr': jsonEncode(attrArgs),
-        'measure_id': measureData?.id,
-        'estimated_price': totalPrice,
-        'client_uid': clientId,
-        'is_shade': 1,
-        'cart_detail': jsonEncode({
-          'sku_id': '$skuId',
-          'goods_id': '$goodsId',
-          'goods_name': '$goodsName',
-          'shop_id': '$shopId',
-          'price': '$price',
-          'picture': '$picture',
-          'num': '$count',
-        })
-      };
 
   @override
   ProductType get productType => ProductType.FabricCurtainProductType;

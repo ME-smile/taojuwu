@@ -154,17 +154,19 @@ class OrderProvider with ChangeNotifier {
       ToastKit.showInfo('请填写收货地址');
       return false;
     }
-    if (measureTimeStr == null || measureTimeStr?.trim()?.isEmpty == true) {
-      ToastKit.showInfo('请选择上门量尺意向时间');
-      return false;
-    }
-    if (installTime == null || installTime?.trim()?.isEmpty == true) {
-      ToastKit.showInfo('请选择客户意向安装时间');
-      return false;
-    }
-    if (deposit == null || deposit?.trim()?.isEmpty == true) {
-      ToastKit.showInfo('请输入定金');
-      return false;
+    if (hasCustomizedProdoct == true) {
+      if (measureTimeStr == null || measureTimeStr?.trim()?.isEmpty == true) {
+        ToastKit.showInfo('请选择上门量尺意向时间');
+        return false;
+      }
+      if (installTime == null || installTime?.trim()?.isEmpty == true) {
+        ToastKit.showInfo('请选择客户意向安装时间');
+        return false;
+      }
+      if (deposit == null || deposit?.trim()?.isEmpty == true) {
+        ToastKit.showInfo('请输入定金');
+        return false;
+      }
     }
     return true;
   }

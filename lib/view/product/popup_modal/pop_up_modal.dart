@@ -2,7 +2,7 @@
  * @Description: //选择属性
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:36:14
- * @LastEditTime: 2020-10-31 07:30:25
+ * @LastEditTime: 2020-11-04 09:43:14
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +11,7 @@ import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bea
 import 'package:taojuwu/repository/shop/product/end_product/base_end_product_bean.dart';
 import 'package:taojuwu/repository/shop/product/relative_product/relative_product_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
+import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/sku_attr_picker.dart';
 import 'package:taojuwu/view/product/popup_modal/widgets/common_attr_option_view.dart';
 import 'package:taojuwu/view/product/popup_modal/widgets/end_product_detail_modal.dart';
@@ -60,7 +61,7 @@ Future showRelativeProductModalPopup(
       builder: (BuildContext context) {
         return SkuAttrPicker(
           title: '同料商品',
-          height: 720,
+          height: UIKit.height(1200),
           showButton: false,
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 16),
@@ -89,7 +90,7 @@ Future showDesignProductDetailModal(BuildContext ctx, int id) {
       context: ctx,
       builder: (BuildContext context) {
         return SkuAttrPicker(
-            height: 720,
+            height: UIKit.height(1200),
             showButton: false,
             child: ClipRRect(
               borderRadius: BorderRadius.only(
@@ -101,15 +102,22 @@ Future showDesignProductDetailModal(BuildContext ctx, int id) {
 
 //成品详情弹窗
 
-Future showEndProductDetailModalPopup(
-    BuildContext ctx, BaseEndProductBean bean) {
+typedef FutureCallback = Future Function();
+Future showEndProductDetailModalPopup(BuildContext ctx, BaseEndProductBean bean,
+    {FutureCallback callback}) {
   return showCupertinoModalPopup(
       context: ctx,
       builder: (BuildContext context) {
         return SkuAttrPicker(
-          height: 720,
+          height: UIKit.height(1200),
           callback: () {
-            Navigator.of(context).pop();
+            if (callback != null) {
+              callback().then((value) {
+                Navigator.of(context).pop();
+              });
+            } else {
+              Navigator.of(context).pop();
+            }
           },
           child: EndProductDetailModal(bean),
         );
