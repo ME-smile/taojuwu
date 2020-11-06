@@ -6,7 +6,7 @@
  */
 
 import 'package:flutter/cupertino.dart';
-import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
@@ -16,7 +16,7 @@ abstract class BaseOrderCreator with ChangeNotifier {
   TargetClient client;
 
   //商品
-  AbstractBaseProductBean productBean;
+  AbstractBaseProductDetailBean productDetailBean;
 
   int get clientId => client?.clientId;
 

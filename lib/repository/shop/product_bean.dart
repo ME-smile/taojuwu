@@ -1,109 +1,93 @@
-import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/curtain/gauze_curtain_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/scene_design_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/soft_design_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'curtain_product_list_model.dart';
-import 'product/end_product/concrete_end_product_bean.dart';
-import 'product/relative_product/relative_product_bean.dart';
+
 import 'product_sku_bean.dart';
 import 'sku_attr/window_style_sku_option.dart';
 
-class ProductBeanRespList extends ZYResponse<ListDataWrapperProductBean> {
-  ProductBeanRespList.fromJson(Map<String, dynamic> json)
+class ProductDetailBeanRespList
+    extends ZYResponse<ListDataWrapperProductDetailBean> {
+  ProductDetailBeanRespList.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
-    this.data =
-        !this.valid ? null : ListDataWrapperProductBean.fromJson(json['data']);
+    this.data = !this.valid
+        ? null
+        : ListDataWrapperProductDetailBean.fromJson(json['data']);
   }
 }
 
-class LikedProductList extends ZYResponse<List<ProductBean>> {
+class LikedProductList extends ZYResponse<List<ProductDetailBean>> {
   LikedProductList.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     this.data = this.valid && json['data'] != null
-        ? List.of(json['data']).map((v) => ProductBean.fromJson(v)).toList()
+        ? List.of(json['data'])
+            .map((v) => ProductDetailBean.fromJson(v))
+            .toList()
         : null;
   }
 }
 
-class ListDataWrapperProductBean {
-  List<ProductBean> data = List();
+class ListDataWrapperProductDetailBean {
+  List<ProductDetailBean> data = List();
   int totalCount;
   int pageCount;
 
-  ListDataWrapperProductBean(this.data, this.totalCount, this.pageCount);
+  ListDataWrapperProductDetailBean(this.data, this.totalCount, this.pageCount);
 
-  ListDataWrapperProductBean.fromJson(Map<String, dynamic> json) {
-    this.data =
-        List.of(json['data']).map((v) => ProductBean.fromJson(v)).toList();
+  ListDataWrapperProductDetailBean.fromJson(Map<String, dynamic> json) {
+    this.data = List.of(json['data'])
+        .map((v) => ProductDetailBean.fromJson(v))
+        .toList();
     this.totalCount = json['total_count'];
     this.pageCount = json['page_count'];
   }
 }
 
-class ProductBeanResp extends ZYResponse<ProductBeanDataWrapper> {
-  ProductBeanResp.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    this.data =
-        !this.valid ? null : ProductBeanDataWrapper.fromJson(json['data']);
+class ProductDetailBeanResp extends ZYResponse<ProductDetailBeanDataWrapper> {
+  ProductDetailBeanResp.fromJson(Map<String, dynamic> json)
+      : super.fromJson(json) {
+    this.data = !this.valid
+        ? null
+        : ProductDetailBeanDataWrapper.fromJson(json['data']);
   }
 }
 
-class ProductBeanDataWrapper {
+class ProductDetailBeanDataWrapper {
   String goodsId;
   int skuId;
-  SingleProductBean goodsDetail;
-  ProductBean goods;
-  List<RelativeProductBean> relativeProductList = [];
-  List<SceneDesignProductBean> sceneDesignProductList = [];
-  List<SoftDesignProductBean> softDesignProductList = [];
-  List<BaseProductBean> recommendProductList = [];
+  SingleProductDetailBean goodsDetail;
+  ProductDetailBean goods;
+  List<SingleProductDetailBean> relativeProductList = [];
+  List<SceneDesignProductDetailBean> sceneDesignProductList = [];
+  List<SoftDesignProductDetailBean> softDesignProductList = [];
+  List<SingleProductDetailBean> recommendProductList = [];
 
-  ProductBeanDataWrapper.fromJson(Map<String, dynamic> map) {
+  ProductDetailBeanDataWrapper.fromJson(Map<String, dynamic> map) {
     goodsId = map['goods_id'];
     skuId = CommonKit.parseInt(map['sku_id']);
-    goods = ProductBean.fromJson(map['goods_detail']);
-    Map<String, dynamic> json = map['goods_detail'];
-    int type = json['goods_type'];
-    if (type == 0) {
-      goodsDetail = ConcreteEndProductBean.fromJson(json);
-    }
-    if (type == 1) {
-      goodsDetail = FabricCurtainProductBean.fromJson(json);
-    }
-    if (type == 2) {
-      goodsDetail = RollingCurtainProductBean.fromJson(json);
-    }
-    if (type == 3) {
-      goodsDetail = GauzeCurtainProductBean.fromJson(json);
-    }
-    // goodsDetail = FabricCurtainProductBean.fromJson(map['goods_detail']);
+    goods = ProductDetailBean.fromJson(map['goods_detail']);
+    goodsDetail = SingleProductDetailBean.instantiate(map['goods_detail']);
+    // goodsDetail = FabricCurtainProductDetailBean.fromJson(map['goods_detail']);
     relativeProductList = CommonKit.parseList(map['related_goods'])
-        .map((o) => RelativeProductBean.fromJson(o))
+        .map((o) => SingleProductDetailBean.instantiate(o))
         ?.toList();
     sceneDesignProductList = CommonKit.parseList(map['scenes_list'])
-        ?.map((e) => SceneDesignProductBean.fromJson(e))
+        ?.map((e) => SceneDesignProductDetailBean.fromJson(e))
         ?.toList();
     softDesignProductList = CommonKit.parseList(map['soft_project_list'])
-        ?.map((e) => SoftDesignProductBean.fromJson(e))
+        ?.map((e) => SoftDesignProductDetailBean.fromJson(e))
         ?.toList();
     recommendProductList =
         CommonKit.parseList(map['referrals_goods'])?.map((e) {
-      int type = e == null ? null : e['goods_type'];
-      return type == 0
-          ? ConcreteEndProductBean.fromJson(e)
-          : type == 1
-              ? FabricCurtainProductBean.fromJson(e)
-              : RollingCurtainProductBean.fromJson(e);
+      return SingleProductDetailBean.instantiate(e);
     })?.toList();
   }
 }
 
-class ProductBean {
+class ProductDetailBean {
   int goodsId;
   String goodsName;
   int measureId;
@@ -117,9 +101,9 @@ class ProductBean {
   String description;
   int isStockVisible;
   int isHot;
-  List<ProductBeanSpecListBean> specList;
+  List<ProductDetailBeanSpecListBean> specList;
   List<ProductSkuBean> skuList;
-  List<ProductBeanGoodsImageBean> goodsImgList;
+  List<ProductDetailBeanGoodsImageBean> goodsImgList;
   String skuName;
   int skuId;
   String picCoverMicro;
@@ -138,7 +122,7 @@ class ProductBean {
         : goodsImgList?.first?.picCoverBig;
   }
 
-  List<ProductBeanSpecValueBean> getSpecListByName(String name) {
+  List<ProductDetailBeanSpecValueBean> getSpecListByName(String name) {
     if (this.specList == null) return [];
 
     for (var item in this.specList) {
@@ -149,7 +133,7 @@ class ProductBean {
     return [];
   }
 
-  ProductBean.fromJson(Map<String, dynamic> map) {
+  ProductDetailBean.fromJson(Map<String, dynamic> map) {
     goodsId = map['goods_id'];
     goodsName = map['goods_name'];
     shopId = map['shop_id'];
@@ -170,13 +154,13 @@ class ProductBean {
 
     specList = List()
       ..addAll((map['spec_list'] as List ?? [])
-          .map((o) => ProductBeanSpecListBean.fromMap(o)));
+          .map((o) => ProductDetailBeanSpecListBean.fromMap(o)));
     skuList = List()
       ..addAll((map['sku_list'] as List ?? [])
           .map((o) => ProductSkuBean.fromJson(o)));
     goodsImgList = List()
       ..addAll((map['goods_img_list'] as List ?? [])
-          .map((o) => ProductBeanGoodsImageBean.fromMap(o)));
+          .map((o) => ProductDetailBeanGoodsImageBean.fromMap(o)));
 
     skuName = map['sku_name'];
 
@@ -186,7 +170,7 @@ class ProductBean {
   }
 }
 
-class ProductBeanGoodsImageBean {
+class ProductDetailBeanGoodsImageBean {
   String picCoverBig;
   String picSizeBig;
   String picSpecBig;
@@ -196,9 +180,10 @@ class ProductBeanGoodsImageBean {
 
   String bucket;
 
-  static ProductBeanGoodsImageBean fromMap(Map<String, dynamic> map) {
+  static ProductDetailBeanGoodsImageBean fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-    ProductBeanGoodsImageBean tempBean = ProductBeanGoodsImageBean();
+    ProductDetailBeanGoodsImageBean tempBean =
+        ProductDetailBeanGoodsImageBean();
 
     tempBean.picCoverBig = map['pic_cover_big'];
     tempBean.picSizeBig = map['pic_size_big'];
@@ -212,28 +197,28 @@ class ProductBeanGoodsImageBean {
   }
 }
 
-class ProductBeanSpecListBean {
+class ProductDetailBeanSpecListBean {
   String specName;
   String specId;
   String specShowType;
-  List<ProductBeanSpecValueBean> value;
+  List<ProductDetailBeanSpecValueBean> value;
   int sort;
 
-  static ProductBeanSpecListBean fromMap(Map<String, dynamic> map) {
+  static ProductDetailBeanSpecListBean fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-    ProductBeanSpecListBean bean = ProductBeanSpecListBean();
+    ProductDetailBeanSpecListBean bean = ProductDetailBeanSpecListBean();
     bean.specName = map['spec_name'];
     bean.specId = map['spec_id'];
     bean.specShowType = map['spec_show_type'].toString();
     bean.value = List()
       ..addAll((map['value'] as List ?? [])
-          .map((o) => ProductBeanSpecValueBean.fromMap(o)));
+          .map((o) => ProductDetailBeanSpecValueBean.fromMap(o)));
     bean.sort = map['sort'];
     return bean;
   }
 }
 
-class ProductBeanSpecValueBean {
+class ProductDetailBeanSpecValueBean {
   String specId;
   String specName;
   String specValueName;
@@ -243,9 +228,9 @@ class ProductBeanSpecValueBean {
   bool selected;
   bool disabled;
 
-  static ProductBeanSpecValueBean fromMap(Map<String, dynamic> map) {
+  static ProductDetailBeanSpecValueBean fromMap(Map<String, dynamic> map) {
     if (map == null) return null;
-    ProductBeanSpecValueBean valueBean = ProductBeanSpecValueBean();
+    ProductDetailBeanSpecValueBean valueBean = ProductDetailBeanSpecValueBean();
     valueBean.specId = map['spec_id'];
     valueBean.specName = map['spec_name'];
     valueBean.specValueName = map['spec_value_name'];

@@ -11,10 +11,10 @@ import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 
 class EndProductProvider with ChangeNotifier {
-  ProductBean _goods;
+  ProductDetailBean _goods;
 
-  EndProductProvider(ProductBean bean) : _goods = bean;
-  ProductBean get goods => _goods;
+  EndProductProvider(ProductDetailBean bean) : _goods = bean;
+  ProductDetailBean get goods => _goods;
 
   int _cartCount = 0;
 
@@ -29,11 +29,12 @@ class EndProductProvider with ChangeNotifier {
 
   String get unit => isWindowRoller ? '元/平方米' : '元/米';
 
-  List<ProductBeanGoodsImageBean> get goodsImgList => _goods?.goodsImgList;
+  List<ProductDetailBeanGoodsImageBean> get goodsImgList =>
+      _goods?.goodsImgList;
 
-  List<ProductBeanSpecListBean> get specList {
-    // List<ProductBeanSpecListBean> list = [
-    //   ProductBeanSpecListBean.fromMap({'spec_name': '数量'})
+  List<ProductDetailBeanSpecListBean> get specList {
+    // List<ProductDetailBeanSpecListBean> list = [
+    //   ProductDetailBeanSpecListBean.fromMap({'spec_name': '数量'})
     // ];
     // list.addAll(goods?.specList);
     return goods?.specList;

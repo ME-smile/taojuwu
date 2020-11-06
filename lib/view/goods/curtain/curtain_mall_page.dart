@@ -86,10 +86,12 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
   String get keyword => widget.keyword;
   bool get isFromSearch => widget.keyword.isNotEmpty ?? false;
+
+  ValueNotifier<bool> showFloatingButtonNotifier;
   @override
   void initState() {
     super.initState();
-
+    showFloatingButtonNotifier = ValueNotifier<bool>(false);
     TargetRoute.instance.context = context;
     params['keyword'] = keyword;
     tabController = TabController(
@@ -258,7 +260,6 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     );
   }
 
-  bool showFloatingButton = true;
   closeEndDrawer() {
     if (_scaffoldKey.currentState.isEndDrawerOpen) {
       return Navigator.of(context).pop();
@@ -378,15 +379,13 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     }
 
     ScaffoldState state = _scaffoldKey.currentState;
-    setState(() {
-      if (!state.isEndDrawerOpen) {
-        state.openEndDrawer();
-        showFloatingButton = false;
-      } else {
-        closeEndDrawer();
-        showFloatingButton = true;
-      }
-    });
+    if (!state.isEndDrawerOpen) {
+      state.openEndDrawer();
+      showFloatingButtonNotifier.value = false;
+    } else {
+      closeEndDrawer();
+      showFloatingButtonNotifier.value = true;
+    }
   }
 
   void filterData() {
@@ -397,9 +396,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     Application.eventBus.fire(
       FilterEvent(args, tab: tabIndex, shouldRefresh: true),
     );
-    setState(() {
-      showFloatingButton = true;
-    });
+    showFloatingButtonNotifier.value = true;
     Navigator.of(context).pop();
   }
 
@@ -643,6 +640,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     tabController?.dispose();
     _refreshController?.dispose();
     scrollController?.dispose();
+    showFloatingButtonNotifier?.dispose();
   }
 
   void clear() {
@@ -671,71 +669,76 @@ class _CurtainMallPageState extends State<CurtainMallPage>
     return WillPopScope(
         child: Scaffold(
           backgroundColor: const Color(0xFFFF2F2F2),
-          floatingActionButton: AnimatedOpacity(
-            opacity: showFloatingButton ? 1.0 : 0.0,
-            duration: Duration(milliseconds: 500),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Offstage(
-                  offstage: TargetClient().hasSelectedClient == false,
-                  child: FloatingActionButton(
-                    heroTag: 'FloatingButtonCart',
-                    onPressed: () {
-                      RouteHandler.goCartPage(context,
-                          clientId: TargetClient().clientId);
-                    },
-                    backgroundColor: themeData.primaryColor,
-                    child: Container(
-                      width: UIKit.width(60),
-                      height: UIKit.width(60),
-                      alignment: Alignment(1.4, -1.5),
-                      child: Visibility(
+          floatingActionButton: ValueListenableBuilder(
+            valueListenable: showFloatingButtonNotifier,
+            builder: (BuildContext context, bool flag, _) {
+              return AnimatedOpacity(
+                opacity: flag ? 1.0 : 0.0,
+                duration: Duration(milliseconds: 500),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Offstage(
+                      offstage: TargetClient().hasSelectedClient == false,
+                      child: FloatingActionButton(
+                        heroTag: 'FloatingButtonCart',
+                        onPressed: () {
+                          RouteHandler.goCartPage(context,
+                              clientId: TargetClient().clientId);
+                        },
+                        backgroundColor: themeData.primaryColor,
                         child: Container(
-                          width: 18,
-                          height: 18,
-                          alignment: Alignment.center,
-                          child: Text(
-                            '$cartCount',
-                            style: TextStyle(
-                                fontSize: cartCount > 10 ? 10 : 12,
-                                fontFamily: 'Roboto'),
+                          width: UIKit.width(60),
+                          height: UIKit.width(60),
+                          alignment: Alignment(1.4, -1.5),
+                          child: Visibility(
+                            child: Container(
+                              width: 18,
+                              height: 18,
+                              alignment: Alignment.center,
+                              child: Text(
+                                '$cartCount',
+                                style: TextStyle(
+                                    fontSize: cartCount > 10 ? 10 : 12,
+                                    fontFamily: 'Roboto'),
+                              ),
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(9))),
+                            ),
+                            visible: cartCount != 0,
                           ),
                           decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(9))),
+                              image: DecorationImage(
+                                  image: AssetImage(UIKit.getAssetsImagePath(
+                                      'cart_button.png')))),
                         ),
-                        visible: cartCount != 0,
                       ),
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage(UIKit.getAssetsImagePath(
-                                  'cart_button.png')))),
                     ),
-                  ),
+                    VSpacing(20),
+                    Visibility(
+                      child: FloatingActionButton(
+                        heroTag: 'FloatingButtonMeasureOrder',
+                        onPressed: () {
+                          RouteHandler.goMeasureOrderPage(context);
+                        },
+                        backgroundColor: themeData.primaryColor,
+                        child: ZYAssetImage(
+                          'create_measure_order@2x.png',
+                          width: UIKit.width(60),
+                          height: UIKit.width(60),
+                          callback: () {
+                            RouteHandler.goMeasureOrderPage(context);
+                          },
+                        ),
+                      ),
+                      visible: flag,
+                    )
+                  ],
                 ),
-                VSpacing(20),
-                Visibility(
-                  child: FloatingActionButton(
-                    heroTag: 'FloatingButtonMeasureOrder',
-                    onPressed: () {
-                      RouteHandler.goMeasureOrderPage(context);
-                    },
-                    backgroundColor: themeData.primaryColor,
-                    child: ZYAssetImage(
-                      'create_measure_order@2x.png',
-                      width: UIKit.width(60),
-                      height: UIKit.width(60),
-                      callback: () {
-                        RouteHandler.goMeasureOrderPage(context);
-                      },
-                    ),
-                  ),
-                  visible: showFloatingButton,
-                )
-              ],
-            ),
+              );
+            },
           ),
           appBar: AppBar(
             key: appBarKey,
@@ -787,13 +790,9 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                   children: <Widget>[
                     TabBar(
                         tabs: tabs
-                            ?.map((e) => Container(
-                                  height: 24,
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    e,
-                                    textAlign: TextAlign.center,
-                                  ),
+                            ?.map((e) => Text(
+                                  e,
+                                  textAlign: TextAlign.center,
                                 ))
                             ?.toList(),
                         controller: tabController,
@@ -802,9 +801,9 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                         labelColor: const Color(0xFF1B1B1B),
                         unselectedLabelColor: const Color(0xFF6D6D6D),
                         unselectedLabelStyle: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
+                            fontSize: 18, fontWeight: FontWeight.w400),
                         labelStyle: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500)),
+                            fontSize: 18, fontWeight: FontWeight.w600)),
                     GoodsFilterHeader(
                       filter1: _buildFilter1(),
                       filter2: _buildFilter2(),
@@ -822,16 +821,12 @@ class _CurtainMallPageState extends State<CurtainMallPage>
               }
               if (notofication.runtimeType == ScrollStartNotification) {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  setState(() {
-                    showFloatingButton = false;
-                  });
+                  showFloatingButtonNotifier.value = false;
                 });
               }
               if (notofication.runtimeType == ScrollEndNotification) {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  setState(() {
-                    showFloatingButton = true;
-                  });
+                  showFloatingButtonNotifier.value = true;
                 });
               }
               return true;

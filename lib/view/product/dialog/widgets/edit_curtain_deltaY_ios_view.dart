@@ -7,11 +7,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 class EditCurtainDeltaYIosView extends StatefulWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   EditCurtainDeltaYIosView(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class EditCurtainDeltaYIosView extends StatefulWidget {
 }
 
 class _EditCurtainDeltaYIosViewState extends State<EditCurtainDeltaYIosView> {
-  BaseCurtainProductBean get bean => widget.bean;
+  BaseCurtainProductDetailBean get bean => widget.bean;
   OrderGoodsMeasureData get measureData => bean?.measureData;
 
   TextEditingController controller;

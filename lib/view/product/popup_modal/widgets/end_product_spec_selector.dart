@@ -5,12 +5,12 @@
  * @LastEditTime: 2020-10-28 16:30:51
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/base/spec/product_spec_bean.dart';
-import 'package:taojuwu/repository/shop/product/end_product/base_end_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/base/spec/product_spec_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/end_product/base_end_product_detail_bean.dart';
 import 'package:taojuwu/widgets/zy_action_chip.dart';
 
 class EndProductSpecSelector extends StatelessWidget {
-  final BaseEndProductBean bean;
+  final BaseEndProductDetailBean bean;
   final StateSetter setState;
   const EndProductSpecSelector(this.bean, {Key key, this.setState})
       : super(key: key);

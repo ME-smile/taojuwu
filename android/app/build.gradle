@@ -1,3 +1,4 @@
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -39,8 +40,6 @@ android {
 
     lintOptions {
         disable 'InvalidPackage'
-          //如打包出现Failed to transform libs.jar to match attributes
-        checkReleaseBuilds false
     }
 
     signingConfigs {
@@ -61,10 +60,6 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        // ndk {
-        //     //设置支持的SO库架构
-        //     abiFilters 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-        // }
     }
 
     buildTypes {
@@ -72,9 +67,6 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
-            minifyEnabled true
-            useProguard true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }

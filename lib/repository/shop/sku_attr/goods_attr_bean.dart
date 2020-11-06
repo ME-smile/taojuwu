@@ -2,7 +2,7 @@
  * @Description: 属性选择项的类
  * @Author: iamsmiling
  * @Date: 2020-09-28 09:14:34
- * @LastEditTime: 2020-10-31 12:08:30
+ * @LastEditTime: 2020-11-05 09:30:47
  */
 
 import 'package:taojuwu/repository/zy_response.dart';
@@ -22,7 +22,6 @@ class ProductSkuAttr {
   String title; //弹框上面的标题
   bool canMultiSelect = false;
 
-  bool hasSelectedAttr = false;
   ProductSkuAttr();
   ProductSkuAttr copy() {
     ProductSkuAttr obj = ProductSkuAttr();
@@ -36,7 +35,7 @@ class ProductSkuAttr {
         [];
     obj.title = title;
     obj.canMultiSelect = canMultiSelect;
-    obj.hasSelectedAttr = hasSelectedAttr;
+
     return obj;
   }
   // Map<int, String> type2name = {

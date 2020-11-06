@@ -7,7 +7,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/scene_design_product_detail_bean.dart';
 
 import 'package:taojuwu/utils/extensions/object_kit.dart';
 import 'package:taojuwu/view/goods/base/title_tip.dart';
@@ -16,7 +16,7 @@ import 'package:taojuwu/view/product/scene_design/scene_design_page.dart';
 import 'package:taojuwu/view/product/widgets/base/scene_design_product_card.dart';
 
 class SceneDesignProductSectionView extends StatefulWidget {
-  final List<SceneDesignProductBean> list;
+  final List<SceneDesignProductDetailBean> list;
   const SceneDesignProductSectionView(this.list, {Key key}) : super(key: key);
 
   @override
@@ -26,7 +26,7 @@ class SceneDesignProductSectionView extends StatefulWidget {
 
 class _SceneDesignProductSectionViewState
     extends State<SceneDesignProductSectionView> {
-  List<SceneDesignProductBean> get list => widget.list;
+  List<SceneDesignProductDetailBean> get list => widget.list;
   int get currentId => list[swiperController?.index ?? 0]?.id;
   SwiperController swiperController;
   @override
@@ -64,7 +64,7 @@ class _SceneDesignProductSectionViewState
                       callback: () {
                         // var provider = Provider.of<BaseProductProvider>(context,
                         //     listen: false);
-                        // int goodsId = provider?.productBean?.goodsId;
+                        // int goodsId = provider?.ProductDetailBean?.goodsId;
                         Navigator.of(context).push(
                             CupertinoPageRoute(builder: (BuildContext context) {
                           return SceneDesignPage(currentId);

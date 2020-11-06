@@ -62,9 +62,9 @@ class ZYDialog {
                   height: height * 0.7,
                 ),
               ),
-              builder: (BuildContext context, ProductBeanResp response) {
-                ProductBeanDataWrapper wrapper = response?.data;
-                ProductBean bean = wrapper?.goods;
+              builder: (BuildContext context, ProductDetailBeanResp response) {
+                ProductDetailBeanDataWrapper wrapper = response?.data;
+                ProductDetailBean bean = wrapper?.goods;
                 return ChangeNotifierProvider(
                     create: (BuildContext context) => EndProductProvider(bean),
                     child: Consumer(builder: (BuildContext context,
@@ -154,7 +154,8 @@ class ZYDialog {
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int i) {
-                                                ProductBeanSpecListBean item =
+                                                ProductDetailBeanSpecListBean
+                                                    item =
                                                     provider?.specList[i];
 
                                                 return Column(
@@ -178,7 +179,7 @@ class ZYDialog {
                                                       children: List.generate(
                                                           item?.value?.length,
                                                           (index) {
-                                                        ProductBeanSpecValueBean
+                                                        ProductDetailBeanSpecValueBean
                                                             e =
                                                             item?.value[index];
                                                         return Container(
@@ -446,7 +447,7 @@ class OptionView extends StatelessWidget {
                 text,
                 textAlign: TextAlign.center,
                 style: showBorder
-                    ? textTheme.body1.copyWith(fontSize: 12)
+                    ? textTheme.bodyText2.copyWith(fontSize: 12)
                     : textTheme.caption,
               ),
             ),
@@ -458,7 +459,7 @@ class OptionView extends StatelessWidget {
                   '¥$price',
                   textAlign: TextAlign.center,
                   style: showBorder
-                      ? textTheme.body1.copyWith(fontSize: 12)
+                      ? textTheme.bodyText2.copyWith(fontSize: 12)
                       : textTheme.caption,
                 ),
               ),

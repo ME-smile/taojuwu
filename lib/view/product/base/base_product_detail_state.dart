@@ -24,7 +24,7 @@ class BaseProductDetailPageState<T> extends State<BaseProductDetailPage>
   @override
   set client(TargetClient target) {
     TargetClientHolder.targetClient = target;
-    productBean?.client = client;
+    productDetailBean?.client = client;
   }
 
   Future sendRequest() {

@@ -2,18 +2,17 @@
  * @Description: 商品属性测装数据提示文字
  * @Author: iamsmiling
  * @Date: 2020-10-22 09:53:45
- * @LastEditTime: 2020-10-31 17:35:35
+ * @LastEditTime: 2020-11-06 10:10:04
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/curtain/fabric_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/view/measure_data/edit_measure_data_page.dart';
 
 class MeasureDataTipBar extends StatefulWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   MeasureDataTipBar(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -21,13 +20,27 @@ class MeasureDataTipBar extends StatefulWidget {
 }
 
 class _MeasureDataTipBarState extends State<MeasureDataTipBar> {
-  BaseCurtainProductBean get bean => widget.bean;
+  BaseCurtainProductDetailBean get bean => widget.bean;
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: bean?.isMeasureOrder == true
-            ? MeasureOrderTip(bean?.measureData)
-            : NonMeasureOrderTip(bean));
+        child: Column(
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 8),
+          child: bean?.isMeasureOrder == true
+              ? MeasureOrderTip(bean?.measureData)
+              : NonMeasureOrderTip(bean),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: 8),
+          child: Divider(
+            height: 1,
+            color: const Color(0xFFF1F1F1),
+          ),
+        )
+      ],
+    ));
   }
 }
 
@@ -69,7 +82,7 @@ class MeasureOrderTip extends StatelessWidget {
 }
 
 class NonMeasureOrderTip extends StatelessWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   const NonMeasureOrderTip(this.bean, {Key key}) : super(key: key);
 
   OrderGoodsMeasureData get measureData => bean?.measureData;

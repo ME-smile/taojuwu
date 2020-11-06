@@ -1,3 +1,9 @@
+/*
+ * @Description: //数据中心
+ * @Author: iamsmiling
+ * @Date: 2020-10-31 13:34:35
+ * @LastEditTime: 2020-11-05 13:56:01
+ */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/view/data_center/widgets/passenger_graph_view.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -15,6 +21,7 @@ class DataCenterPage extends StatefulWidget {
 class _DataCenterPageState extends State<DataCenterPage> {
   static const tabs = ['客流统计', '销售统计', '销售分析'];
   static const options = ['本周', '本月', '本季度', '本年', '更多'];
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

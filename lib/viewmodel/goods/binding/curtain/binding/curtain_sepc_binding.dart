@@ -2,7 +2,7 @@
  * @Description: 商品属性相关的逻辑
  * @Author: iamsmiling
  * @Date: 2020-09-27 10:16:14
- * @LastEditTime: 2020-11-02 10:24:30
+ * @LastEditTime: 2020-11-05 09:31:00
  */
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -135,7 +135,6 @@ mixin CurtainSpecBinding on CurtainGoodsBinding {
         bean.isChecked = i == j;
       }
     }
-    attr.hasSelectedAttr = true;
   }
 
   ProductSkuAttrBean get curRoomSkuAttrBean {

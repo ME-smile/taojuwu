@@ -2,7 +2,7 @@
  * @Description: 属性的选项
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-04 11:26:31
+ * @LastEditTime: 2020-11-06 13:57:10
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
@@ -50,7 +50,8 @@ class OptionView extends StatelessWidget {
                               : Colors.transparent,
                           width: 1.2),
                     ),
-                    width: UIKit.width(150),
+                    // width: UIKit.width(150),
+                    width: 75,
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: ZYNetImage(
@@ -67,7 +68,7 @@ class OptionView extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(top: UIKit.height(10)),
+              padding: EdgeInsets.only(top: 5),
               child: Text(
                 bean.name,
                 textAlign: TextAlign.center,
@@ -78,19 +79,19 @@ class OptionView extends StatelessWidget {
                     : textTheme.caption.copyWith(fontSize: 12),
               ),
             ),
-            // Offstage(
-            //   offstage: !showPrice,
-            //   child: Padding(
-            //     padding: EdgeInsets.only(top: UIKit.height(10)),
-            //     child: Text(
-            //       '${bean.price}',
-            //       textAlign: TextAlign.center,
-            //       style: isChecked
-            //           ? textTheme.bodyText2.copyWith(fontSize: 12)
-            //           : textTheme.caption.copyWith(fontSize: 12),
-            //     ),
-            //   ),
-            // ),
+            Visibility(
+              visible: showPrice,
+              child: Padding(
+                padding: EdgeInsets.only(top: 5),
+                child: Text(
+                  '${bean.price}',
+                  textAlign: TextAlign.center,
+                  style: isChecked
+                      ? textTheme.bodyText2.copyWith(fontSize: 12)
+                      : textTheme.caption.copyWith(fontSize: 12),
+                ),
+              ),
+            ),
           ],
         ),
       ),

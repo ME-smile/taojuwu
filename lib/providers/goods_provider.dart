@@ -23,7 +23,7 @@ import 'package:taojuwu/utils/toast_kit.dart';
 class GoodsProvider with ChangeNotifier {
   bool get isMeasureOrderGoods =>
       TargetOrderGoods.instance.orderGoodsId != null;
-  ProductBean _goods;
+  ProductDetailBean _goods;
   WindowGauzeAttr _windowGauzeAttr;
   CraftAttr _craftAttr;
   RoomAttr _roomAttr;
@@ -209,7 +209,7 @@ class GoodsProvider with ChangeNotifier {
 
   void initDataWithFilter(
       {OrderGoodsMeasureData measureData,
-      ProductBean bean,
+      ProductDetailBean bean,
       WindowGauzeAttr windowGauzeAttr,
       CraftAttr craftAttr,
       PartAttr partAttr,
@@ -296,7 +296,7 @@ class GoodsProvider with ChangeNotifier {
 
   void initData(
       {OrderGoodsMeasureData measureData,
-      ProductBean bean,
+      ProductDetailBean bean,
       WindowGauzeAttr windowGauzeAttr,
       CraftAttr craftAttr,
       PartAttr partAttr,
@@ -392,7 +392,7 @@ class GoodsProvider with ChangeNotifier {
       double.parse(((double.parse(_height ?? '0.0')) / 100).toStringAsFixed(3));
   String get heightMStr => heightM.toStringAsFixed(2);
   get measureId => _goods?.measureId;
-  ProductBean get goods => _goods;
+  ProductDetailBean get goods => _goods;
   WindowGauzeAttr get windowGauzeAttr => _windowGauzeAttr;
   CraftAttr get craftAttr => _craftAttr;
   RoomAttr get roomAttr => _roomAttr;

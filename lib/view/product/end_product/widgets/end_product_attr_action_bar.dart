@@ -6,11 +6,11 @@
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/repository/shop/product/end_product/base_end_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/end_product/base_end_product_detail_bean.dart';
 import 'package:taojuwu/view/product/popup_modal/pop_up_modal.dart';
 
 class EndProductAttrActionBar extends StatelessWidget {
-  final BaseEndProductBean bean;
+  final BaseEndProductDetailBean bean;
   final StateSetter setState;
   const EndProductAttrActionBar({Key key, this.bean, this.setState})
       : super(key: key);

@@ -1,8 +1,8 @@
 /*
- * @Description: //TODO
+ * @Description: app全量
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-09-27 09:04:14
+ * @LastEditTime: 2020-11-04 16:04:52
  */
 import 'package:flutter_app_upgrade/flutter_app_upgrade.dart';
 import 'package:taojuwu/repository/zy_response.dart';

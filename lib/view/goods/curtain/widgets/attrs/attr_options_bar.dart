@@ -6,18 +6,14 @@
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/product/popup_modal/widgets/curtain_product_bean_common_attr_modal.dart';
 import 'package:taojuwu/view/product/popup_modal/widgets/curtain_product_bean_room_attr_modal.dart';
-import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
-import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 
-import '../option_view.dart';
 import '../sku_attr_picker.dart';
 
 /*
@@ -28,7 +24,7 @@ import '../sku_attr_picker.dart';
  * @Date: 2020-09-29 10:13:16
  */
 class AttrOptionsBar extends StatefulWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   final int index; // 在skulist中的索引位置
   final ProductSkuAttr skuAttr;
   final Function callback;
@@ -41,7 +37,7 @@ class AttrOptionsBar extends StatefulWidget {
 }
 
 class _AttrOptionsBarState extends State<AttrOptionsBar> {
-  BaseCurtainProductBean get bean => widget.bean;
+  BaseCurtainProductDetailBean get bean => widget.bean;
   bool get isVisible => ![1, 2].contains(skuAttr.type);
 
   @override
@@ -109,8 +105,9 @@ class _AttrOptionsBarState extends State<AttrOptionsBar> {
                       Navigator.of(context).pop();
                     },
                     child: skuAttr.type == 1
-                        ? CurtainProductBeanRoomAttrModal(bean)
-                        : CurtainProductBeanCommonAttrModal(bean, skuAttr)),
+                        ? CurtainProductDetailBeanRoomAttrModal(bean)
+                        : CurtainProductDetailBeanCommonAttrModal(
+                            bean, skuAttr)),
                 onWillPop: () {
                   // if (!skuAttr.hasSelectedAttr) {
                   //   (viewModel as CurtainViewModel).resetAttr();
@@ -121,72 +118,5 @@ class _AttrOptionsBarState extends State<AttrOptionsBar> {
                 });
           });
         });
-  }
-
-  /*
-   * @Author: iamsmiling
-   * @description: 通用属性大的弹窗视图
-   * @param : 
-   * @return {type} 
-   * @Date: 2020-09-29 10:58:30
-   */
-  Widget _buildCommonAttrOptionView(StateSetter setState) {
-    CurtainViewModel viewModel =
-        Provider.of<BaseGoodsViewModel>(context, listen: false);
-    return SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          child: GridView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.all(0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                //横轴间距
-                crossAxisSpacing: 10.0,
-                childAspectRatio: 0.72,
-              ),
-              itemCount: widget.skuAttr.data.length,
-              itemBuilder: (BuildContext context, int i) {
-                ProductSkuAttrBean item = widget.skuAttr.data[i];
-                return OptionView(
-                  item,
-                  callback: () {
-                    setState(() {
-                      viewModel.selectAttrBean(widget.skuAttr, i);
-                    });
-                  },
-                );
-              }),
-        ));
-  }
-
-  /*
-   * @Author: iamsmiling
-   * @description: 选择空间时的弹窗视图
-   * @param : 
-   * @return {type} 
-   * @Date: 2020-09-29 10:58:54
-   */
-  Widget _buildRoomAttrOptionView(StateSetter setState) {
-    // CurtainViewModel viewModel =
-    //     Provider.of<CurtainViewModel>(context, listen: false);
-    List list = skuAttr.data;
-    return SingleChildScrollView(
-      child: Wrap(
-        children: List.generate(list.length, (int i) {
-          ProductSkuAttrBean bean = list[i];
-          return OptionView(
-            bean,
-            isRoomAttr: true,
-            callback: () {
-              setState(() {
-                // bean.selectAttrBean(skuAttr, i);
-              });
-            },
-          );
-        }),
-      ),
-    );
   }
 }

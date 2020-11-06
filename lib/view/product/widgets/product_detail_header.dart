@@ -6,12 +6,12 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 import 'package:taojuwu/widgets/user_choose_button.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class ProductDetailHeader extends StatelessWidget {
-  final SingleProductBean bean;
+  final SingleProductDetailBean bean;
   const ProductDetailHeader(this.bean, {Key key}) : super(key: key);
 
   @override

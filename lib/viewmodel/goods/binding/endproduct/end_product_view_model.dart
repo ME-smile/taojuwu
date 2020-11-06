@@ -8,7 +8,7 @@ import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
 
 class EndProductViewModel extends BaseGoodsViewModel {
-  ProductBean bean; //商品详情
+  ProductDetailBean bean; //商品详情
 
   EndProductViewModel(this.bean);
   @override

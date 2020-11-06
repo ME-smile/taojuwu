@@ -2,11 +2,11 @@
  * @Description: 窗纱商品详情页面
  * @Author: iamsmiling
  * @Date: 2020-10-31 15:35:02
- * @LastEditTime: 2020-11-03 17:13:54
+ * @LastEditTime: 2020-11-05 14:38:33
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/gauze_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/gauze_curtain_product_detail_bean.dart';
 import 'package:taojuwu/view/product/base/base_curtain_product_detail_state.dart';
 import 'package:taojuwu/view/product/base/base_product_detail_state.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_footer.dart';
@@ -14,7 +14,6 @@ import 'package:taojuwu/view/product/widgets/product_detail_header.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_profile.dart';
 import 'package:taojuwu/view/product/widgets/section/gauze_curtain_product_attrs_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/product_detail_img_section_view.dart';
-import 'package:taojuwu/view/product/widgets/section/product_html_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/recommend_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/relative_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/scene_design_product_section_view.dart';
@@ -36,13 +35,13 @@ class _GauzeCurtainProductDetailPageState
   Future sendRequest() {
     return fetchData(context, widget.goodsId).whenComplete(() {
       // 初始化商品属性
-      (productBean as GauzeCurtainProductBean)?.fetchAttrsData(() {
+      (productDetailBean as GauzeCurtainProductDetailBean)?.fetchAttrsData(() {
         setState(() {
           isLoading = false;
         });
       });
     }).then((_) {
-      (productBean as GauzeCurtainProductBean)
+      (productDetailBean as GauzeCurtainProductDetailBean)
           .fetchRoomAttrData()
           .whenComplete(() {
         copyData();
@@ -72,19 +71,19 @@ class _GauzeCurtainProductDetailPageState
                     controller: scrollController,
                     headerSliverBuilder:
                         (BuildContext context, bool innerBoxIsScrolled) {
-                      return <Widget>[ProductDetailHeader(productBean)];
+                      return <Widget>[ProductDetailHeader(productDetailBean)];
                     },
                     body: CustomScrollView(
                       shrinkWrap: true,
                       slivers: [
-                        ProductDetailProfile(productBean),
-                        GauzeCurtainProductAttrsSectionView(productBean),
+                        ProductDetailProfile(productDetailBean),
+                        GauzeCurtainProductAttrsSectionView(productDetailBean),
                         SliverToBoxAdapter(
                           child: ProductDetailImgSectionView(
-                              productBean?.detailImgList),
+                              productDetailBean?.detailImgList),
                         ),
-                        // RollingCurtainProductAttrsSectionView(productBean),
-                        // RollingCurtainProductAttrSectionView(productBean),
+                        // RollingCurtainProductAttrsSectionView(ProductDetailBean),
+                        // RollingCurtainProductAttrSectionView(ProductDetailBean),
                         RelativeProductSectionView(relativeProductList),
                         SliverToBoxAdapter(
                           child: SceneDesignProductSectionView(
@@ -93,11 +92,12 @@ class _GauzeCurtainProductDetailPageState
                         SliverToBoxAdapter(
                           child: SoftDesignProductSectionView(
                             softDesignProductList,
-                            goodsId: productBean?.goodsId,
+                            goodsId: productDetailBean?.goodsId,
                           ),
                         ),
 
-                        ProductHtmlDescSectionView(productBean?.description),
+                        // ProductHtmlDescSectionView(
+                        //     productDetailBean?.description),
                         SliverToBoxAdapter(
                           child: RecommendedProductSectionView(
                               recommendProductList),
@@ -105,7 +105,7 @@ class _GauzeCurtainProductDetailPageState
                       ],
                     )),
                 bottomNavigationBar: ProductDeatilFooter(
-                  productBean,
+                  productDetailBean,
                   callback: scrollToTop,
                 ),
               ));

@@ -2,16 +2,17 @@
  * @Description: 选择属性
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:41:57
- * @LastEditTime: 2020-11-04 11:24:22
+ * @LastEditTime: 2020-11-06 13:57:55
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/option_view.dart';
 
 class CommonAttrOptionView extends StatefulWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   final List<ProductSkuAttrBean> list;
+
   CommonAttrOptionView(
     this.bean,
     this.list, {
@@ -24,6 +25,7 @@ class CommonAttrOptionView extends StatefulWidget {
 
 class _CommonAttrOptionViewState extends State<CommonAttrOptionView> {
   List<ProductSkuAttrBean> get list => widget.list;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,8 +36,8 @@ class _CommonAttrOptionViewState extends State<CommonAttrOptionView> {
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             //横轴间距
-            crossAxisSpacing: 8.0,
-            mainAxisSpacing: 0,
+            crossAxisSpacing: 5.0,
+            mainAxisSpacing: 2,
             childAspectRatio: 0.68,
           ),
           itemCount: list.length,

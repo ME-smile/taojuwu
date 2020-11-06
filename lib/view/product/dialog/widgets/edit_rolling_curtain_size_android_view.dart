@@ -6,14 +6,14 @@
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/product/widgets/base/sized_input_box.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
-// import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
+// import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_bean.dart';
 
 class EditRollingCurtainSizeAndroidView extends StatefulWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   const EditRollingCurtainSizeAndroidView(this.bean, {Key key})
       : super(key: key);
 

@@ -6,11 +6,11 @@
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 
 class CurtainProductAttrsCardView extends StatelessWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   const CurtainProductAttrsCardView(this.bean, {Key key}) : super(key: key);
 
   List<ProductSkuAttr> get attrList => bean?.attrList;

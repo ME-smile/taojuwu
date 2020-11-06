@@ -6,8 +6,8 @@
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/scene_design_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/scene_detail_model.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/view/product/scene_design/section/recommend_scene_design_product_section_view.dart';
@@ -19,9 +19,9 @@ import 'package:taojuwu/widgets/user_choose_button.dart';
 class SceneDesignPage extends StatefulWidget {
   final int scenesId;
 
-  ///[fromProductBean]从哪个商品点进来看的
-  final AbstractBaseProductBean fromProductBean;
-  SceneDesignPage(this.scenesId, {Key key, this.fromProductBean})
+  ///[fromProductDetailBean]从哪个商品点进来看的
+  final AbstractBaseProductDetailBean fromProductDetailBean;
+  SceneDesignPage(this.scenesId, {Key key, this.fromProductDetailBean})
       : super(key: key);
 
   @override
@@ -31,8 +31,8 @@ class SceneDesignPage extends StatefulWidget {
 class _SceneDesignPageState extends State<SceneDesignPage> {
   bool isLoading = true;
   int get id => widget.scenesId;
-  SceneDesignProductBean currentBean;
-  List<SceneDesignProductBean> list;
+  SceneDesignProductDetailBean currentBean;
+  List<SceneDesignProductDetailBean> list;
   @override
   void initState() {
     _fetchData();

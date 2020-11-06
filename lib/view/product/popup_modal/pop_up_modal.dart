@@ -2,14 +2,14 @@
  * @Description: //选择属性
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:36:14
- * @LastEditTime: 2020-11-04 09:43:14
+ * @LastEditTime: 2020-11-06 13:46:43
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 
-import 'package:taojuwu/repository/shop/product/end_product/base_end_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/relative_product/relative_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/end_product/base_end_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/sku_attr_picker.dart';
@@ -24,7 +24,7 @@ import 'widgets/design_product_detail_modal.dart';
 
 //选择属性的弹窗
 Future pickAttr(
-    BuildContext ctx, BaseCurtainProductBean bean, ProductSkuAttr attr) {
+    BuildContext ctx, BaseCurtainProductDetailBean bean, ProductSkuAttr attr) {
   return showCupertinoModalPopup(
       context: ctx,
       builder: (BuildContext context) {
@@ -40,7 +40,10 @@ Future pickAttr(
                 },
                 child: attr?.type == 1
                     ? RoomAttrOptionView(bean, attr)
-                    : CommonAttrOptionView(bean, attr?.data),
+                    : CommonAttrOptionView(
+                        bean,
+                        attr?.data,
+                      ),
               ),
               onWillPop: () {
                 // if (!skuAttr.hasSelectedAttr) {
@@ -55,7 +58,7 @@ Future pickAttr(
 }
 
 Future showRelativeProductModalPopup(
-    BuildContext context, List<RelativeProductBean> goodsList) {
+    BuildContext context, List<SingleProductDetailBean> goodsList) {
   return showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) {
@@ -103,7 +106,8 @@ Future showDesignProductDetailModal(BuildContext ctx, int id) {
 //成品详情弹窗
 
 typedef FutureCallback = Future Function();
-Future showEndProductDetailModalPopup(BuildContext ctx, BaseEndProductBean bean,
+Future showEndProductDetailModalPopup(
+    BuildContext ctx, BaseEndProductDetailBean bean,
     {FutureCallback callback}) {
   return showCupertinoModalPopup(
       context: ctx,

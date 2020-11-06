@@ -34,7 +34,7 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    TextTheme accentTextTheme = themeData.accentTextTheme;
+
     return ChangeNotifierProvider<OrderProvider>(
       create: (BuildContext context) => OrderProvider(context),
       child: WillPopScope(

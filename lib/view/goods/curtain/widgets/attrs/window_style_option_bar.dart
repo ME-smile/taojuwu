@@ -7,15 +7,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/curtain/style_selector/curtain_style_selector.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/style_selector/curtain_style_selector.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/window_style_option_view.dart';
 
 import '../sku_attr_picker.dart';
 
 class WindowStyleOptionBar extends StatefulWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   final ValueNotifier<String> notifier; //用于更新图片
   const WindowStyleOptionBar(this.bean, {Key key, this.notifier})
       : super(key: key);
@@ -70,7 +70,7 @@ class _WindowStyleOptionBarState extends State<WindowStyleOptionBar> {
   }
 
   Future pickWindowStyleOption(
-      BuildContext ctx, BaseCurtainProductBean bean) async {
+      BuildContext ctx, BaseCurtainProductDetailBean bean) async {
     return showCupertinoModalPopup(
         context: ctx,
         builder: (BuildContext context) {

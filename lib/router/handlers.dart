@@ -6,7 +6,7 @@ import 'package:taojuwu/application.dart';
 import 'package:taojuwu/export/export_pages.dart';
 import 'package:taojuwu/view/after_sale_service/after_sale_service_page.dart';
 
-import 'package:taojuwu/view/cart/cart_page2.dart';
+import 'package:taojuwu/view/cart/cart_page.dart';
 import 'package:taojuwu/view/collect/collect_page.dart';
 import 'package:taojuwu/view/goods/curtain/curtain_mall_page.dart';
 import 'package:taojuwu/view/goods/curtain/subPages/edit_goods_attr_page.dart';
@@ -405,6 +405,7 @@ class RouteHandler {
     BuildContext context,
     Map<String, List<Object>> params,
   ) {
+    return Container();
     // return PreMeasureDataPage();
   });
 

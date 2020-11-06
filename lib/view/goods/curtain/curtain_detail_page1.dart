@@ -118,7 +118,7 @@
 //     cartParams['client_uid'] = TargetClient().clientId;
 //   }
 
-//   Map<String, dynamic> getCartDetail(ProductBean bean) {
+//   Map<String, dynamic> getCartDetail(ProductDetailBean bean) {
 //     return {
 //       'sku_id': '${bean?.skuId}' ?? '',
 //       'goods_id': '${bean?.goodsId}' ?? '',
@@ -597,11 +597,11 @@
 //     return true;
 //   }
 
-//   ProductBean bean;
+//   ProductDetailBean bean;
 //   void initData(data, GoodsProvider goodsProvider) {
 //     OrderGoodsMeasureData measureData = data[0];
-//     ProductBeanResp ProductBeanResp = data[1];
-//     ProductBeanDataWrapper wrapper = ProductBeanResp.data;
+//     ProductDetailBeanResp ProductDetailBeanResp = data[1];
+//     ProductDetailBeanDataWrapper wrapper = ProductDetailBeanResp.data;
 //     bean = wrapper.goodsDetail;
 //     CartCountResp cartCountResp = data[9];
 //     goodsProvider?.initDataWithFilter(

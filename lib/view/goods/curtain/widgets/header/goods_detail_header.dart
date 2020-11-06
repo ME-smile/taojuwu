@@ -11,7 +11,7 @@ import 'package:taojuwu/widgets/user_choose_button.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class GoodsDetailHeader extends StatelessWidget {
-  final ProductBean bean;
+  final ProductDetailBean bean;
 
   const GoodsDetailHeader(
     this.bean, {
@@ -58,7 +58,7 @@ class GoodsDetailHeader extends StatelessWidget {
             key: ValueKey(bean?.goodsId),
             itemCount: bean?.goodsImgList?.length,
             itemBuilder: (BuildContext context, int index) {
-              ProductBeanGoodsImageBean item = bean?.goodsImgList[index];
+              ProductDetailBeanGoodsImageBean item = bean?.goodsImgList[index];
               return ZYNetImage(
                 width: 300,
                 height: 300,

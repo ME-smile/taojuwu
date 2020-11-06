@@ -5,7 +5,7 @@
  * @LastEditTime: 2020-10-27 13:31:18
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/base/spec/product_spec_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/base/spec/product_spec_bean.dart';
 import 'package:taojuwu/widgets/zy_action_chip.dart';
 
 class EndProductSpecSelector extends StatefulWidget {

@@ -4,16 +4,17 @@
  * @Date: 2020-10-16 15:49:00
  * @LastEditTime: 2020-10-23 15:41:55
  */
-import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/soft_design_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
-class SoftProjectDetailBeanResp extends ZYResponse<SoftDesignProductBean> {
+class SoftProjectDetailBeanResp
+    extends ZYResponse<SoftDesignProductDetailBean> {
   SoftProjectDetailBeanResp.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
     this.data =
-        this.valid ? SoftDesignProductBean.fromJson(json['data']) : null;
+        this.valid ? SoftDesignProductDetailBean.fromJson(json['data']) : null;
   }
 }
 

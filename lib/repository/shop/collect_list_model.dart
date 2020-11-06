@@ -8,12 +8,12 @@ class CollectListResp extends ZYResponse<CollectListWrapper> {
 }
 
 class CollectListWrapper {
-  List<ProductBean> data;
+  List<ProductDetailBean> data;
   int totalCount;
 
   CollectListWrapper.fromJson(Map<String, dynamic> json) {
     data = (json['data'] as List ?? [])
-            .map((o) => ProductBean.fromJson(o))
+            .map((o) => ProductDetailBean.fromJson(o))
             ?.toList() ??
         [];
     totalCount = json['total_count'];

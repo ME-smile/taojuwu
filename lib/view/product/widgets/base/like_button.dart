@@ -2,7 +2,7 @@
  * @Description: 收藏安努
  * @Author: iamsmiling
  * @Date: 2020-10-28 15:04:00
- * @LastEditTime: 2020-10-28 17:27:26
+ * @LastEditTime: 2020-11-06 10:06:26
  */
 import 'dart:async';
 
@@ -112,8 +112,8 @@ class _LikeButtonState extends State<LikeButton> {
         UIKit.getAssetsImagePath(
           hasLiked ? 'heart_fill.png' : 'heart_blank.png',
         ),
-        height: 24,
-        width: 24,
+        height: 20,
+        width: 20,
       )),
     );
   }

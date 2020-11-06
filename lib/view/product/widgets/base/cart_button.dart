@@ -2,7 +2,7 @@
  * @Description: 加入购物车按钮
  * @Author: iamsmiling
  * @Date: 2020-10-28 15:04:13
- * @LastEditTime: 2020-11-04 14:37:37
+ * @LastEditTime: 2020-11-06 10:08:07
  */
 import 'dart:async';
 
@@ -38,6 +38,7 @@ class _CartButtonState extends State<CartButton> {
     _subscription = Application.eventBus.on().listen((event) {
       if (event is SelectClientEvent) {
         clientId = event.mTargetClient.clientId;
+        print(Application.sp.get('token'));
         _fetchData();
       }
       if (event is AddToCartEvent) {
@@ -86,8 +87,8 @@ class _CartButtonState extends State<CartButton> {
     return GestureDetector(
       onTap: () => _jump(context),
       child: Container(
-        width: UIKit.width(60),
-        height: UIKit.width(60),
+        width: 28,
+        height: 28,
         margin: EdgeInsets.only(bottom: 5),
         alignment: Alignment(0.8, -0.8),
         child: Visibility(
@@ -111,11 +112,12 @@ class _CartButtonState extends State<CartButton> {
         ),
         decoration: BoxDecoration(
             image: DecorationImage(
+                fit: BoxFit.cover,
                 image: AssetImage(
-          UIKit.getAssetsImagePath(
-            'cart_blank.png',
-          ),
-        ))),
+                  UIKit.getAssetsImagePath(
+                    'cart_blank.png',
+                  ),
+                ))),
       ),
     );
   }

@@ -6,12 +6,12 @@
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
-import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/scene_design_product_detail_bean.dart';
 import 'package:taojuwu/view/product/scene_design/widgets/product_style_tag.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class SceneDesignProductDetailSectionView extends StatelessWidget {
-  final SceneDesignProductBean bean;
+  final SceneDesignProductDetailBean bean;
   const SceneDesignProductDetailSectionView(this.bean, {Key key})
       : super(key: key);
 

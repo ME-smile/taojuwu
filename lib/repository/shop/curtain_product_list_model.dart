@@ -194,7 +194,7 @@ class CurtainGoodsListWrapper {
 /// display_price : "￥0.00"
 /// group_name : ""
 
-class GoodsItemBean extends ProductBean {
+class GoodsItemBean extends ProductDetailBean {
   int goodsId;
   String goodsName;
   dynamic picCoverMid;

@@ -1,3 +1,9 @@
+/*
+ * @Description: 
+ * @Author: iamsmiling
+ * @Date: 2020-10-31 13:34:35
+ * @LastEditTime: 2020-11-06 14:55:54
+ */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
@@ -24,7 +30,7 @@ class MenuEntry extends StatelessWidget {
     return InkWell(
         onTap: callback,
         child: Container(
-          height: 50.0,
+          height: 64,
           alignment: Alignment.center,
           decoration: BoxDecoration(
               border: Border(
@@ -41,7 +47,11 @@ class MenuEntry extends StatelessWidget {
             children: <Widget>[
               Text.rich(TextSpan(text: '', children: [
                 WidgetSpan(
-                  child: ZYAssetImage(iconPath),
+                  child: ZYAssetImage(
+                    iconPath,
+                    width: 28,
+                    height: 28,
+                  ),
                 ),
                 TextSpan(text: '   '),
                 TextSpan(
@@ -52,7 +62,10 @@ class MenuEntry extends StatelessWidget {
                     text: number == null ? '（0）' : '($number)',
                     style: textTheme.caption.copyWith(fontSize: UIKit.sp(32)))
               ])),
-              Icon(Icons.keyboard_arrow_right)
+              Icon(
+                Icons.keyboard_arrow_right,
+                size: 28,
+              )
             ],
           ),
         ));

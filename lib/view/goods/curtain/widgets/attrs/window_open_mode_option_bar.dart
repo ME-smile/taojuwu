@@ -5,15 +5,15 @@
  * @LastEditTime: 2020-10-31 17:37:32
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/curtain/style_selector/curtain_style_selector.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/style_selector/curtain_style_selector.dart';
 import 'package:taojuwu/repository/shop/sku_attr/window_style_sku_option.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class WindowOpenOptionBar extends StatefulWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   const WindowOpenOptionBar(
     this.bean, {
     Key key,

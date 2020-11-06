@@ -5,7 +5,7 @@
  * @LastEditTime: 2020-10-30 10:21:37
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_prodcut_detail_bean.dart';
 import 'package:taojuwu/viewmodel/order/order_creator.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
@@ -13,7 +13,7 @@ class SubmitOrderActionBar extends StatelessWidget {
   final OrderCreator orderCreator;
   const SubmitOrderActionBar(this.orderCreator, {Key key}) : super(key: key);
 
-  AbstractBaseProductBean get bean => orderCreator.productBean;
+  AbstractProductDetailBean get bean => orderCreator.productDetailBean;
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);

@@ -2,14 +2,15 @@
  * @Description: 提交订单 统统商品卡片样式
  * @Author: iamsmiling
  * @Date: 2020-10-28 14:24:58
- * @LastEditTime: 2020-11-02 14:28:27
+ * @LastEditTime: 2020-11-06 15:33:53
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class CommonProductOrderCardHeader extends StatelessWidget {
-  final SingleProductBean bean;
+  final SingleProductDetailBean bean;
   const CommonProductOrderCardHeader(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -18,6 +19,25 @@ class CommonProductOrderCardHeader extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Column(
         children: [
+          Visibility(
+            visible: (bean is BaseCurtainProductDetailBean),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                (bean is BaseCurtainProductDetailBean)
+                    ? (bean as BaseCurtainProductDetailBean)
+                        ?.roomAttr
+                        ?.selectedAttrName
+                    : '',
+                style: TextStyle(
+                    fontSize: 14,
+                    color: const Color(0xFF333333),
+                    fontWeight: FontWeight.w400),
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ),
           Row(
             children: [
               SizedBox(
@@ -69,21 +89,6 @@ class CommonProductOrderCardHeader extends StatelessWidget {
               ))
             ],
           ),
-          Container(
-            alignment: Alignment.centerRight,
-            width: MediaQuery.of(context).size.width,
-            child: Text.rich(TextSpan(
-                text: '小计:',
-                style: TextStyle(
-                    color: const Color(0xFF1B1B1B),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-                children: [
-                  TextSpan(
-                    text: '¥${bean?.totalPrice}',
-                  )
-                ])),
-          )
         ],
       ),
     );

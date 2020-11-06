@@ -5,7 +5,7 @@
  * @LastEditTime: 2020-11-03 17:51:57
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 import 'package:taojuwu/view/product/popup_modal/pop_up_modal.dart';
 import 'package:taojuwu/view/product/widgets/base/cart_button.dart';
 import 'package:taojuwu/view/goods/base/title_tip.dart';
@@ -16,7 +16,7 @@ import 'package:taojuwu/utils/extensions/object_kit.dart';
 
 class SceneDesignRelativeProductSectionView extends StatelessWidget {
   final int id;
-  final List<SingleProductBean> goodsList;
+  final List<SingleProductDetailBean> goodsList;
   const SceneDesignRelativeProductSectionView(this.id, this.goodsList,
       {Key key})
       : super(key: key);
@@ -60,8 +60,8 @@ class SceneDesignRelativeProductSectionView extends StatelessWidget {
                   '立即购买(${goodsList.length})',
                   () {
                     showDesignProductDetailModal(context, id);
-                    // showDesignProductDetailModal(context, fromProductBean)
-                    // showDesignProductDetailModal(context, bean, fromProductBean)
+                    // showDesignProductDetailModal(context, fromProductDetailBean)
+                    // showDesignProductDetailModal(context, bean, fromProductDetailBean)
                   },
                   horizontalPadding: 12,
                   verticalPadding: 7.2,

@@ -9,14 +9,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/providers/theme_provider.dart';
-import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/view/product/dialog/widgets/edit_curtain_deltaY_android_view.dart';
 import 'package:taojuwu/view/product/dialog/widgets/edit_rolling_curtain_size_android_view.dart';
 
 import 'widgets/edit_curtain_deltaY_ios_view.dart';
 
-Future setSize(BuildContext ctx, BaseProductBean bean) {
+Future setSize(BuildContext ctx, BaseProductDetailBean bean) {
   return showDialog(
       context: ctx,
       builder: (BuildContext context) {
@@ -83,7 +83,7 @@ Future setSize(BuildContext ctx, BaseProductBean bean) {
   // }
 }
 
-Future setDeltaY(BuildContext context, BaseCurtainProductBean bean) {
+Future setDeltaY(BuildContext context, BaseCurtainProductDetailBean bean) {
   if (Platform.isAndroid) {
     return showDialog(
         context: context,

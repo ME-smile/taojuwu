@@ -6,7 +6,7 @@
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
 import 'package:taojuwu/view/product/base/base_curtain_product_detail_state.dart';
 import 'package:taojuwu/view/product/base/base_product_detail_state.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_footer.dart';
@@ -35,7 +35,9 @@ class _RollingCurtainProductDetailPageState
   // 发起请求
   Future sendRequest() {
     return fetchData(context, widget.goodsId).then((_) {
-      (productBean as RollingCurtainProductBean).fetchRoomAttrData().then((_) {
+      (productDetailBean as RollingCurtainProductDetailBean)
+          .fetchRoomAttrData()
+          .then((_) {
         copyData();
       }).whenComplete(() {
         setState(() {
@@ -67,14 +69,15 @@ class _RollingCurtainProductDetailPageState
                     controller: scrollController,
                     headerSliverBuilder:
                         (BuildContext context, bool innerBoxIsScrolled) {
-                      return <Widget>[ProductDetailHeader(productBean)];
+                      return <Widget>[ProductDetailHeader(productDetailBean)];
                     },
                     body: CustomScrollView(
                       shrinkWrap: true,
                       slivers: [
-                        ProductDetailProfile(productBean),
-                        RollingCurtainProductAttrsSectionView(productBean),
-                        // RollingCurtainProductAttrSectionView(productBean),
+                        ProductDetailProfile(productDetailBean),
+                        RollingCurtainProductAttrsSectionView(
+                            productDetailBean),
+                        // RollingCurtainProductAttrSectionView(ProductDetailBean),
                         RelativeProductSectionView(relativeProductList),
                         SliverToBoxAdapter(
                           child: SceneDesignProductSectionView(
@@ -84,14 +87,14 @@ class _RollingCurtainProductDetailPageState
                         SliverToBoxAdapter(
                           child: SoftDesignProductSectionView(
                             softDesignProductList,
-                            goodsId: productBean?.goodsId,
+                            goodsId: productDetailBean?.goodsId,
                           ),
                         ),
                         SliverToBoxAdapter(
                           child: ProductDetailImgSectionView(
-                              productBean?.detailImgList),
+                              productDetailBean?.detailImgList),
                         ),
-                        // ProductHtmlDescSectionView(productBean?.description),
+                        // ProductHtmlDescSectionView(ProductDetailBean?.description),
                         SliverToBoxAdapter(
                           child: RecommendedProductSectionView(
                               recommendProductList),
@@ -99,7 +102,7 @@ class _RollingCurtainProductDetailPageState
                       ],
                     )),
                 bottomNavigationBar: ProductDeatilFooter(
-                  productBean,
+                  productDetailBean,
                   callback: scrollToTop,
                 ),
               ));

@@ -32,8 +32,8 @@ class CollectPage extends StatefulWidget {
 class _CollectPageState extends State<CollectPage> {
   final List<String> tabs = ['窗帘'];
   CollectListWrapper wrapper;
-  List<ProductBean> beanList;
-  // ValueNotifier<List<ProductBean>> beans;
+  List<ProductDetailBean> beanList;
+  // ValueNotifier<List<ProductDetailBean>> beans;
   int get count => beanList?.length ?? 0;
   @override
   void initState() {
@@ -61,7 +61,7 @@ class _CollectPageState extends State<CollectPage> {
 
   bool isLoading = true;
 
-  cancelCollect(BuildContext context, ProductBean bean) {
+  cancelCollect(BuildContext context, ProductDetailBean bean) {
     OTPService.cancelCollect(params: {
       'fav_id': bean?.goodsId ?? -1,
       'client_uid': widget.id ?? -1,
@@ -76,7 +76,7 @@ class _CollectPageState extends State<CollectPage> {
     }).catchError((err) => err);
   }
 
-  void remove(BuildContext ctx, ProductBean bean) {
+  void remove(BuildContext ctx, ProductDetailBean bean) {
     if (Platform.isAndroid) {
       showDialog(
           context: context,
@@ -137,7 +137,7 @@ class _CollectPageState extends State<CollectPage> {
     }
   }
 
-  Widget buildOpenContainer(ProductBean bean, int index) {
+  Widget buildOpenContainer(ProductDetailBean bean, int index) {
     return GestureDetector(
       onLongPress: () {
         remove(context, bean);
@@ -154,7 +154,8 @@ class _CollectPageState extends State<CollectPage> {
     );
   }
 
-  Widget buildCollectCard(BuildContext context, ProductBean bean, int index) {
+  Widget buildCollectCard(
+      BuildContext context, ProductDetailBean bean, int index) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     return GestureDetector(

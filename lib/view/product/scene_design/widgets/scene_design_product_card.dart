@@ -7,7 +7,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/design/base_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/base_design_product_detail_bean.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/view/goods/base/thumbnail_card.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
@@ -17,7 +17,7 @@ class SceneProjectGoodsCard extends StatelessWidget {
   final int imgFlex;
 
   ///[bean]
-  final BaseDesignProductBean bean;
+  final BaseDesignProductDetailBean bean;
   const SceneProjectGoodsCard({this.bean, key, this.imgFlex = 1})
       : super(key: key);
 

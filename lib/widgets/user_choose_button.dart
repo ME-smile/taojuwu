@@ -2,7 +2,7 @@
  * @Description: 选择用户的按钮
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-30 12:16:40
+ * @LastEditTime: 2020-11-06 14:32:11
  */
 import 'dart:async';
 
@@ -46,7 +46,8 @@ class _UserChooseButtonState extends State<UserChooseButton> {
   Widget build(BuildContext context) {
     return InkWell(
         onTap: () {
-          RouteHandler.goCustomerPage(context, isForSelectedClient: 1);
+          //  RouteHandler.goCustomerEditPage(context);
+          RouteHandler.goCustomerEditPage(context, title: '添加客户');
         },
         child: Row(
           children: <Widget>[

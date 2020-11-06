@@ -5,14 +5,14 @@
  * @LastEditTime: 2020-10-31 17:33:51
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/attrs/attr_options_bar.dart';
 
 import '../measure_data_tip_bar.dart';
 
 class GauzeCurtainProductAttrsSectionView extends StatelessWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   const GauzeCurtainProductAttrsSectionView(this.bean, {Key key})
       : super(key: key);
 

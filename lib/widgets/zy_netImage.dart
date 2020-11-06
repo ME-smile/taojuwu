@@ -2,7 +2,7 @@
  * @Description: 网络图片封装
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-02 11:02:12
+ * @LastEditTime: 2020-11-06 13:28:59
  */
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';

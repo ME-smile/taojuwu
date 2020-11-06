@@ -6,12 +6,12 @@
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
-import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/soft_design_product_detail_bean.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_photo_view.dart';
 
 class SoftDesignModalHeader extends StatelessWidget {
-  final SoftDesignProductBean bean;
+  final SoftDesignProductDetailBean bean;
   const SoftDesignModalHeader(this.bean, {Key key}) : super(key: key);
 
   @override

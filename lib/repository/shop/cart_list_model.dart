@@ -6,7 +6,11 @@ import 'package:taojuwu/repository/base/count_model.dart';
 import 'package:taojuwu/repository/base/goods_attr.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/repository/order/order_model.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
+import 'package:taojuwu/utils/common_kit.dart';
+
+import 'product_detail/cart/cart_product_detail_bean.dart';
 
 class CartCategoryResp extends ZYResponse<CartCategoryListWrapper> {
   CartCategoryResp.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -21,6 +25,7 @@ class CartListResp extends ZYResponse<CartListWrapper> {
 }
 
 class CartListWrapper {
+  CartProductDetailBean bean;
   List<CartModel> data;
   String goodsLadderPreferential;
   List<CartCategory> categoryList;
@@ -28,6 +33,11 @@ class CartListWrapper {
     data = List()
       ..addAll(
           (json['cart_list'] as List ?? []).map((o) => CartModel.fromJson(o)));
+    List<SingleProductDetailBean> goodsList =
+        CommonKit.parseList(json['cart_list'])
+            .map((e) => SingleProductDetailBean.instantiate(e))
+            ?.toList();
+    bean = CartProductDetailBean(goodsList);
     goodsLadderPreferential = json['goods_ladder_preferential'];
   }
 

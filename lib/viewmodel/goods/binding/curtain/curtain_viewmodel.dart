@@ -41,8 +41,8 @@ class CurtainViewModel extends CurtainPriceCalculatorBinding
     _fetchData();
   }
 
-  CurtainViewModel.fromBean(ProductBean productBean) {
-    bean = productBean;
+  CurtainViewModel.fromBean(ProductDetailBean productDetailBean) {
+    bean = productDetailBean;
     // _initCurtainSkuAttr();
 
     print(styleSkuOption);
@@ -66,7 +66,7 @@ class CurtainViewModel extends CurtainPriceCalculatorBinding
 
   Future _getCurtainDetail() async {
     // await OTPService.productDetail(mBuildContext, params: {'goods_id': 961})
-    //     .then((ProductBeanResp response) {
+    //     .then((ProductDetailBeanResp response) {
     //       bean = response?.data?.goodsDetail;
     //       relatedGoodsList = response?.data?.relatedGoodsList;
     //       sceneProjectList = response?.data?.sceneProjectList;

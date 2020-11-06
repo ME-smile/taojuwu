@@ -5,14 +5,14 @@
  * @LastEditTime: 2020-11-04 10:48:30
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';
 import 'package:taojuwu/view/goods/base/title_tip.dart';
 
 import 'package:taojuwu/utils/extensions/object_kit.dart';
 import 'package:taojuwu/widgets/product_grid_card.dart';
 
 class RecommendedProductSectionView extends StatelessWidget {
-  final List<BaseProductBean> list;
+  final List<BaseProductDetailBean> list;
   const RecommendedProductSectionView(this.list, {Key key}) : super(key: key);
 
   @override

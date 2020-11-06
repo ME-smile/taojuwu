@@ -6,11 +6,11 @@
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
 import 'package:taojuwu/view/product/dialog/dialog.dart';
 
 class RollingCurtainDeltaYBar extends StatefulWidget {
-  final RollingCurtainProductBean bean;
+  final RollingCurtainProductDetailBean bean;
   RollingCurtainDeltaYBar(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -19,7 +19,7 @@ class RollingCurtainDeltaYBar extends StatefulWidget {
 }
 
 class _RollingCurtainDeltaYBarState extends State<RollingCurtainDeltaYBar> {
-  RollingCurtainProductBean get bean => widget.bean;
+  RollingCurtainProductDetailBean get bean => widget.bean;
 
   bool get isDeltaYNull => bean?.measureData?.deltaYCM == null;
   @override

@@ -14,6 +14,7 @@ import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/search_button.dart';
 import 'package:taojuwu/widgets/user_add_button.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class CustomerManagePage extends StatefulWidget {
   final int flag; // 0表示普通跳转 1 表示选择客户
@@ -111,7 +112,7 @@ class _CustomerManagePageState extends State<CustomerManagePage>
       'type': 3
     }
   ];
-  int _suspensionHeight = 40;
+  int _suspensionHeight = 32;
   int _itemHeight = 50;
   String _suspensionTag = '#';
   CustomerModelWrapper customerModelWrapper;
@@ -151,14 +152,14 @@ class _CustomerManagePageState extends State<CustomerManagePage>
     });
   }
 
-  static const ENTRY_HEIGHT = 50.0;
+  static const ENTRY_HEIGHT = 64.0;
 
   Widget _buildSusWidget(String susTag) {
     susTag = (susTag == "★" ? "热门城市" : susTag);
     return Container(
       height: _suspensionHeight.toDouble(),
       padding: const EdgeInsets.only(left: 15.0),
-      color: Color(0xfff3f4f5),
+      color: Color(0xFFF5F5F9),
       alignment: Alignment.centerLeft,
       child: Text(
         '$susTag',
@@ -186,7 +187,8 @@ class _CustomerManagePageState extends State<CustomerManagePage>
               offstage: model?.isShowSuspension != true,
               child: _buildSusWidget(susTag),
             ),
-            SizedBox(
+            Container(
+                color: Theme.of(context).primaryColor,
                 height: _itemHeight.toDouble(),
                 child: ListTile(
                   isThreeLine: false,
@@ -200,12 +202,17 @@ class _CustomerManagePageState extends State<CustomerManagePage>
                     if (widget.flag == 1) {
                       Application.eventBus.fire(SelectClientEvent(
                           TargetClient.fromCustomerModelBean(model)));
-                      Navigator.of(context).pop();
+                      Navigator.of(context)..pop()..pop();
                     } else {
                       RouteHandler.goCustomerDetailPage(context, model?.id);
                     }
                   },
-                ))
+                )),
+            Divider(
+              height: 1,
+              indent: 16,
+              endIndent: 16,
+            )
           ],
         )),
       ),
@@ -243,6 +250,7 @@ class _CustomerManagePageState extends State<CustomerManagePage>
                   height: (ENTRY_HEIGHT * entrys.length).toInt(),
                   builder: (BuildContext ctx) {
                     return Container(
+                      color: Theme.of(context).primaryColor,
                       // alignment: Alignment.centerLeft,
                       // padding: const EdgeInsets.only(left: 15.0),
                       child: Column(
@@ -270,8 +278,21 @@ class _CustomerManagePageState extends State<CustomerManagePage>
               itemHeight: _itemHeight,
               suspensionHeight: _suspensionHeight,
               onSusTagChanged: _onSusTagChanged,
+
               // showCenterTip: false,
             ))),
+      bottomNavigationBar: Container(
+        color: Theme.of(context).primaryColor,
+        padding: EdgeInsets.symmetric(horizontal: 48, vertical: 8),
+        child: ZYRaisedButton(
+          '添加新客户',
+          () {
+            RouteHandler.goCustomerEditPage(context, title: '添加客户');
+          },
+          verticalPadding: 12,
+          fontsize: 15,
+        ),
+      ),
     );
   }
 }

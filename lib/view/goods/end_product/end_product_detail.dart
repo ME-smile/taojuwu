@@ -88,10 +88,10 @@
 //     OTPService.endProductDetailData(context,
 //             params: {'goods_id': id, 'client_uid': TargetClient().clientId})
 //         .then((data) {
-//           ProductBeanResp response = data[0];
+//           ProductDetailBeanResp response = data[0];
 //           CartCountResp cartCountResp = data[1];
 
-//           ProductBeanDataWrapper wrapper = response?.data;
+//           ProductDetailBeanDataWrapper wrapper = response?.data;
 //           bean = wrapper?.goodsDetail;
 //           goodsProvider = EndProductProvider(bean);
 //           TargetOrderGoods.instance.setEndProductProvider(goodsProvider);
@@ -110,7 +110,7 @@
 
 //   bool isLoading = true;
 //   EndProductProvider goodsProvider;
-//   ProductBean bean;
+//   ProductDetailBean bean;
 //   @override
 //   Widget build(BuildContext context) {
 //     ThemeData themeData = Theme.of(context);
@@ -164,7 +164,7 @@
 //                                     itemCount: bean?.goodsImgList?.length,
 //                                     itemBuilder:
 //                                         (BuildContext context, int index) {
-//                                       ProductBeanGoodsImageBean item =
+//                                       ProductDetailBeanGoodsImageBean item =
 //                                           bean?.goodsImgList[index];
 //                                       return ZYNetImage(
 //                                         width: 300,
@@ -416,7 +416,7 @@
 //                                   shrinkWrap: true,
 //                                   padding: EdgeInsets.all(0),
 //                                   itemBuilder: (BuildContext context, int i) {
-//                                     ProductBeanSpecListBean item =
+//                                     ProductDetailBeanSpecListBean item =
 //                                         provider?.specList[i];
 
 //                                     return Column(
@@ -435,7 +435,7 @@
 //                                           spacing: UIKit.sp(24),
 //                                           children: List.generate(
 //                                               item?.value?.length, (index) {
-//                                             ProductBeanSpecValueBean e =
+//                                             ProductDetailBeanSpecValueBean e =
 //                                                 item?.value[index];
 //                                             return Container(
 //                                               height: 26,

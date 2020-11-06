@@ -5,12 +5,12 @@
  * @LastEditTime: 2020-10-23 17:31:39
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/option_view.dart';
 
 class RoomAttrOptionView extends StatefulWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   final ProductSkuAttr attr;
   RoomAttrOptionView(this.bean, this.attr, {Key key}) : super(key: key);
 

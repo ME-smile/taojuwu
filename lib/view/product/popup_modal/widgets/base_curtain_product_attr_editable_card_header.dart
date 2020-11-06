@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/providers/theme_provider.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/measure_data/edit_measure_data_page.dart';
 import 'package:taojuwu/view/product/dialog/dialog.dart';
@@ -11,7 +11,7 @@ import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart'
 import 'package:taojuwu/widgets/zy_photo_view.dart';
 
 class BaseCurtainProductAttrEditableCardHeader extends StatelessWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   final CurtainType curtainType;
 
   ///[setState]用于页面刷新 ，状态交由父节点管理
@@ -60,7 +60,7 @@ class BaseCurtainProductAttrEditableCardHeader extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         child: Text(
-                          '默认数据:宽:${bean?.widthMStr ?? 0.0}米、高:${bean?.heightMStr ?? 0.0}米、${bean?.roomAttr?.selectedAttrName ?? ''}',
+                          '默认数据:宽:${bean?.widthMStr ?? 0.0}米 高:${bean?.heightMStr ?? 0.0}米 ${bean?.roomAttr?.selectedAttrName ?? ''}',
                           style: TextStyle(fontSize: 13),
                         ),
                       ),

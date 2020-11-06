@@ -2,10 +2,11 @@
  * @Description: 下单时选中的目标客户
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-09-25 15:47:46
+ * @LastEditTime: 2020-11-06 14:44:24
  */
 import 'package:taojuwu/repository/user/category_customer_model.dart';
 import 'package:taojuwu/repository/user/customer_model.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 class TargetClient {
   TargetClient._internal();
@@ -21,7 +22,7 @@ class TargetClient {
   }
 
   TargetClient.fromLiteral(id, name) {
-    clientId = id;
+    clientId = CommonKit.parseInt(id);
     clientName = name;
   }
 

@@ -2,17 +2,18 @@
  * @Description: 订单创建的模型
  * @Author: iamsmiling
  * @Date: 2020-10-29 17:22:23
- * @LastEditTime: 2020-11-03 18:12:39
+ * @LastEditTime: 2020-11-05 09:45:08
  */
 
 import 'dart:convert';
 
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/abstract/multi_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_prodcut_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/multi_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -29,11 +30,12 @@ class OrderCreator {
           '';
   String installTime;
 
-  AbstractBaseProductBean productBean;
+  AbstractProductDetailBean productDetailBean;
 
-  List<SingleProductBean> get goodsList => productBean is SingleProductBean
-      ? [productBean]
-      : (productBean as MultiProductBean)?.goodsList;
+  List<SingleProductDetailBean> get goodsList =>
+      productDetailBean is SingleProductDetailBean
+          ? [productDetailBean]
+          : (productDetailBean as MultiProductDetailBean)?.goodsList;
 
   String windowCount;
 
@@ -50,9 +52,9 @@ class OrderCreator {
 
   int get addressId => targetClient?.addressId;
 
-  OrderCreator.fromProduct(AbstractBaseProductBean bean) {
-    productBean = bean;
-    targetClient = productBean?.client;
+  OrderCreator.fromProduct(AbstractBaseProductDetailBean bean) {
+    productDetailBean = bean;
+    targetClient = productDetailBean?.client;
   }
 
   OrderCreator();
@@ -82,15 +84,15 @@ class OrderCreator {
   }
 
   bool get isEndPorductOrder =>
-      productBean?.productType == ProductType.EndProductType;
+      productDetailBean?.productType == ProductType.EndProductType;
 
-  num get deltaYCM => productBean is BaseCurtainProductBean
-      ? (productBean as BaseCurtainProductBean)?.deltaYCM
+  num get deltaYCM => productDetailBean is BaseCurtainProductDetailBean
+      ? (productDetailBean as BaseCurtainProductDetailBean)?.deltaYCM
       : 0;
   String get measureId {
     List<int> idList = [];
     goodsList?.forEach((e) {
-      int id = e is BaseCurtainProductBean ? e?.measureData?.id : 0;
+      int id = e is BaseCurtainProductDetailBean ? e?.measureData?.id : 0;
       idList.add(id);
     });
     return idList.join(',');
@@ -99,7 +101,8 @@ class OrderCreator {
   List<String> get attrStrList {
     List<String> list = [];
     goodsList?.forEach((e) {
-      String attr = e is BaseCurtainProductBean ? jsonEncode(e.attrArgs) : '0';
+      String attr =
+          e is BaseCurtainProductDetailBean ? jsonEncode(e.attrArgs) : '0';
       list.add(attr);
     });
     return list;

@@ -2,12 +2,11 @@
  * @Description: 复合商品
  * @Author: iamsmiling
  * @Date: 2020-10-19 10:00:54
- * @LastEditTime: 2020-10-23 15:46:19
+ * @LastEditTime: 2020-11-04 16:44:26
  */
 import 'package:flutter/cupertino.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
-import 'package:taojuwu/repository/shop/soft_project_bean.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/base_goods_viewmodel.dart';
 import 'package:taojuwu/viewmodel/goods/binding/curtain/curtain_viewmodel.dart';
 
@@ -56,18 +55,15 @@ class MixinGoodsViewModel extends BaseGoodsViewModel {
 
   @override
   Future addToCart() {
-    // TODO: implement addToCart
     throw UnimplementedError();
   }
 
   @override
   Future purchase() {
-    // TODO: implement purchase
     throw UnimplementedError();
   }
 
   @override
-  // TODO: implement totalPrice
   double get totalPrice => throw UnimplementedError();
 }
 

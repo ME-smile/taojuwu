@@ -10,7 +10,7 @@ import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 
 class GoodsDetailProfile extends StatelessWidget {
-  final ProductBean bean;
+  final ProductDetailBean bean;
   final int goodsNumInCart; // 商品购物车的数量
   const GoodsDetailProfile(this.bean, {Key key, this.goodsNumInCart = 0})
       : super(key: key);

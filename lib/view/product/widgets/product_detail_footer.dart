@@ -5,11 +5,11 @@
  * @LastEditTime: 2020-11-03 15:55:32
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';
 import 'package:taojuwu/view/product/widgets/base/purchase_action_bar.dart';
 
 class ProductDeatilFooter extends StatelessWidget {
-  final BaseProductBean bean;
+  final BaseProductDetailBean bean;
   final Function callback;
   const ProductDeatilFooter(this.bean, {Key key, this.callback})
       : super(key: key);

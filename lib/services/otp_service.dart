@@ -216,11 +216,11 @@ class OTPService {
     return result;
   }
 
-  static Future<ProductBeanResp> productDetail(BuildContext context,
+  static Future<ProductDetailBeanResp> productDetail(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.productDetail, params: params ?? {});
-    return ProductBeanResp.fromJson(response.data);
+    return ProductDetailBeanResp.fromJson(response.data);
   }
 
   static Future<ZYResponse> getSms(

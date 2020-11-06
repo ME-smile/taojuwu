@@ -5,14 +5,14 @@
  * @LastEditTime: 2020-10-31 17:42:42
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/attrs/attr_options_bar.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/attrs/rolling_curtain_deltaY_bar.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/attrs/rolling_curtain_size_bar.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/attrs/window_style_option_bar.dart';
 
 class RollingCurtainProductAttrsSectionView extends StatefulWidget {
-  final RollingCurtainProductBean bean;
+  final RollingCurtainProductDetailBean bean;
   RollingCurtainProductAttrsSectionView(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -22,7 +22,7 @@ class RollingCurtainProductAttrsSectionView extends StatefulWidget {
 
 class _RollingCurtainProductAttrsSectionViewState
     extends State<RollingCurtainProductAttrsSectionView> {
-  RollingCurtainProductBean get bean => widget.bean;
+  RollingCurtainProductDetailBean get bean => widget.bean;
   ValueNotifier<String> valueNotifier;
 
   @override

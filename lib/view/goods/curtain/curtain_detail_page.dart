@@ -57,7 +57,7 @@ class CurtainDetailPage extends StatelessWidget {
   Widget _buildContent() {
     return Consumer<BaseGoodsViewModel>(
         builder: (BuildContext context, BaseGoodsViewModel viewModel, _) {
-      ProductBean bean = viewModel.bean;
+      ProductDetailBean bean = viewModel.bean;
       return Scaffold(
         backgroundColor: const Color(0xFFF8F8F8),
         body: NestedScrollView(

@@ -6,13 +6,13 @@
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class EditCurtainDeltaYAndroidView extends StatefulWidget {
-  final BaseCurtainProductBean bean;
+  final BaseCurtainProductDetailBean bean;
   EditCurtainDeltaYAndroidView(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -22,7 +22,7 @@ class EditCurtainDeltaYAndroidView extends StatefulWidget {
 
 class _EditCurtainDeltaYAndroidViewState
     extends State<EditCurtainDeltaYAndroidView> {
-  BaseCurtainProductBean get bean => widget.bean;
+  BaseCurtainProductDetailBean get bean => widget.bean;
   OrderGoodsMeasureData get measureData => bean?.measureData;
 
   TextEditingController controller;

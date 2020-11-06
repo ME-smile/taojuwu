@@ -2,13 +2,13 @@
  * @Description: //加入购物车 立即购买按钮
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:17:00
- * @LastEditTime: 2020-11-03 16:29:57
+ * @LastEditTime: 2020-11-05 09:37:57
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_prodcut_detail_bean.dart';
 
 class PurchaseActionBar extends StatelessWidget {
-  final AbstractBaseProductBean bean;
+  final AbstractProductDetailBean bean;
   final Function callback;
   const PurchaseActionBar(this.bean, {Key key, this.callback})
       : super(key: key);

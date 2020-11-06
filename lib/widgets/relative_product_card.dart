@@ -2,17 +2,17 @@
  * @Description: 相关产品卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:40:20
- * @LastEditTime: 2020-11-04 11:01:03
+ * @LastEditTime: 2020-11-05 10:45:17
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
-class RelativeProductCard extends StatelessWidget {
-  final BaseProductBean bean;
+class RelativeProductCard<T> extends StatelessWidget {
+  final SingleProductDetailBean bean;
   const RelativeProductCard(this.bean, {Key key}) : super(key: key);
 
   jump(BuildContext context, int type) {
@@ -57,7 +57,7 @@ class RelativeProductCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  bean.goodsName,
+                  bean?.goodsName ?? '',
                   style:
                       TextStyle(fontSize: 12, color: const Color(0xFF555555)),
                 ),

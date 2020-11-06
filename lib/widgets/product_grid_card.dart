@@ -2,16 +2,17 @@
  * @Description: 商品列表片
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:10:18
- * @LastEditTime: 2020-11-02 17:35:15
+ * @LastEditTime: 2020-11-06 13:29:29
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class ProductGridCard extends StatelessWidget {
-  final BaseProductBean bean;
+  final SingleProductDetailBean bean;
   const ProductGridCard(this.bean, {Key key}) : super(key: key);
 
   jump(BuildContext context, int type) {
@@ -35,7 +36,7 @@ class ProductGridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    double width = MediaQuery.of(context).size.width;
+    // double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         jump(context, bean?.goodsType);
@@ -61,14 +62,19 @@ class ProductGridCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             // mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              ZYNetImage(
-                imgPath: bean?.cover ?? '',
-                width: (width - 20) / 2,
-                height: (width - 20) / 2,
-                fit: BoxFit.cover,
-                callback: () {
-                  jump(context, bean?.goodsType);
-                },
+              ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12)),
+                child: ZYNetImage(
+                  imgPath: bean?.cover ?? '',
+                  // width: (width - 20) / 2,
+                  // height: (width - 20) / 2,
+                  fit: BoxFit.cover,
+                  callback: () {
+                    jump(context, bean?.goodsType);
+                  },
+                ),
               ),
               Expanded(
                 child: Row(
@@ -87,7 +93,7 @@ class ProductGridCard extends StatelessWidget {
               ),
               Expanded(
                   child: Text.rich(TextSpan(
-                      text: '￥${bean.price ?? "0.00"}',
+                      text: '￥${bean?.price ?? "0.00"}',
                       style: TextStyle(fontSize: 16),
                       children: [
                     TextSpan(

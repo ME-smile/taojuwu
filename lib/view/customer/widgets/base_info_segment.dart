@@ -65,16 +65,14 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
   }
 
   Widget _title(BuildContext context, String title) {
-    ThemeData themeData = Theme.of(context);
-
     return Container(
-      color: themeData.dividerColor,
+      color: const Color(0xFFF5F5F9),
       width: double.infinity,
       padding: EdgeInsets.symmetric(
           horizontal: UIKit.width(20), vertical: UIKit.height(10)),
       child: Text(
         title ?? '',
-        style: themeData.textTheme.caption,
+        style: TextStyle(color: const Color(0xFF666666), fontSize: 13),
       ),
     );
   }

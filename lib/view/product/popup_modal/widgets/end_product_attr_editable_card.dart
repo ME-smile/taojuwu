@@ -6,15 +6,15 @@
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
-import 'package:taojuwu/repository/shop/product/base/spec/product_spec_bean.dart';
-import 'package:taojuwu/repository/shop/product/end_product/base_end_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/base/spec/product_spec_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/end_product/base_end_product_detail_bean.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/product/popup_modal/widgets/end_product_spec_selector.dart';
 import 'package:taojuwu/widgets/zy_photo_view.dart';
 
 // ignore: must_be_immutable
 class EndProductAttrEditableCard<T> extends StatefulWidget {
-  final BaseEndProductBean bean;
+  final BaseEndProductDetailBean bean;
   const EndProductAttrEditableCard(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -24,7 +24,7 @@ class EndProductAttrEditableCard<T> extends StatefulWidget {
 
 class _EndProductAttrEditableCardState<T>
     extends State<EndProductAttrEditableCard<T>> {
-  BaseEndProductBean get bean => widget.bean;
+  BaseEndProductDetailBean get bean => widget.bean;
   List<ProductSpecBean> get list => widget.bean?.specList ?? [];
 
   @override

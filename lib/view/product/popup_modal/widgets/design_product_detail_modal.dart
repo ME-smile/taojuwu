@@ -6,10 +6,10 @@
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/soft_design_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/soft_project_bean.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
@@ -45,8 +45,8 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
         ProductAttrHolder {
   int get id => widget.id;
   bool isLoading = true;
-  SoftDesignProductBean bean;
-  List<SingleProductBean> goodsList;
+  SoftDesignProductDetailBean bean;
+  List<SingleProductDetailBean> goodsList;
   @override
   void initState() {
     _fetchData();
@@ -74,7 +74,7 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
 
   _copyData() {
     goodsList?.forEach((e) {
-      if (e is BaseCurtainProductBean) {
+      if (e is BaseCurtainProductDetailBean) {
         e.attrList = ProductAttrHolder.copy();
 
         e.roomAttr = roomAttr?.copy();
@@ -84,22 +84,22 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
         e.styleSelector = StyleSelectorHolder.copy();
       }
     });
-    // if (outterProductBean == null) return;
+    // if (outterProductDetailBean == null) return;
     // goodsList?.forEach((el) {
-    //   if (el is BaseCurtainProductBean &&
-    //       outterProductBean?.isFabricCurtainProduct == true) {
-    //     FabricCurtainProductBean fabricCurtainProductBean =
-    //         outterProductBean as FabricCurtainProductBean;
-    //     el.attrList = fabricCurtainProductBean.copyAttrs();
+    //   if (el is BaseCurtainProductDetailBean &&
+    //       outterProductDetailBean?.isFabricCurtainProduct == true) {
+    //     FabricCurtainProductDetailBean fabricCurtainProductDetailBean =
+    //         outterProductDetailBean as FabricCurtainProductDetailBean;
+    //     el.attrList = fabricCurtainProductDetailBean.copyAttrs();
 
-    //     if (fabricCurtainProductBean?.measureData?.hasSetSize == true) {
-    //       el.measureData = fabricCurtainProductBean.copyMeasureData();
+    //     if (fabricCurtainProductDetailBean?.measureData?.hasSetSize == true) {
+    //       el.measureData = fabricCurtainProductDetailBean.copyMeasureData();
     //     }
 
     //     el.roomAttr = ProductSkuAttr.fromJson(
-    //         fabricCurtainProductBean?.roomAttr?.toMap());
-    //     if (el is FabricCurtainProductBean) {
-    //       el.styleSelector = fabricCurtainProductBean?.styleSelector?.copy();
+    //         fabricCurtainProductDetailBean?.roomAttr?.toMap());
+    //     if (el is FabricCurtainProductDetailBean) {
+    //       el.styleSelector = fabricCurtainProductDetailBean?.styleSelector?.copy();
     //     }
     //   }
     // });
@@ -142,7 +142,7 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
                         child: ListView.separated(
                             shrinkWrap: true,
                             itemBuilder: (BuildContext context, int i) {
-                              SingleProductBean item = goodsList[i];
+                              SingleProductDetailBean item = goodsList[i];
                               return item.productType ==
                                       ProductType.EndProductType
                                   ? EndProductAttrEditableCard(item)

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/soft_design_product_detail_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/product/popup_modal/pop_up_modal.dart';
@@ -7,7 +7,7 @@ import 'package:taojuwu/widgets/zy_photo_view.dart';
 import 'package:taojuwu/widgets/zy_plain_button.dart';
 
 class SoftDesignProductCard extends StatelessWidget {
-  final SoftDesignProductBean bean;
+  final SoftDesignProductDetailBean bean;
   const SoftDesignProductCard(this.bean, {Key key}) : super(key: key);
 
   @override

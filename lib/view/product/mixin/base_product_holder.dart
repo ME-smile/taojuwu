@@ -2,32 +2,31 @@
  * @Description: 
  * @Author: iamsmiling
  * @Date: 2020-10-28 14:36:00
- * @LastEditTime: 2020-10-31 06:40:05
+ * @LastEditTime: 2020-11-05 10:57:30
  */
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/relative_product/relative_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/scene_design_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/soft_design_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/services/otp_service.dart';
 
 class BaseProductHolder {
   bool isLoading = true;
-  SingleProductBean productBean;
-  List<RelativeProductBean> relativeProductList;
-  List<SceneDesignProductBean> sceneDesignProductList;
-  List<SoftDesignProductBean> softDesignProductList;
-  List<BaseProductBean> recommendProductList;
+  SingleProductDetailBean productDetailBean;
+  List<SingleProductDetailBean> relativeProductList;
+  List<SceneDesignProductDetailBean> sceneDesignProductList;
+  List<SoftDesignProductDetailBean> softDesignProductList;
+  List<BaseProductDetailBean> recommendProductList;
 
   // 发起请求
   Future fetchData(BuildContext context, int goodsId) {
     return OTPService.productDetail(context, params: {'goods_id': goodsId})
-        .then((ProductBeanResp response) {
-      productBean = response?.data?.goodsDetail;
+        .then((ProductDetailBeanResp response) {
+      productDetailBean = response?.data?.goodsDetail;
       relativeProductList = response?.data?.relativeProductList;
       sceneDesignProductList = response?.data?.sceneDesignProductList;
       softDesignProductList = response?.data?.softDesignProductList;
@@ -36,6 +35,6 @@ class BaseProductHolder {
   }
 
   void clear() {
-    productBean?.client = null;
+    productDetailBean?.client = null;
   }
 }

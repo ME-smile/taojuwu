@@ -22,7 +22,7 @@ abstract class BaseGoodsViewModel extends ChangeNotifier {
 
   //商品属性列表
   List<ProductSkuAttr> skuList = [];
-  ProductBean bean; //商品详情
+  ProductDetailBean bean; //商品详情
 
   //购物车里面的商品数量
   int goodsNumInCart = 0;

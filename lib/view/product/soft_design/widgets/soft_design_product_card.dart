@@ -2,11 +2,11 @@
  * @Description: 软装方案卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:37:53
- * @LastEditTime: 2020-11-04 10:58:55
+ * @LastEditTime: 2020-11-06 10:54:13
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
-import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/soft_design_product_detail_bean.dart';
 import 'package:taojuwu/view/product/popup_modal/pop_up_modal.dart';
 import 'package:taojuwu/widgets/relative_product_card.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
@@ -15,7 +15,7 @@ import 'package:taojuwu/widgets/zy_raised_button.dart';
 import 'package:taojuwu/utils/extensions/object_kit.dart';
 
 class SoftDesignProductCard extends StatelessWidget {
-  final SoftDesignProductBean bean;
+  final SoftDesignProductDetailBean bean;
   const SoftDesignProductCard(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -99,7 +99,7 @@ class SoftDesignProductCard extends StatelessWidget {
                     physics: NeverScrollableScrollPhysics(),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      childAspectRatio: 0.9,
+                      childAspectRatio: 0.85,
                     ),
                     itemBuilder: (BuildContext context, int i) {
                       return RelativeProductCard(bean?.goodsList[i]);

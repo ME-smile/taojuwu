@@ -7,7 +7,7 @@
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/end_product/base_end_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/end_product/base_end_product_detail_bean.dart';
 import 'package:taojuwu/view/product/base/base_product_detail_state.dart';
 import 'package:taojuwu/view/product/end_product/widgets/end_product_attr_action_bar.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_footer.dart';
@@ -39,7 +39,7 @@ class _EndProductDetailPageState
         isLoading = false;
       });
     }).then((_) {
-      // productBean?.fetchRoomAttrData();
+      // ProductDetailBean?.fetchRoomAttrData();
     });
   }
 
@@ -64,16 +64,16 @@ class _EndProductDetailPageState
                 body: NestedScrollView(
                     headerSliverBuilder:
                         (BuildContext context, bool innerBoxIsScrolled) {
-                      return <Widget>[ProductDetailHeader(productBean)];
+                      return <Widget>[ProductDetailHeader(productDetailBean)];
                     },
                     body: CustomScrollView(
                       shrinkWrap: true,
                       slivers: [
                         ProductDetailProfile(
-                          productBean,
+                          productDetailBean,
                         ),
                         EndProductAttrActionBar(
-                          bean: productBean as BaseEndProductBean,
+                          bean: productDetailBean as BaseEndProductDetailBean,
                           setState: setState,
                         ),
                         RelativeProductSectionView(relativeProductList),
@@ -85,21 +85,21 @@ class _EndProductDetailPageState
                         SliverToBoxAdapter(
                           child: SoftDesignProductSectionView(
                             softDesignProductList,
-                            goodsId: productBean?.goodsId,
+                            goodsId: productDetailBean?.goodsId,
                           ),
                         ),
                         SliverToBoxAdapter(
                           child: ProductDetailImgSectionView(
-                              productBean?.detailImgList),
+                              productDetailBean?.detailImgList),
                         ),
-                        // ProductHtmlDescSectionView(productBean?.description),
+                        // ProductHtmlDescSectionView(ProductDetailBean?.description),
                         SliverToBoxAdapter(
                           child: RecommendedProductSectionView(
                               recommendProductList),
                         ),
                       ],
                     )),
-                bottomNavigationBar: ProductDeatilFooter(productBean),
+                bottomNavigationBar: ProductDeatilFooter(productDetailBean),
               ));
   }
 }

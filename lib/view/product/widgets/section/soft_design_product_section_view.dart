@@ -7,7 +7,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/soft_design_product_detail_bean.dart';
 import 'package:taojuwu/view/goods/base/title_tip.dart';
 import 'package:taojuwu/utils/extensions/object_kit.dart';
 import 'package:taojuwu/view/goods/base/trailing_tip.dart';
@@ -16,7 +16,7 @@ import 'package:taojuwu/view/product/widgets/base/soft_design_product_card.dart'
 
 class SoftDesignProductSectionView extends StatefulWidget {
   final int goodsId;
-  final List<SoftDesignProductBean> list;
+  final List<SoftDesignProductDetailBean> list;
   const SoftDesignProductSectionView(this.list, {Key key, this.goodsId})
       : super(key: key);
 

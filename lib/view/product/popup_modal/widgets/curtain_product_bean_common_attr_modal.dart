@@ -5,24 +5,24 @@
  * @LastEditTime: 2020-11-02 15:19:21
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/base_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/option_view.dart';
 
-class CurtainProductBeanCommonAttrModal extends StatefulWidget {
-  final BaseCurtainProductBean bean;
+class CurtainProductDetailBeanCommonAttrModal extends StatefulWidget {
+  final BaseCurtainProductDetailBean bean;
   final ProductSkuAttr attr;
-  CurtainProductBeanCommonAttrModal(this.bean, this.attr, {Key key})
+  CurtainProductDetailBeanCommonAttrModal(this.bean, this.attr, {Key key})
       : super(key: key);
 
   @override
-  _CurtainProductBeanCommonAttrModalState createState() =>
-      _CurtainProductBeanCommonAttrModalState();
+  _CurtainProductDetailBeanCommonAttrModalState createState() =>
+      _CurtainProductDetailBeanCommonAttrModalState();
 }
 
-class _CurtainProductBeanCommonAttrModalState
-    extends State<CurtainProductBeanCommonAttrModal> {
-  BaseCurtainProductBean get bean => widget.bean;
+class _CurtainProductDetailBeanCommonAttrModalState
+    extends State<CurtainProductDetailBeanCommonAttrModal> {
+  BaseCurtainProductDetailBean get bean => widget.bean;
   ProductSkuAttr get attr => widget.attr;
   List<ProductSkuAttrBean> get list => widget.attr?.data;
   @override

@@ -2,12 +2,11 @@
  * @Description: 同料商品视图
  * @Author: iamsmiling
  * @Date: 2020-10-09 13:05:48
- * @LastEditTime: 2020-10-31 16:36:31
+ * @LastEditTime: 2020-11-05 10:48:20
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-
-import 'package:taojuwu/repository/shop/product/relative_product/relative_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 
 import 'package:taojuwu/view/goods/base/title_tip.dart';
 import 'package:taojuwu/view/goods/base/trailing_tip.dart';
@@ -16,7 +15,7 @@ import 'package:taojuwu/view/product/popup_modal/pop_up_modal.dart';
 import 'package:taojuwu/view/product/widgets/base/relative_product_card.dart';
 
 class RelativeProductSectionView extends StatelessWidget {
-  final List<RelativeProductBean> list;
+  final List<SingleProductDetailBean> list;
   const RelativeProductSectionView(this.list, {Key key}) : super(key: key);
 
   int get len => (list ?? []).length;

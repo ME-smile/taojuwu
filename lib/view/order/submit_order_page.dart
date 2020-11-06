@@ -2,13 +2,14 @@
  * @Description:提交订单页面 2.0
  * @Author: iamsmiling
  * @Date: 2020-10-28 11:14:01
- * @LastEditTime: 2020-10-30 15:35:05
+ * @LastEditTime: 2020-11-06 15:36:12
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/constants/constants.dart';
-import 'package:taojuwu/repository/shop/product/abstract/abstract_base_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/abstract/single_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/design/base_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_prodcut_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/base_design_product_detail_bean.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/order/widgets/order_remark_card/curtain_order_remark_card.dart';
@@ -22,27 +23,27 @@ import 'package:taojuwu/viewmodel/order/order_creator.dart';
 import 'widgets/order_buyer_card.dart';
 
 class SubmitOrderPage extends StatefulWidget {
-  final AbstractBaseProductBean productBean;
-  const SubmitOrderPage(this.productBean, {Key key}) : super(key: key);
+  final AbstractProductDetailBean productDetailBean;
+  const SubmitOrderPage(this.productDetailBean, {Key key}) : super(key: key);
 
   @override
   _SubmitOrderPageState createState() => _SubmitOrderPageState();
 }
 
 class _SubmitOrderPageState extends State<SubmitOrderPage> {
-  bool get isDesignProduct => widget.productBean?.isDesignProduct;
+  bool get isDesignProduct => widget.productDetailBean?.isDesignProduct;
 
   bool get isMixinProduct => isDesignProduct
-      ? (widget.productBean as BaseDesignProductBean).isMixinProduct
+      ? (widget.productDetailBean as BaseDesignProductDetailBean).isMixinProduct
       : false;
 
-  List<SingleProductBean> get goodsList => isDesignProduct
-      ? (widget.productBean as BaseDesignProductBean).goodsList
+  List<SingleProductDetailBean> get goodsList => isDesignProduct
+      ? (widget.productDetailBean as BaseDesignProductDetailBean).goodsList
       : [];
 
-  TargetClient get client => widget.productBean?.client;
+  TargetClient get client => widget.productDetailBean?.client;
 
-  AbstractBaseProductBean get bean => widget.productBean;
+  AbstractProductDetailBean get bean => widget.productDetailBean;
 
   OrderCreator orderCreator;
   @override
@@ -57,7 +58,6 @@ class _SubmitOrderPageState extends State<SubmitOrderPage> {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: Text('提交订单'),
         centerTitle: true,
@@ -67,23 +67,30 @@ class _SubmitOrderPageState extends State<SubmitOrderPage> {
           children: [
             OrderBuyerCard(orderCreator),
             Divider(height: 1, indent: 12, endIndent: 12),
-            OrderSellerCard(),
+            Container(
+              child: OrderSellerCard(),
+              margin: EdgeInsets.only(bottom: 8),
+            ),
 
             // BuyerInfoBar(),
 
             // SellerInfoBar(),
             // Expanded(child: Text('123456'))
             CommonKit.isNullOrEmpty(goodsList)
-                ? _buildProductOrderCard(widget.productBean)
+                ? _buildProductOrderCard(widget.productDetailBean)
                 : ListView.separated(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (BuildContext context, int i) {
-                      SingleProductBean bean = goodsList[i];
+                      SingleProductDetailBean bean = goodsList[i];
                       return _buildProductOrderCard(bean);
                     },
                     separatorBuilder: (BuildContext context, int i) {
-                      return Divider();
+                      return Divider(
+                        height: 1,
+                        endIndent: 16,
+                        indent: 16,
+                      );
                     },
                     itemCount: goodsList?.length),
             Visibility(
@@ -104,7 +111,7 @@ class _SubmitOrderPageState extends State<SubmitOrderPage> {
     );
   }
 
-  Widget _buildProductOrderCard(AbstractBaseProductBean bean) {
+  Widget _buildProductOrderCard(AbstractProductDetailBean bean) {
     return bean.productType == ProductType.EndProductType
         ? EndProductOrderCard(bean)
         : bean.productType == ProductType.FabricCurtainProductType

@@ -7,12 +7,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:taojuwu/providers/theme_provider.dart';
-import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/scene_design_product_detail_bean.dart';
 import 'package:taojuwu/view/goods/base/title_tip.dart';
 import 'package:taojuwu/view/product/scene_design/widgets/scene_design_product_card.dart';
 
 class RecommendSceneDesignProductSectionView extends StatelessWidget {
-  final List<SceneDesignProductBean> list;
+  final List<SceneDesignProductDetailBean> list;
   const RecommendSceneDesignProductSectionView(this.list, {Key key})
       : super(key: key);
 

@@ -6,11 +6,11 @@
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
 import 'package:taojuwu/view/product/dialog/dialog.dart';
 
 class RollingCurtainSizeBar extends StatefulWidget {
-  final RollingCurtainProductBean bean;
+  final RollingCurtainProductDetailBean bean;
   RollingCurtainSizeBar(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -18,7 +18,7 @@ class RollingCurtainSizeBar extends StatefulWidget {
 }
 
 class _RollingCurtainSizeBarState extends State<RollingCurtainSizeBar> {
-  RollingCurtainProductBean get bean => widget.bean;
+  RollingCurtainProductDetailBean get bean => widget.bean;
 
   bool get hasSetSize => bean?.measureData?.hasSetSize ?? false;
   @override

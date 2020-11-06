@@ -2,16 +2,17 @@
  * @Description: 相关商品卡片
  * @Author: iamsmiling
  * @Date: 2020-10-22 17:09:43
- * @LastEditTime: 2020-11-04 10:22:09
+ * @LastEditTime: 2020-11-06 13:36:26
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/relative_product/relative_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class RelativeProductCard extends StatelessWidget {
-  final RelativeProductBean bean;
+  final SingleProductDetailBean bean;
   const RelativeProductCard(this.bean, {Key key}) : super(key: key);
 
   jump(BuildContext context, int type) {
@@ -76,7 +77,7 @@ class RelativeProductCard extends StatelessWidget {
               children: [
                 Text.rich(
                   TextSpan(
-                      text: '¥${bean?.marketPrice}',
+                      text: '¥${bean?.price}',
                       children: [
                         TextSpan(
                             text: '/米',
@@ -89,14 +90,17 @@ class RelativeProductCard extends StatelessWidget {
                           fontWeight: FontWeight.w400)),
                   textAlign: TextAlign.center,
                 ),
-                Padding(
-                  padding: EdgeInsets.only(left: 4),
-                  child: Text('¥${bean.marketPrice}',
-                      style: TextStyle(
-                        fontSize: 8,
-                        color: const Color(0xFF999999),
-                        decoration: TextDecoration.lineThrough,
-                      )),
+                Visibility(
+                  visible: !CommonKit.isNumNullOrZero(bean.marketPrice),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 4),
+                    child: Text('¥${bean.marketPrice}',
+                        style: TextStyle(
+                          fontSize: 8,
+                          color: const Color(0xFF999999),
+                          decoration: TextDecoration.lineThrough,
+                        )),
+                  ),
                 )
               ],
             )

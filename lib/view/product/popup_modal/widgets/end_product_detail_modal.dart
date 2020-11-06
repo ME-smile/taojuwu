@@ -6,13 +6,13 @@
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
-import 'package:taojuwu/repository/shop/product/end_product/base_end_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/end_product/base_end_product_detail_bean.dart';
 import 'package:taojuwu/view/product/popup_modal/widgets/end_product_spec_selector.dart';
 import 'package:taojuwu/widgets/step_counter.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class EndProductDetailModal extends StatefulWidget {
-  final BaseEndProductBean bean;
+  final BaseEndProductDetailBean bean;
   EndProductDetailModal(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -20,7 +20,7 @@ class EndProductDetailModal extends StatefulWidget {
 }
 
 class _EndProductDetailModalState extends State<EndProductDetailModal> {
-  BaseEndProductBean get bean => widget.bean;
+  BaseEndProductDetailBean get bean => widget.bean;
   @override
   Widget build(BuildContext context) {
     return Container(

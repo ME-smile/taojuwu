@@ -6,7 +6,7 @@
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/design/soft_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/soft_design_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/soft_project_list_model.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/view/product/soft_design/widgets/soft_design_product_card.dart';
@@ -23,7 +23,7 @@ class SoftDesignPage extends StatefulWidget {
 
 class _SoftDesignPageState extends State<SoftDesignPage> {
   bool isLoading = true;
-  List<SoftDesignProductBean> list;
+  List<SoftDesignProductDetailBean> list;
   @override
   void initState() {
     OTPService.softProjectList(context, params: {'goods_id': widget.goodsId})

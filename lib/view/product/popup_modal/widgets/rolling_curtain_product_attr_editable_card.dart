@@ -5,13 +5,13 @@
  * @LastEditTime: 2020-10-28 10:08:49
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product/curtain/rolling_curtain_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
 
 import 'base_curtain_product_attr_editable_card_header.dart';
 
 class RollingCurtainProductAttrEditableCard extends StatefulWidget {
-  final RollingCurtainProductBean bean;
+  final RollingCurtainProductDetailBean bean;
   RollingCurtainProductAttrEditableCard(this.bean, {Key key}) : super(key: key);
 
   @override

@@ -2,22 +2,22 @@
  * @Description: 场景轮播图卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:42:58
- * @LastEditTime: 2020-11-04 10:04:06
+ * @LastEditTime: 2020-11-06 11:08:20
  */
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
-import 'package:taojuwu/repository/shop/product/abstract/base_product_bean.dart';
-import 'package:taojuwu/repository/shop/product/design/scene_design_product_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/scene_design_product_detail_bean.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class SceneDesignProductCard extends StatelessWidget {
-  final SceneDesignProductBean bean;
+  final SceneDesignProductDetailBean bean;
   const SceneDesignProductCard(this.bean, {Key key}) : super(key: key);
 
   @override
@@ -103,8 +103,9 @@ class SceneDesignProductCard extends StatelessWidget {
                       childAspectRatio: .68,
                       crossAxisSpacing: 8),
                   itemBuilder: (BuildContext context, int index) {
-                    BaseProductBean item = bean?.goodsList[index];
+                    SingleProductDetailBean item = bean?.goodsList[index];
                     return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 2),
                       child: Column(
                         children: [
                           GestureDetector(
@@ -113,8 +114,24 @@ class SceneDesignProductCard extends StatelessWidget {
                             },
                             child: Stack(
                               children: [
-                                ZYNetImage(
-                                  imgPath: item?.cover,
+                                Container(
+                                  padding: EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                      color: Theme.of(context).primaryColor,
+                                      borderRadius: BorderRadius.circular(2),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            offset: Offset(0, 2),
+                                            blurRadius: 2,
+                                            color: Color.fromARGB(45, 0, 0, 0)),
+                                        // BoxShadow(
+                                        //     offset: Offset(0, -2),
+                                        //     blurRadius: 2,
+                                        //     color: Color.fromARGB(45, 0, 0, 0)),
+                                      ]),
+                                  child: ZYNetImage(
+                                    imgPath: item?.cover,
+                                  ),
                                 ),
                                 Container(
                                   color: index == 4
