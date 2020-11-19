@@ -2,7 +2,7 @@
  * @Description: 选择用户的按钮
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-09 09:24:03
+ * @LastEditTime: 2020-11-18 17:56:50
  */
 import 'dart:async';
 
@@ -12,6 +12,7 @@ import 'package:taojuwu/event_bus/events/select_client_event.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/view/product/mixin/client_select_listener.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 
 class UserChooseButton extends StatefulWidget {
@@ -30,6 +31,7 @@ class _UserChooseButtonState extends State<UserChooseButton> {
         Application.eventBus.on<SelectClientEvent>().listen((event) {
       setState(() {
         targetClient = event.mTargetClient;
+        TargetClientHolder.targetClient = event.mTargetClient;
       });
     });
     super.initState();

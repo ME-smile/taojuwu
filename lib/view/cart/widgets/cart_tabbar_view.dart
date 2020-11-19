@@ -13,6 +13,7 @@ import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/goods_attr_card.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
 import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/step_counter.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
@@ -42,6 +43,7 @@ class _CartTabBarViewState extends State<CartTabBarView> {
   CartProvider get provider =>
       Provider.of<CartProvider>(context, listen: false);
   bool isLoading = true;
+  bool hasError = false;
   Widget buildCartCard(CartModel cartModel, int index) {
     return SlideAnimation(
       child: cartModel?.isCustomizedProduct == true
@@ -77,7 +79,10 @@ class _CartTabBarViewState extends State<CartTabBarView> {
   List<CartModel> get cartModels => cartProvider?.models ?? [];
   CartListWrapper wrapper;
   void fetchData() {
-    print({'client_uid': clientId, 'category_id': categoryId});
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     OTPService.cartList(context,
             params: {'client_uid': clientId, 'category_id': categoryId})
         .then((CartListResp response) {
@@ -86,11 +91,15 @@ class _CartTabBarViewState extends State<CartTabBarView> {
 
         // cartProvider?.assignModelList(index, wrapper?.data);
       }
+    }).catchError((err) {
+      hasError = true;
     }).whenComplete(() {
       if (mounted) {
-        isLoading = false;
+        setState(() {
+          isLoading = false;
 
-        cartProvider?.models = wrapper?.data;
+          cartProvider?.models = wrapper?.data;
+        });
       }
     });
   }
@@ -128,39 +137,46 @@ class _CartTabBarViewState extends State<CartTabBarView> {
           },
           child: isLoading
               ? LoadingCircle()
-              : cartModels?.isEmpty == true
-                  ? NoData()
-                  : Container(
-                      alignment: Alignment.topCenter,
-                      child: AnimationLimiter(
-                        child: SmartRefresher(
-                          controller: _refreshController,
-                          enablePullDown: false,
-                          enablePullUp: false,
-                          child: ListView.builder(
-                            // key: key,
-                            shrinkWrap: true,
-                            itemBuilder: (
-                              BuildContext context,
-                              int j,
-                            ) {
-                              return AnimationConfiguration.staggeredList(
-                                  position: j,
-                                  duration: const Duration(milliseconds: 375),
-                                  child: SlideAnimation(
-                                      verticalOffset: 50.0,
-                                      child: FadeInAnimation(
-                                        child: buildCartCard(cartModels[j], j),
-                                      )));
-                              // return buildCollectCard(context, beanList[i], i);
-                            },
-                            itemCount: cartModels?.isEmpty == true
-                                ? 0
-                                : cartModels?.length,
+              : hasError
+                  ? Container(
+                      height: double.infinity,
+                      color: Theme.of(context).primaryColor,
+                      child: NetworkErrorWidget(callback: fetchData))
+                  : cartModels?.isEmpty == true
+                      ? NoData()
+                      : Container(
+                          alignment: Alignment.topCenter,
+                          child: AnimationLimiter(
+                            child: SmartRefresher(
+                              controller: _refreshController,
+                              enablePullDown: false,
+                              enablePullUp: false,
+                              child: ListView.builder(
+                                // key: key,
+                                shrinkWrap: true,
+                                itemBuilder: (
+                                  BuildContext context,
+                                  int j,
+                                ) {
+                                  return AnimationConfiguration.staggeredList(
+                                      position: j,
+                                      duration:
+                                          const Duration(milliseconds: 375),
+                                      child: SlideAnimation(
+                                          verticalOffset: 50.0,
+                                          child: FadeInAnimation(
+                                            child:
+                                                buildCartCard(cartModels[j], j),
+                                          )));
+                                  // return buildCollectCard(context, beanList[i], i);
+                                },
+                                itemCount: cartModels?.isEmpty == true
+                                    ? 0
+                                    : cartModels?.length,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
         );
       },
     );

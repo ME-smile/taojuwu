@@ -2,7 +2,7 @@
  * @Description: 选择属性
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:41:57
- * @LastEditTime: 2020-11-06 13:57:55
+ * @LastEditTime: 2020-11-19 15:20:42
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
@@ -38,7 +38,7 @@ class _CommonAttrOptionViewState extends State<CommonAttrOptionView> {
             //横轴间距
             crossAxisSpacing: 5.0,
             mainAxisSpacing: 2,
-            childAspectRatio: 0.68,
+            childAspectRatio: 0.5,
           ),
           itemCount: list.length,
           itemBuilder: (BuildContext context, int i) {

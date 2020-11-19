@@ -2,7 +2,7 @@
  * @Description: 场景详情 相关商品视图
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:16:05
- * @LastEditTime: 2020-11-03 17:51:57
+ * @LastEditTime: 2020-11-18 10:47:51
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
@@ -40,14 +40,14 @@ class SceneDesignRelativeProductSectionView extends StatelessWidget {
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  childAspectRatio: 0.75,
+                  childAspectRatio: 0.68,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10),
               itemBuilder: (BuildContext context, int index) {
                 // return Text('12345678');
                 return RelativeProductCard(goodsList[index]);
               },
-              itemCount: goodsList.length,
+              itemCount: goodsList?.length ?? 0,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -57,7 +57,7 @@ class SceneDesignRelativeProductSectionView extends StatelessWidget {
                   width: 16,
                 ),
                 ZYRaisedButton(
-                  '立即购买(${goodsList.length})',
+                  '立即购买(${goodsList?.length ?? 0})',
                   () {
                     showDesignProductDetailModal(context, id);
                     // showDesignProductDetailModal(context, fromProductDetailBean)

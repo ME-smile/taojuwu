@@ -2,7 +2,7 @@
  * @Description: 软装方案弹窗详情头部
  * @Author: iamsmiling
  * @Date: 2020-10-23 15:30:27
- * @LastEditTime: 2020-11-11 14:02:23
+ * @LastEditTime: 2020-11-19 13:47:33
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
@@ -46,9 +46,15 @@ class SoftDesignModalHeader extends StatelessWidget {
                             text: '${bean?.designName}\n',
                             style: TaojuwuTextStyle.TITLE_TEXT_STYLE,
                             children: [
-                              TextSpan(
-                                  text: '${bean?.name}',
-                                  style: TaojuwuTextStyle.SUB_TITLE_TEXT_STYLE)
+                              WidgetSpan(
+                                  child: Padding(
+                                      padding: EdgeInsets.only(top: 4),
+                                      child: Text('${bean?.name}',
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400))))
                             ])),
                       ),
                       Row(

@@ -84,9 +84,11 @@ class _ModifyPwdPageState extends State<ModifyPwdPage> {
     TextTheme textTheme = themeData.textTheme;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         centerTitle: true,
         title: Text('重置密码'),
+        elevation: 0,
         // actions: <Widget>[
         //   FlatButton(
         //       onPressed: () {
@@ -115,10 +117,10 @@ class _ModifyPwdPageState extends State<ModifyPwdPage> {
                   hintText: '请输入旧密码',
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
-                          BorderSide(color: Color(0xFFC7C8CB), width: 1)),
+                          BorderSide(color: Color(0xFFC7C8CB), width: .5)),
                   enabledBorder: UnderlineInputBorder(
                       borderSide:
-                          BorderSide(color: Color(0xFFC7C8CB), width: 1)),
+                          BorderSide(color: Color(0xFFC7C8CB), width: .5)),
                   suffixIcon: IconButton(
                       icon: Icon(
                         _isOldPwdCypher
@@ -153,10 +155,10 @@ class _ModifyPwdPageState extends State<ModifyPwdPage> {
                       }),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
-                          BorderSide(color: Color(0xFFC7C8CB), width: 1)),
+                          BorderSide(color: Color(0xFFC7C8CB), width: .5)),
                   enabledBorder: UnderlineInputBorder(
                       borderSide:
-                          BorderSide(color: Color(0xFFC7C8CB), width: 1)),
+                          BorderSide(color: Color(0xFFC7C8CB), width: .5)),
                 ),
               ),
               VSpacing(40),

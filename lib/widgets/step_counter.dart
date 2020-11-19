@@ -65,7 +65,7 @@ class _StepCounterState extends State<StepCounter> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 24,
+      height: 28,
       child: ToggleButtons(
           borderRadius: BorderRadius.all(Radius.circular(2)),
           constraints: BoxConstraints(maxWidth: 100),

@@ -2,7 +2,7 @@
  * @Description: 商品的抽象类
  * @Author: iamsmiling
  * @Date: 2020-11-05 09:34:22
- * @LastEditTime: 2020-11-10 15:57:35
+ * @LastEditTime: 2020-11-19 09:24:34
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

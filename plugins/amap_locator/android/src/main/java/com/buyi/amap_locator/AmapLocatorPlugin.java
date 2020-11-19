@@ -1,4 +1,4 @@
-package com.buyi.amap_locator;
+ package com.buyi.amap_locator;
 
 import androidx.annotation.NonNull;
 

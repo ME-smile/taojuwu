@@ -12,6 +12,7 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
 import 'package:taojuwu/widgets/search_button.dart';
 import 'package:taojuwu/widgets/user_add_button.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
@@ -33,6 +34,7 @@ class _CustomerManagePageState extends State<CustomerManagePage>
   };
 
   bool isLoading = true;
+  bool hasError = false;
   double height = 0;
 
   @override
@@ -60,18 +62,19 @@ class _CustomerManagePageState extends State<CustomerManagePage>
   }
 
   void fetchData() {
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     OTPService.userList(context, params: params)
         .then((CustomerModelListResp response) {
-      if (mounted) {
-        setState(() {
-          customerModelWrapper = response?.data;
-          _handleData(customerModelWrapper);
-          beans = customerModelWrapper?.data;
-          _handleList(beans);
-          isLoading = false;
-        });
-      }
+      customerModelWrapper = response?.data;
+      _handleData(customerModelWrapper);
+      beans = customerModelWrapper?.data;
+      _handleList(beans);
     }).catchError((err) {
+      hasError = true;
+    }).whenComplete(() {
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -241,46 +244,55 @@ class _CustomerManagePageState extends State<CustomerManagePage>
       ),
       body: isLoading
           ? LoadingCircle()
-          : Container(
-              child: AnimationLimiter(
-                  child: AzListView(
-              data: beans,
-              topData: hotBeans,
-              header: AzListViewHeader(
-                  height: (ENTRY_HEIGHT * entrys.length).toInt(),
-                  builder: (BuildContext ctx) {
-                    return Container(
-                      color: Theme.of(context).primaryColor,
-                      // alignment: Alignment.centerLeft,
-                      // padding: const EdgeInsets.only(left: 15.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: List.generate(entrys.length, (int i) {
-                          final item = entrys[i];
-                          return MenuEntry(
-                            title: item['title'],
-                            iconPath: item['iconPath'],
-                            number: item['number'],
-                            showBorder: i != entrys.length - 1,
-                            callback: () {
-                              RouteHandler.goCustomerTablePage(
-                                  context, item['type'],
-                                  flag: widget.flag, replace: widget.flag == 1);
-                            },
-                          );
-                        }),
-                      ),
-                    );
-                  }),
-              itemBuilder: (context, model) => _buildListItem(model),
-              suspensionWidget: _buildSusWidget(_suspensionTag),
-              isUseRealIndex: true,
-              itemHeight: _itemHeight,
-              suspensionHeight: _suspensionHeight,
-              onSusTagChanged: _onSusTagChanged,
+          : hasError
+              ? Container(
+                  height: double.infinity,
+                  color: Theme.of(context).primaryColor,
+                  child: NetworkErrorWidget(
+                    callback: fetchData,
+                  ),
+                )
+              : Container(
+                  child: AnimationLimiter(
+                      child: AzListView(
+                  data: beans,
+                  topData: hotBeans,
+                  header: AzListViewHeader(
+                      height: (ENTRY_HEIGHT * entrys.length).toInt(),
+                      builder: (BuildContext ctx) {
+                        return Container(
+                          color: Theme.of(context).primaryColor,
+                          // alignment: Alignment.centerLeft,
+                          // padding: const EdgeInsets.only(left: 15.0),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(entrys.length, (int i) {
+                              final item = entrys[i];
+                              return MenuEntry(
+                                title: item['title'],
+                                iconPath: item['iconPath'],
+                                number: item['number'],
+                                showBorder: i != entrys.length - 1,
+                                callback: () {
+                                  RouteHandler.goCustomerTablePage(
+                                      context, item['type'],
+                                      flag: widget.flag,
+                                      replace: widget.flag == 1);
+                                },
+                              );
+                            }),
+                          ),
+                        );
+                      }),
+                  itemBuilder: (context, model) => _buildListItem(model),
+                  suspensionWidget: _buildSusWidget(_suspensionTag),
+                  isUseRealIndex: true,
+                  itemHeight: _itemHeight,
+                  suspensionHeight: _suspensionHeight,
+                  onSusTagChanged: _onSusTagChanged,
 
-              // showCenterTip: false,
-            ))),
+                  // showCenterTip: false,
+                ))),
       bottomNavigationBar: Container(
         color: Theme.of(context).primaryColor,
         padding: EdgeInsets.symmetric(horizontal: 48, vertical: 8),

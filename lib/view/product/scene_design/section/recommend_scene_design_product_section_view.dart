@@ -2,7 +2,7 @@
  * @Description: 瀑布流视图
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:23:34
- * @LastEditTime: 2020-11-04 10:42:20
+ * @LastEditTime: 2020-11-18 10:46:52
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -30,7 +30,7 @@ class RecommendSceneDesignProductSectionView extends StatelessWidget {
           ),
           StaggeredGridView.countBuilder(
             crossAxisCount: 4,
-            itemCount: list.length,
+            itemCount: list?.length ?? 0,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (BuildContext context, int index) =>

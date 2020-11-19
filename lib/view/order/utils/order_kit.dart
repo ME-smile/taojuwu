@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/select_client_event.dart';
-import 'package:taojuwu/event_bus/events/select_product_event.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/repository/order/order_model.dart';
 
@@ -26,6 +25,7 @@ import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/view/product/mixin/target_product_holder.dart';
 
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
@@ -795,12 +795,25 @@ class OrderKit {
               child: SelectedProductButton(
                 text: goods?.hasSelectedProduct == false ? '去选品' : '更换选品',
                 callback: () {
-                  Application.eventBus.fire(SelectClientEvent(
-                      TargetClient.fromLiteral(
-                          provider?.clientId, provider?.clientName)));
-                  Application.eventBus
-                      .fire(SelectProductEvent(goods?.orderGoodsId));
-                  RouteHandler.goCurtainMallPage(context);
+                  selectProductTipBefore(context, goods?.categoryName,
+                      callback: () {
+                    Application.eventBus.fire(SelectClientEvent(
+                        TargetClient.fromLiteral(
+                            provider?.clientId, provider?.clientName)));
+                    TargetProductHolder.status = 0;
+                    TargetProductHolder.goodsType = goods?.goodsType;
+                    TargetProductHolder.categoryName = goods?.categoryName;
+                    TargetProductHolder.measureData =
+                        goods?.orderGoodsMeasureData;
+
+                    // Application.eventBus
+                    //     .fire(SelectProductEvent(goods?.orderGoodsId));
+                    RouteHandler.goCurtainMallPage(context,
+                        orderGoodsId: goods?.orderGoodsId);
+                    // RouteHandler.goCurtainMallPage(
+                    //   context,
+                    // );
+                  });
                 },
               ),
             ),
@@ -809,4 +822,114 @@ class OrderKit {
       ),
     );
   }
+}
+
+Future selectProductTipAfter(BuildContext context,
+    {String targetType, String currentType, Function callback}) {
+  if (Platform.isIOS) {
+    return showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text('温馨提示'),
+            content: Text('您当前选择的是$currentType,目标选品应是$targetType'),
+            actions: [
+              CupertinoDialogAction(
+                child: Text('我知道了'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  if (callback != null) callback();
+                },
+              )
+            ],
+          );
+        });
+  }
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          widthFactor: .8,
+          child: AlertDialog(
+            contentPadding: EdgeInsets.all(0),
+            title: Text(
+              '温馨提示',
+              textAlign: TextAlign.center,
+            ),
+            content: Text(
+              '您当前选择的是$currentType,目标选品应是$targetType',
+              textAlign: TextAlign.center,
+            ),
+            actions: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                    child: ZYRaisedButton(
+                  '我知道了',
+                  () {
+                    Navigator.of(context).pop();
+                    if (callback != null) callback();
+                  },
+                  verticalPadding: 8,
+                )),
+              )
+            ],
+          ),
+        );
+      });
+}
+
+Future selectProductTipBefore(BuildContext context, String name,
+    {Function callback}) {
+  if (Platform.isIOS) {
+    return showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CupertinoAlertDialog(
+            title: Text('温馨提示'),
+            content: Text('请选择$name'),
+            actions: [
+              CupertinoDialogAction(
+                child: Text('我知道了'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  if (callback != null) callback();
+                },
+              )
+            ],
+          );
+        });
+  }
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          widthFactor: .8,
+          child: AlertDialog(
+            contentPadding: EdgeInsets.all(0),
+            title: Text(
+              '温馨提示',
+              textAlign: TextAlign.center,
+            ),
+            content: Text(
+              '请选择$name',
+              textAlign: TextAlign.center,
+            ),
+            actions: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: Center(
+                    child: ZYRaisedButton(
+                  '我知道了',
+                  () {
+                    Navigator.of(context).pop();
+                    if (callback != null) callback();
+                  },
+                  verticalPadding: 8,
+                )),
+              )
+            ],
+          ),
+        );
+      });
 }

@@ -1,3 +1,9 @@
+/*
+ * @Description: 
+ * @Author: iamsmiling
+ * @Date: 2020-08-03 10:46:13
+ * @LastEditTime: 2020-11-18 12:06:03
+ */
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,8 +50,9 @@ class UIKit {
   }
 
   static String getNetworkImgPath(String path) {
-    RegExp reg = new RegExp(r"http[s](0,1)");
-    print(reg.hasMatch(path));
+    path ??= '';
+    RegExp reg = new RegExp("(http|https)");
+
     return reg.hasMatch(path) ? path : Constants.HOST + '/$path';
   }
 

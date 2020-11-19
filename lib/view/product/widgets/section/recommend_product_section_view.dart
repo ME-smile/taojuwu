@@ -2,7 +2,7 @@
  * @Description: 为你推荐商品列表视图
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:59:48
- * @LastEditTime: 2020-11-09 14:07:24
+ * @LastEditTime: 2020-11-16 18:10:07
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';
@@ -47,7 +47,7 @@ class RecommendedProductSectionView extends StatelessWidget {
                   itemCount: list?.length ?? 0,
                   itemBuilder: (BuildContext context, int i) {
                     // return GridCard(goodsList[i]);
-                    // return Text('12345678');
+
                     return ProductGridCard(list[i]);
                   }),
             )

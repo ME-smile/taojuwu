@@ -2,7 +2,7 @@
  * @Description: 场景推荐
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:23:42
- * @LastEditTime: 2020-11-16 10:10:47
+ * @LastEditTime: 2020-11-17 17:33:32
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -91,6 +91,7 @@ class _SceneDesignProductSectionViewState
                   itemBuilder: (BuildContext context, int i) {
                     // return SceneProjectCard(list[i]);
                     // return Text('123456789');
+
                     return SceneDesignProductCard(list[i]);
                   },
                 ),

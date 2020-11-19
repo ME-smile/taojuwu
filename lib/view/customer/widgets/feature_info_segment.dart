@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:taojuwu/config/sdk/amap.dart';
+import 'package:taojuwu/config/sdk/tencent_map.dart';
 
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/location/location_bean.dart';
@@ -48,16 +48,19 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
     super.initState();
     model = widget.model;
     params = widget.params;
-    getLocation().then((LocationBean locationBean) {
-      provinceName = locationBean?.province;
-      cityName = locationBean?.city;
-      districtName = locationBean?.district;
-      locationDataBean = locationBean;
-      print(locationDataBean?.data);
-    }).whenComplete(() {
-      // ignore: unnecessary_statements
-      mounted ? setState(() {}) : '';
-    });
+    getLocation()
+        .then((LocationBean locationBean) {
+          provinceName = locationBean?.province;
+          cityName = locationBean?.city;
+          districtName = locationBean?.district;
+          locationDataBean = locationBean;
+          print(locationDataBean?.data);
+        })
+        .catchError((err) => err)
+        .whenComplete(() {
+          // ignore: unnecessary_statements
+          mounted ? setState(() {}) : '';
+        });
     if (model != null) {
       provinceName = model?.provinceName;
       cityName = model?.cityName;
@@ -95,16 +98,14 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
     }
 
     try {
-      Position locationData = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.bestForNavigation,
-          forceAndroidLocationManager: true);
-      await OTPService.ipLocate(context, params: {
-        'key': Amap.WEB_KEY,
-      });
-      locationBean = await OTPService.locate(context, params: {
-        'key': Amap.WEB_KEY,
+      // Position locationData = await Geolocator.getCurrentPosition(
+      //     desiredAccuracy: LocationAccuracy.bestForNavigation,
+      //     forceAndroidLocationManager: true);
+
+      locationBean = await OTPService.ipLocate(context, params: {
+        'key': TencentMap.KEY,
         // 'location': '120.79996,30.6871',
-        'location': '${locationData.longitude},${locationData.latitude}'
+        // 'location': '${locationData?.longitude},${locationData?.latitude}'
         // 'radius': 1000,
         // 'batch':false,
         // 'extensions':'all',

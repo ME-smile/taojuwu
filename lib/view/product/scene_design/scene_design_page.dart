@@ -2,7 +2,7 @@
  * @Description: 软装方案详情
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:05:49
- * @LastEditTime: 2020-11-04 10:55:26
+ * @LastEditTime: 2020-11-19 19:08:46
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +14,7 @@ import 'package:taojuwu/view/product/scene_design/section/recommend_scene_design
 import 'package:taojuwu/view/product/scene_design/section/scene_design_product_detail_section_view.dart';
 import 'package:taojuwu/view/product/scene_design/section/scene_design_relative_product_section_view.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
 import 'package:taojuwu/widgets/user_choose_button.dart';
 
 class SceneDesignPage extends StatefulWidget {
@@ -30,6 +31,7 @@ class SceneDesignPage extends StatefulWidget {
 
 class _SceneDesignPageState extends State<SceneDesignPage> {
   bool isLoading = true;
+  bool hasError = false;
   int get id => widget.scenesId;
   SceneDesignProductDetailBean currentBean;
   List<SceneDesignProductDetailBean> list;
@@ -40,20 +42,24 @@ class _SceneDesignPageState extends State<SceneDesignPage> {
   }
 
   void _fetchData() {
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     OTPService.sceneDetail(context, params: {'scenes_id': widget.scenesId})
         .then((SceneDetailModelResp response) {
-          if (response?.valid == true) {
-            SceneProjectDetailWrapper detailWrapper = response?.data;
-            currentBean = detailWrapper?.currentBean;
-            list = detailWrapper?.list;
-          }
-        })
-        .catchError((err) => err)
-        .whenComplete(() {
-          setState(() {
-            isLoading = false;
-          });
-        });
+      if (response?.valid == true) {
+        SceneProjectDetailWrapper detailWrapper = response?.data;
+        currentBean = detailWrapper?.currentBean;
+        list = detailWrapper?.list;
+      }
+    }).catchError((err) {
+      hasError = true;
+    }).whenComplete(() {
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   @override
@@ -72,29 +78,38 @@ class _SceneDesignPageState extends State<SceneDesignPage> {
         },
         child: isLoading
             ? LoadingCircle()
-            : Scaffold(
-                appBar: AppBar(
-                  title: Text('相关场景'),
-                  centerTitle: true,
-                  actions: [const UserChooseButton()],
-                ),
-                body: Container(
-                  color: Theme.of(context).primaryColor,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: CustomScrollView(
-                    shrinkWrap: true,
-                    slivers: [
-                      SliverToBoxAdapter(
-                          child:
-                              SceneDesignProductDetailSectionView(currentBean)),
-                      SliverToBoxAdapter(
-                          child: SceneDesignRelativeProductSectionView(
-                              id, currentBean?.goodsList)),
-                      SliverToBoxAdapter(
-                          child: RecommendSceneDesignProductSectionView(list))
-                    ],
-                  ),
-                ),
-              ));
+            : hasError
+                ? Scaffold(
+                    appBar: AppBar(),
+                    body: Container(
+                        height: double.maxFinite,
+                        color: Theme.of(context).primaryColor,
+                        child: NetworkErrorWidget(callback: _fetchData)),
+                  )
+                : Scaffold(
+                    appBar: AppBar(
+                      title: Text('相关场景'),
+                      centerTitle: true,
+                      actions: [const UserChooseButton()],
+                    ),
+                    body: Container(
+                      color: Theme.of(context).primaryColor,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: CustomScrollView(
+                        shrinkWrap: true,
+                        slivers: [
+                          SliverToBoxAdapter(
+                              child: SceneDesignProductDetailSectionView(
+                                  currentBean)),
+                          SliverToBoxAdapter(
+                              child: SceneDesignRelativeProductSectionView(
+                                  id, currentBean?.goodsList)),
+                          SliverToBoxAdapter(
+                              child:
+                                  RecommendSceneDesignProductSectionView(list))
+                        ],
+                      ),
+                    ),
+                  ));
   }
 }

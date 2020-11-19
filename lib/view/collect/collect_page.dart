@@ -15,6 +15,7 @@ import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
 import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
@@ -44,14 +45,21 @@ class _CollectPageState extends State<CollectPage> {
   }
 
   void fetchData() {
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     OTPService.collectList(context, params: {'client_uid': widget.id})
         .then((CollectListResp response) {
+      wrapper = response?.data;
+      beanList = wrapper?.data;
+    }).catchError((err) {
+      hasError = true;
+    }).whenComplete(() {
       setState(() {
         isLoading = false;
-        wrapper = response?.data;
-        beanList = wrapper?.data;
       });
-    }).catchError((err) => err);
+    });
   }
 
   @override
@@ -60,7 +68,7 @@ class _CollectPageState extends State<CollectPage> {
   }
 
   bool isLoading = true;
-
+  bool hasError = false;
   cancelCollect(BuildContext context, ProductDetailBean bean) {
     OTPService.cancelCollect(params: {
       'fav_id': bean?.goodsId ?? -1,
@@ -229,29 +237,31 @@ class _CollectPageState extends State<CollectPage> {
       ),
       body: isLoading
           ? LoadingCircle()
-          : Container(
-              color: themeData.primaryColor,
-              padding: EdgeInsets.symmetric(
-                  horizontal: UIKit.width(20), vertical: UIKit.height(20)),
-              child: beanList == null || beanList?.isNotEmpty != true
-                  ? NoData()
-                  : ListView.separated(
-                      itemBuilder: (BuildContext context, int i) {
-                        return AnimationConfiguration.staggeredList(
-                            position: i,
-                            duration: const Duration(milliseconds: 375),
-                            child: SlideAnimation(
-                                verticalOffset: 50.0,
-                                child: FadeInAnimation(
-                                  child:
-                                      buildCollectCard(context, beanList[i], i),
-                                )));
-                        // return buildCollectCard(context, beanList[i], i);
-                      },
-                      separatorBuilder: (BuildContext context, int i) {
-                        return Divider();
-                      },
-                      itemCount: beanList?.length ?? 0)),
+          : hasError
+              ? NetworkErrorWidget(callback: fetchData)
+              : Container(
+                  color: themeData.primaryColor,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: UIKit.width(20), vertical: UIKit.height(20)),
+                  child: beanList == null || beanList?.isNotEmpty != true
+                      ? NoData()
+                      : ListView.separated(
+                          itemBuilder: (BuildContext context, int i) {
+                            return AnimationConfiguration.staggeredList(
+                                position: i,
+                                duration: const Duration(milliseconds: 375),
+                                child: SlideAnimation(
+                                    verticalOffset: 50.0,
+                                    child: FadeInAnimation(
+                                      child: buildCollectCard(
+                                          context, beanList[i], i),
+                                    )));
+                            // return buildCollectCard(context, beanList[i], i);
+                          },
+                          separatorBuilder: (BuildContext context, int i) {
+                            return Divider();
+                          },
+                          itemCount: beanList?.length ?? 0)),
     );
   }
 }

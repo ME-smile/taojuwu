@@ -2,7 +2,7 @@
  * @Description: 属性的选项
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-06 13:57:10
+ * @LastEditTime: 2020-11-17 17:08:38
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
@@ -34,10 +34,10 @@ class OptionView extends StatelessWidget {
     return GestureDetector(
       onTap: callback,
       child: Container(
-        alignment: Alignment.center,
+        alignment: Alignment.topCenter,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Container(
               child: Stack(

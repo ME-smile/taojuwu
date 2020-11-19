@@ -2,7 +2,7 @@
  * @Description: 商品模型
  * @Author: iamsmiling
  * @Date: 2020-09-25 15:57:46
- * @LastEditTime: 2020-10-21 15:54:14
+ * @LastEditTime: 2020-11-19 15:00:47
  */
 import 'dart:async';
 import 'dart:convert';
@@ -27,7 +27,7 @@ class CurtainViewModel extends CurtainPriceCalculatorBinding
   int id;
 
   bool isLoading = true;
-
+  bool hasError = false;
   // 是否已经收藏过
   bool get hasLiked => bean?.isCollect == 1;
   String get measureDataStr =>

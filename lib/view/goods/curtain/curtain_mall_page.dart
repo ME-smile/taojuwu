@@ -28,12 +28,13 @@ import 'package:taojuwu/singleton/target_route.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/animated_dropdown_drawer.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
 
 import 'package:taojuwu/widgets/no_data.dart';
 
 import 'package:taojuwu/widgets/scan_button.dart';
+import 'package:taojuwu/widgets/triangle_clipper.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
-import 'package:taojuwu/widgets/zy_action_chip.dart';
 
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_dropdown_route.dart';
@@ -44,10 +45,11 @@ import 'widgets/curtain_grid_view.dart';
 
 class CurtainMallPage extends StatefulWidget {
   final String keyword;
-
+  final int orderGoodsId;
   CurtainMallPage({
     Key key,
     this.keyword: '',
+    this.orderGoodsId,
   }) : super(key: key);
 
   @override
@@ -61,11 +63,12 @@ class _CurtainMallPageState extends State<CurtainMallPage>
         '床品',
         '抱枕',
         '沙发',
-        '饰品',
+        '搭毯',
       ];
   List<List<GoodsItemBean>> goodsListWrapper = List(5);
   List<BuildContext> contextList = List(5);
   BuildContext get curTabContext => contextList[tabIndex];
+  int get orderGoodsId => widget.orderGoodsId;
   CurtainProductListDataBean beanData;
   CurtainGoodsListWrapper wrapper;
   ScrollController scrollController;
@@ -517,14 +520,58 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                                     itemCount: options?.length ?? 0,
                                     itemBuilder: (BuildContext context, int i) {
                                       TagFilterOption item = options[i];
-                                      return ZYActionChip(
-                                          bean: ActionBean.fromJson({
-                                            'text': item?.name ?? '',
-                                            'is_checked': item?.isChecked
-                                          }),
-                                          callback: () {
-                                            checkTag(bean, options, item);
-                                          });
+                                      return GestureDetector(
+                                        onTap: () {
+                                          checkTag(bean, options, item);
+                                        },
+                                        child: Container(
+                                          height: 28,
+                                          child: AspectRatio(
+                                            aspectRatio: 3,
+                                            child: Stack(
+                                              children: [
+                                                Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 20),
+                                                  child: Text(
+                                                    '${item?.name}',
+                                                    textAlign: TextAlign.center,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        color: item?.isChecked ==
+                                                                true
+                                                            ? Colors.black
+                                                            : Color(
+                                                                0xFF333333)),
+                                                  ),
+                                                  alignment: Alignment.center,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  2)),
+                                                      border: Border.all(
+                                                          width: 1,
+                                                          color: item?.isChecked ==
+                                                                  true
+                                                              ? Colors.black
+                                                              : Color(
+                                                                  0xFF979797))),
+                                                ),
+                                                Positioned(
+                                                  child: item?.isChecked == true
+                                                      ? TriAngle()
+                                                      : Container(),
+                                                  bottom: 0,
+                                                  right: 0,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
                                     }),
                               ),
                             ],
@@ -613,6 +660,8 @@ class _CurtainMallPageState extends State<CurtainMallPage>
 
   int cartCount = 0;
   void fetchData() {
+    params.addAll({'order_goods_id': orderGoodsId});
+
     OTPService.mallData(context, params: params).then((data) {
       CurtainProductListResp curtainProductListResp = data[0];
       TagModelListResp tagListResp = data[1];
@@ -847,6 +896,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                       'page_size': PAGE_SIZE,
                       'keyword': keyword,
                       'page_index': 1,
+                      'order_goods_id': orderGoodsId,
                       'type': 1,
                       'sort': currentSortType['sort'],
                       'order': currentSortType['order'],
@@ -874,10 +924,15 @@ class GoodsTabBarView extends StatefulWidget {
   final Function sort;
   final int tab;
   final bool isGridMode;
-
+  final int orderGoodsId;
   final Map<String, dynamic> params;
   GoodsTabBarView(TabController tabController,
-      {Key key, this.sort, this.params, this.tab, this.isGridMode = true})
+      {Key key,
+      this.sort,
+      this.params,
+      this.tab,
+      this.isGridMode = true,
+      this.orderGoodsId})
       : super(key: key);
 
   @override
@@ -890,8 +945,10 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
   Map<String, dynamic> get params => widget.params;
   bool get isGridMode => widget.isGridMode;
   bool get isFromSearch => widget.params['keyword']?.isNotEmpty ?? false;
+  int get orderGoodsId => widget.orderGoodsId;
   int get tab => widget.tab;
   bool isLoading = true;
+  bool hasError = false;
   RefreshController _refreshController;
   ScrollController scrollController;
   List<GoodsItemBean> goodsList = [];
@@ -974,8 +1031,11 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
 
   bool isNoData = false;
   requestGoodsData() {
-    params?.addAll({'page_index': pageIndex});
+    params?.addAll({
+      'page_index': pageIndex,
+    });
     params.addAll(extraArgs);
+    hasError = false;
     OTPService.productGoodsList(context, params: params)
         .then((CurtainProductListResp curtainProductListResp) {
       if (curtainProductListResp?.valid == true) {
@@ -1013,6 +1073,7 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
 
       }
     }).catchError((err) {
+      hasError = true;
       if (isRefresh) {
         return _refreshController?.refreshFailed();
       } else {
@@ -1118,27 +1179,32 @@ class _GoodsTabBarViewState extends State<GoodsTabBarView>
               color: themeData.scaffoldBackgroundColor,
               child: LoadingCircle(),
             )
-          : goodsList?.isNotEmpty != true
+          : hasError
               ? Container(
                   color: themeData.scaffoldBackgroundColor,
-                  child: NoData(
-                    isFromSearch: isFromSearch,
-                  ),
-                )
-              : Container(
-                  alignment: Alignment.center,
-                  // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                  child: SmartRefresher(
-                    enablePullDown: true,
-                    enablePullUp: true,
-                    primary: false,
-                    onRefresh: refresh,
-                    onLoading: load,
-                    controller: _refreshController,
-                    scrollController: scrollController,
-                    child: isGridMode ? buildGridView() : buildListView(),
-                  ),
-                ),
+                  height: double.maxFinite,
+                  child: NetworkErrorWidget(callback: requestGoodsData))
+              : goodsList?.isNotEmpty != true
+                  ? Container(
+                      color: themeData.scaffoldBackgroundColor,
+                      child: NoData(
+                        isFromSearch: isFromSearch,
+                      ),
+                    )
+                  : Container(
+                      alignment: Alignment.center,
+                      // margin: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                      child: SmartRefresher(
+                        enablePullDown: true,
+                        enablePullUp: true,
+                        primary: false,
+                        onRefresh: refresh,
+                        onLoading: load,
+                        controller: _refreshController,
+                        scrollController: scrollController,
+                        child: isGridMode ? buildGridView() : buildListView(),
+                      ),
+                    ),
     );
   }
 

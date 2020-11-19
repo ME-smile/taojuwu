@@ -2,11 +2,13 @@
  * @Description: 商品详情底部
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:15:20
- * @LastEditTime: 2020-11-03 15:55:32
+ * @LastEditTime: 2020-11-18 14:16:13
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/view/product/widgets/base/purchase_action_bar.dart';
+import 'package:taojuwu/view/product/widgets/base/select_product_action_bar.dart';
 
 class ProductDeatilFooter extends StatelessWidget {
   final BaseProductDetailBean bean;
@@ -17,32 +19,39 @@ class ProductDeatilFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return Container(
-      color: themeData.primaryColor,
-      margin: EdgeInsets.only(bottom: 8),
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Expanded(
-            flex: 2,
-            child: Text.rich(TextSpan(text: '预计:\n', children: [
-              TextSpan(
-                  // text: '0.00',
-                  text: '${bean?.totalPrice?.toStringAsFixed(2)}',
-                  // text:
-                  //     '${baseGoodsViewModel.totalPrice.toStringAsFixed(2) ?? "0.00"}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-            ])),
-          ),
-          Expanded(
-              flex: 3,
-              child: PurchaseActionBar(
-                bean,
-                callback: callback,
-              ))
-        ],
-      ),
-    );
+    return ((bean is BaseCurtainProductDetailBean) &&
+            (bean as BaseCurtainProductDetailBean).isMeasureOrder)
+        ? SelectProductActionBar(bean)
+        : Container(
+            decoration: BoxDecoration(
+                color: themeData.primaryColor,
+                border:
+                    Border(top: BorderSide(color: const Color(0xFFE7E7E7)))),
+            margin: EdgeInsets.only(bottom: 8),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  flex: 2,
+                  child: Text.rich(TextSpan(text: '预计:\n', children: [
+                    TextSpan(
+                        // text: '0.00',
+                        text: '${bean?.totalPrice?.toStringAsFixed(2)}',
+                        // text:
+                        //     '${baseGoodsViewModel.totalPrice.toStringAsFixed(2) ?? "0.00"}',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500)),
+                  ])),
+                ),
+                Expanded(
+                    flex: 3,
+                    child: PurchaseActionBar(
+                      bean,
+                      callback: callback,
+                    ))
+              ],
+            ),
+          );
   }
 }

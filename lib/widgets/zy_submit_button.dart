@@ -1,3 +1,9 @@
+/*
+ * @Description: 提交按钮
+ * @Author: iamsmiling
+ * @Date: 2020-10-31 13:34:35
+ * @LastEditTime: 2020-11-19 16:03:14
+ */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -5,7 +11,9 @@ class ZYSubmitButton extends StatelessWidget {
   final String text;
   final Function callback;
   final bool isActive;
-  const ZYSubmitButton(this.text, this.callback, {Key key, this.isActive: true})
+  final double horizontalMargin;
+  const ZYSubmitButton(this.text, this.callback,
+      {Key key, this.isActive: true, this.horizontalMargin = 24})
       : super(key: key);
 
   @override
@@ -13,7 +21,7 @@ class ZYSubmitButton extends StatelessWidget {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.symmetric(
-          horizontal: UIKit.width(50), vertical: UIKit.height(20)),
+          horizontal: horizontalMargin, vertical: UIKit.height(20)),
       child: RaisedButton(
         onPressed: isActive ? callback : null,
         child: Padding(

@@ -273,6 +273,13 @@ class CurtainStyleSelector {
                   {"name": "单开", "is_checked": true},
                   {"name": "对开", "is_checked": false}
                 ]
+              },
+              {
+                "title": "C面打开方式",
+                "options": [
+                  {"name": "单开", "is_checked": true},
+                  {"name": "对开", "is_checked": false}
+                ]
               }
             ]
           }
@@ -398,8 +405,10 @@ class CurtainStyleSelector {
   String get windowBox =>
       getSelectedOption(boxOptions ?? boxOptionList)?.name ?? '无盒';
 
+  String windowTypeBayBoxStr;
   //窗帘样式
-  String get windowStyleStr => '$windowType/$windowBay/$windowBox';
+  String get windowStyleStr =>
+      windowTypeBayBoxStr ?? '$windowType/$windowBay/$windowBox';
 
   //顶部展示的主图
   String get mainImg {
@@ -411,13 +420,9 @@ class CurtainStyleSelector {
   //获取当前选中的样式选项--->WindowStyleProductSkuBean对象
   WindowStyleProductSkuBean get curStyleProductSkuBean {
     List<WindowStyleProductSkuBean> list = styleSkuOption?.options;
-    if (!CommonKit.isNullOrEmpty(list)) {
-      WindowStyleProductSkuBean bean = list.firstWhere(
-          (element) => element.name == windowStyleStr,
-          orElse: () => getFirst(list));
-      return bean;
-    }
-    return null;
+
+    return list.firstWhere((element) => windowStyleStr.contains(element.name),
+        orElse: () => getFirst(list));
   }
 
   set curStyleProductSkuBean(WindowStyleProductSkuBean bean) {
@@ -456,8 +461,9 @@ class CurtainStyleSelector {
   List<WindowInstallModeOptionBean> get installOptions =>
       curStyleProductSkuBean?.installModeOptionBeans ?? [];
   // 获取当前应该显示的打开方式
-  List<WindowOpenModeOptionBean> get openOptions =>
-      curStyleProductSkuBean?.openModeOptionBeans ?? [];
+  List<WindowOpenModeOptionBean> get openOptions {
+    return curStyleProductSkuBean?.openModeOptionBeans ?? [];
+  }
 
   set installOptions(List<WindowInstallModeOptionBean> list) {
     curStyleProductSkuBean?.installModeOptionBeans = list;
@@ -498,8 +504,9 @@ class CurtainStyleSelector {
   }
 
   //获取当前选中的打开方式的子选项
-  List<WindowOpenModeSubOption> get subOpenModeOptions =>
-      curOpenMode?.subOptions ?? [];
+  List<WindowOpenModeSubOption> get subOpenModeOptions {
+    return curOpenMode?.subOptions ?? [];
+  }
 
   set subOpenModeOptions(List<WindowOpenModeSubOption> list) {
     curOpenMode?.subOptions = list;

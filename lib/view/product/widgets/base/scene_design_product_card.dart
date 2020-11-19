@@ -2,7 +2,7 @@
  * @Description: 场景轮播图卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:42:58
- * @LastEditTime: 2020-11-16 13:11:08
+ * @LastEditTime: 2020-11-17 10:28:25
  */
 import 'dart:math';
 
@@ -12,7 +12,6 @@ import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/design/scene_design_product_detail_bean.dart';
 import 'package:taojuwu/router/handlers.dart';
-import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -22,68 +21,75 @@ class SceneDesignProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
         RouteHandler.goSceneDesignPage(context, bean?.id);
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8),
-        width: MediaQuery.of(context).size.width,
+        width: w,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AspectRatio(
               aspectRatio: 1.8,
-              child: Stack(children: [
-                // Image.network(UIKit.getNetworkImgPath(bean.picture)),
-                // Align(
-                //   alignment: Alignment.center,
-                //   child: ZYNetImage(
-                //     // width: MediaQuery.of(context).size.width,
-                //     fit: BoxFit.cover,
-                //     imgPath: bean.picture,
-                //   ),
-                // ),
-                Container(
-                  // foregroundDecoration: BoxDecoration(
-                  //     image: DecorationImage(
-                  //         image: AssetImage(
-                  //   UIKit.getAssetsImagePath(
-                  //     'mask.jpg',
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Stack(children: [
+                  // Image.network(UIKit.getNetworkImgPath(bean.picture)),
+                  // Align(
+                  //   alignment: Alignment.center,
+                  //   child: ZYNetImage(
+                  //     // width: MediaQuery.of(context).size.width,
+                  //     fit: BoxFit.cover,
+                  //     imgPath: bean.picture,
                   //   ),
-                  // ))),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                            (UIKit.getNetworkImgPath(bean.picture)))),
-                  ),
-                ),
-                Positioned(
-                  child: ZYAssetImage(
-                    'mask.jpg',
-                    height: 56,
-                    width: MediaQuery.of(context).size.width,
-                  ),
-                  top: 0,
-                  left: 0,
-                ),
-                Positioned(
-                  child: Container(
-                    // color: Color.fromARGB(125, 0, 0, 0),
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      '${bean?.room},${bean?.style}',
-                      style: TaojuwuTextStyle.WHITE_TEXT_STYLE,
+                  // ),
+                  Container(
+                    // foregroundDecoration: BoxDecoration(
+                    //     image: DecorationImage(
+                    //         image: AssetImage(
+                    //   UIKit.getAssetsImagePath(
+                    //     'mask.jpg',
+                    //   ),
+                    // ))),
+                    width: w,
+                    alignment: Alignment.topLeft,
+                    child: ZYNetImage(
+                      imgPath: bean?.picture,
+                      fit: BoxFit.fitWidth,
+                      width: MediaQuery.of(context).size.width,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
                     ),
                   ),
-                  top: 0,
-                )
-              ]),
+                  Positioned(
+                    child: ZYAssetImage(
+                      'mask.jpg',
+                      fit: BoxFit.fitWidth,
+                      height: 56,
+                    ),
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                  ),
+                  Positioned(
+                    child: Container(
+                      // color: Color.fromARGB(125, 0, 0, 0),
+                      // width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        '${bean?.room},${bean?.style}',
+                        style: TaojuwuTextStyle.WHITE_TEXT_STYLE,
+                      ),
+                    ),
+                    top: 0,
+                  )
+                ]),
+              ),
             ),
             // AspectRatio(aspectRatio: 3,
 
@@ -105,7 +111,7 @@ class SceneDesignProductCard extends StatelessWidget {
                       crossAxisSpacing: 8),
                   itemBuilder: (BuildContext context, int index) {
                     SingleProductDetailBean item = bean?.goodsList[index];
-                    print('封面是${item?.cover}');
+
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 2),
                       child: Column(
@@ -127,15 +133,25 @@ class SceneDesignProductCard extends StatelessWidget {
                                               blurRadius: 2,
                                               color:
                                                   Color.fromARGB(45, 0, 0, 0)),
-                                          // BoxShadow(
-                                          //     offset: Offset(0, -2),
-                                          //     blurRadius: 2,
-                                          //     color: Color.fromARGB(45, 0, 0, 0)),
                                         ]),
-                                    child: Image.network(
-                                      'http://106.14.219.213:8001/upload/system/2019123109055461787_SMALL.jpg',
-                                      // errorBuilder: BU),
-                                    )),
+                                    child: AspectRatio(
+                                        aspectRatio: 1,
+                                        // child: Text(item?.cover ?? ''),
+                                        child: Builder(
+                                          builder: (BuildContext context) {
+                                            return ZYNetImage(
+                                              imgPath: item?.cover,
+                                            );
+                                            // return Image.network(item?.cover);
+                                          },
+                                        )
+                                        // child: Container(
+                                        //   decoration: BoxDecoration(
+                                        //       image: DecorationImage(
+                                        //           image:
+                                        //               NetworkImage(item?.cover))),
+                                        // ),
+                                        )),
                                 Container(
                                   color: index == 4
                                       ? Colors.black.withAlpha(80)
@@ -154,7 +170,7 @@ class SceneDesignProductCard extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
-                              '¥${item?.price}',
+                              '¥${item?.price}/米',
                               style: TextStyle(fontSize: 12),
                             ),
                           )

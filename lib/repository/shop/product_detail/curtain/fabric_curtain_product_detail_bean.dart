@@ -2,7 +2,7 @@
  * @Description: 布艺帘商品
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:12:26
- * @LastEditTime: 2020-11-13 09:08:22
+ * @LastEditTime: 2020-11-17 13:05:35
  */
 
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
@@ -29,7 +29,6 @@ class FabricCurtainProductDetailBean extends BaseCurtainProductDetailBean {
         CommonKit.parseDouble(json['larghezza_size'], defaultVal: 0.0) / 100;
     flowerSize =
         CommonKit.parseDouble(json['flower_distance'], defaultVal: 0.0) / 100;
-    print('_________________+++++++++++++++');
   }
 
   ///[refresh]刷新页面的回调函数 在数据返回时刷新页面

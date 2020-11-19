@@ -2,7 +2,7 @@
  * @Description: 软装方案确认测装数据弹窗
  * @Author: iamsmiling
  * @Date: 2020-11-12 16:22:15
- * @LastEditTime: 2020-11-13 09:31:46
+ * @LastEditTime: 2020-11-17 16:49:40
  */
 
 import 'package:flutter/material.dart';
@@ -48,7 +48,9 @@ class CorfirmCurtainMeasureDataView extends StatelessWidget {
                   children: [
                     ZYOutlineButton(
                       '返回修改',
-                      () => Navigator.of(context).pop(),
+                      () {
+                        Navigator.of(context).pop(false);
+                      },
                       verticalPadding: 8,
                     ),
                     // SizedBox(
@@ -57,11 +59,7 @@ class CorfirmCurtainMeasureDataView extends StatelessWidget {
                     ZYRaisedButton(
                       '确认',
                       () {
-                        if (callback != null) {
-                          callback().then((_) {
-                            Navigator.of(context).pop();
-                          });
-                        }
+                        Navigator.of(context).pop(true);
                       },
                       horizontalPadding: 42,
                       verticalPadding: 8,

@@ -2,7 +2,7 @@
  * @Description: 相关商品卡片
  * @Author: iamsmiling
  * @Date: 2020-10-22 17:09:43
- * @LastEditTime: 2020-11-06 13:36:26
+ * @LastEditTime: 2020-11-17 09:55:14
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
@@ -52,24 +52,27 @@ class RelativeProductCard extends StatelessWidget {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  bean?.goodsName ?? '',
-                  style:
-                      TextStyle(fontSize: 12, color: const Color(0xFF555555)),
-                ),
-                Visibility(
-                  child: OnSaleTag(
-                    text: '特价',
-                    horizontalMargin: 5,
-                    horizontalPadding: 2,
-                    fontSize: 8,
+            Container(
+              margin: EdgeInsets.only(top: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    bean?.goodsName ?? '',
+                    style:
+                        TextStyle(fontSize: 12, color: const Color(0xFF555555)),
                   ),
-                  visible: bean?.isPromotionalProduct,
-                )
-              ],
+                  Visibility(
+                    child: OnSaleTag(
+                      text: '特价',
+                      horizontalMargin: 5,
+                      horizontalPadding: 2,
+                      fontSize: 8,
+                    ),
+                    visible: bean?.isPromotionalProduct,
+                  )
+                ],
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

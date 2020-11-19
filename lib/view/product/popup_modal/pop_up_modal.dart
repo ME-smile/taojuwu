@@ -2,7 +2,7 @@
  * @Description: //选择属性
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:36:14
- * @LastEditTime: 2020-11-06 13:46:43
+ * @LastEditTime: 2020-11-19 15:33:48
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +93,7 @@ Future showDesignProductDetailModal(BuildContext ctx, int id) {
       context: ctx,
       builder: (BuildContext context) {
         return SkuAttrPicker(
-            height: UIKit.height(1200),
+            height: UIKit.height(900),
             showButton: false,
             child: ClipRRect(
               borderRadius: BorderRadius.only(
@@ -113,7 +113,7 @@ Future showEndProductDetailModalPopup(
       context: ctx,
       builder: (BuildContext context) {
         return SkuAttrPicker(
-          height: UIKit.height(1200),
+          height: UIKit.height(900),
           callback: () {
             if (callback != null) {
               callback().then((value) {

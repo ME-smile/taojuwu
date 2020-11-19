@@ -2,7 +2,7 @@
  * @Description: 窗帘单订单备注
  * @Author: iamsmiling
  * @Date: 2020-10-29 17:37:47
- * @LastEditTime: 2020-10-30 06:58:03
+ * @LastEditTime: 2020-11-19 13:23:29
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/viewmodel/order/order_creator.dart';
@@ -20,6 +20,7 @@ class CurtainOrderRemarkCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).primaryColor,
+      padding: EdgeInsets.symmetric(vertical: 8),
       child: Column(
         children: [
           MeasureTimeRemarkBar(orderCreator),

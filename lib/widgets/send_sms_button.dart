@@ -2,7 +2,7 @@
  * @Description: 获取验证码按钮
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-11-12 10:59:04
+ * @LastEditTime: 2020-11-16 14:36:37
  */
 import 'dart:async';
 
@@ -102,6 +102,7 @@ class _SendSmsButtonState extends State<SendSmsButton> {
                       '获取验证码',
                       onTap,
                       horizontalPadding: 12,
+                      verticalPadding: 8,
                       isActive: isValid ?? false,
                     );
                   },
@@ -137,6 +138,7 @@ class _SendSmsButtonState extends State<SendSmsButton> {
                       null,
                       isActive: false,
                       horizontalPadding: 8,
+                      verticalPadding: 8,
                     );
                   });
         });

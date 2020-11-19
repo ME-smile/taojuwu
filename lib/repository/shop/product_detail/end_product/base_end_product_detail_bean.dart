@@ -2,7 +2,7 @@
  * @Description: 所有成品商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:17:00
- * @LastEditTime: 2020-11-12 16:01:21
+ * @LastEditTime: 2020-11-17 16:43:03
  */
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
@@ -91,9 +91,7 @@ abstract class BaseEndProductDetailBean
   }
 
   String get selectedOptionsName =>
-      (specList?.map((e) => e?.selectedOptionsName)?.toList()?.join(' ') ??
-          '') +
-      ' x$count';
+      (specList?.map((e) => e?.selectedOptionsName)?.toList()?.join(' ') ?? '');
 
   void selectSpecOption(ProductSpecBean spec, ProductSpecOptionBean option) {
     spec?.options?.forEach((el) {

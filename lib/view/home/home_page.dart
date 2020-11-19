@@ -9,6 +9,7 @@ import 'package:taojuwu/router/handlers.dart';
 // import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
+import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -67,16 +68,16 @@ class _HomePageState extends State<HomePage> {
         },
         'color': const Color(0xffDDE0E1)
       },
-      {
-        'title': '数据中心',
-        'subtitle': '销售统计，清晰明了',
-        'icon': 'data@2x.png',
-        'callback': () {
-          // ToastKit.showInfo('暂未开放');
-          RouteHandler.goDataCenterPage(context);
-        },
-        'color': const Color(0xff0D0B14)
-      },
+      // {
+      //   'title': '数据中心',
+      //   'subtitle': '销售统计，清晰明了',
+      //   'icon': 'data@2x.png',
+      //   'callback': () {
+      //     // ToastKit.showInfo('暂未开放');
+      //     RouteHandler.goDataCenterPage(context);
+      //   },
+      //   'color': const Color(0xff0D0B14)
+      // },
       {
         'title': '设置',
         'subtitle': '问题反馈，软件帮助',
@@ -113,6 +114,7 @@ class _HomePageState extends State<HomePage> {
       color: themeData.primaryColor,
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: themeData.primaryColor,
           body: SingleChildScrollView(
               child: Container(
             padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
@@ -154,12 +156,18 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: AspectRatio(
                       aspectRatio: 1.4,
-                      child: Image.network(
-                        UIKit.getNetworkImgPath('upload/master.jpg'),
-                        fit: BoxFit.fitWidth,
+                      child: ZYNetImage(
+                        imgPath: 'upload/master.jpg',
+                        isCache: true,
                         width: MediaQuery.of(context).size.width,
-                        // height: UIKit.height(500),
+                        fit: BoxFit.fitWidth,
                       ),
+                      // child: Image.network(
+                      //   UIKit.getNetworkImgPath('upload/master.jpg'),
+                      //   fit: BoxFit.fitWidth,
+                      //   width: MediaQuery.of(context).size.width,
+                      //   // height: UIKit.height(500),
+                      // ),
                     )),
                 VSpacing(20),
                 GridView.builder(

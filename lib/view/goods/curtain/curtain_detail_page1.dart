@@ -955,15 +955,15 @@
 //                     Text.rich(TextSpan(text: '预计:\n', children: [
 //                       TextSpan(text: '¥${goodsProvider?.totalPrice ?? 0.00}'),
 //                     ])),
-//                     ZYRaisedButton(
-//                       '确认选品',
-//                       () {
-//                         goodsProvider?.selectProduct(context);
-//                       },
-//                       horizontalPadding: 32,
-//                       verticalPadding: 8,
-//                       fontsize: 16,
-//                     )
+// ZYRaisedButton(
+//   '确认选品',
+//   () {
+//     goodsProvider?.selectProduct(context);
+//   },
+//   horizontalPadding: 32,
+//   verticalPadding: 8,
+//   fontsize: 16,
+// )
 //                   ],
 //                 ))
 //             : PurchaseActionBar(

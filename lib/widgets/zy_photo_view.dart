@@ -63,8 +63,10 @@
 //         ));
 //   }
 // }
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -75,12 +77,16 @@ class ZYPhotoView extends StatelessWidget {
   final String tag;
   final BoxFit fit;
   final String bigImageUrl;
+  final bool isAnimated;
+  final Alignment alignment;
   const ZYPhotoView(this.imgUrl,
       {Key key,
       this.width: 120,
       this.height,
       this.tag,
       this.bigImageUrl,
+      this.isAnimated = true,
+      this.alignment = Alignment.centerLeft,
       this.fit: BoxFit.fill})
       : super(key: key);
 
@@ -93,7 +99,7 @@ class ZYPhotoView extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
+            CupertinoPageRoute(
               builder: (context) => ZYPhotoPreviewer(
                   heroTag: tag ?? bigImageUrl ?? imgUrl,
                   imageProvider: isNetworkImg
@@ -105,14 +111,21 @@ class ZYPhotoView extends StatelessWidget {
         child: Hero(
             tag: tag ?? bigImageUrl ?? imgUrl,
             child: Container(
-              alignment: Alignment.centerLeft,
+              alignment: alignment,
               child: isNetworkImg
-                  ? ZYNetImage(
-                      imgPath: imgUrl,
-                      width: width,
-                      fit: fit,
-                      height: height,
-                    )
+                  ? isAnimated
+                      ? ZYNetImage(
+                          imgPath: imgUrl,
+                          width: width,
+                          fit: fit,
+                          height: height,
+                        )
+                      : Image.network(
+                          imgUrl,
+                          width: width,
+                          fit: fit,
+                          height: height,
+                        )
                   : Image.asset(
                       imgUrl,
                       width: width,

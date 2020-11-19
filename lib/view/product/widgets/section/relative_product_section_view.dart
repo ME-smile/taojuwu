@@ -2,7 +2,7 @@
  * @Description: 搭配精选视图
  * @Author: iamsmiling
  * @Date: 2020-10-09 13:05:48
- * @LastEditTime: 2020-11-16 09:55:56
+ * @LastEditTime: 2020-11-19 16:30:07
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -49,6 +49,7 @@ class RelativeProductSectionView extends StatelessWidget {
                         tip: '(${list?.length ?? 0})',
                       ),
                       TrailingTip(
+                        text: '查看全部',
                         callback: () =>
                             showRelativeProductModalPopup(context, list),
                       )
@@ -56,6 +57,7 @@ class RelativeProductSectionView extends StatelessWidget {
               ),
               Container(
                 height: 160,
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Swiper(
                   itemCount: groupCount,
                   loop: false,
@@ -69,11 +71,15 @@ class RelativeProductSectionView extends StatelessWidget {
                   itemBuilder: (BuildContext context, int i) {
                     return Container(
                         child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: (list.length > 3
                                     ? list?.sublist(i, i + 3)
                                     : list)
-                                ?.map((e) => RelativeProductCard(e))
+                                ?.map((e) => Container(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8),
+                                    child: RelativeProductCard(e)))
                                 ?.toList()));
                   },
                 ),

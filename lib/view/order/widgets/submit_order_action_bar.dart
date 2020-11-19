@@ -2,7 +2,7 @@
  * @Description:  提交订单页面 底部提交
  * @Author: iamsmiling
  * @Date: 2020-10-29 15:31:28
- * @LastEditTime: 2020-10-30 10:21:37
+ * @LastEditTime: 2020-11-17 10:37:01
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_prodcut_detail_bean.dart';
@@ -44,7 +44,7 @@ class SubmitOrderActionBar extends StatelessWidget {
           ZYRaisedButton(
             '提交订单',
             () => orderCreator?.createOrder(context),
-            verticalPadding: 6,
+            verticalPadding: 8,
             horizontalPadding: 18,
           ),
         ],

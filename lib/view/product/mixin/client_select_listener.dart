@@ -2,7 +2,7 @@
  * @Description:客户选择监听
  * @Author: iamsmiling
  * @Date: 2020-10-29 10:36:12
- * @LastEditTime: 2020-10-31 16:44:47
+ * @LastEditTime: 2020-11-17 11:01:26
  */
 import 'dart:async';
 
@@ -30,6 +30,5 @@ abstract class TargetClientHolder {
   void relase() {
     streamSubscription?.cancel();
     streamSubscription = null;
-    targetClient = null;
   }
 }

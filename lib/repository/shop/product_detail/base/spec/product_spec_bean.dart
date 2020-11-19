@@ -2,7 +2,7 @@
  * @Description: 商品规格数据模型
  * @Author: iamsmiling
  * @Date: 2020-10-23 13:52:10
- * @LastEditTime: 2020-11-13 10:27:37
+ * @LastEditTime: 2020-11-17 13:03:20
  */
 import 'package:taojuwu/utils/common_kit.dart';
 
@@ -20,7 +20,8 @@ class ProductSpecBean {
   }
 
   ProductSpecOptionBean get selectedOption =>
-      options?.firstWhere((element) => element?.isSelected, orElse: () => null);
+      options?.firstWhere((element) => element?.isSelected ?? false,
+          orElse: () => null);
 
   String get selectedOptionsName => selectedOption?.name ?? '';
 }
@@ -36,7 +37,7 @@ class ProductSpecOptionBean {
     optionId = json['spec_value_id'];
     desc = json['spec_name'];
     name = json['spec_value_name'];
-    isSelected = false;
+    isSelected = json['selected'];
   }
 
   ProductSpecOptionBean.defaultOption(Map<String, dynamic> json) {
@@ -44,6 +45,6 @@ class ProductSpecOptionBean {
     optionId = json['spec_value_id'];
     desc = json['spec_name'];
     name = json['spec_value_name'];
-    isSelected = json['is_selected'];
+    isSelected = json['selected'];
   }
 }

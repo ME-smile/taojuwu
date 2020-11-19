@@ -30,7 +30,7 @@
 //     CartCategory('抱枕', 0),
 //     CartCategory('沙发', 0),
 //     CartCategory('床品', 0),
-//     CartCategory('饰品', 0),
+//     CartCategory('搭毯', 0),
 //   ];
 
 //   CartProvider cartProvider;

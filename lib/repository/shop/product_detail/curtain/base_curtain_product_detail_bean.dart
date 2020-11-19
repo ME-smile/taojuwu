@@ -2,11 +2,11 @@
  * @Description: 所有窗帘类的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:11:06
- * @LastEditTime: 2020-11-12 17:22:45
+ * @LastEditTime: 2020-11-19 13:14:07
  */
 
 import 'dart:convert';
-
+import 'dart:developer' as developer;
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
@@ -15,6 +15,8 @@ import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
+import 'package:taojuwu/view/order/utils/order_kit.dart';
+import 'package:taojuwu/view/product/mixin/target_product_holder.dart';
 
 import 'abstract_curtain_product_detail_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -29,7 +31,8 @@ abstract class BaseCurtainProductDetailBean
   ProductSkuAttr roomAttr;
   OrderGoodsMeasureData measureData = OrderGoodsMeasureData();
 
-  int skuId;
+  bool get isMeasureOrder => !CommonKit.isNullOrEmpty(measureData.orderGoodsId);
+
   CurtainStyleSelector styleSelector =
       CurtainStyleSelector(); // 样式选择  只有布艺帘才需要选择 这些属性
   double get widthCM => measureData?.widthCM; //宽度
@@ -43,13 +46,11 @@ abstract class BaseCurtainProductDetailBean
 
   String get widthMStr => measureData?.widthMStr;
   String get heightMStr => measureData?.heightMStr;
-  //是否为测量单选品
-  bool get isMeasureOrder => measureData?.orderGoodsId != null;
+
   BaseCurtainProductDetailBean.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
     defaultWidth ??= CommonKit.parseDouble(json['width'], defaultVal: 3.5);
     defaultHeight ??= CommonKit.parseDouble(json['height'], defaultVal: 2.65);
-    skuId = json['skuId'];
 
     measureData.widthCM = width == null || width == 0 ? null : width * 100;
     measureData.heightCM = height == null || height == 0 ? null : height * 100;
@@ -70,9 +71,9 @@ abstract class BaseCurtainProductDetailBean
       '9': [
         {
           'name': '宽',
-          'value': widthCM,
+          'value': widthCM ?? 0,
         },
-        {'name': '高', 'value': heightCM}
+        {'name': '高', 'value': heightCM ?? 0}
       ]
     });
 
@@ -249,16 +250,17 @@ abstract class BaseCurtainProductDetailBean
       ToastKit.showInfo('高度不能为0哦');
       return false;
     }
-    if (heightCM > 350) {
-      ToastKit.showInfo('暂不支持3.5m以上定制');
-      return false;
-    }
+    // if (heightCM > 350) {
+    //   ToastKit.showInfo('暂不支持3.5m以上定制');
+    //   return false;
+    // }
     return true;
   }
 
   bool get isValidSize => _isValidWidth() && _isValidHeight();
 
   Future addToCartRequest() {
+    developer.log(cartArgs?.toString());
     return OTPService.addCart(params: cartArgs).then((ZYResponse response) {
       if (response?.valid == true) {
         ToastKit.showSuccessDIYInfo('加入购物车成功');
@@ -347,6 +349,7 @@ abstract class BaseCurtainProductDetailBean
     };
   }
 
+  int get skuId => defalutSkuId;
   @override
   get cartArgs => {
         // 'measure_data': mesaureDataArg,
@@ -409,4 +412,42 @@ abstract class BaseCurtainProductDetailBean
   bool get isUseDefaultSize =>
       measureData?.widthM == defaultWidth &&
       measureData?.heightM == defaultHeight;
+
+  Future selectProduct(BuildContext context) {
+    Map<int, String> id2Name = {1: '布艺帘', 2: '卷帘'};
+    if (measureData?.hasConfirmed == false) {
+      ToastKit.showInfo('请先确认测装数据哦');
+      return Future.value(false);
+    }
+    if (TargetProductHolder.goodsType != goodsType) {
+      return selectProductTipAfter(context,
+          currentType: id2Name[goodsType ?? 1],
+          targetType: TargetProductHolder.categoryName,
+          callback: () => sendSelectProductRequest(context));
+    }
+    return sendSelectProductRequest(context);
+  }
+
+  Future sendSelectProductRequest(BuildContext context) {
+    Map<String, dynamic> data = {
+      'num': 1,
+      'goods_id': goodsId,
+      '安装选项': ['${styleSelector.curInstallMode ?? ''}'],
+      '打开方式': styleSelector.curOpenMode
+    };
+    Map<String, dynamic> params = {
+      'vertical_ground_height': measureData?.deltaYCM,
+      'data': jsonEncode(data),
+      'wc_attr': jsonEncode(attrArgs),
+      'order_goods_id': TargetProductHolder?.measureData?.orderGoodsId,
+    };
+    return OTPService.selectProduct(params: params).then((ZYResponse response) {
+      if (response?.valid == true) {
+        TargetProductHolder.clear();
+        Navigator.of(context)..pop()..pop();
+      } else {
+        ToastKit.showInfo(response?.message);
+      }
+    });
+  }
 }

@@ -2,7 +2,7 @@
  * @Description: 卷帘商品修改 宽高
  * @Author: iamsmiling
  * @Date: 2020-10-28 10:19:33
- * @LastEditTime: 2020-11-12 17:37:54
+ * @LastEditTime: 2020-11-17 16:52:52
  */
 import 'dart:io';
 
@@ -110,8 +110,9 @@ Future confirmCurtainMeasureData(
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           content: CorfirmCurtainMeasureDataView(
             count: bean?.useDefaultSizeCurtainCount,
-            callback: callback,
           ),
         );
-      });
+      }).then((value) {
+    if (callback != null && value == true) callback();
+  });
 }

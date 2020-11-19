@@ -118,7 +118,7 @@ class ApiPath {
 
   static const String location = 'https://restapi.amap.com/v3/geocode/regeo';
 
-  static const String ipLocation = 'https://restapi.amap.com/v3/ip';
+  static const String ipLocation = 'https://apis.map.qq.com/ws/location/v1/ip';
 
   static const String sendSms = '/api/login/sendBusinessesPhoneCode';
 

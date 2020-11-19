@@ -1,6 +1,7 @@
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/repository/user/customer_detail_model.dart';
 import 'package:taojuwu/repository/zy_response.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 import 'order_model.dart';
 
@@ -521,6 +522,7 @@ class OrderGoods {
   OrderGoodsMeasureData orderGoodsMeasureData;
   String goodsAttrStr;
   int parentOrderStatus;
+  String categoryName;
   String earnestMoney;
   bool get hasSelectedProduct => isSelectedGoods == 1;
   bool get canCancel =>
@@ -669,6 +671,7 @@ class OrderGoods {
         ? new OrderGoodsMeasureData.fromJson(json['order_goods_measure'])
         : null;
     earnestMoney = json['earnest_money'];
+    categoryName = json['category_name'];
   }
 }
 
@@ -923,9 +926,18 @@ class OrderGoodsMeasureData {
     createTime = json['create_time'];
     updateTime = json['update_time'];
     partsName = json['parts_name'];
-    newOpenType = json['open_type'];
-    newVerticalGroundHeight = json['vertical_ground_height'];
+    newOpenType = openType;
+    newVerticalGroundHeight = verticalGroundHeight;
+    width = json['width'];
+    height = json['height'];
+    widthCM = CommonKit.parseDouble(width);
+    heightCM = CommonKit.parseDouble(height);
+    deltaYCM = CommonKit.parseDouble(verticalGroundHeight);
   }
+
+  bool get hasModifiedDeltaY => newVerticalGroundHeight != verticalGroundHeight;
+
+  bool get hasModifiedOpenMode => newOpenType != openType;
 }
 
 class OrderAction {

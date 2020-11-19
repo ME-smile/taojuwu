@@ -203,12 +203,12 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: PreferredSize(
           child: Container(
             margin: EdgeInsets.only(
                 top: MediaQueryData.fromWindow(window).padding.top),
-            padding: EdgeInsets.symmetric(
-                horizontal: UIKit.width(15), vertical: UIKit.height(20)),
+            padding: EdgeInsets.only(left: 8, right: 8, top: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -222,6 +222,7 @@ class _SearchPageState extends State<SearchPage> {
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     child: TextField(
                       controller: inputController,
+
                       autofocus: true,
                       // enableInteractiveSelection: false,
                       // textAlignVertical: TextAlignVertical(y: .5),
@@ -239,7 +240,7 @@ class _SearchPageState extends State<SearchPage> {
                       },
                       decoration: InputDecoration(
                           // fillColor: Colors.grey,
-
+                          isDense: true,
                           filled: true,
                           fillColor: Color(0xFFEDEFF1),
                           prefixIcon: Container(
@@ -261,7 +262,7 @@ class _SearchPageState extends State<SearchPage> {
                               inputController?.text = ' ';
                             },
                           ),
-                          contentPadding: EdgeInsets.all(10),
+                          contentPadding: EdgeInsets.all(6),
                           hintText: HINT_TEXT_MAP[type]),
                     ),
                   ),
@@ -293,24 +294,37 @@ class _SearchPageState extends State<SearchPage> {
           );
         },
         child: isVisible
-            ? ListView.builder(
-                itemBuilder: (BuildContext context, int i) {
-                  String text = associativeWords[i];
-                  return GestureDetector(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: UIKit.width(15),
-                          vertical: UIKit.height(15)),
-                      child: Text(text),
-                    ),
-                    onTap: () {
-                      keyword = text;
-                      addHistory(text);
-                      jumpTo(keyword);
-                    },
-                  );
-                },
-                itemCount: associativeWords?.length ?? 0,
+            ? Container(
+                padding: EdgeInsets.only(top: 8),
+                color: Theme.of(context).primaryColor,
+                child: ListView.separated(
+                  separatorBuilder: (BuildContext context, int i) {
+                    return Divider(
+                      thickness: 1,
+                      height: 1,
+                      indent: UIKit.width(15),
+                      endIndent: UIKit.width(15),
+                      color: const Color(0xFFF3F5F9),
+                    );
+                  },
+                  itemBuilder: (BuildContext context, int i) {
+                    String text = associativeWords[i];
+                    return GestureDetector(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: UIKit.width(15),
+                            vertical: UIKit.height(15)),
+                        child: Text(text),
+                      ),
+                      onTap: () {
+                        keyword = text;
+                        addHistory(text);
+                        jumpTo(keyword);
+                      },
+                    );
+                  },
+                  itemCount: associativeWords?.length ?? 0,
+                ),
               )
             : Padding(
                 padding: EdgeInsets.symmetric(

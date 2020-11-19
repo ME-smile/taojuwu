@@ -2,7 +2,7 @@
  * @Description: //弹窗
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-02 15:14:44
+ * @LastEditTime: 2020-11-19 15:34:04
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class SkuAttrPicker extends StatelessWidget {
       {this.title: '',
       this.child,
       this.callback,
-      this.height = 480,
+      this.height = 520,
       this.showButton = true});
 
   @override
@@ -68,7 +68,10 @@ class SkuAttrPicker extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).pop();
                 },
-                child: Icon(ZYIcon.close),
+                child: Icon(
+                  ZYIcon.close,
+                  color: const Color(0xFF333333),
+                ),
               ),
               top: 10,
               right: 10,

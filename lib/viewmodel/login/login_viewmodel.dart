@@ -96,9 +96,7 @@ class LoginViewModel with ChangeNotifier {
         } else {
           ToastKit.showInfo(response?.message);
         }
-      }).catchError((err) {
-        print('验证短信验证码失败');
-      });
+      }).catchError((err) {});
     }
   }
 

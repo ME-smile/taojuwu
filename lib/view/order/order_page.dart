@@ -13,12 +13,13 @@ import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/animated_dropdown_drawer.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
 
 import 'package:taojuwu/widgets/no_data.dart';
 import 'package:taojuwu/widgets/search_button.dart';
+import 'package:taojuwu/widgets/triangle_clipper.dart';
 
 import 'package:taojuwu/widgets/v_spacing.dart';
-import 'package:taojuwu/widgets/zy_action_chip.dart';
 
 import 'package:taojuwu/widgets/zy_dropdown_route.dart';
 import 'package:taojuwu/widgets/zy_submit_button.dart';
@@ -51,6 +52,7 @@ class _OrderPageState extends State<OrderPage>
       List(Constants.ORDER_STATUS_TAB_LIST.length);
 
   bool isLoading = true;
+  bool hasError = false;
   static const PAGE_SIZE = 10;
   List<Map<String, dynamic>> params = [
     {
@@ -212,13 +214,45 @@ class _OrderPageState extends State<OrderPage>
                         child: Container(
                           margin:
                               EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                          child: ZYActionChip(
-                            showNumber: false,
-                            bean: ActionBean.fromJson(item),
-                            callback: () {
-                              checkTimePeriodOptions(i);
-                              setState(() {});
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                checkTimePeriodOptions(i);
+                              });
                             },
+                            child: Stack(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 20),
+                                  child: Text(
+                                    '${item['text']}',
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: item['is_checked'] == true
+                                            ? Colors.black
+                                            : Color(0xFF333333)),
+                                  ),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(2)),
+                                      border: Border.all(
+                                          width: 1,
+                                          color: item['is_checked']
+                                              ? Colors.black
+                                              : Color(0xFF979797))),
+                                ),
+                                Positioned(
+                                  child: item['is_checked']
+                                      ? TriAngle()
+                                      : Container(),
+                                  bottom: 0,
+                                  right: 0,
+                                )
+                              ],
+                            ),
                           ),
                         ),
                         // child: buildButtonChip(item['text'], () {
@@ -260,13 +294,45 @@ class _OrderPageState extends State<OrderPage>
                       return Container(
                         margin:
                             EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                        child: ZYActionChip(
-                          showNumber: true,
-                          bean: ActionBean.fromJson(item),
-                          callback: () {
-                            checkStatusOptions(i);
-                            setState(() {});
+                        child: GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              checkStatusOptions(i);
+                            });
                           },
+                          child: Stack(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 20),
+                                child: Text(
+                                  '${item['text']}(${item['count']})',
+                                  textAlign: TextAlign.center,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: item['is_checked'] == true
+                                          ? Colors.black
+                                          : Color(0xFF333333)),
+                                ),
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(2)),
+                                    border: Border.all(
+                                        width: 1,
+                                        color: item['is_checked']
+                                            ? Colors.black
+                                            : Color(0xFF979797))),
+                              ),
+                              Positioned(
+                                child: item['is_checked']
+                                    ? TriAngle()
+                                    : Container(),
+                                bottom: 0,
+                                right: 0,
+                              )
+                            ],
+                          ),
                         ),
                       );
                       // return buildButtonChip('${item['text']}(${item['count']})',
@@ -355,7 +421,10 @@ class _OrderPageState extends State<OrderPage>
 
   void updateTabNums() {
     Map<String, dynamic> args = formatArgs();
-
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     OTPService.orderList(context, params: args)
         .then((OrderModelListResp response) {
       nums = response?.data?.statusNum?.values?.toList();
@@ -369,6 +438,7 @@ class _OrderPageState extends State<OrderPage>
 
       }
     }).catchError((err) {
+      hasError = true;
       return err;
     }).whenComplete(() {
       if (mounted) {
@@ -461,7 +531,10 @@ class _OrderPageState extends State<OrderPage>
 
   void fetchData() {
     Map<String, dynamic> args = formatArgs();
-
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     OTPService.orderList(context, params: args)
         .then((OrderModelListResp response) {
       nums = response?.data?.statusNum?.values?.toList();
@@ -475,6 +548,7 @@ class _OrderPageState extends State<OrderPage>
         // item['text'] = '${item['text']}(${item['count']})';
       }
     }).catchError((err) {
+      hasError = true;
       return err;
     }).whenComplete(() {
       if (mounted) {
@@ -637,18 +711,28 @@ class _OrderPageState extends State<OrderPage>
             ),
             preferredSize: Size.fromHeight(20)),
       ),
-      body: TabBarView(
-          controller: _tabController,
-          children: List.generate(tabs.length ?? 0, (int i) {
-            params[i]['order_time'] = currentTimePeriodOption['index'];
+      body: isLoading
+          ? LoadingCircle()
+          : hasError
+              ? Container(
+                  height: double.infinity,
+                  color: Theme.of(context).primaryColor,
+                  child: NetworkErrorWidget(
+                    callback: fetchData,
+                  ),
+                )
+              : TabBarView(
+                  controller: _tabController,
+                  children: List.generate(tabs.length ?? 0, (int i) {
+                    params[i]['order_time'] = currentTimePeriodOption['index'];
 
-            return OrderTabView(
-              tab: i,
-              clientId: widget.clientId,
-              params: params[i],
-              models: modelList[i],
-            );
-          })),
+                    return OrderTabView(
+                      tab: i,
+                      clientId: widget.clientId,
+                      params: params[i],
+                      models: modelList[i],
+                    );
+                  })),
     );
     // return Stack(
     //   children: <Widget>[
@@ -839,6 +923,7 @@ class _OrderTabViewState extends State<OrderTabView>
   RefreshController _refreshController;
   bool isRefresh = true;
   bool isLoading = true;
+  bool hasError = false;
   OrderModelDataWrapper wrapper;
 
   @override
@@ -885,7 +970,7 @@ class _OrderTabViewState extends State<OrderTabView>
 
   void requestData(Map<String, dynamic> args) {
     params.addAll({'client_uid': clientId});
-    print(params);
+
     OTPService.orderList(context, params: params)
         .then((OrderModelListResp response) {
       wrapper = response?.data;

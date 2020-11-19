@@ -31,7 +31,6 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
   int get clientId => widget.clientId;
   TabController tabController;
 
-  bool isLoading = true;
   List<List<CartModel>> modelsList;
   List<CartModel> get models => cartProvider?.models;
 
@@ -110,7 +109,8 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                         (BuildContext context, List<CartCategory> list, _) {
                       return Container(
                         width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.symmetric(horizontal: 10),
                         child: TabBar(
                             controller: tabController,
                             isScrollable: true,
@@ -124,7 +124,7 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500),
                             labelPadding:
-                                EdgeInsets.only(bottom: 5, left: 5, right: 5),
+                                EdgeInsets.only(bottom: 5, left: 10, right: 10),
                             tabs: list
                                 ?.map((bean) =>
                                     Text('${bean?.name}(${bean?.count})'))
@@ -188,25 +188,29 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
                                   isActive: provider?.hasSelectedModels,
                                 )
                               : ZYRaisedButton(
-                                  '结算(${provider?.totalCount ?? 0})', () {
-                                  TargetClient().clientId = provider?.clientId;
+                                  '结算(${provider?.totalCount ?? 0})',
+                                  () {
+                                    TargetClient().clientId =
+                                        provider?.clientId;
 
-                                  Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                      builder: (BuildContext context) {
-                                        return CommitOrderPage(
-                                          params: {
-                                            'data': provider?.checkedModels
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  );
-                                  // RouteHandler.goCommitOrderPage(context,
-                                  //     params: jsonEncode(
-                                  //         {'data': provider?.checkedModels}));
-                                }),
+                                    Navigator.push(
+                                      context,
+                                      CupertinoPageRoute(
+                                        builder: (BuildContext context) {
+                                          return CommitOrderPage(
+                                            params: {
+                                              'data': provider?.checkedModels
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    );
+                                    // RouteHandler.goCommitOrderPage(context,
+                                    //     params: jsonEncode(
+                                    //         {'data': provider?.checkedModels}));
+                                  },
+                                  verticalPadding: 8,
+                                ),
                         ),
                       ],
                     ),

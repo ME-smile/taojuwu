@@ -99,9 +99,14 @@ class MeasureOrderHasSelectedProductCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ZYNetImage(
-            imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+          Container(
             height: UIKit.height(180),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: ZYNetImage(
+                imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+              ),
+            ),
           ),
           Expanded(
               child: Container(
@@ -154,9 +159,14 @@ class MeasureOrderHasNotAuditCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ZYNetImage(
-            imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+          Container(
             height: UIKit.height(180),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: ZYNetImage(
+                imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+              ),
+            ),
           ),
           Expanded(
               child: Container(
@@ -206,9 +216,14 @@ class MeasureOrderHasNotSelectedProductCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ZYNetImage(
-            imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+          Container(
             height: UIKit.height(180),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: ZYNetImage(
+                imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+              ),
+            ),
           ),
           Expanded(
               child: Container(
@@ -260,9 +275,14 @@ class MeasureOrderBeforePayCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          ZYNetImage(
-            imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+          Container(
             height: UIKit.height(180),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: ZYNetImage(
+                imgPath: UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+              ),
+            ),
           ),
           Expanded(
               child: Container(

@@ -22,7 +22,7 @@
 
 // class _CurtainMallPageState extends State<CurtainMallPage>
 //     with SingleTickerProviderStateMixin {
-//   List<String> tabs = ['窗帘', '床品', '抱枕', '沙发', '饰品'];
+//   List<String> tabs = ['窗帘', '床品', '抱枕', '沙发', '搭毯'];
 
 //   TabController _tabController;
 

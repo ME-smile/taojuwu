@@ -79,7 +79,10 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
     TextTheme textTheme = themeData.textTheme;
 
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: UIKit.width(40)),
@@ -98,42 +101,72 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                     hintText: '请输入手机号',
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Color(0xFFC7C8CB), width: .5)),
                     enabledBorder: UnderlineInputBorder(
                         borderSide:
-                            BorderSide(color: Color(0xFFC7C8CB), width: .1)),
+                            BorderSide(color: Color(0xFFC7C8CB), width: .5)),
                     icon: Container(
-                      child: Text('+86'),
+                      child: Text(
+                        '+86',
+                        style: TextStyle(fontSize: 14),
+                      ),
                       padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                       decoration: BoxDecoration(
                           border: Border(
                               bottom: BorderSide(
-                                  color: themeData.dividerColor, width: .5))
+                                  color: Color(0xFFC7C8CB), width: .5))
                           // border: Border.fromBorderSide(BorderSide(color: ))
                           ),
                     )),
               ),
               VSpacing(10),
-              TextField(
-                controller: smsInput,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  hintText: '请输入验证码',
-                  suffixIcon: SendSmsButton(
-                    telPhoneController: telInput,
-                    callback: sendSms,
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Color(0xFFC7C8CB), width: .8)),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.only(top: 16),
+                child: Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    TextField(
+                      controller: smsInput,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        hintText: '请输入验证码',
+                        // suffixIcon: SendSmsButton(
+                        //   telPhoneController: telInput,
+                        //   callback: sendSms,
+                        // ),
+                        focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color(0xFFC7C8CB), width: .8)),
+                        enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color(0xFFC7C8CB), width: .8)),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: -2,
+                      child: SendSmsButton(
+                        telPhoneController: telInput,
+                        callback: sendSms,
+                      ),
+                    )
+                  ],
                 ),
               ),
               ValueListenableBuilder(
                 valueListenable: canForward,
                 builder: (BuildContext context, bool flag, Widget child) {
                   return Container(
-                      margin: EdgeInsets.only(top: 16),
-                      child: ZYSubmitButton('下一步', flag ? validateSms : null));
+                      margin: EdgeInsets.only(top: 38),
+                      child: ZYSubmitButton(
+                        '下一步',
+                        flag ? validateSms : null,
+                        horizontalMargin: 0,
+                      ));
                 },
               )
             ],

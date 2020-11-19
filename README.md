@@ -2,7 +2,7 @@
  * @Description: //TODO
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-11-09 17:43:43
+ * @LastEditTime: 2020-11-19 17:32:39
 -->
 # taojuwu
 
@@ -33,3 +33,4 @@ flutter build apk --target-platform android-arm,android-arm64,android-x64 --spli
 
 
 sudo gem install cocoapods --pre -n /usr/local/bin
+flutter packages pub global run webdev serve taojuwu:8080

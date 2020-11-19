@@ -21,6 +21,8 @@ import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/copy_button.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
+import 'package:taojuwu/widgets/user_choose_button.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 
@@ -51,6 +53,10 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
   OrderDetailProvider orderDetailProvider;
 
   Future fetchData() {
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     String status = orderStatus;
     if (status.contains(',')) {
       status = '3';
@@ -60,16 +66,19 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
     return OTPService.orderDetail(context,
             params: {'order_id': id, 'order_status': status})
         .then((OrderDerailModelResp response) {
+      OrderDetailModelWrppaer wrppaer = response?.data;
+      model = wrppaer?.orderDetailModel;
+      orderDetailProvider.updateModel(model);
+      saveInfoForTargetClient(model);
+    }).catchError((err) {
+      hasError = true;
+    }).whenComplete(() {
       if (mounted) {
         setState(() {
           isLoading = false;
-          OrderDetailModelWrppaer wrppaer = response?.data;
-          model = wrppaer?.orderDetailModel;
-          orderDetailProvider.updateModel(model);
-          saveInfoForTargetClient(model);
         });
       }
-    }).catchError((err) => err);
+    });
   }
 
   @override
@@ -95,6 +104,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
   }
 
   bool isLoading = true;
+  bool hasError = false;
   OrderDetailModel model;
 
   bool isShowDialog(String title) {
@@ -756,72 +766,137 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
 
     return isLoading
         ? LoadingCircle()
-        : ChangeNotifierProvider<OrderDetailProvider>(
-            create: (_) => orderDetailProvider,
-            child: WillPopScope(
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: Text('订单详情'),
-                    centerTitle: true,
-                    // actions: <Widget>[
-                    //   FlatButton(
-                    //       onPressed: () {
-                    //         RouteHandler.goLogisticsPage(context, id);
-                    //       },
-                    //       child: Text('物流'))
-                    // ],
-                  ),
-                  body: SingleChildScrollView(
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          padding:
-                              EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                          height: UIKit.height(200),
-                          color: Color(0xFF18181A),
-                          child: Text.rich(TextSpan(
-                              text: titleName,
-                              style: accentTextTheme.headline6.copyWith(
-                                  fontSize: UIKit.sp(28),
-                                  fontWeight: FontWeight.bold),
-                              children: [
-                                TextSpan(
-                                  text: titleDesc,
-                                  style: accentTextTheme.bodyText2
-                                      .copyWith(color: Colors.white),
+        : hasError
+            ? Scaffold(
+                appBar: AppBar(),
+                body: Container(
+                    height: double.maxFinite,
+                    color: Theme.of(context).primaryColor,
+                    child: NetworkErrorWidget(callback: fetchData)),
+              )
+            : ChangeNotifierProvider<OrderDetailProvider>(
+                create: (_) => orderDetailProvider,
+                child: WillPopScope(
+                    child: Scaffold(
+                      appBar: AppBar(
+                        title: Text('订单详情'),
+                        centerTitle: true,
+                        actions: [
+                          AbsorbPointer(
+                            child: Opacity(
+                              opacity: 0,
+                              child: UserChooseButton(),
+                            ),
+                          )
+                        ],
+                        // actions: <Widget>[
+                        //   FlatButton(
+                        //       onPressed: () {
+                        //         RouteHandler.goLogisticsPage(context, id);
+                        //       },
+                        //       child: Text('物流'))
+                        // ],
+                      ),
+                      body: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: UIKit.width(20)),
+                              height: UIKit.height(200),
+                              color: Color(0xFF18181A),
+                              child: Text.rich(TextSpan(
+                                  text: titleName,
+                                  style: accentTextTheme.headline6.copyWith(
+                                      fontSize: UIKit.sp(28),
+                                      fontWeight: FontWeight.bold),
+                                  children: [
+                                    TextSpan(
+                                      text: titleDesc,
+                                      style: accentTextTheme.bodyText2
+                                          .copyWith(color: Colors.white),
+                                    ),
+                                    // TextSpan(
+                                    //   text: model?.isWaitingToInstall == true
+                                    //       ? model?.installTime ?? ''
+                                    //       : '',
+                                    //   style: accentTextTheme.bodyText2
+                                    //       .copyWith(color: Colors.white),
+                                    // ),
+                                    TextSpan(
+                                        text: model?.autoSignTime,
+                                        style: accentTextTheme.bodyText2
+                                            .copyWith(
+                                                color: Color(0xFFD7D7D7))),
+                                  ])),
+                            ),
+                            Visibility(
+                              visible: model?.isExpressInfoVisible,
+                              child: InkWell(
+                                onTap: () {
+                                  RouteHandler.goLogisticsPage(context, id);
+                                },
+                                child: Container(
+                                  color: themeData.primaryColor,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: UIKit.width(20),
+                                      vertical: UIKit.height(24)),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            right: UIKit.width(20)),
+                                        child: ZYAssetImage(
+                                          'ship@2x.png',
+                                        ),
+                                      ),
+                                      Expanded(
+                                          child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
+                                            '${model?.acceptStation ?? ''}',
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          VSpacing(10),
+                                          Text(
+                                            model?.acceptTime ?? '',
+                                            style: textTheme.caption,
+                                          ),
+                                        ],
+                                      )),
+                                      Container(
+                                        child: Icon(ZYIcon.next),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                                // TextSpan(
-                                //   text: model?.isWaitingToInstall == true
-                                //       ? model?.installTime ?? ''
-                                //       : '',
-                                //   style: accentTextTheme.bodyText2
-                                //       .copyWith(color: Colors.white),
-                                // ),
-                                TextSpan(
-                                    text: model?.autoSignTime,
-                                    style: accentTextTheme.bodyText2
-                                        .copyWith(color: Color(0xFFD7D7D7))),
-                              ])),
-                        ),
-                        Visibility(
-                          visible: model?.isExpressInfoVisible,
-                          child: InkWell(
-                            onTap: () {
-                              RouteHandler.goLogisticsPage(context, id);
-                            },
-                            child: Container(
+                              ),
+                            ),
+                            Divider(
+                              indent: UIKit.width(20),
+                              endIndent: UIKit.width(20),
+                              thickness: .5,
+                              height: .5,
+                            ),
+                            Container(
                               color: themeData.primaryColor,
                               padding: EdgeInsets.symmetric(
                                   horizontal: UIKit.width(20),
-                                  vertical: UIKit.height(24)),
+                                  vertical: UIKit.height(20)),
                               child: Row(
                                 children: <Widget>[
                                   Padding(
                                     padding:
                                         EdgeInsets.only(right: UIKit.width(20)),
-                                    child: ZYAssetImage(
-                                      'ship@2x.png',
+                                    child: Icon(
+                                      ZYIcon.add,
+                                      color: const Color(0xFF171717),
                                     ),
                                   ),
                                   Expanded(
@@ -831,164 +906,119 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(
-                                        '${model?.acceptStation ?? ''}',
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      VSpacing(10),
-                                      Text(
-                                        model?.acceptTime ?? '',
-                                        style: textTheme.caption,
-                                      ),
+                                          '收货人: ${model?.clientName ?? ''}  ${model?.receiverMobile ?? ''}'),
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 4),
+                                        child: Text(
+                                          model?.address ?? '',
+                                          style: textTheme.caption,
+                                          maxLines: 2,
+                                        ),
+                                      )
                                     ],
                                   )),
-                                  Container(
-                                    child: Icon(ZYIcon.next),
-                                  )
                                 ],
                               ),
                             ),
-                          ),
-                        ),
-                        Divider(
-                          indent: UIKit.width(20),
-                          endIndent: UIKit.width(20),
-                          thickness: .5,
-                          height: .5,
-                        ),
-                        Container(
-                          color: themeData.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: UIKit.width(20),
-                              vertical: UIKit.height(20)),
-                          child: Row(
-                            children: <Widget>[
-                              Padding(
-                                padding:
-                                    EdgeInsets.only(right: UIKit.width(20)),
-                                child: Icon(
-                                  ZYIcon.add,
-                                  color: const Color(0xFF171717),
-                                ),
+                            Divider(
+                              indent: UIKit.width(20),
+                              endIndent: UIKit.width(20),
+                              thickness: .5,
+                              height: .5,
+                            ),
+                            Visibility(
+                              visible: model?.hasCustomizedProduct,
+                              child: Container(
+                                color: themeData.primaryColor,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: UIKit.width(20),
+                                    vertical: UIKit.height(20)),
+                                child: buildinstallInfoTip(model),
                               ),
-                              Expanded(
-                                  child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                            ),
+                            VSpacing(20),
+                            _orderGoodsDetail(context, model),
+                            VSpacing(20),
+                            model?.isShowManuscript == true
+                                ? _measureManuscript(context, model)
+                                : Container(),
+                            VSpacing(20),
+                            Container(
+                              color: themeData.primaryColor,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: UIKit.width(20),
+                                  vertical: UIKit.height(20)),
+                              alignment: Alignment.centerLeft,
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(
-                                      '收货人: ${model?.clientName ?? ''}  ${model?.receiverMobile ?? ''}'),
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 4),
-                                    child: Text(
-                                      model?.address ?? '',
-                                      style: textTheme.caption,
-                                      maxLines: 2,
-                                    ),
-                                  )
-                                ],
-                              )),
-                            ],
-                          ),
-                        ),
-                        Divider(
-                          indent: UIKit.width(20),
-                          endIndent: UIKit.width(20),
-                          thickness: .5,
-                          height: .5,
-                        ),
-                        Visibility(
-                          visible: model?.hasCustomizedProduct,
-                          child: Container(
-                            color: themeData.primaryColor,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: UIKit.width(20),
-                                vertical: UIKit.height(20)),
-                            child: buildinstallInfoTip(model),
-                          ),
-                        ),
-                        VSpacing(20),
-                        _orderGoodsDetail(context, model),
-                        VSpacing(20),
-                        model?.isShowManuscript == true
-                            ? _measureManuscript(context, model)
-                            : Container(),
-                        VSpacing(20),
-                        Container(
-                          color: themeData.primaryColor,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: UIKit.width(20),
-                              vertical: UIKit.height(20)),
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Row(
-                                children: <Widget>[
-                                  Container(
-                                    width: 2,
-                                    height: 16,
-                                    color: Colors.black,
-                                    margin:
-                                        EdgeInsets.only(right: UIKit.width(10)),
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        width: 2,
+                                        height: 16,
+                                        color: Colors.black,
+                                        margin: EdgeInsets.only(
+                                            right: UIKit.width(10)),
+                                      ),
+                                      Text(
+                                        '订单信息',
+                                        style:
+                                            TextStyle(fontSize: UIKit.sp(32)),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    '订单信息',
-                                    style: TextStyle(fontSize: UIKit.sp(32)),
+                                  VSpacing(20),
+                                  buildOrderInfoBar(
+                                      context,
+                                      '订单备注',
+                                      model?.orderRemark?.isEmpty == true
+                                          ? '无备注'
+                                          : model?.orderRemark),
+                                  buildOrderInfoBar(
+                                      context, '订单编号', model?.orderNo ?? '',
+                                      showCopyButton: true),
+                                  buildOrderInfoBar(context, '创建时间',
+                                      getTimeStr(model?.createTime)),
+                                  Offstage(
+                                    offstage: model?.hasMeasured == false,
+                                    child: buildOrderInfoBar(context, '测量时间',
+                                        getTimeStr(model?.realityMeasureTime)),
                                   ),
+                                  Offstage(
+                                    offstage: model?.hasFinished == false,
+                                    child: buildOrderInfoBar(context, '安装时间',
+                                        getTimeStr(model?.realityInstallTime)),
+                                  ),
+                                  // Offstage(
+                                  //   offstage: model?.hasInstalled == false,
+                                  //   child: buildOrderInfoBar(context, '安装时间',
+                                  //       getTimeStr(model?.realityInstallTime)),
+                                  // ),
+                                  buildOrderInfoBar(
+                                      context, '下单人', model?.userName ?? ''),
+                                  buildOrderInfoBar(
+                                      context, '客户名', model?.clientName ?? ''),
+                                  buildOrderInfoBar(
+                                      context, '下单门店', model?.shopName ?? ''),
                                 ],
                               ),
-                              VSpacing(20),
-                              buildOrderInfoBar(
-                                  context,
-                                  '订单备注',
-                                  model?.orderRemark?.isEmpty == true
-                                      ? '无备注'
-                                      : model?.orderRemark),
-                              buildOrderInfoBar(
-                                  context, '订单编号', model?.orderNo ?? '',
-                                  showCopyButton: true),
-                              buildOrderInfoBar(context, '创建时间',
-                                  getTimeStr(model?.createTime)),
-                              Offstage(
-                                offstage: model?.hasMeasured == false,
-                                child: buildOrderInfoBar(context, '测量时间',
-                                    getTimeStr(model?.realityMeasureTime)),
-                              ),
-                              Offstage(
-                                offstage: model?.hasFinished == false,
-                                child: buildOrderInfoBar(context, '安装时间',
-                                    getTimeStr(model?.realityInstallTime)),
-                              ),
-                              // Offstage(
-                              //   offstage: model?.hasInstalled == false,
-                              //   child: buildOrderInfoBar(context, '安装时间',
-                              //       getTimeStr(model?.realityInstallTime)),
-                              // ),
-                              buildOrderInfoBar(
-                                  context, '下单人', model?.userName ?? ''),
-                              buildOrderInfoBar(
-                                  context, '客户名', model?.clientName ?? ''),
-                              buildOrderInfoBar(
-                                  context, '下单门店', model?.shopName ?? ''),
-                            ],
-                          ),
+                            ),
+                            VSpacing(50)
+                          ],
                         ),
-                        VSpacing(50)
-                      ],
+                      ),
+                      bottomNavigationBar: BottomActionButtonBar(
+                        orderId: id,
+                        orderStatus: model?.orderStatus ?? 0,
+                      ),
                     ),
-                  ),
-                  bottomNavigationBar: BottomActionButtonBar(
-                    orderId: id,
-                    orderStatus: model?.orderStatus ?? 0,
-                  ),
-                ),
-                onWillPop: () async {
-                  Navigator.of(context).pop();
-                  TargetClient().clear();
-                  return false;
-                }),
-          );
+                    onWillPop: () async {
+                      Navigator.of(context).pop();
+                      TargetClient().clear();
+                      return false;
+                    }),
+              );
   }
 }
 

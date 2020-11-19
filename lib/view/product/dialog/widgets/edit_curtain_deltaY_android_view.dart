@@ -2,7 +2,7 @@
  * @Description: 修改窗帘离地距离对话框视图
  * @Author: iamsmiling
  * @Date: 2020-10-31 17:46:52
- * @LastEditTime: 2020-11-02 17:37:18
+ * @LastEditTime: 2020-11-19 13:35:48
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
@@ -30,8 +30,9 @@ class _EditCurtainDeltaYAndroidViewState
   @override
   void initState() {
     controller = TextEditingController(
-        text:
-            measureData?.deltaYCM != null ? '${measureData?.deltaYCM}' : null);
+        text: CommonKit.isNullOrEmpty(measureData?.deltaYCM)
+            ? null
+            : '${measureData?.deltaYCM}');
     super.initState();
   }
 
@@ -81,8 +82,9 @@ class _EditCurtainDeltaYAndroidViewState
               ),
               ZYRaisedButton('确定', () {
                 // saveSize(goodsProvider);
-                measureData?.deltaYCM =
-                    CommonKit.parseDouble(controller?.text, defaultVal: 0.0);
+                print(controller?.text);
+                measureData?.deltaYCM = CommonKit.parseDouble(controller?.text);
+
                 // goodsProvider?.dy = tmp;
                 Navigator.of(context).pop();
               })

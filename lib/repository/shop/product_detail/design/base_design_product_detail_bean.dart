@@ -2,11 +2,11 @@
  * @Description: 软装方案 场景设计商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:22:16
- * @LastEditTime: 2020-11-13 09:36:35
+ * @LastEditTime: 2020-11-17 17:55:07
  */
 
 import 'dart:convert';
-
+import 'dart:developer' as developer;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
@@ -29,7 +29,9 @@ abstract class BaseDesignProductDetailBean
     name = json['name'];
     designName = json['scenes_name'];
     picture = json['image'];
-    bigPicture = json['image_big'];
+    bigPicture = CommonKit.isNullOrEmpty(json['image_big'])
+        ? json['image']
+        : json['image_big'];
     room = json['space'];
     style = json['style'];
     desc = json['scenes_detail'];
@@ -75,14 +77,16 @@ abstract class BaseDesignProductDetailBean
     // LogUtil.e({'client_uid': clientId, 'cart_list': jsonEncode(cartArgs)});
     // print({'client_uid': clientId, 'cart_list': cartArgs});
     // LogUtil.e({'client_uid': clientId, 'cart_list': cartArgs});
-    print({'client_uid': clientId, 'cart_list': cartArgs});
+
+    developer.log({'client_uid': clientId, 'cart_list': cartArgs}?.toString());
+
     return OTPService.addCartList(
             {'client_uid': clientId, 'cart_list': jsonEncode(cartArgs)})
         .then((ZYResponse response) {
       if (response?.valid == true) {
-        ToastKit.showInfo(response?.message);
         Application.eventBus.fire(AddToCartEvent(response?.data));
-      } else {}
+      }
+      ToastKit.showInfo(response?.message);
 
       // ToastKit.showInfo(response?.data);
 
@@ -92,12 +96,13 @@ abstract class BaseDesignProductDetailBean
 
   @override
   Future buy(BuildContext context, {Function callback}) {
-    _getMeasureIds(context).then((_) {
+    return _getMeasureIds(context).then((_) {
       super.buy(context);
     }).catchError((err) {
       ToastKit.showErrorInfo('网络请求失败,请重试');
     });
-    return super.buy(context);
+
+    // return super.buy(context);
   }
 
   Future _getMeasureIds(BuildContext context) async {
@@ -125,12 +130,12 @@ abstract class BaseDesignProductDetailBean
                 'cart_tag': 'app',
                 'cart_detail': jsonEncode({
                   'goods_name': e?.goodsName,
-                  'sku_id': e?.skuId,
+                  'sku_id': e?.skuId ?? '',
                   'price': e?.price,
                   'num': e?.count,
                   'sku_name': e?.skuName ?? '',
                   'goods_id': e?.goodsId,
-                  'picture': e?.picId
+                  'picture': e?.picId ?? ''
                 }),
                 'estimated_price': e?.totalPrice,
                 'wc_attr': jsonEncode(e?.attrArgs),

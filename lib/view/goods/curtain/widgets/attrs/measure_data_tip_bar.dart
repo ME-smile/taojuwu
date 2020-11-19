@@ -2,7 +2,7 @@
  * @Description: 属性选择上方的提示文字
  * @Author: iamsmiling
  * @Date: 2020-09-29 13:07:04
- * @LastEditTime: 2020-10-15 14:23:14
+ * @LastEditTime: 2020-11-18 14:41:35
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,16 +27,22 @@ class MeasureDataTipBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<BaseGoodsViewModel>(
         builder: (BuildContext context, BaseGoodsViewModel viewModel, _) {
-      return Container(
-          margin: EdgeInsets.only(top: 16),
-          child: Column(
-            children: [
-              (viewModel as CurtainViewModel)?.isMeasureOrder == true
-                  ? _buildMeasureOrderTip(context)
-                  : _buildNotMeasureOrderTip(context, viewModel),
-              Divider()
-            ],
-          ));
+      return GestureDetector(
+        onTap: () {
+          CurtainViewModel viewModel = Provider.of(context);
+          _jump(context, viewModel);
+        },
+        child: Container(
+            margin: EdgeInsets.only(top: 16),
+            child: Column(
+              children: [
+                (viewModel as CurtainViewModel)?.isMeasureOrder == true
+                    ? _buildMeasureOrderTip(context)
+                    : _buildNotMeasureOrderTip(context, viewModel),
+                Divider()
+              ],
+            )),
+      );
     });
   }
 
@@ -70,7 +76,7 @@ class MeasureDataTipBar extends StatelessWidget {
                 );
               },
             ),
-            Spacer(),
+            // Spacer(),
             Selector<CurtainViewModel, String>(
               selector: (BuildContext context, CurtainViewModel viewModel) =>
                   viewModel.measureDataStr,

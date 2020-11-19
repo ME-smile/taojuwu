@@ -2,7 +2,7 @@
  * @Description: 窗纱商品详情页面
  * @Author: iamsmiling
  * @Date: 2020-10-31 15:35:02
- * @LastEditTime: 2020-11-16 09:57:39
+ * @LastEditTime: 2020-11-19 18:57:46
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +19,7 @@ import 'package:taojuwu/view/product/widgets/section/relative_product_section_vi
 import 'package:taojuwu/view/product/widgets/section/scene_design_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/soft_design_product_section_view.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
 
 class GauzeCurtainProductDetailPage extends BaseProductDetailPage {
   final int id;
@@ -33,6 +34,10 @@ class _GauzeCurtainProductDetailPageState
     extends BaseCurtainProductDetailState<GauzeCurtainProductDetailPage> {
   // 发起请求
   Future sendRequest() {
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     return fetchData(context, widget.goodsId).whenComplete(() {
       // 初始化商品属性
       (productDetailBean as GauzeCurtainProductDetailBean)?.fetchAttrsData(() {
@@ -45,8 +50,11 @@ class _GauzeCurtainProductDetailPageState
           .fetchRoomAttrData()
           .whenComplete(() {
         copyData();
+        updateMeasureData();
       });
-    }).catchError((err) => err);
+    }).catchError((err) {
+      hasError = true;
+    });
   }
 
   @override
@@ -65,50 +73,59 @@ class _GauzeCurtainProductDetailPageState
         },
         child: isLoading
             ? LoadingCircle()
-            : Scaffold(
-                backgroundColor: const Color(0xFFF8F8F8),
-                body: NestedScrollView(
-                    controller: scrollController,
-                    headerSliverBuilder:
-                        (BuildContext context, bool innerBoxIsScrolled) {
-                      return <Widget>[ProductDetailHeader(productDetailBean)];
-                    },
-                    body: CustomScrollView(
-                      shrinkWrap: true,
-                      slivers: [
-                        ProductDetailProfile(productDetailBean),
-                        GauzeCurtainProductAttrsSectionView(productDetailBean),
+            : hasError
+                ? Scaffold(
+                    appBar: AppBar(),
+                    body: Container(
+                        height: double.maxFinite,
+                        color: Theme.of(context).primaryColor,
+                        child: NetworkErrorWidget(callback: sendRequest)),
+                  )
+                : Scaffold(
+                    backgroundColor: const Color(0xFFF8F8F8),
+                    body: NestedScrollView(
+                        controller: scrollController,
+                        headerSliverBuilder:
+                            (BuildContext context, bool innerBoxIsScrolled) {
+                          return <Widget>[
+                            ProductDetailHeader(productDetailBean)
+                          ];
+                        },
+                        body: CustomScrollView(
+                          shrinkWrap: true,
+                          slivers: [
+                            ProductDetailProfile(productDetailBean),
+                            GauzeCurtainProductAttrsSectionView(
+                                productDetailBean),
 
-                        // // RollingCurtainProductAttrsSectionView(ProductDetailBean),
-                        // // RollingCurtainProductAttrSectionView(ProductDetailBean),
-                        RelativeProductSectionView(relativeProductList),
-                        SliverToBoxAdapter(
-                          child: ProductDetailImgSectionView(
-                              productDetailBean?.detailImgList),
-                        ),
-                        // SliverToBoxAdapter(
-                        //   child: SceneDesignProductSectionView(
-                        //       sceneDesignProductList),
-                        // ),
-                        // SliverToBoxAdapter(
-                        //   child: SoftDesignProductSectionView(
-                        //     softDesignProductList,
-                        //     goodsId: productDetailBean?.goodsId,
-                        //   ),
-                        // ),
+                            // // RollingCurtainProductAttrsSectionView(ProductDetailBean),
+                            // // RollingCurtainProductAttrSectionView(ProductDetailBean),
+                            RelativeProductSectionView(relativeProductList),
+                            SliverToBoxAdapter(
+                              child: ProductDetailImgSectionView(
+                                  productDetailBean?.detailImgList),
+                            ),
+                            SliverToBoxAdapter(
+                              child: SceneDesignProductSectionView(
+                                  sceneDesignProductList),
+                            ),
+                            SliverToBoxAdapter(
+                              child: SoftDesignProductSectionView(
+                                softDesignProductList,
+                                goodsId: productDetailBean?.goodsId,
+                              ),
+                            ),
 
-                        // // ProductHtmlDescSectionView(
-                        // //     productDetailBean?.description),
-                        SliverToBoxAdapter(
-                          child: RecommendedProductSectionView(
-                              recommendProductList),
-                        ),
-                      ],
-                    )),
-                bottomNavigationBar: ProductDeatilFooter(
-                  productDetailBean,
-                  callback: scrollToTop,
-                ),
-              ));
+                            SliverToBoxAdapter(
+                              child: RecommendedProductSectionView(
+                                  recommendProductList),
+                            ),
+                          ],
+                        )),
+                    bottomNavigationBar: ProductDeatilFooter(
+                      productDetailBean,
+                      callback: scrollToTop,
+                    ),
+                  ));
   }
 }

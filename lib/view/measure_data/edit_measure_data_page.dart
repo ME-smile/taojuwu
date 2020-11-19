@@ -2,7 +2,7 @@
  * @Description: 测装数据填写页面
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-10 13:30:16
+ * @LastEditTime: 2020-11-18 16:32:58
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +63,7 @@ class _EditMeasureDataPageState extends State<EditMeasureDataPage> {
             : '${bean?.heightCM}');
 
     deltaYController = TextEditingController(
-        text: CommonKit.isNullOrEmpty(bean?.widthCM)
+        text: CommonKit.isNullOrEmpty(bean?.deltaYCM)
             ? null
             : '${bean?.deltaYCM}');
     node1 = FocusNode();
@@ -129,98 +129,108 @@ class _EditMeasureDataPageState extends State<EditMeasureDataPage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus.unfocus(),
-      child: Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
-        resizeToAvoidBottomPadding: true,
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: Text('测装数据'),
-          centerTitle: true,
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  alignment: Alignment.center,
-                  child: ValueListenableBuilder(
+      child: WillPopScope(
+        onWillPop: () {
+          // bean?.setSize(widthCM, heightCM, deltaYCM);
+          // if (bean?.isValidSize == true) {
+          //   Navigator.of(context).pop();
+          // }
+          return Future.value(true);
+        },
+        child: Scaffold(
+          backgroundColor: Theme.of(context).primaryColor,
+          resizeToAvoidBottomPadding: true,
+          resizeToAvoidBottomInset: true,
+          appBar: AppBar(
+            title: Text('测装数据'),
+            centerTitle: true,
+          ),
+          body: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    child: ValueListenableBuilder(
+                      valueListenable: valueNotifier,
+                      builder: (BuildContext context, String mainImg, _) {
+                        return ZYAssetImage(
+                          mainImg,
+                          height: 240,
+                          width: 240,
+                        );
+                      },
+                    ),
+                  ),
+                  Divider(),
+                  AttrOptionsBar(bean, bean?.roomAttr),
+                  WindowStyleOptionBar(bean, notifier: valueNotifier),
+                  ValueListenableBuilder(
                     valueListenable: valueNotifier,
                     builder: (BuildContext context, String mainImg, _) {
-                      return ZYAssetImage(
-                        mainImg,
-                        height: 240,
-                        width: 240,
+                      return Column(
+                        children: [
+                          WindowInstallOptionBar(bean),
+                          WindowOpenOptionBar(bean),
+                        ],
                       );
                     },
                   ),
-                ),
-                Divider(),
-                AttrOptionsBar(bean, bean?.roomAttr),
-                WindowStyleOptionBar(bean, notifier: valueNotifier),
-                ValueListenableBuilder(
-                  valueListenable: valueNotifier,
-                  builder: (BuildContext context, String mainImg, _) {
-                    return Column(
-                      children: [
-                        WindowInstallOptionBar(bean),
-                        WindowOpenOptionBar(bean),
-                      ],
-                    );
-                  },
-                ),
-                Flexible(
-                  fit: FlexFit.loose,
-                  child: KeyboardActions(
-                    autoScroll: false,
-                    config: _buildConfig(context),
-                    child: Container(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedInputBox(
-                            focusNode: node1,
-                            hintText: '宽(cm):',
-                            controller: widthController,
-                          ),
-                          SizedInputBox(
-                            focusNode: node2,
-                            hintText: '高(cm):',
-                            controller: heightController,
-                          ),
-                          SizedInputBox(
-                            focusNode: node3,
-                            hintText: '离地距离:',
-                            controller: deltaYController,
-                          )
-                        ],
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: KeyboardActions(
+                      autoScroll: false,
+                      config: _buildConfig(context),
+                      child: Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            SizedInputBox(
+                              focusNode: node1,
+                              hintText: '宽(cm):',
+                              controller: widthController,
+                            ),
+                            SizedInputBox(
+                              focusNode: node2,
+                              hintText: '高(cm):',
+                              controller: heightController,
+                            ),
+                            SizedInputBox(
+                              focusNode: node3,
+                              hintText: '离地距离:',
+                              controller: deltaYController,
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                )
-                // SizeInputBox(viewModel.widthController, hintText: '宽(cm):'),
-                // SizeInputBox(viewModel.heightController, hintText: '高(cm):'),
-                // SizeInputBox(viewModel.deltaYController, hintText: '离地距离:'),
-              ],
+                  )
+                  // SizeInputBox(viewModel.widthController, hintText: '宽(cm):'),
+                  // SizeInputBox(viewModel.heightController, hintText: '高(cm):'),
+                  // SizeInputBox(viewModel.deltaYController, hintText: '离地距离:'),
+                ],
+              ),
             ),
           ),
-        ),
-        bottomNavigationBar: Container(
-          margin: EdgeInsets.symmetric(vertical: 8),
-          child: ZYSubmitButton('确认', () {
-            bean?.setSize(widthCM, heightCM, deltaYCM);
-            if (bean?.isValidSize == true) {
-              Navigator.of(context).pop();
-            }
+          bottomNavigationBar: Container(
+            margin: EdgeInsets.symmetric(vertical: 8),
+            child: ZYSubmitButton('确认', () {
+              bean?.setSize(widthCM, heightCM, deltaYCM);
+              if (bean?.isValidSize == true) {
+                bean?.measureData?.hasConfirmed = true;
+                Navigator.of(context).pop();
+              }
 
-            // print(viewModel.measureDataStr);
-            // viewModel.commitSize();
-            // Navigator.of(context).pop();
-            // if (!beforeSendData(provider)) return;
-            // Navigator.of(context).pop();
-            // provider?.hasSetSize = true;
-          }),
+              // print(viewModel.measureDataStr);
+              // viewModel.commitSize();
+              // Navigator.of(context).pop();
+              // if (!beforeSendData(provider)) return;
+              // Navigator.of(context).pop();
+              // provider?.hasSetSize = true;
+            }),
+          ),
         ),
       ),
     );

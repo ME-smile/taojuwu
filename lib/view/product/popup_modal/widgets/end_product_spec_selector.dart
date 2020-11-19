@@ -2,7 +2,7 @@
  * @Description: 成品规格选择
  * @Author: iamsmiling
  * @Date: 2020-10-28 16:15:09
- * @LastEditTime: 2020-11-13 16:08:22
+ * @LastEditTime: 2020-11-19 13:53:59
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/base/spec/product_spec_bean.dart';
@@ -29,8 +29,12 @@ class EndProductSpecSelector extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: Text('${item?.name ?? ''}'),
+                padding: EdgeInsets.symmetric(vertical: 12),
+                child: Text('${item?.name ?? ''}',
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: const Color(0xFF333333),
+                        fontWeight: FontWeight.w500)),
               ),
               Wrap(
                 runSpacing: 8,
@@ -43,8 +47,10 @@ class EndProductSpecSelector extends StatelessWidget {
                                 bean?.selectSpecOption(list[index], e);
                               });
                             },
-                            bean: ActionBean.fromJson(
-                                {'text': e?.name, 'is_checked': e?.isSelected}),
+                            bean: ActionBean.fromJson({
+                              'text': e?.name,
+                              'is_checked': e?.isSelected ?? false
+                            }),
                           ),
                         ))
                     ?.toList(),

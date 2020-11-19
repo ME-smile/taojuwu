@@ -2,12 +2,13 @@
  * @Description: 商品列表片
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:10:18
- * @LastEditTime: 2020-11-09 14:08:52
+ * @LastEditTime: 2020-11-17 10:00:10
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 
 import 'package:taojuwu/router/handlers.dart';
+
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
@@ -36,6 +37,7 @@ class ProductGridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
+
     // double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
@@ -63,7 +65,7 @@ class ProductGridCard extends StatelessWidget {
             // mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ZYNetImage(
-                imgPath: bean?.cover ?? '',
+                imgPath: bean?.cover,
                 // width: (width - 20) / 2,
                 // height: (width - 20) / 2,
                 fit: BoxFit.cover,
@@ -71,6 +73,7 @@ class ProductGridCard extends StatelessWidget {
                   jump(context, bean?.goodsType);
                 },
               ),
+              // Image.network(UIKit.getNetworkImgPath(bean?.cover)),
               Expanded(
                 child: Row(
                   children: <Widget>[
@@ -91,16 +94,18 @@ class ProductGridCard extends StatelessWidget {
                       text: '￥${bean?.price ?? "0.00"}',
                       style: TextStyle(fontSize: 16),
                       children: [
-                    TextSpan(
-                      text: '起',
-                      style: themeData.textTheme.caption.copyWith(fontSize: 12),
-                    ),
-                    TextSpan(
-                      text: ' ',
-                    ),
+                    TextSpan(text: '/米', style: TextStyle(fontSize: 12)),
+                    // TextSpan(
+                    //   text: '起',
+                    //   style: themeData.textTheme.caption.copyWith(fontSize: 12),
+                    // ),
+                    WidgetSpan(
+                        child: Container(
+                      width: 8,
+                    )),
                     TextSpan(
                         text: bean?.isPromotionalProduct == true
-                            ? '￥${bean?.marketPrice}起'
+                            ? '￥${bean?.marketPrice}'
                             : '',
                         style: themeData.textTheme.caption
                             .copyWith(decoration: TextDecoration.lineThrough)),

@@ -4,6 +4,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/export/export_pages.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/after_sale_service/after_sale_service_page.dart';
 
 import 'package:taojuwu/view/cart/cart_page.dart';
@@ -330,18 +331,23 @@ class RouteHandler {
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     String key = params['keyword']?.first;
     key = key ?? '';
+    int orderGoodsId =
+        CommonKit.parseInt(params['orderGoodsId']?.first, defaultVal: null);
     String keyword = FluroConvertUtils.fluroCnParamsDecode(key);
     return CurtainMallPage(
       keyword: keyword,
+      orderGoodsId: orderGoodsId,
     );
     // return;
   });
 
   static Future goCurtainMallPage(BuildContext context,
-      {String keyword: '', bool replace: false}) {
+      {String keyword: '', bool replace: false, int orderGoodsId}) {
     keyword = FluroConvertUtils.fluroCnParamsEncode(keyword);
-    TargetRoute.instance.setRoute('${Routes.curtainMall}?keyword=$keyword');
-    return _jumpTo(context, '${Routes.curtainMall}?keyword=$keyword',
+    TargetRoute.instance.setRoute(
+        '${Routes.curtainMall}?keyword=$keyword&orderGoodsId=$orderGoodsId');
+    return _jumpTo(context,
+        '${Routes.curtainMall}?keyword=$keyword&orderGoodsId=$orderGoodsId',
         maintainState: true, replace: replace);
   }
 
@@ -446,7 +452,7 @@ class RouteHandler {
 
   static Handler orderCommitSuccess = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    int clientId = int.parse(params['clientId']?.first) ?? -1;
+    int clientId = CommonKit.parseInt(params['clientId']?.first);
     int orderType = int.parse(params['orderType']?.first) ?? -1;
     int showTip = int.parse(params['showTip']?.first);
     return OrderCommitSuccessPage(

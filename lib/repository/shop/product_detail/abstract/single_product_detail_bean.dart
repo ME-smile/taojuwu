@@ -2,10 +2,9 @@
  * @Description: 单商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:06:20
- * @LastEditTime: 2020-11-16 12:58:40
+ * @LastEditTime: 2020-11-17 16:54:18
  */
 
-import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/fabric_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/gauze_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
@@ -20,12 +19,14 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
   String goodsName;
   int shopId;
   int isCollect;
+
   //0  成品  1 布艺帘  2卷帘
   int goodsType;
   double marketPrice;
   double price;
   List<String> goodsImgList;
   String skuName;
+  int defalutSkuId;
   String picture;
   int picId;
   int count = 1;
@@ -61,9 +62,13 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
         : goodsImgList?.first ??
             CommonKit.parseMap(json['picture_info'])
                 .getValueByKey('pic_cover_big');
+    Map<String, dynamic> sku = json['sku_list']?.first ?? {};
 
-    skuName = json['sku_name'];
-    picture = '${json['picture']}';
+    skuName = json['sku_name'] ?? sku['sku_name'];
+    defalutSkuId = sku['sku_id'];
+
+    picture = '${json['picture'] ?? sku['pic_id']}';
+
     detailImgList = CommonKit.parseList(json['new_description'])
         ?.map((e) => e?.toString())
         ?.toList();
@@ -72,9 +77,7 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
   }
 
   String get detailDescription => null;
-
-  int get skuId => null;
-
+  int get skuId => defalutSkuId;
   static SingleProductDetailBean instantiate(Map<String, dynamic> json) {
     int type = json['goods_type'];
 

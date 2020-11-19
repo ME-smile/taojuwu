@@ -38,7 +38,7 @@ class _BuyerInfoBarState extends State<BuyerInfoBar> {
           child: Row(
             children: <Widget>[
               CircleAvatar(
-                radius: UIKit.sp(60),
+                radius: 24,
                 child: Text(
                   '收',
                   style: accentTextTheme.headline6

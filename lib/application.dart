@@ -9,6 +9,7 @@ import 'package:install_plugin/install_plugin.dart';
 
 import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:taojuwu/utils/toast_kit.dart';
@@ -23,7 +24,8 @@ class Application {
   static String deviceInfo;
   static String versionInfo;
   static RouteObserver routeObserver = RouteObserver();
-  static EventBus eventBus = EventBus();
+  static EventBus eventBus =
+      EventBus.customController(BehaviorSubject(sync: true));
   static const String appName = '淘居屋商家';
   static const String apkName = '淘居屋商家.apk';
   static bool get hasAgree => sp?.getBool('hasAgree') ?? false;
@@ -199,5 +201,6 @@ class Application {
 
   static void clearSpCache() {
     sp.clear();
+    sp.setBool('hasAgree', true);
   }
 }

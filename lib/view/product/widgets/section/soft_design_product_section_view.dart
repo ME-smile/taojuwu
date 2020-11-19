@@ -2,7 +2,7 @@
  * @Description: 软装方案
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:50:07
- * @LastEditTime: 2020-11-04 09:47:48
+ * @LastEditTime: 2020-11-17 17:35:28
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +52,7 @@ class _SoftDesignProductSectionViewState
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

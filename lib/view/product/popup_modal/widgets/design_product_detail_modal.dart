@@ -2,7 +2,7 @@
  * @Description: 软装方案详情
  * @Author: iamsmiling
  * @Date: 2020-10-23 15:34:30
- * @LastEditTime: 2020-11-13 09:25:16
+ * @LastEditTime: 2020-11-19 15:00:11
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +21,7 @@ import 'package:taojuwu/view/product/popup_modal/widgets/end_product_attr_editab
 import 'package:taojuwu/view/product/popup_modal/widgets/rolling_curtain_product_attr_editable_card.dart';
 import 'package:taojuwu/view/product/widgets/base/purchase_action_bar.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
 
 import 'fabric_curtain_product_attr_editable_card.dart';
 import 'soft_design_modal_header.dart';
@@ -45,6 +46,7 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
         ProductAttrHolder {
   int get id => widget.id;
   bool isLoading = true;
+  bool hasError = false;
   SoftDesignProductDetailBean bean;
   List<SingleProductDetailBean> goodsList;
   @override
@@ -55,21 +57,24 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
   }
 
   void _fetchData() {
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     OTPService.softDetail(context, params: {'scenes_id': id})
         .then((SoftProjectDetailBeanResp response) {
-          if (response?.valid == true) {
-            bean = response?.data;
-            goodsList = bean?.goodsList;
-            bean?.client = client;
-          }
-        })
-        .catchError((err) => err)
-        .whenComplete(() {
-          setState(() {
-            isLoading = false;
-          });
-        })
-        .whenComplete(_copyData);
+      if (response?.valid == true) {
+        bean = response?.data;
+        goodsList = bean?.goodsList;
+        bean?.client = TargetClientHolder.targetClient;
+      }
+    }).catchError((err) {
+      hasError = true;
+    }).whenComplete(() {
+      setState(() {
+        isLoading = false;
+      });
+    }).whenComplete(_copyData);
   }
 
   _copyData() {
@@ -127,48 +132,51 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
       },
       child: isLoading
           ? LoadingCircle()
-          : Scaffold(
-              backgroundColor: Theme.of(context).primaryColor,
-              body: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    SoftDesignModalHeader(bean),
-                    Divider(
-                      thickness: 8,
-                      color: const Color(0xFFF8F8F8),
+          : hasError
+              ? NetworkErrorWidget(callback: _fetchData)
+              : Scaffold(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  body: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        SoftDesignModalHeader(bean),
+                        Divider(
+                          thickness: 8,
+                          color: const Color(0xFFF8F8F8),
+                        ),
+                        Expanded(
+                            child: ListView.separated(
+                                padding: EdgeInsets.all(0),
+                                shrinkWrap: true,
+                                itemBuilder: (BuildContext context, int i) {
+                                  SingleProductDetailBean item = goodsList[i];
+                                  return item.productType ==
+                                          ProductType.EndProductType
+                                      ? EndProductAttrEditableCard(item)
+                                      : item.productType ==
+                                              ProductType
+                                                  .FabricCurtainProductType
+                                          ? FabricCurtainProductAttrEditableCard(
+                                              item)
+                                          : RollingCurtainProductAttrEditableCard(
+                                              item);
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int i) => Divider(
+                                          height: 1,
+                                          thickness: .8,
+                                          color: const Color(0xFFF8F8F8),
+                                        ),
+                                itemCount: goodsList?.length ?? 0))
+                      ],
                     ),
-                    Expanded(
-                        child: ListView.separated(
-                            padding: EdgeInsets.all(0),
-                            shrinkWrap: true,
-                            itemBuilder: (BuildContext context, int i) {
-                              SingleProductDetailBean item = goodsList[i];
-                              return item.productType ==
-                                      ProductType.EndProductType
-                                  ? EndProductAttrEditableCard(item)
-                                  : item.productType ==
-                                          ProductType.FabricCurtainProductType
-                                      ? FabricCurtainProductAttrEditableCard(
-                                          item)
-                                      : RollingCurtainProductAttrEditableCard(
-                                          item);
-                            },
-                            separatorBuilder: (BuildContext context, int i) =>
-                                Divider(
-                                  height: 1,
-                                  thickness: .8,
-                                  color: const Color(0xFFF8F8F8),
-                                ),
-                            itemCount: goodsList?.length ?? 0))
-                  ],
+                  ),
+                  bottomNavigationBar: Container(
+                    margin: EdgeInsets.all(16),
+                    child: PurchaseActionBar(bean),
+                  ),
                 ),
-              ),
-              bottomNavigationBar: Container(
-                margin: EdgeInsets.all(16),
-                child: PurchaseActionBar(bean),
-              ),
-            ),
     );
   }
 

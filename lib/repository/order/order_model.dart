@@ -198,6 +198,7 @@ class OrderProductAttr {
     if (json != null) {
       name = json['name'];
       value = '${json['value']}';
+      value ??= '0.0';
       if (['宽', '高'].contains(name)) {
         name += ' ${double.parse(value) / 100}米 ';
       }

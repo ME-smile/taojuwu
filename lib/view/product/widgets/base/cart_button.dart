@@ -2,7 +2,7 @@
  * @Description: 加入购物车按钮
  * @Author: iamsmiling
  * @Date: 2020-10-28 15:04:13
- * @LastEditTime: 2020-11-09 09:26:54
+ * @LastEditTime: 2020-11-18 09:03:53
  */
 import 'dart:async';
 
@@ -37,8 +37,15 @@ class _CartButtonState extends State<CartButton> {
   void initState() {
     _subscription = Application.eventBus.on().listen((event) {
       if (event is SelectClientEvent) {
-        clientId = event.mTargetClient.clientId;
-        print(Application.sp.get('token'));
+        clientId = event.mTargetClient?.clientId;
+        if (clientId == null) {
+          mounted
+              ? setState(() {
+                  count = 0;
+                })
+              // ignore: unnecessary_statements
+              : '';
+        }
         _fetchData();
       }
       if (event is AddToCartEvent) {

@@ -2,13 +2,14 @@
  * @Description: 商品属性测装数据提示文字
  * @Author: iamsmiling
  * @Date: 2020-10-22 09:53:45
- * @LastEditTime: 2020-11-06 10:10:04
+ * @LastEditTime: 2020-11-19 13:21:49
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
+import 'package:taojuwu/view/measure_data/confirm_measure_data_page.dart';
 import 'package:taojuwu/view/measure_data/edit_measure_data_page.dart';
 
 class MeasureDataTipBar extends StatefulWidget {
@@ -21,16 +22,31 @@ class MeasureDataTipBar extends StatefulWidget {
 
 class _MeasureDataTipBarState extends State<MeasureDataTipBar> {
   BaseCurtainProductDetailBean get bean => widget.bean;
+
+  Future jump(BuildContext context) {
+    if (bean.isMeasureOrder) {
+      return Navigator.of(context).push(CupertinoPageRoute(
+          builder: (BuildContext context) => ConfirmMeasureDataPage(bean)));
+    }
+    return Navigator.push(context,
+        CupertinoPageRoute(builder: (BuildContext context) {
+      return EditMeasureDataPage(bean);
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
         child: Column(
       children: [
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 8),
-          child: bean?.isMeasureOrder == true
-              ? MeasureOrderTip(bean?.measureData)
-              : NonMeasureOrderTip(bean),
+        GestureDetector(
+          onTap: () => jump(context),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: bean?.isMeasureOrder == true
+                ? MeasureOrderTip(bean?.measureData)
+                : NonMeasureOrderTip(bean),
+          ),
         ),
         Container(
           margin: EdgeInsets.only(top: 8),
@@ -57,7 +73,8 @@ class MeasureOrderTip extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text.rich(
+          Expanded(
+              child: Text.rich(
             TextSpan(
                 text: '*  ',
                 style: TextStyle(color: Color(0xFFE02020)),
@@ -68,8 +85,7 @@ class MeasureOrderTip extends StatelessWidget {
                           : '请确认测装数据',
                       style: textTheme.bodyText2),
                 ]),
-          ),
-          Spacer(),
+          )),
           Text(
             measureData?.measureDataStr ?? '',
             textAlign: TextAlign.end,
@@ -91,42 +107,35 @@ class NonMeasureOrderTip extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context,
-            CupertinoPageRoute(builder: (BuildContext context) {
-          return EditMeasureDataPage(bean);
-        }));
-      },
-      child: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text.rich(
-              TextSpan(
-                  text: '*  ',
-                  style: TextStyle(color: Color(0xFFE02020)),
-                  children: [
-                    TextSpan(
-                        text: measureData?.hasSetSize == true
-                            ? '已预填测装数据'
-                            : '请预填测装数据',
-                        style: textTheme.bodyText2),
-                  ]),
-            ),
-            Spacer(),
-            Text(
-              measureData?.hasSetSize == true
-                  ? measureData?.measureDataStr ?? ''
-                  : '',
-              textAlign: TextAlign.end,
-            ),
-            Icon(
-              ZYIcon.next,
-              size: 20,
-            )
-          ],
-        ),
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+              child: Text.rich(
+            TextSpan(
+                text: '*  ',
+                style: TextStyle(color: Color(0xFFE02020)),
+                children: [
+                  TextSpan(
+                      text: measureData?.hasSetSize == true
+                          ? '已预填测装数据'
+                          : '请预填测装数据',
+                      style: textTheme.bodyText2),
+                ]),
+          )),
+          // Spacer(),
+          Text(
+            measureData?.hasSetSize == true
+                ? measureData?.measureDataStr ?? ''
+                : '',
+            textAlign: TextAlign.end,
+          ),
+          Icon(
+            ZYIcon.next,
+            size: 20,
+          )
+        ],
       ),
     );
   }

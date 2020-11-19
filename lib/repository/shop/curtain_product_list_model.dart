@@ -41,6 +41,7 @@ class CurtainProductListResp extends ZYResponse<CurtainProductListDataBean> {
 class CurtainProductListDataBean {
   String attrStr;
   String specStr;
+  String currentCategoryName;
   var attrArray;
   String order;
   String sort;
@@ -70,7 +71,9 @@ class CurtainProductListDataBean {
     dataBean.attrArray = map['attr_array'];
     dataBean.order = map['order'];
     dataBean.sort = map['sort'];
-    dataBean.categoryId = map['category_id'];
+    dataBean.currentCategoryName = map['curr_category_name'];
+
+    dataBean.categoryId = '${map['category_id']}';
     dataBean.brandId = map['brand_id'];
     dataBean.brandName = map['brand_name'];
     dataBean.minPrice = map['min_price'];

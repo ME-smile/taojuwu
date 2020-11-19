@@ -2,7 +2,7 @@
  * @Description: 商品详情页
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:55:05
- * @LastEditTime: 2020-11-16 09:58:32
+ * @LastEditTime: 2020-11-19 18:57:17
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +19,7 @@ import 'package:taojuwu/view/product/widgets/section/relative_product_section_vi
 import 'package:taojuwu/view/product/widgets/section/scene_design_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/soft_design_product_section_view.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
 
 class FabricCurtainProductDetailPage extends BaseProductDetailPage {
   final int goodsId;
@@ -33,6 +34,10 @@ class _CurtainProductDetailPageState
     extends BaseCurtainProductDetailState<FabricCurtainProductDetailPage> {
 // 发起请求
   Future sendRequest() {
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     return fetchData(context, widget.goodsId).then((_) {
       (productDetailBean as FabricCurtainProductDetailBean).fetchAttrsData(() {
         setState(() {
@@ -46,8 +51,14 @@ class _CurtainProductDetailPageState
           .fetchRoomAttrData()
           .whenComplete(() {
         copyData();
+        updateMeasureData();
       });
-    }).catchError((err) => err);
+    }).catchError((err) {
+      setState(() {
+        hasError = true;
+        isLoading = false;
+      });
+    });
   }
 
   @override
@@ -66,46 +77,56 @@ class _CurtainProductDetailPageState
         },
         child: isLoading
             ? LoadingCircle()
-            : Scaffold(
-                backgroundColor: const Color(0xFFF8F8FB),
-                body: NestedScrollView(
-                    controller: scrollController,
-                    headerSliverBuilder:
-                        (BuildContext context, bool innerBoxIsScrolled) {
-                      return <Widget>[ProductDetailHeader(productDetailBean)];
-                    },
-                    body: CustomScrollView(
-                      shrinkWrap: true,
-                      slivers: [
-                        ProductDetailProfile(productDetailBean),
-                        FabricCurtainProductAttrSectionView(productDetailBean),
-                        RelativeProductSectionView(relativeProductList),
-                        SliverToBoxAdapter(
-                          child: SceneDesignProductSectionView(
-                              sceneDesignProductList),
-                        ),
-                        // SliverToBoxAdapter(
-                        //   child: SoftDesignProductSectionView(
-                        //     softDesignProductList,
-                        //     goodsId: productDetailBean?.goodsId,
-                        //   ),
-                        // ),
-                        SliverToBoxAdapter(
-                          child: ProductDetailImgSectionView(
-                              productDetailBean?.detailImgList),
-                        ),
-
-                        SliverToBoxAdapter(
-                          child: RecommendedProductSectionView(
-                              recommendProductList),
-                        ),
-                      ],
-                    )),
-                bottomNavigationBar: ProductDeatilFooter(
-                  productDetailBean,
-                  callback: scrollToTop,
-                ),
-              ));
+            : hasError
+                ? Scaffold(
+                    appBar: AppBar(),
+                    body: Container(
+                        height: double.maxFinite,
+                        color: Theme.of(context).primaryColor,
+                        child: NetworkErrorWidget(callback: sendRequest)),
+                  )
+                : Scaffold(
+                    backgroundColor: const Color(0xFFF8F8FB),
+                    body: NestedScrollView(
+                        controller: scrollController,
+                        headerSliverBuilder:
+                            (BuildContext context, bool innerBoxIsScrolled) {
+                          return <Widget>[
+                            ProductDetailHeader(productDetailBean)
+                          ];
+                        },
+                        body: CustomScrollView(
+                          shrinkWrap: true,
+                          slivers: [
+                            ProductDetailProfile(productDetailBean),
+                            FabricCurtainProductAttrSectionView(
+                                productDetailBean),
+                            RelativeProductSectionView(relativeProductList),
+                            SliverToBoxAdapter(
+                              child: SceneDesignProductSectionView(
+                                  sceneDesignProductList),
+                            ),
+                            SliverToBoxAdapter(
+                              child: SoftDesignProductSectionView(
+                                softDesignProductList,
+                                goodsId: productDetailBean?.goodsId,
+                              ),
+                            ),
+                            SliverToBoxAdapter(
+                              child: ProductDetailImgSectionView(
+                                  productDetailBean?.detailImgList),
+                            ),
+                            SliverToBoxAdapter(
+                              child: RecommendedProductSectionView(
+                                  recommendProductList),
+                            ),
+                          ],
+                        )),
+                    bottomNavigationBar: ProductDeatilFooter(
+                      productDetailBean,
+                      callback: scrollToTop,
+                    ),
+                  ));
     // return ChangeNotifierProvider<SingleProductProvider>(
     //   create: (context)=>(),
     // );

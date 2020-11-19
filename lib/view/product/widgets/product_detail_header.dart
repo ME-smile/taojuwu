@@ -2,13 +2,14 @@
  * @Description: //商品详情顶部appbar
  * @Author: iamsmiling
  * @Date: 2020-10-21 16:10:17
- * @LastEditTime: 2020-10-31 16:38:05
+ * @LastEditTime: 2020-11-17 17:51:17
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/user_choose_button.dart';
-import 'package:taojuwu/widgets/zy_netImage.dart';
+import 'package:taojuwu/widgets/zy_photo_view.dart';
 
 class ProductDetailHeader extends StatelessWidget {
   final SingleProductDetailBean bean;
@@ -33,11 +34,12 @@ class ProductDetailHeader extends StatelessWidget {
     return FlexibleSpaceBar(
       background: Container(
           margin: EdgeInsets.only(top: 80),
-          child: ZYNetImage(
-            imgPath: bean?.cover,
+          child: ZYPhotoView(
+            UIKit.getNetworkImgPath(bean?.cover),
+            alignment: Alignment.center,
+            isAnimated: false,
             width: 300,
-            height: 240,
-            needAnimation: false,
+            height: 300,
           )),
     );
   }
@@ -55,11 +57,12 @@ class ProductDetailHeader extends StatelessWidget {
             loop: false,
             itemCount: bean?.goodsImgList?.length,
             itemBuilder: (BuildContext context, int index) {
-              return ZYNetImage(
+              return ZYPhotoView(
+                UIKit.getNetworkImgPath(bean?.goodsImgList[index]),
                 width: 300,
                 height: 300,
-                imgPath: bean?.goodsImgList[index],
-                needAnimation: false,
+                isAnimated: false,
+                alignment: Alignment.center,
               );
             },
             pagination: new SwiperPagination(

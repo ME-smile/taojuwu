@@ -5,6 +5,7 @@ import 'package:taojuwu/view/logistics/logistics_data_card.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/loading.dart';
+import 'package:taojuwu/widgets/network_error.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 
 class LogisticsPage extends StatefulWidget {
@@ -18,6 +19,7 @@ class LogisticsPage extends StatefulWidget {
 class _LogisticsPageState extends State<LogisticsPage> {
   int get id => widget.id;
   bool isLoading = true;
+  bool hasError = false;
   RefreshController _refreshController;
   @override
   void initState() {
@@ -36,6 +38,10 @@ class _LogisticsPageState extends State<LogisticsPage> {
   LogisticsDataModelWrapper wrapper;
   List<GoodsPacketModel> packetList;
   void fetchData() {
+    setState(() {
+      hasError = false;
+      isLoading = true;
+    });
     OTPService.logistics(context, params: {'order_id': id})
         .then((LogisticsDataModelResp response) {
       if (response?.valid == true) {
@@ -48,6 +54,7 @@ class _LogisticsPageState extends State<LogisticsPage> {
     }).catchError((err) {
       setState(() {
         isLoading = false;
+        hasError = true;
         _refreshController?.loadFailed();
       });
 
@@ -80,21 +87,23 @@ class _LogisticsPageState extends State<LogisticsPage> {
       ),
       body: isLoading
           ? LoadingCircle()
-          : SmartRefresher(
-              enablePullDown: true,
-              onRefresh: fetchData,
-              controller: _refreshController,
-              child: ListView.separated(
-                  itemBuilder: (BuildContext context, int index) {
-                    return LogisticsDataCard(
-                      model: packetList[index],
-                    );
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return VSpacing(16);
-                  },
-                  itemCount: packetList?.length ?? 0),
-            ),
+          : hasError
+              ? NetworkErrorWidget(callback: fetchData)
+              : SmartRefresher(
+                  enablePullDown: true,
+                  onRefresh: fetchData,
+                  controller: _refreshController,
+                  child: ListView.separated(
+                      itemBuilder: (BuildContext context, int index) {
+                        return LogisticsDataCard(
+                          model: packetList[index],
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) {
+                        return VSpacing(16);
+                      },
+                      itemCount: packetList?.length ?? 0),
+                ),
     );
   }
 }

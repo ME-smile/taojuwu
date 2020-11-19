@@ -29,9 +29,6 @@ class _RollingCurtainSizeBarState extends State<RollingCurtainSizeBar> {
         // callback();
         // pickAttr(context);
         setSize(context, bean).whenComplete(() {
-          print(bean?.measureData?.width);
-          print(bean?.measureData?.widthM);
-          print(bean?.measureData?.hasSetSize);
           setState(() {});
         });
       },

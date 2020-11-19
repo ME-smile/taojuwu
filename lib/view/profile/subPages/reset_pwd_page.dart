@@ -2,7 +2,7 @@
  * @Description: 重置密码
  * @Author: iamsmiling
  * @Date: 2020-11-12 13:30:32
- * @LastEditTime: 2020-11-13 10:19:59
+ * @LastEditTime: 2020-11-19 16:06:47
  */
 
 import 'package:flutter/material.dart';
@@ -67,7 +67,10 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
     ThemeData themeData = Theme.of(context);
     TextTheme textTheme = themeData.textTheme;
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Theme.of(context).primaryColor,
+      appBar: AppBar(
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: UIKit.width(40)),
@@ -75,11 +78,14 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               VSpacing(80),
-              Text(
-                '重置密码',
-                textAlign: TextAlign.left,
-                style:
-                    textTheme.headline6.copyWith(fontWeight: FontWeight.w700),
+              Container(
+                margin: EdgeInsets.only(bottom: 42),
+                child: Text(
+                  '重置密码',
+                  textAlign: TextAlign.left,
+                  style:
+                      textTheme.headline6.copyWith(fontWeight: FontWeight.w700),
+                ),
               ),
               TextField(
                 controller: _passwordController,
@@ -98,10 +104,10 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
                       }),
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
-                          BorderSide(color: Color(0xFFC7C8CB), width: 1)),
+                          BorderSide(color: Color(0xFFC7C8CB), width: .5)),
                   enabledBorder: UnderlineInputBorder(
                       borderSide:
-                          BorderSide(color: Color(0xFFC7C8CB), width: 1)),
+                          BorderSide(color: Color(0xFFC7C8CB), width: .5)),
                 ),
               ),
               Container(
@@ -113,6 +119,7 @@ class _ResetPwdPageState extends State<ResetPwdPage> {
                         '完成',
                         resetPwd,
                         isActive: flag,
+                        horizontalMargin: 0,
                       );
                     },
                   ))

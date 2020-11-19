@@ -1,8 +1,10 @@
 import 'dart:convert';
-
+import 'dart:developer' as developer;
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/application.dart';
+import 'package:taojuwu/event_bus/events/select_client_event.dart';
 import 'package:taojuwu/repository/order/order_cart_goods_model.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 
@@ -14,6 +16,7 @@ import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/view/product/mixin/client_select_listener.dart';
 import 'package:taojuwu/widgets/time_period_picker.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
@@ -202,20 +205,19 @@ class OrderProvider with ChangeNotifier {
     if (beforeCallback != null) {
       beforeCallback();
     }
-    LogUtil.e(
-      {
-        'order_earnest_money': deposit,
-        'client_uid': clientUid,
-        'shop_id': shopId,
-        'cart_id': cartId,
-        'vertical_ground_height': dy,
-        'measure_id':
-            '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
-        'measure_time': measureTimeStr,
-        'install_time': installTime,
-        'order_remark': orderMark,
-        'wc_attr': jsonEncode(attr),
-        'data': '''{
+    developer.log({
+      'order_earnest_money': deposit,
+      'client_uid': clientUid,
+      'shop_id': shopId,
+      'cart_id': cartId,
+      'vertical_ground_height': dy,
+      'measure_id':
+          '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
+      'measure_time': measureTimeStr,
+      'install_time': installTime,
+      'order_remark': orderMark,
+      'wc_attr': jsonEncode(attr),
+      'data': '''{
           "order_type": 1,
           "point": "0",
           "pay_type": "10",
@@ -225,8 +227,7 @@ class OrderProvider with ChangeNotifier {
           "order_tag": "2",
           "goods_sku_list": "$goodsSkuListText"
         }'''
-      },
-    );
+    }.toString());
     OTPService.createOrder(
       params: {
         'order_earnest_money': deposit,
@@ -253,9 +254,16 @@ class OrderProvider with ChangeNotifier {
       },
     ).then((ZYResponse response) {
       if (response.valid) {
-        RouteHandler.goOrderCommitSuccessPage(ctx, clientUid,
-            showTip: hasCustomizedProdoct ? 1 : 0);
+        int id = TargetClientHolder.targetClient?.clientId;
+
+        TargetClientHolder.targetClient = null;
+        Application.eventBus.fire(SelectClientEvent(null));
         clear();
+        return RouteHandler.goOrderCommitSuccessPage(context, '$id',
+            orderType: 2, showTip: hasCustomizedProdoct ? 1 : 0);
+        // RouteHandler.goOrderCommitSuccessPage(ctx, clientUid,
+        //     showTip: hasCustomizedProdoct ? 1 : 0);
+
       } else {
         ToastKit.showErrorInfo(response?.message ?? '');
       }

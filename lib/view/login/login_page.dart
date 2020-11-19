@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -29,12 +30,19 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   UserProvider _userProvider;
-
+  ValueNotifier<bool> showClearIcon;
   @override
   void initState() {
     super.initState();
+    showClearIcon = ValueNotifier<bool>(false);
     _userProvider = Provider.of<UserProvider>(context, listen: false);
     initView();
+  }
+
+  @override
+  void dispose() {
+    showClearIcon?.dispose();
+    super.dispose();
   }
 
   void initView() {
@@ -206,12 +214,6 @@ class _LoginPageState extends State<LoginPage> {
   double startX2 = 0.0;
   BuildContext context1;
   BuildContext context2;
-  @override
-  void dispose() {
-    super.dispose();
-
-    // _isPwdMode?.dispose();
-  }
 
   void afterLogin(Map<String, dynamic> json) {
     _userProvider.userInfo.saveUserInfo(json);
@@ -239,6 +241,7 @@ class _LoginPageState extends State<LoginPage> {
     final double w = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       resizeToAvoidBottomPadding: false,
       body: ChangeNotifierProvider(
         create: (_) => LoginViewModel(),
@@ -246,15 +249,18 @@ class _LoginPageState extends State<LoginPage> {
           builder: (BuildContext ctx) {
             LoginViewModel model = ctx.watch<LoginViewModel>();
             return Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                VSpacing(220),
-                Text(
-                  '欢迎回家',
-                  textAlign: TextAlign.center,
-                  style: textTheme.headline5,
+                Container(
+                  margin: EdgeInsets.only(top: 120, bottom: 36),
+                  child: Text(
+                    '欢迎来到淘居屋',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 24),
+                  ),
                 ),
-                VSpacing(10),
+
                 // Text(
                 //   '登陆后可购买商品或者查看更多内容',
                 //   style: textTheme.subtitle2.copyWith(
@@ -274,7 +280,12 @@ class _LoginPageState extends State<LoginPage> {
                         return InkWell(
                           child: Text(
                             '手机号码登录',
-                            style: textTheme.subtitle2,
+                            style: model?.isPwdMode == true
+                                ? TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xFF333333))
+                                : textTheme.subtitle2,
                           ),
                           onTap: () => model.changeLoginMode(0),
                         );
@@ -284,7 +295,12 @@ class _LoginPageState extends State<LoginPage> {
                         return InkWell(
                           child: Text(
                             '密码登录',
-                            style: textTheme.subtitle2,
+                            style: !model.isPwdMode == true
+                                ? TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xFF333333))
+                                : textTheme.subtitle2,
                           ),
                           onTap: () => model.changeLoginMode(1),
                         );
@@ -306,79 +322,124 @@ class _LoginPageState extends State<LoginPage> {
                     return model.isPwdMode;
                   },
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: UIKit.width(50)),
-                  child: Column(
-                    children: <Widget>[
-                      TextField(
-                        controller: model.phoneController,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                            hintText: '请输入手机号',
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color(0xFFC7C8CB), width: 1)),
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color(0xFFC7C8CB), width: 1)),
-                            icon: Container(
-                              child: Text('+86'),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 16),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          color: Color(0xFFC7C8CB), width: 1))
-                                  // border: Border.fromBorderSide(BorderSide(color: ))
-                                  ),
-                            )),
-                      ),
-                      VSpacing(20),
-                      model.isPwdMode
-                          ? TextField(
-                              controller: model.smsController,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                  hintText: '请输入验证码',
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xFFC7C8CB), width: 1)),
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xFFC7C8CB), width: 1)),
-                                  suffixIcon: SendSmsButton(
-                                      telPhoneController: model.phoneController,
-                                      isActive: model.isValidTel,
-                                      callback: () => sendSms(model))),
-                            )
-                          : TextField(
-                              obscureText: true,
-                              controller: model.pwdController,
-                              decoration: InputDecoration(
-                                  hintText: '请输入密码',
-                                  focusedBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xFFC7C8CB), width: 1)),
-                                  enabledBorder: UnderlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Color(0xFFC7C8CB), width: 1)),
-                                  suffixIcon: FlatButton(
-                                      onPressed: () {
-                                        RouteHandler.goForgetPwdPage(context);
-                                      },
-                                      child: Text('忘记密码'))),
-                            ),
-                    ],
+                Flexible(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 12),
+                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(50)),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        TextField(
+                          controller: model.phoneController,
+                          keyboardType: TextInputType.phone,
+                          onChanged: (_) {
+                            showClearIcon.value = true;
+                          },
+                          onEditingComplete: () {
+                            showClearIcon.value = false;
+                          },
+                          decoration: InputDecoration(
+                              hintText: '请输入手机号',
+                              suffixIcon: GestureDetector(
+                                child: Icon(
+                                  ZYIcon.clear,
+                                  size: 16,
+                                ),
+                                onTap: () {
+                                  model?.phoneController?.text = '';
+                                },
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFC7C8CB), width: .5)),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color(0xFFC7C8CB), width: .5)),
+                              icon: Container(
+                                child: Text('+86'),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 16),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            color: Color(0xFFC7C8CB),
+                                            width: .5))
+                                    // border: Border.fromBorderSide(BorderSide(color: ))
+                                    ),
+                              )),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.only(top: 16),
+                          child: model.isPwdMode
+                              ? Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    TextField(
+                                        maxLines: 1,
+                                        controller: model.smsController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          hintText: '请输入验证码',
+
+                                          focusedBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFC7C8CB),
+                                                  width: 1)),
+                                          enabledBorder: UnderlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Color(0xFFC7C8CB),
+                                                  width: 1)),
+                                          // suffixIcon: ),
+                                        )),
+                                    Positioned(
+                                      right: 0,
+                                      bottom: -4,
+                                      // bottom: 1,
+                                      child: SendSmsButton(
+                                          telPhoneController:
+                                              model.phoneController,
+                                          isActive: model.isValidTel,
+                                          callback: () => sendSms(model)),
+                                    )
+                                  ],
+                                )
+                              : TextField(
+                                  obscureText: true,
+                                  controller: model.pwdController,
+                                  decoration: InputDecoration(
+                                      hintText: '请输入密码',
+                                      focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFC7C8CB),
+                                              width: .5)),
+                                      enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Color(0xFFC7C8CB),
+                                              width: .5)),
+                                      suffixIcon: FlatButton(
+                                          onPressed: () {
+                                            RouteHandler.goForgetPwdPage(
+                                                context);
+                                          },
+                                          child: Text('忘记密码'))),
+                                ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-                VSpacing(50),
-                ZYSubmitButton(
-                  '登录',
-                  () {
-                    model.login(context);
-                    // loginByPwd(context);
-                  },
-                  isActive: true,
+
+                Container(
+                  margin: EdgeInsets.only(top: 40),
+                  child: ZYSubmitButton(
+                    '登录',
+                    () {
+                      model.login(context);
+                      // loginByPwd(context);
+                    },
+                    isActive: true,
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: UIKit.width(50)),

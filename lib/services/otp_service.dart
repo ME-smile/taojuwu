@@ -54,6 +54,7 @@ class OTPService {
 
   static Future<CurtainProductListResp> productGoodsList(BuildContext context,
       {Map<String, dynamic> params}) async {
+    print(params);
     Response response = await xhr.get(
       context,
       ApiPath.productMall,
@@ -719,11 +720,14 @@ class OTPService {
     return LocationBean.fromJson(map);
   }
 
-  static Future ipLocate(BuildContext context,
+  static Future<LocationBean> ipLocate(BuildContext context,
       {Map<String, dynamic> params}) async {
     Response response =
-        await xhr.get(context, ApiPath.location, params: params);
+        await xhr.get(context, ApiPath.ipLocation, params: params);
     print(response?.data);
+    Map<String, dynamic> dict = response?.data;
+    dict = (dict['result'] ?? {})['ad_info']??{};
+    return LocationBean.fromJson(dict);
   }
 
   static Future<ZYResponse> sendSms({Map<String, dynamic> params}) async {

@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: iamsmiling
  * @Date: 2020-10-28 14:36:00
- * @LastEditTime: 2020-11-16 09:26:56
+ * @LastEditTime: 2020-11-19 14:51:53
  */
 import 'dart:async';
 
@@ -16,6 +16,7 @@ import 'package:taojuwu/services/otp_service.dart';
 
 class BaseProductHolder {
   bool isLoading = true;
+  bool hasError = false;
   SingleProductDetailBean productDetailBean;
   List<SingleProductDetailBean> relativeProductList;
   List<SceneDesignProductDetailBean> sceneDesignProductList;
@@ -24,6 +25,7 @@ class BaseProductHolder {
 
   // 发起请求
   Future fetchData(BuildContext context, int goodsId) {
+    hasError = false;
     return OTPService.productDetail(context, params: {'goods_id': goodsId})
         .then((ProductDetailBeanResp response) {
       productDetailBean = response?.data?.goodsDetail;
@@ -35,6 +37,6 @@ class BaseProductHolder {
   }
 
   void clear() {
-    productDetailBean?.client = null;
+    // productDetailBean?.client = null;
   }
 }

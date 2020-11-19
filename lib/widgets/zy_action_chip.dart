@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: iamsmiling
  * @Date: 2020-10-31 13:34:35
- * @LastEditTime: 2020-11-13 18:06:06
+ * @LastEditTime: 2020-11-18 14:59:30
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/widgets/triangle_clipper.dart';
@@ -35,7 +35,8 @@ class _ZYActionChipState extends State<ZYActionChip> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    constraints: BoxConstraints(minWidth: 80),
                     child: Text(
                       '${bean?.text}${showNumber ? "(${bean?.count})" : ""}',
                       textAlign: TextAlign.center,
@@ -52,7 +53,7 @@ class _ZYActionChipState extends State<ZYActionChip> {
                         border: Border.all(
                             width: 1,
                             color:
-                                isChecked ? Colors.black : Color(0xFF979797))),
+                                isChecked ? Colors.black : Color(0xFFCBCBCB))),
                   )
                 ],
               )),

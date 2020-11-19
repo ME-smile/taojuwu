@@ -2,13 +2,15 @@
  * @Description: 订单创建的模型
  * @Author: iamsmiling
  * @Date: 2020-10-29 17:22:23
- * @LastEditTime: 2020-11-10 16:21:01
+ * @LastEditTime: 2020-11-18 17:45:10
  */
 
 import 'dart:convert';
-
+import 'dart:developer' as developer;
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/application.dart';
+import 'package:taojuwu/event_bus/events/select_client_event.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_prodcut_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/multi_product_detail_bean.dart';
@@ -112,32 +114,12 @@ class OrderCreator {
   String get goodsSkuListStr {
     return goodsList
         ?.map((e) =>
-            '${e?.skuId ?? ''}:${e?.count ?? ''}:0:${e?.totalPrice ?? ''}')
+            '${e?.skuId ?? 0}:${e?.count ?? ''}:0:${e?.totalPrice ?? ''}')
         ?.toList()
         ?.join(',');
   }
 
   Map<String, dynamic> get orderArgs {
-    print({
-      'order_earnest_money': depositAmount,
-      'client_uid': clientId,
-      'vertical_ground_height': deltaYCM,
-      'measure_id': measureId,
-      'measure_time': measureTimeStr,
-      'install_time': installTime,
-      'order_remark': extraRemark,
-      'wc_attr': jsonEncode(attrStrList),
-      'data': '''{
-          "order_type": "1",
-          "point": "0",
-          "pay_type": "10",
-          "shipping_info": {"shipping_type": "1", "shipping_company_id": "0"},
-          "address_id": "$addressId",
-          "coupon_id": "0",
-          "order_tag": "2",
-          "goods_sku_list":"$goodsSkuListStr"
-      }''',
-    });
     return {
       'order_earnest_money': depositAmount,
       'client_uid': clientId,
@@ -145,7 +127,7 @@ class OrderCreator {
       'measure_id': measureId,
       'measure_time': measureTimeStr,
       'install_time': installTime,
-      'order_remark': extraRemark,
+      'order_remark': extraRemark ?? '',
       'wc_attr': jsonEncode(attrStrList),
       'data': '''{
           "order_type": "1",
@@ -180,7 +162,10 @@ class OrderCreator {
     return OTPService.createMeasureOrder(params: measureOrderArgs)
         .then((ZYResponse response) {
       if (response?.valid == true) {
-        return RouteHandler.goOrderCommitSuccessPage(context, '$clientId',
+        int id = TargetClientHolder.targetClient?.clientId;
+        TargetClientHolder.targetClient = null;
+        Application.eventBus.fire(SelectClientEvent(null));
+        return RouteHandler.goOrderCommitSuccessPage(context, '$id',
             orderType: 2, showTip: 1);
       }
       ToastKit.showErrorInfo(response?.message ?? '');
@@ -188,6 +173,7 @@ class OrderCreator {
   }
 
   Future createOrder(BuildContext context) {
+    developer.log(orderArgs.toString());
     if (!isEndPorductOrder) {
       if (!isValidOrderInfo()) return Future.value(false);
     }
@@ -195,11 +181,16 @@ class OrderCreator {
   }
 
   Future _sendCreateOrderRequest(BuildContext context) {
+    developer.log(orderArgs.toString());
     return OTPService.createOrder(params: orderArgs)
         .then((ZYResponse response) {
       if (response?.valid == true) {
+        int id = TargetClientHolder.targetClient?.clientId;
+
         TargetClientHolder.targetClient = null;
-        return RouteHandler.goOrderCommitSuccessPage(context, '$clientId',
+        Application.eventBus.fire(SelectClientEvent(null));
+
+        return RouteHandler.goOrderCommitSuccessPage(context, '$id',
             orderType: 2, showTip: 1);
       }
       ToastKit.showErrorInfo(response?.message ?? '');

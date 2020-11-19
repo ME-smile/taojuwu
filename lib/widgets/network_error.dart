@@ -1,3 +1,9 @@
+/*
+ * @Description: 网络错误
+ * @Author: iamsmiling
+ * @Date: 2020-09-25 12:47:45
+ * @LastEditTime: 2020-11-19 19:13:39
+ */
 import 'package:flutter/material.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -17,7 +23,8 @@ class NetworkErrorWidget extends StatelessWidget {
       child: Material(
           child: Container(
         alignment: Alignment.center,
-        height: UIKit.height(400),
+        height: double.maxFinite,
+        color: Theme.of(context).primaryColor,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -25,6 +32,7 @@ class NetworkErrorWidget extends StatelessWidget {
               'net_error@2x.png',
               width: UIKit.width(250),
               height: UIKit.width(250),
+              callback: callback,
             ),
             VSpacing(10),
             Text(

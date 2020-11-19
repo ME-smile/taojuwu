@@ -5,6 +5,8 @@ import 'package:taojuwu/singleton/target_route.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
+import 'package:taojuwu/widgets/zy_outline_button.dart';
+import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 class OrderCommitSuccessPage extends StatelessWidget {
   final int clientId;
@@ -53,8 +55,9 @@ class OrderCommitSuccessPage extends StatelessWidget {
                 // Text('请在测量完成后支付尾款', style: textTheme.caption),
                 VSpacing(20),
 
-                InkWell(
-                  onTap: () {
+                ZYRaisedButton(
+                  '继续挑选',
+                  () {
                     if (orderType == 2) {
                       RouteHandler.goCurtainMallPage(context, replace: true);
                     } else {
@@ -62,34 +65,54 @@ class OrderCommitSuccessPage extends StatelessWidget {
                           ModalRoute.withName(TargetRoute.instance.route));
                     }
                   },
-                  child: Container(
-                      decoration: BoxDecoration(
-                          color: themeData.accentColor,
-                          border: Border.all(
-                              color: themeData.accentColor, width: .5)),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: UIKit.width(60),
-                          vertical: UIKit.height(20)),
-                      child: Text(
-                        '继续挑选',
-                        style: themeData.accentTextTheme.button,
-                      )),
+                  verticalPadding: 12,
+                  horizontalPadding: 36,
                 ),
-                VSpacing(20),
-                InkWell(
-                  onTap: () {
+                ZYOutlineButton(
+                  '查看订单',
+                  () {
                     RouteHandler.goOrderPage(context, clientId: clientId);
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            color: themeData.accentColor, width: .5)),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: UIKit.width(60),
-                        vertical: UIKit.height(20)),
-                    child: Text('查看订单'),
-                  ),
-                )
+                  verticalPadding: 12,
+                  horizontalPadding: 36,
+                ),
+                // InkWell(
+                //   onTap: () {
+                //     if (orderType == 2) {
+                //       RouteHandler.goCurtainMallPage(context, replace: true);
+                //     } else {
+                //       Navigator.of(context).popUntil(
+                //           ModalRoute.withName(TargetRoute.instance.route));
+                //     }
+                //   },
+                //   child: Container(
+                //       decoration: BoxDecoration(
+                //           color: themeData.accentColor,
+                //           border: Border.all(
+                //               color: themeData.accentColor, width: .5)),
+                //       padding: EdgeInsets.symmetric(
+                //           horizontal: UIKit.width(60),
+                //           vertical: UIKit.height(20)),
+                //       child: Text(
+                //         '继续挑选',
+                //         style: themeData.accentTextTheme.button,
+                //       )),
+                // ),
+                // VSpacing(20),
+                // InkWell(
+                //   onTap: () {
+                //     RouteHandler.goOrderPage(context, clientId: clientId);
+                //   },
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //         border: Border.all(
+                //             color: themeData.accentColor, width: .5)),
+                //     padding: EdgeInsets.symmetric(
+                //         horizontal: UIKit.width(60),
+                //         vertical: UIKit.height(20)),
+                //     child: Text('查看订单'),
+                //   ),
+                // )
               ],
             ),
           ),

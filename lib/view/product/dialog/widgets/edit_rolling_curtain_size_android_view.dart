@@ -2,7 +2,7 @@
  * @Description: 修改卷帘宽高 andoroid 对话框
  * @Author: iamsmiling
  * @Date: 2020-10-28 10:20:44
- * @LastEditTime: 2020-10-31 10:12:38
+ * @LastEditTime: 2020-11-19 13:28:10
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
@@ -32,8 +32,14 @@ class _EditRollingCurtainSizeAndroidViewState
   @override
   void initState() {
     super.initState();
-    _widthController = TextEditingController();
-    _heightController = TextEditingController();
+    _widthController = TextEditingController(
+        text: CommonKit.isNullOrEmpty(measureData?.widthCM)
+            ? null
+            : '${measureData?.widthCM}');
+    _heightController = TextEditingController(
+        text: CommonKit.isNullOrEmpty(measureData?.height)
+            ? null
+            : '${measureData?.heightCM}');
   }
 
   @override
@@ -91,7 +97,10 @@ class _EditRollingCurtainSizeAndroidViewState
             verticalPadding: 8,
           ),
           GestureDetector(
-            child: Text('取消'),
+            child: Text(
+              '取消',
+              style: TextStyle(fontSize: 13),
+            ),
             onTap: () {
               Navigator.of(context).pop();
             },

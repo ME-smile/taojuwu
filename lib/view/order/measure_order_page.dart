@@ -2,7 +2,7 @@
  * @Description: 下测量单
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-30 10:03:52
+ * @LastEditTime: 2020-11-17 10:36:13
  */
 
 import 'package:flutter/material.dart';
@@ -93,6 +93,7 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
               child: ZYFutureButton(
                 isActive: true,
                 text: '提交订单',
+                verticalPadding: 8,
                 callback: () => orderCreator.createMeasureOrder(context),
               ),
             );

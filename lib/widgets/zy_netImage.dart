@@ -2,12 +2,11 @@
  * @Description: 网络图片封装
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-16 11:10:30
+ * @LastEditTime: 2020-11-17 09:49:59
  */
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:taojuwu/config/net_config.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 // import 'package:taojuwu/widgets/loading.dart';
 
@@ -43,9 +42,7 @@ class ZYNetImage extends StatelessWidget {
               'placeholder_img.jpg',
             )),
             image: ExtendedNetworkImageProvider(
-                imgPath?.contains('http') == true
-                    ? imgPath
-                    : NetConfig.baseUrl + '/$imgPath',
+                UIKit.getNetworkImgPath(imgPath),
                 cache: true)));
   }
 }

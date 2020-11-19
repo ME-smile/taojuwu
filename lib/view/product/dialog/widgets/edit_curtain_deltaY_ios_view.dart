@@ -2,7 +2,7 @@
  * @Description: 修改窗帘离地距离对话框视图ios
  * @Author: iamsmiling
  * @Date: 2020-10-31 17:52:46
- * @LastEditTime: 2020-10-31 17:56:17
+ * @LastEditTime: 2020-11-19 13:35:33
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +27,9 @@ class _EditCurtainDeltaYIosViewState extends State<EditCurtainDeltaYIosView> {
   @override
   void initState() {
     controller = TextEditingController(
-        text:
-            measureData?.deltaYCM != null ? '${measureData?.deltaYCM}' : null);
+        text: CommonKit.isNullOrEmpty(measureData?.deltaYCM)
+            ? null
+            : '${measureData?.deltaYCM}');
 
     super.initState();
   }
@@ -46,6 +47,7 @@ class _EditCurtainDeltaYIosViewState extends State<EditCurtainDeltaYIosView> {
       content: Column(
         children: <Widget>[
           CupertinoTextField(
+            controller: controller,
             placeholder: '请输入离地距离(cm)',
             keyboardType: TextInputType.number,
             autofocus: true,
@@ -62,6 +64,7 @@ class _EditCurtainDeltaYIosViewState extends State<EditCurtainDeltaYIosView> {
         CupertinoDialogAction(
           child: Text('确定'),
           onPressed: () {
+            print(controller?.text);
             measureData?.deltaYCM = CommonKit.parseDouble(controller?.text);
             // goodsProvider?.dy = tmp;
             Navigator.of(context).pop();

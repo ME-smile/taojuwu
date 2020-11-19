@@ -140,9 +140,15 @@ class OrderItemView extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            ZYNetImage(
-              imgPath: model?.picture?.picCoverSmall,
+            Container(
               height: UIKit.height(180),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: ZYNetImage(
+                  imgPath:
+                      UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),
+                ),
+              ),
             ),
             // Image.network(
             //   UIKit.getNetworkImgPath(model?.picture?.picCoverSmall),

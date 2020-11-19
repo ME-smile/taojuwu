@@ -2,7 +2,7 @@
  * @Description: 打开方式选项
  * @Author: iamsmiling
  * @Date: 2020-10-14 14:38:41
- * @LastEditTime: 2020-10-31 17:37:32
+ * @LastEditTime: 2020-11-17 13:57:48
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
@@ -66,47 +66,47 @@ class _WindowOpenOptionBarState extends State<WindowOpenOptionBar> {
                       ))
                   .toList(),
             ),
-            Visibility(
-                child: Column(
-                  children: styleSelector?.subOpenModes
-                      ?.map((e) => Container(
-                            child: Row(
-                              children: [
-                                Text(
-                                  e?.title ?? '',
-                                  style: TextStyle(
-                                      color: const Color(0xFF333333),
-                                      fontSize: 14),
-                                ),
-                                Row(
-                                  children: e.options
-                                      .map((item) => Container(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: item.isChecked
-                                              ? ZYRaisedButton(
-                                                  item?.name,
-                                                  () => _selectSubOpenMode(
-                                                        context,
-                                                        e,
-                                                        item,
-                                                      ),
-                                                  horizontalPadding: 12)
-                                              : ZYOutlineButton(
-                                                  item?.name,
-                                                  () => _selectSubOpenMode(
-                                                      context, e, item),
-                                                  horizontalPadding: 12)))
-                                      ?.toList(),
-                                )
-                              ],
-                            ),
-                          ))
-                      ?.toList(),
-                ),
-                visible: !CommonKit.isNullOrEmpty(styleSelector?.subOpenModes))
           ],
-        )
+        ),
+        Visibility(
+            child: Column(
+              children: styleSelector?.subOpenModeOptions
+                  ?.map((e) => Container(
+                        child: Row(
+                          children: [
+                            Text(
+                              e?.title ?? '',
+                              style: TextStyle(
+                                  color: const Color(0xFF333333), fontSize: 14),
+                            ),
+                            Row(
+                              children: e.options
+                                  .map((item) => Container(
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      child: item.isChecked
+                                          ? ZYRaisedButton(
+                                              item?.name,
+                                              () => _selectSubOpenMode(
+                                                    context,
+                                                    e,
+                                                    item,
+                                                  ),
+                                              horizontalPadding: 12)
+                                          : ZYOutlineButton(
+                                              item?.name,
+                                              () => _selectSubOpenMode(
+                                                  context, e, item),
+                                              horizontalPadding: 12)))
+                                  ?.toList(),
+                            )
+                          ],
+                        ),
+                      ))
+                  ?.toList(),
+            ),
+            visible:
+                !CommonKit.isNullOrEmpty(styleSelector?.subOpenModeOptions))
       ],
     );
   }
