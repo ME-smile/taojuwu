@@ -2,7 +2,7 @@
  * @Description: 商品详情图片
  * @Author: iamsmiling
  * @Date: 2020-11-02 10:31:47
- * @LastEditTime: 2020-11-02 14:38:05
+ * @LastEditTime: 2020-11-09 14:08:17
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
@@ -16,6 +16,7 @@ class ProductDetailImgSectionView extends StatelessWidget {
     return Visibility(
       visible: imgList?.isNotEmpty == true,
       child: Container(
+        margin: EdgeInsets.only(top: 8),
         child: ListView.builder(
           shrinkWrap: true,
           padding: EdgeInsets.all(0),

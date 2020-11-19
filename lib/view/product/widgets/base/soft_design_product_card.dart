@@ -36,12 +36,10 @@ class SoftDesignProductCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AspectRatio(
-              aspectRatio: 1.0,
-              child: ZYPhotoView(
-                UIKit.getNetworkImgPath(bean.picture),
-                tag: bean?.picture,
-              ),
+            ZYPhotoView(
+              UIKit.getNetworkImgPath(bean.picture),
+              tag: bean?.picture,
+              fit: BoxFit.fitHeight,
             ),
             Expanded(
                 flex: 3,

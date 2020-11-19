@@ -2,7 +2,7 @@
  * @Description: 所有窗帘类的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:11:06
- * @LastEditTime: 2020-11-05 14:46:16
+ * @LastEditTime: 2020-11-12 17:22:45
  */
 
 import 'dart:convert';
@@ -17,17 +17,18 @@ import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'abstract_curtain_product_detail_bean.dart';
-import 'package:taojuwu/utils/extensions/object_kit.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 import 'style_selector/curtain_style_selector.dart';
 
 abstract class BaseCurtainProductDetailBean
     extends AbstractCurtainProductDetailBean {
+  static num defaultWidth;
+  static num defaultHeight;
   List<ProductSkuAttr> attrList = []; // 窗纱 工艺方式 型材 里布 幔头 配饰等属性
   ProductSkuAttr roomAttr;
   OrderGoodsMeasureData measureData = OrderGoodsMeasureData();
-  num width;
-  num height;
+
   int skuId;
   CurtainStyleSelector styleSelector =
       CurtainStyleSelector(); // 样式选择  只有布艺帘才需要选择 这些属性
@@ -46,11 +47,12 @@ abstract class BaseCurtainProductDetailBean
   bool get isMeasureOrder => measureData?.orderGoodsId != null;
   BaseCurtainProductDetailBean.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
-    width = json['width'];
-    height = json['height'];
+    defaultWidth ??= CommonKit.parseDouble(json['width'], defaultVal: 3.5);
+    defaultHeight ??= CommonKit.parseDouble(json['height'], defaultVal: 2.65);
     skuId = json['skuId'];
-    measureData.widthCM = width == null ? null : width * 100;
-    measureData.heightCM = height == null ? null : height * 100;
+
+    measureData.widthCM = width == null || width == 0 ? null : width * 100;
+    measureData.heightCM = height == null || height == 0 ? null : height * 100;
   } //空间属性
 
   Map<dynamic, dynamic> get attrArgs {
@@ -80,7 +82,11 @@ abstract class BaseCurtainProductDetailBean
   //窗帘面积
   double get area {
     double _area = widthM * heightM;
-    return _area > 0 ? _area < 1 ? 1 : _area : 0;
+    return _area > 0
+        ? _area < 1
+            ? 1
+            : _area
+        : 0;
   }
 
   bool isFixedHeight;
@@ -124,7 +130,7 @@ abstract class BaseCurtainProductDetailBean
 
   ProductSkuAttrBean getSelectedElement(int type) {
     List<ProductSkuAttrBean> list = getSelectedElementList(type);
-    if (isNullOrEmpty(list)) return null;
+    if (CommonKit.isNullOrEmpty(list)) return null;
     return list?.firstWhere((element) => element.isChecked);
   }
 
@@ -164,13 +170,17 @@ abstract class BaseCurtainProductDetailBean
 
   List<ProductSkuAttrBean> getAllSelectedAccessories() {
     List<ProductSkuAttrBean> list = getSelectedElementList(13);
-    if (isNullOrEmpty(list)) return null;
+    if (CommonKit.isNullOrEmpty(list)) return null;
     return list?.where((element) => element.isChecked)?.toList();
   }
 
   // 商品单价
   double get unitPrice {
     return price ?? 0.00;
+  }
+
+  set unitPrice(double v) {
+    price = v;
   }
 
   // 窗纱的价格
@@ -395,4 +405,8 @@ abstract class BaseCurtainProductDetailBean
     if (attrList?.isNotEmpty != true) return null;
     return attrList?.firstWhere((e) => e.type == 4, orElse: () => null);
   }
+
+  bool get isUseDefaultSize =>
+      measureData?.widthM == defaultWidth &&
+      measureData?.heightM == defaultHeight;
 }

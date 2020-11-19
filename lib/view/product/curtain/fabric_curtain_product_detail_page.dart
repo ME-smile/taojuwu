@@ -2,7 +2,7 @@
  * @Description: 商品详情页
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:55:05
- * @LastEditTime: 2020-11-04 13:56:41
+ * @LastEditTime: 2020-11-16 09:58:32
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +34,7 @@ class _CurtainProductDetailPageState
 // 发起请求
   Future sendRequest() {
     return fetchData(context, widget.goodsId).then((_) {
-      (productDetailBean as FabricCurtainProductDetailBean)?.fetchAttrsData(() {
+      (productDetailBean as FabricCurtainProductDetailBean).fetchAttrsData(() {
         setState(() {
           isLoading = false;
         });
@@ -84,17 +84,17 @@ class _CurtainProductDetailPageState
                           child: SceneDesignProductSectionView(
                               sceneDesignProductList),
                         ),
-                        SliverToBoxAdapter(
-                          child: SoftDesignProductSectionView(
-                            softDesignProductList,
-                            goodsId: productDetailBean?.goodsId,
-                          ),
-                        ),
+                        // SliverToBoxAdapter(
+                        //   child: SoftDesignProductSectionView(
+                        //     softDesignProductList,
+                        //     goodsId: productDetailBean?.goodsId,
+                        //   ),
+                        // ),
                         SliverToBoxAdapter(
                           child: ProductDetailImgSectionView(
                               productDetailBean?.detailImgList),
                         ),
-                        // ProductHtmlDescSectionView(ProductDetailBean?.description),
+
                         SliverToBoxAdapter(
                           child: RecommendedProductSectionView(
                               recommendProductList),

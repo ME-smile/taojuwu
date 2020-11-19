@@ -2,9 +2,10 @@
  * @Description: 单商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:06:20
- * @LastEditTime: 2020-11-05 17:36:57
+ * @LastEditTime: 2020-11-16 12:58:40
  */
 
+import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/fabric_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/gauze_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
@@ -31,6 +32,8 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
   String cover;
   List<String> detailImgList;
   bool isChecked = true;
+  num width;
+  num height;
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
 
   bool get isPromotionalProduct => marketPrice != 0 && price < marketPrice;
@@ -55,13 +58,17 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
         ?.toList();
     cover = CommonKit.isNullOrEmpty(goodsImgList)
         ? json['image']
-        : goodsImgList?.first;
+        : goodsImgList?.first ??
+            CommonKit.parseMap(json['picture_info'])
+                .getValueByKey('pic_cover_big');
 
     skuName = json['sku_name'];
     picture = '${json['picture']}';
     detailImgList = CommonKit.parseList(json['new_description'])
         ?.map((e) => e?.toString())
         ?.toList();
+    width = CommonKit.parseDouble(json['width'], defaultVal: 0.0);
+    height = CommonKit.parseDouble(json['height'], defaultVal: 0.0);
   }
 
   String get detailDescription => null;

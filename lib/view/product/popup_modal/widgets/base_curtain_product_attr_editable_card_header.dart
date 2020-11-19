@@ -4,9 +4,12 @@ import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/providers/theme_provider.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
+import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/measure_data/edit_measure_data_page.dart';
 import 'package:taojuwu/view/product/dialog/dialog.dart';
+import 'package:taojuwu/view/product/mixin/client_select_listener.dart';
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
 import 'package:taojuwu/widgets/zy_photo_view.dart';
 
@@ -103,6 +106,10 @@ class BaseCurtainProductAttrEditableCardHeader extends StatelessWidget {
   }
 
   Future _editMeasureData(BuildContext context) {
+    if (TargetClientHolder.targetClient == null) {
+      ToastKit.showInfo('请先选择或添加客户哦');
+      return RouteHandler.goCustomerEditPage(context, title: '添加客户');
+    }
     if (curtainType == CurtainType.FabricCurtainType) {
       return Navigator.of(context)
           .push(CupertinoPageRoute(builder: (BuildContext context) {

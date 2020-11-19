@@ -803,7 +803,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
                         unselectedLabelStyle: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.w400),
                         labelStyle: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600)),
+                            fontSize: 18, fontWeight: FontWeight.w500)),
                     GoodsFilterHeader(
                       filter1: _buildFilter1(),
                       filter2: _buildFilter2(),

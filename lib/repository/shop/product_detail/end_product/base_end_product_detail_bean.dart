@@ -2,7 +2,7 @@
  * @Description: 所有成品商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:17:00
- * @LastEditTime: 2020-11-06 10:34:47
+ * @LastEditTime: 2020-11-12 16:01:21
  */
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
@@ -19,6 +19,8 @@ abstract class BaseEndProductDetailBean
     extends AbstractBaseEndProductDetailBean {
   List<ProductSpecBean> specList;
   List<ProductSkuBean> skuList;
+
+  bool hasSelectedSpec = false;
   BaseEndProductDetailBean.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
     specList = CommonKit.parseList(json['spec_list'])
@@ -40,6 +42,35 @@ abstract class BaseEndProductDetailBean
     }).catchError((err) => err);
   }
 
+  List<bool> selectSpec() {
+    List<bool> list = [];
+    for (int i = 0; i < specList?.length; i++) {
+      ProductSpecBean e = specList[i];
+      bool flag = hasSelectSpecOption(e);
+      list.add(flag);
+      if (!flag) return list;
+    }
+    return list;
+  }
+
+  int get colorSpecCount {
+    ProductSpecBean e = specList?.firstWhere((e) => e?.name?.contains('颜色'),
+        orElse: () => null);
+    return e?.options?.length ?? 0;
+  }
+
+  bool hasSelectSpecOption(ProductSpecBean spec) {
+    bool flag = spec?.options
+            ?.firstWhere((e) => e?.isSelected == true, orElse: () => null)
+            ?.isSelected ??
+        false;
+    if (!flag) {
+      ToastKit.showInfo('请选择${spec?.name}');
+      return false;
+    }
+    return true;
+  }
+
   ProductSkuBean get currentSkuBean =>
       skuList?.firstWhere((element) => element?.skuName == selectedOptionsName,
           orElse: () => null);
@@ -48,10 +79,21 @@ abstract class BaseEndProductDetailBean
 
   int get picId => currentSkuBean?.picId;
 
-  String get mainImg => currentSkuBean?.image;
+  String get mainImg => CommonKit.isNullOrEmpty(currentSkuBean?.image)
+      ? cover
+      : currentSkuBean?.image;
+
+  String get specName {
+    if (CommonKit.isNullOrEmpty(specList)) return '请选择数量';
+    return '请选择' +
+        ((specList?.map((e) => e?.name)?.toList())?.join('/') ?? '') +
+        '/数量';
+  }
 
   String get selectedOptionsName =>
-      specList?.map((e) => e?.selectedOptionsName)?.toList()?.join(' ') ?? '';
+      (specList?.map((e) => e?.selectedOptionsName)?.toList()?.join(' ') ??
+          '') +
+      ' x$count';
 
   void selectSpecOption(ProductSpecBean spec, ProductSpecOptionBean option) {
     spec?.options?.forEach((el) {

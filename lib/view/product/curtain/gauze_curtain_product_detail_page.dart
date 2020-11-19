@@ -2,7 +2,7 @@
  * @Description: 窗纱商品详情页面
  * @Author: iamsmiling
  * @Date: 2020-10-31 15:35:02
- * @LastEditTime: 2020-11-05 14:38:33
+ * @LastEditTime: 2020-11-16 09:57:39
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -78,26 +78,27 @@ class _GauzeCurtainProductDetailPageState
                       slivers: [
                         ProductDetailProfile(productDetailBean),
                         GauzeCurtainProductAttrsSectionView(productDetailBean),
+
+                        // // RollingCurtainProductAttrsSectionView(ProductDetailBean),
+                        // // RollingCurtainProductAttrSectionView(ProductDetailBean),
+                        RelativeProductSectionView(relativeProductList),
                         SliverToBoxAdapter(
                           child: ProductDetailImgSectionView(
                               productDetailBean?.detailImgList),
                         ),
-                        // RollingCurtainProductAttrsSectionView(ProductDetailBean),
-                        // RollingCurtainProductAttrSectionView(ProductDetailBean),
-                        RelativeProductSectionView(relativeProductList),
-                        SliverToBoxAdapter(
-                          child: SceneDesignProductSectionView(
-                              sceneDesignProductList),
-                        ),
-                        SliverToBoxAdapter(
-                          child: SoftDesignProductSectionView(
-                            softDesignProductList,
-                            goodsId: productDetailBean?.goodsId,
-                          ),
-                        ),
+                        // SliverToBoxAdapter(
+                        //   child: SceneDesignProductSectionView(
+                        //       sceneDesignProductList),
+                        // ),
+                        // SliverToBoxAdapter(
+                        //   child: SoftDesignProductSectionView(
+                        //     softDesignProductList,
+                        //     goodsId: productDetailBean?.goodsId,
+                        //   ),
+                        // ),
 
-                        // ProductHtmlDescSectionView(
-                        //     productDetailBean?.description),
+                        // // ProductHtmlDescSectionView(
+                        // //     productDetailBean?.description),
                         SliverToBoxAdapter(
                           child: RecommendedProductSectionView(
                               recommendProductList),

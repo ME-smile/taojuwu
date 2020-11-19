@@ -20,7 +20,7 @@ class LoginViewModel with ChangeNotifier {
       : phoneController = TextEditingController(),
         pwdController = TextEditingController(),
         smsController = TextEditingController();
-
+  bool hasSendSms = false;
   String get tel {
     return phoneController?.text ?? '';
   }
@@ -28,6 +28,8 @@ class LoginViewModel with ChangeNotifier {
   String get pwd {
     return pwdController?.text ?? '';
   }
+
+  String get sms => smsController?.text ?? '';
 
   //电话号码是否有效
   bool get isValidTel {
@@ -64,21 +66,48 @@ class LoginViewModel with ChangeNotifier {
     * @Date: 2020-09-25 09:11:44
     */
   Future login(BuildContext ctx) {
-    if (!isValidTel) {
-      ToastKit.showErrorInfo(ErrMessage.INVALID_TEL);
-    }
-    if (isPwdEmpty) {
-      ToastKit.showErrorInfo(ErrMessage.EMPTY_PWD);
-    }
-    return OTPService.loginByPwd(params).then((ZYResponse response) {
-      if (response?.valid == true) {
-        UserProvider userProvider = Provider.of(ctx, listen: false);
-        userProvider.userInfo.saveUserInfo(response.data);
-        // 触发登录，舒信token
-        Application.eventBus.fire(LoginEvent(1));
-        RouteHandler.goHomePage(ctx);
+    if (!isPwdMode) {
+      if (!isValidTel) {
+        ToastKit.showErrorInfo(ErrMessage.INVALID_TEL);
+        return Future.value(false);
       }
-    });
+      if (isPwdEmpty) {
+        ToastKit.showErrorInfo(ErrMessage.EMPTY_PWD);
+        return Future.value(false);
+      }
+      return OTPService.loginByPwd(params).then((ZYResponse response) {
+        if (response?.valid == true) {
+          saveInfo(response, ctx);
+        }
+      });
+    } else {
+      if (!hasSendSms) {
+        ToastKit.showInfo('请先获取验证码哦');
+        return Future.value(false);
+      }
+      if (sms?.isNotEmpty != true) {
+        ToastKit.showErrorInfo('验证码不能为空哦');
+        return Future.value(false);
+      }
+      return OTPService.loginBySms(params: {'mobile': tel, 'mobile_code': sms})
+          .then((ZYResponse response) {
+        if (response?.valid == true) {
+          saveInfo(response, ctx);
+        } else {
+          ToastKit.showInfo(response?.message);
+        }
+      }).catchError((err) {
+        print('验证短信验证码失败');
+      });
+    }
+  }
+
+  void saveInfo(ZYResponse response, BuildContext ctx) {
+    UserProvider userProvider = Provider.of(ctx, listen: false);
+    userProvider.userInfo.saveUserInfo(response.data);
+    // 触发登录，舒信token
+    Application.eventBus.fire(LoginEvent(1));
+    RouteHandler.goHomePage(ctx);
   }
 
   //释放资源

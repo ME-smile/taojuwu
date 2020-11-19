@@ -2,7 +2,7 @@
  * @Description: 成品规格选择
  * @Author: iamsmiling
  * @Date: 2020-10-28 16:15:09
- * @LastEditTime: 2020-10-28 16:30:51
+ * @LastEditTime: 2020-11-13 16:08:22
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/base/spec/product_spec_bean.dart';
@@ -37,20 +37,14 @@ class EndProductSpecSelector extends StatelessWidget {
                 spacing: 12,
                 children: item?.options
                     ?.map((e) => Container(
-                          height: 24,
-                          child: AspectRatio(
-                            aspectRatio: 3.0,
-                            child: ZYActionChip(
-                              callback: () {
-                                setState(() {
-                                  bean?.selectSpecOption(list[index], e);
-                                });
-                              },
-                              bean: ActionBean.fromJson({
-                                'text': e?.name,
-                                'is_checked': e?.isSelected
-                              }),
-                            ),
+                          child: ZYActionChip(
+                            callback: () {
+                              setState(() {
+                                bean?.selectSpecOption(list[index], e);
+                              });
+                            },
+                            bean: ActionBean.fromJson(
+                                {'text': e?.name, 'is_checked': e?.isSelected}),
                           ),
                         ))
                     ?.toList(),

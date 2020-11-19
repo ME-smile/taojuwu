@@ -2,7 +2,7 @@
  * @Description: 商品列表片
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:10:18
- * @LastEditTime: 2020-11-06 13:29:29
+ * @LastEditTime: 2020-11-09 14:08:52
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
@@ -62,19 +62,14 @@ class ProductGridCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             // mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12)),
-                child: ZYNetImage(
-                  imgPath: bean?.cover ?? '',
-                  // width: (width - 20) / 2,
-                  // height: (width - 20) / 2,
-                  fit: BoxFit.cover,
-                  callback: () {
-                    jump(context, bean?.goodsType);
-                  },
-                ),
+              ZYNetImage(
+                imgPath: bean?.cover ?? '',
+                // width: (width - 20) / 2,
+                // height: (width - 20) / 2,
+                fit: BoxFit.cover,
+                callback: () {
+                  jump(context, bean?.goodsType);
+                },
               ),
               Expanded(
                 child: Row(

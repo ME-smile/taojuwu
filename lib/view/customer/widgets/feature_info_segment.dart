@@ -5,9 +5,13 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:taojuwu/config/sdk/amap.dart';
 
 import 'package:taojuwu/icon/ZYIcon.dart';
+import 'package:taojuwu/repository/location/location_bean.dart';
 import 'package:taojuwu/repository/user/customer_detail_model.dart';
+import 'package:taojuwu/services/otp_service.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
 
@@ -34,18 +38,32 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
   String cityName;
   String districtName;
   Map<String, String> params;
-
+  double longitude;
+  double latitude;
   String get address =>
       '${provinceName ?? ''}${cityName ?? ''}${districtName ?? ''}';
-
+  LocationBean locationDataBean;
   @override
   void initState() {
     super.initState();
     model = widget.model;
     params = widget.params;
-    provinceName = model?.provinceName;
-    cityName = model?.cityName;
-    districtName = model?.districtName;
+    getLocation().then((LocationBean locationBean) {
+      provinceName = locationBean?.province;
+      cityName = locationBean?.city;
+      districtName = locationBean?.district;
+      locationDataBean = locationBean;
+      print(locationDataBean?.data);
+    }).whenComplete(() {
+      // ignore: unnecessary_statements
+      mounted ? setState(() {}) : '';
+    });
+    if (model != null) {
+      provinceName = model?.provinceName;
+      cityName = model?.cityName;
+      districtName = model?.districtName;
+    } else {}
+
     if (model == null) {
       enterTime = DateUtil.formatDateMs(DateTime.now().millisecondsSinceEpoch,
           format: 'yyyy-MM-dd HH:mm:ss');
@@ -55,6 +73,50 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
     }
 
     addressInput = TextEditingController(text: model?.detailAddress);
+  }
+
+  Future<LocationBean> getLocation() async {
+    LocationBean locationBean;
+
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await Geolocator.openLocationSettings();
+
+      if (!serviceEnabled) return Future.value(null);
+    }
+    LocationPermission permissionStatus = await Geolocator.checkPermission();
+    if (permissionStatus == LocationPermission.denied ||
+        permissionStatus == LocationPermission.deniedForever) {
+      permissionStatus = await Geolocator.requestPermission();
+
+      if (permissionStatus != LocationPermission.whileInUse ||
+          permissionStatus != LocationPermission.always)
+        return Future.value(null);
+    }
+
+    try {
+      Position locationData = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation,
+          forceAndroidLocationManager: true);
+      await OTPService.ipLocate(context, params: {
+        'key': Amap.WEB_KEY,
+      });
+      locationBean = await OTPService.locate(context, params: {
+        'key': Amap.WEB_KEY,
+        // 'location': '120.79996,30.6871',
+        'location': '${locationData.longitude},${locationData.latitude}'
+        // 'radius': 1000,
+        // 'batch':false,
+        // 'extensions':'all',
+      });
+      print(locationBean);
+    } catch (err) {
+      print('获取定位出错');
+      print(err);
+    } finally {
+      //释放资源
+    }
+    return Future.value(locationBean);
   }
 
   @override
@@ -217,6 +279,9 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
                       });
                     }).catchError((err) => err);
                   }, trailText: address),
+                  // Text('${locationDataBean?.data}'),
+                  // Text('经度:$longitude'),
+                  // Text('纬度:$latitude'),
                   Divider(),
                   TextField(
                     controller: addressInput,

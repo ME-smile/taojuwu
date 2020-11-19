@@ -1,5 +1,5 @@
 /*
- * @Description: 同料商品视图
+ * @Description: 搭配精选视图
  * @Author: iamsmiling
  * @Date: 2020-10-09 13:05:48
  * @LastEditTime: 2020-10-16 09:17:55
@@ -45,7 +45,7 @@ class RelatedGoodsSectionView extends StatelessWidget {
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TitleTip(title: '同料商品'),
+                      TitleTip(title: '搭配精选'),
                       TrailingTip(
                         callback: () => showRelateGoodsPopupWindow(
                             context, relatedGoodsList),

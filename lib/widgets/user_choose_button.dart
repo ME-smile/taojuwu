@@ -2,7 +2,7 @@
  * @Description: 选择用户的按钮
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-06 14:32:11
+ * @LastEditTime: 2020-11-09 09:24:03
  */
 import 'dart:async';
 
@@ -38,7 +38,7 @@ class _UserChooseButtonState extends State<UserChooseButton> {
   @override
   void dispose() {
     _streamSubscription?.cancel();
-    targetClient = null;
+    // targetClient = null;
     super.dispose();
   }
 

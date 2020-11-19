@@ -17,7 +17,7 @@ import 'repository/app_info/app_info_model.dart';
 import 'services/otp_service.dart';
 
 class Application {
-  static fluro.Router router;
+  static fluro.FluroRouter router;
   static BuildContext context;
   static SharedPreferences sp;
   static String deviceInfo;

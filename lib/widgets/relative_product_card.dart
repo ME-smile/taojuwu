@@ -2,7 +2,7 @@
  * @Description: 相关产品卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:40:20
- * @LastEditTime: 2020-11-05 10:45:17
+ * @LastEditTime: 2020-11-09 11:00:07
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';

@@ -2,7 +2,7 @@
  * @Description: 卷帘商品修改 宽高
  * @Author: iamsmiling
  * @Date: 2020-10-28 10:19:33
- * @LastEditTime: 2020-10-31 17:58:59
+ * @LastEditTime: 2020-11-12 17:37:54
  */
 import 'dart:io';
 
@@ -11,9 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/providers/theme_provider.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/base_design_product_detail_bean.dart';
 import 'package:taojuwu/view/product/dialog/widgets/edit_curtain_deltaY_android_view.dart';
 import 'package:taojuwu/view/product/dialog/widgets/edit_rolling_curtain_size_android_view.dart';
 
+import 'widgets/cofirm_curtain_measure_data_view.dart';
 import 'widgets/edit_curtain_deltaY_ios_view.dart';
 
 Future setSize(BuildContext ctx, BaseProductDetailBean bean) {
@@ -95,5 +97,21 @@ Future setDeltaY(BuildContext context, BaseCurtainProductDetailBean bean) {
       context: context,
       builder: (BuildContext context) {
         return EditCurtainDeltaYIosView(bean);
+      });
+}
+
+Future confirmCurtainMeasureData(
+    BuildContext context, BaseDesignProductDetailBean bean,
+    {FutureCallback callback}) {
+  return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          content: CorfirmCurtainMeasureDataView(
+            count: bean?.useDefaultSizeCurtainCount,
+            callback: callback,
+          ),
+        );
       });
 }

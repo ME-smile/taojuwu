@@ -2,7 +2,7 @@
  * @Description: 成品详情弹窗视图
  * @Author: iamsmiling
  * @Date: 2020-10-28 16:03:14
- * @LastEditTime: 2020-11-04 09:36:58
+ * @LastEditTime: 2020-11-12 15:28:24
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
@@ -35,7 +35,7 @@ class _EndProductDetailModalState extends State<EndProductDetailModal> {
                 child: AspectRatio(
                   aspectRatio: 1,
                   child: ZYNetImage(
-                    imgPath: bean?.currentSkuBean?.image,
+                    imgPath: bean?.mainImg,
                     needAnimation: false,
                   ),
                 ),

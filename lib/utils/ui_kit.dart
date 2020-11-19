@@ -44,7 +44,9 @@ class UIKit {
   }
 
   static String getNetworkImgPath(String path) {
-    return path?.contains('http') == true ? path : '${Constants.HOST}/$path';
+    RegExp reg = new RegExp(r"http[s](0,1)");
+    print(reg.hasMatch(path));
+    return reg.hasMatch(path) ? path : Constants.HOST + '/$path';
   }
 
   static String getGreetWord(DateTime time) {

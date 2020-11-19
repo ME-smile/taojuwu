@@ -233,7 +233,7 @@ class _ProfilePageState extends State<ProfilePage> {
               title: '重置密码',
               showDivider: false,
               callback: () {
-                RouteHandler.goResetPwdPage(context);
+                RouteHandler.goModifyPwdPage(context);
               },
             ),
             VSpacing(20),

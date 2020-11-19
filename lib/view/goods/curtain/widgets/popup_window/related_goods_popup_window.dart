@@ -1,8 +1,8 @@
 /*
- * @Description: //同料商品弹窗
+ * @Description: //搭配精选弹窗
  * @Author: iamsmiling
  * @Date: 2020-10-10 13:13:13
- * @LastEditTime: 2020-10-16 10:28:44
+ * @LastEditTime: 2020-11-09 11:05:17
  */
 import 'package:flutter/cupertino.dart';
 import 'package:taojuwu/repository/shop/curtain_product_list_model.dart';
@@ -11,7 +11,7 @@ import 'package:taojuwu/view/goods/curtain/widgets/sku_attr_picker.dart';
 
 /*
  * @Author: iamsmiling
- * @description: 同料商品弹窗 闯入一个context 和 同料商品列表
+ * @description: 搭配精选弹窗 闯入一个context 和 搭配精选列表
  * @param : 
  * @return {type} 
  * @Date: 2020-10-10 13:32:30
@@ -22,7 +22,7 @@ Future showRelateGoodsPopupWindow(
       context: context,
       builder: (BuildContext context) {
         return SkuAttrPicker(
-          title: '同料商品',
+          title: '搭配精选',
           height: 720,
           showButton: false,
           child: GridView.builder(

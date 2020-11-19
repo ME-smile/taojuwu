@@ -2,14 +2,15 @@
  * @Description: 软装方案卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:37:53
- * @LastEditTime: 2020-11-06 10:54:13
+ * @LastEditTime: 2020-11-13 09:42:33
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/repository/shop/product_detail/design/soft_design_product_detail_bean.dart';
+import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/product/popup_modal/pop_up_modal.dart';
 import 'package:taojuwu/widgets/relative_product_card.dart';
-import 'package:taojuwu/widgets/zy_netImage.dart';
+import 'package:taojuwu/widgets/zy_photo_view.dart';
 import 'package:taojuwu/widgets/zy_raised_button.dart';
 
 import 'package:taojuwu/utils/extensions/object_kit.dart';
@@ -26,9 +27,15 @@ class SoftDesignProductCard extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
-            ZYNetImage(
-              imgPath: bean.picture,
+            ZYPhotoView(
+              UIKit.getNetworkImgPath(bean.picture),
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.fitWidth,
+              bigImageUrl: UIKit.getNetworkImgPath(bean?.bigPicture),
             ),
+            // ZYNetImage(
+            //   imgPath: bean.picture,
+            // ),
             Padding(
               padding: EdgeInsets.only(top: 12),
               child: Row(

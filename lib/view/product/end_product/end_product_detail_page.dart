@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/end_product/base_end_product_detail_bean.dart';
 import 'package:taojuwu/view/product/base/base_product_detail_state.dart';
 import 'package:taojuwu/view/product/end_product/widgets/end_product_attr_action_bar.dart';
+import 'package:taojuwu/view/product/mixin/product_attr_holder.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_footer.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_header.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_profile.dart';
@@ -29,7 +30,8 @@ class EndProductDetailPage extends BaseProductDetailPage {
 }
 
 class _EndProductDetailPageState
-    extends BaseProductDetailPageState<EndProductDetailPage> {
+    extends BaseProductDetailPageState<EndProductDetailPage>
+    with ProductAttrHolder {
   // 发起请求
 
   @override
@@ -39,6 +41,7 @@ class _EndProductDetailPageState
         isLoading = false;
       });
     }).then((_) {
+      fetchProductAttrsData();
       // ProductDetailBean?.fetchRoomAttrData();
     });
   }

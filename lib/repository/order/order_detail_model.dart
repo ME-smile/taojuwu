@@ -270,7 +270,9 @@ class OrderDetailModel {
 
     orderStatus = status is int
         ? status
-        : status?.isEmpty == true ? -1 : int.parse(status);
+        : status?.isEmpty == true
+            ? -1
+            : int.parse(status);
     payStatus = json['pay_status'];
     shippingStatus = json['shipping_status'];
     reviewStatus = json['review_status'];

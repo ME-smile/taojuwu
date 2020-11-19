@@ -2,7 +2,7 @@
  * @Description: 商品详情数据转态的基类
  * @Author: iamsmiling
  * @Date: 2020-10-29 14:10:44
- * @LastEditTime: 2020-11-04 12:30:42
+ * @LastEditTime: 2020-11-11 17:55:09
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
@@ -55,7 +55,7 @@ class BaseProductDetailPageState<T> extends State<BaseProductDetailPage>
 
   @override
   void didPopNext() {
-    if (mounted) setState(() {});
+    if (mounted && ModalRoute.of(context).isFirst) setState(() {});
     super.didPopNext();
   }
 

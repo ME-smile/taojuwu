@@ -90,7 +90,7 @@ class _LikeButtonState extends State<LikeButton> {
 
   Future like() {
     if (clientId == null) {
-      ToastKit.showInfo('请先选择客户哦');
+      ToastKit.showInfo('请先添加客户哦');
       return Future.value(false);
     }
     return hasLiked ? _dislike() : _like();

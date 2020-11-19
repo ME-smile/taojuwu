@@ -1,38 +1,22 @@
 /*
- * @Description: 购物车
+ * @Description: 购物车商品
  * @Author: iamsmiling
- * @Date: 2020-11-05 14:25:41
- * @LastEditTime: 2020-11-05 17:51:04
+ * @Date: 2020-11-09 16:02:03
+ * @LastEditTime: 2020-11-09 16:03:10
  */
-import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
-import 'package:taojuwu/repository/shop/product_detail/abstract/multi_product_detail_bean.dart';
-import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/detail/abstract/multi_product_detail_bean.dart';
 
 class CartProductDetailBean extends MultiProductDetailBean {
   @override
-  Future addToCart(BuildContext context, {Function callback}) {
-    return Future.value(false);
-  }
+  Map get attrArgs => throw UnimplementedError();
 
   @override
-  Map get attrArgs => null;
+  get cartArgs => throw UnimplementedError();
 
   @override
-  get cartArgs => null;
+  ProductType get productType => throw UnimplementedError();
 
   @override
-  ProductType get productType => ProductType.CartProductType;
-
-  @override
-  double get totalPrice =>
-      goodsList
-          ?.where((e) => e?.isChecked)
-          ?.toList()
-          ?.map((e) => e?.totalPrice ?? 0.0)
-          ?.reduce((a, b) => a + b) ??
-      0.0;
-  CartProductDetailBean(List<SingleProductDetailBean> list) {
-    goodsList = list;
-  }
+  double get totalPrice => throw UnimplementedError();
 }

@@ -1,8 +1,8 @@
 /*
- * @Description: 同料商品视图
+ * @Description: 搭配精选视图
  * @Author: iamsmiling
  * @Date: 2020-10-09 13:05:48
- * @LastEditTime: 2020-11-05 10:48:20
+ * @LastEditTime: 2020-11-16 09:55:56
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -18,7 +18,7 @@ class RelativeProductSectionView extends StatelessWidget {
   final List<SingleProductDetailBean> list;
   const RelativeProductSectionView(this.list, {Key key}) : super(key: key);
 
-  int get len => (list ?? []).length;
+  int get len => list?.length ?? 0;
 
   // 每三个一组--->
 
@@ -45,7 +45,7 @@ class RelativeProductSectionView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TitleTip(
-                        title: '同料商品',
+                        title: '搭配精选',
                         tip: '(${list?.length ?? 0})',
                       ),
                       TrailingTip(

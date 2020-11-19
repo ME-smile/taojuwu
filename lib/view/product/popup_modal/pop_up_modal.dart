@@ -63,7 +63,7 @@ Future showRelativeProductModalPopup(
       context: context,
       builder: (BuildContext context) {
         return SkuAttrPicker(
-          title: '同料商品',
+          title: '搭配精选',
           height: UIKit.height(1200),
           showButton: false,
           child: Container(

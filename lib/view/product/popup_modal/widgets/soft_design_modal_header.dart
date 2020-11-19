@@ -2,7 +2,7 @@
  * @Description: 软装方案弹窗详情头部
  * @Author: iamsmiling
  * @Date: 2020-10-23 15:30:27
- * @LastEditTime: 2020-11-04 12:18:51
+ * @LastEditTime: 2020-11-11 14:02:23
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
@@ -26,6 +26,7 @@ class SoftDesignModalHeader extends StatelessWidget {
               child: ZYPhotoView(
                 UIKit.getNetworkImgPath(bean?.picture),
                 tag: bean?.picture,
+                fit: BoxFit.fitHeight,
               ),
             ),
           ),

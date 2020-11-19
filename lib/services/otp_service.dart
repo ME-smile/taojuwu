@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_upgrade/flutter_app_upgrade.dart';
 import 'package:taojuwu/repository/app_info/app_info_model.dart';
+import 'package:taojuwu/repository/location/location_bean.dart';
 import 'package:taojuwu/repository/logistics/logistics_data_model.dart';
 import 'package:taojuwu/repository/order/measure_data_model.dart';
 
@@ -231,12 +232,11 @@ class OTPService {
     return ZYResponse.fromJson(response.data);
   }
 
-  static Future<ZYResponse> loginBySms(
-      BuildContext context, Map<String, String> params) async {
+  static Future<ZYResponse> loginBySms({Map<String, String> params}) async {
     Response response =
-        await xhr.get(context, ApiPath.loginBySms, params: params ?? {});
-
-    return ZYResponse.fromJson(response.data);
+        await xhr.post(ApiPath.loginBySms, formdata: params ?? {});
+    print(response?.data);
+    return ZYResponse.fromJsonWithData(response.data);
   }
 
   static Future<ZYResponse> loginByPwd(Map<String, dynamic> params,
@@ -572,6 +572,12 @@ class OTPService {
     return ZYResponse<dynamic>.fromJsonWithData(response.data);
   }
 
+  static Future<ZYResponse<dynamic>> modifyPassword(
+      {Map<String, dynamic> params}) async {
+    Response response = await xhr.post(ApiPath.modifyPassword, data: params);
+    return ZYResponse<dynamic>.fromJsonWithData(response.data);
+  }
+
   static Future<ZYResponse<dynamic>> resetPwd(
       {Map<String, dynamic> params}) async {
     Response response = await xhr.post(ApiPath.resetPwd, data: params);
@@ -698,5 +704,41 @@ class OTPService {
     Response response =
         await xhr.post(ApiPath.hasCollect, formdata: params ?? {});
     return ZYResponse.fromJsonWithData(response?.data);
+  }
+
+  static Future<LocationBean> locate(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.location, params: params);
+
+    Map<String, dynamic> json = response?.data;
+    Map<String, dynamic> map =
+        ((json['regeocode'] ?? {})['addressComponent']) ?? {};
+    map.addAll(params);
+    print(map);
+    return LocationBean.fromJson(map);
+  }
+
+  static Future ipLocate(BuildContext context,
+      {Map<String, dynamic> params}) async {
+    Response response =
+        await xhr.get(context, ApiPath.location, params: params);
+    print(response?.data);
+  }
+
+  static Future<ZYResponse> sendSms({Map<String, dynamic> params}) async {
+    Response response = await xhr.post(ApiPath.sendSms, formdata: params);
+    ZYResponse zyResponse = ZYResponse.fromJsonWithData(response?.data);
+    if (zyResponse?.valid == true) {
+      return zyResponse;
+    } else {
+      throw Exception('验证码发送失败--------');
+    }
+  }
+
+  static Future validateSms({Map<String, dynamic> params}) async {
+    print(params);
+    Response response = await xhr.post(ApiPath.validateSms, formdata: params);
+    print(response?.data);
   }
 }

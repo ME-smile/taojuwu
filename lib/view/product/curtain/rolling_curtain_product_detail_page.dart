@@ -2,7 +2,7 @@
  * @Description: 卷帘详情
  * @Author: iamsmiling
  * @Date: 2020-10-26 14:14:35
- * @LastEditTime: 2020-11-04 14:23:53
+ * @LastEditTime: 2020-11-16 09:55:03
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -77,24 +77,24 @@ class _RollingCurtainProductDetailPageState
                         ProductDetailProfile(productDetailBean),
                         RollingCurtainProductAttrsSectionView(
                             productDetailBean),
-                        // RollingCurtainProductAttrSectionView(ProductDetailBean),
+                        // // RollingCurtainProductAttrSectionView(ProductDetailBean),
                         RelativeProductSectionView(relativeProductList),
-                        SliverToBoxAdapter(
-                          child: SceneDesignProductSectionView(
-                              sceneDesignProductList),
-                        ),
+                        // SliverToBoxAdapter(
+                        //   child: SceneDesignProductSectionView(
+                        //       sceneDesignProductList),
+                        // ),
 
-                        SliverToBoxAdapter(
-                          child: SoftDesignProductSectionView(
-                            softDesignProductList,
-                            goodsId: productDetailBean?.goodsId,
-                          ),
-                        ),
+                        // SliverToBoxAdapter(
+                        //   child: SoftDesignProductSectionView(
+                        //     softDesignProductList,
+                        //     goodsId: productDetailBean?.goodsId,
+                        //   ),
+                        // ),
                         SliverToBoxAdapter(
                           child: ProductDetailImgSectionView(
                               productDetailBean?.detailImgList),
                         ),
-                        // ProductHtmlDescSectionView(ProductDetailBean?.description),
+
                         SliverToBoxAdapter(
                           child: RecommendedProductSectionView(
                               recommendProductList),

@@ -9,7 +9,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
-import 'package:flutter_bugly/flutter_bugly.dart';
+// import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
@@ -24,7 +24,7 @@ import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'application.dart';
-import 'repository/user/user_info_model.dart';
+// import 'repository/user/user_info_model.dart';
 import 'services/base/xhr.dart';
 
 class App extends StatefulWidget {
@@ -61,15 +61,15 @@ class _AppState extends State<App> {
 
   // 腾讯bugly插件
   void buglyInit() async {
-    FlutterBugly.init(androidAppId: '0da7f235c9', iOSAppId: '9e3d92e673');
-    UserProvider provider = Provider.of(context, listen: false);
-    UserInfo user = provider.userInfo;
-    FlutterBugly.setUserId(user.nickName);
-    FlutterBugly.putUserData(key: 'shop_name', value: user?.shopName);
-    FlutterBugly.putUserData(key: 'shop_id', value: '${user?.shopId}');
-    FlutterBugly.putUserData(key: 'user_name', value: user?.nickName);
-    FlutterBugly.putUserData(key: 'user_tel', value: user?.userTel);
-    FlutterBugly.setUserTag(9527);
+    // FlutterBugly.init(androidAppId: '0da7f235c9', iOSAppId: '9e3d92e673');
+    // UserProvider provider = Provider.of(context, listen: false);
+    // UserInfo user = provider.userInfo;
+    // FlutterBugly.setUserId(user.nickName);
+    // FlutterBugly.putUserData(key: 'shop_name', value: user?.shopName);
+    // FlutterBugly.putUserData(key: 'shop_id', value: '${user?.shopId}');
+    // FlutterBugly.putUserData(key: 'user_name', value: user?.nickName);
+    // FlutterBugly.putUserData(key: 'user_tel', value: user?.userTel);
+    // FlutterBugly.setUserTag(9527);
   }
 
   @override

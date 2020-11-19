@@ -2,7 +2,7 @@
  * @Description: 加入购物车按钮
  * @Author: iamsmiling
  * @Date: 2020-10-28 15:04:13
- * @LastEditTime: 2020-11-06 10:08:07
+ * @LastEditTime: 2020-11-09 09:26:54
  */
 import 'dart:async';
 
@@ -70,13 +70,13 @@ class _CartButtonState extends State<CartButton> {
   @override
   void dispose() {
     _subscription?.cancel();
-    count = 0;
+    // count = 0;
     super.dispose();
   }
 
   Future _jump(BuildContext context) {
     if (clientId == null) {
-      ToastKit.showInfo('请先选择客户哦');
+      ToastKit.showInfo('请先添加客户哦');
       return Future.value(false);
     }
     return RouteHandler.goCartPage(context, clientId: clientId);

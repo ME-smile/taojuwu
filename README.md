@@ -2,7 +2,7 @@
  * @Description: //TODO
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-09-24 15:56:50
+ * @LastEditTime: 2020-11-09 17:43:43
 -->
 # taojuwu
 
@@ -26,3 +26,10 @@ vivo 1.0.1 2002
 
 
 1.1.5 管理后台
+
+
+flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --no-tree-shake-icons -v
+
+
+
+sudo gem install cocoapods --pre -n /usr/local/bin

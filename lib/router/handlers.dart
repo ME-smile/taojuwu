@@ -40,6 +40,7 @@ import 'package:taojuwu/view/product/end_product/end_product_detail_page.dart';
 import 'package:taojuwu/view/product/scene_design/scene_design_page.dart';
 import 'package:taojuwu/view/profile/profile_page.dart';
 import 'package:taojuwu/view/profile/subPages/forget_pwd_page.dart';
+import 'package:taojuwu/view/profile/subPages/modify_pwd_page.dart';
 import 'package:taojuwu/view/profile/subPages/reset_pwd_page.dart';
 import 'package:taojuwu/view/profile/subPages/submit_success_page.dart';
 import 'package:taojuwu/view/profile/subPages/switch_account_page.dart';
@@ -535,15 +536,30 @@ class RouteHandler {
     return _jumpTo(context, '${Routes.collectList}?id=$clientId&name=$name');
   }
 
-  static Handler resetPwd = Handler(
+  static Handler modifyPwd = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    return ResetPwdPage();
+    return ModifyPwdPage();
   });
 
-  static Future goResetPwdPage(
+  static Future goModifyPwdPage(
     BuildContext context,
   ) {
-    return _jumpTo(context, Routes.resetPwd);
+    return _jumpTo(context, Routes.modifyPwd);
+  }
+
+  static Handler resetPwd = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    String tel = params['tel']?.first;
+    String code = params['code']?.first;
+    return ResetPwdPage(
+      tel: tel,
+      code: code,
+    );
+  });
+
+  static Future goResetPwdPage(BuildContext context,
+      {String tel, String code}) {
+    return _jumpTo(context, '${Routes.resetPwd}?tel=$tel&code=$code');
   }
 
   static Handler version = Handler(
@@ -615,7 +631,7 @@ class RouteHandler {
   });
   static Future goEndProductDetail(BuildContext context, int id) {
     return _jumpTo(context, '${Routes.endProductDetail}?id=$id',
-        maintainState: false);
+        maintainState: true);
   }
 
   static Handler editGoodsAttr = Handler(

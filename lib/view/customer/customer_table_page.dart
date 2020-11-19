@@ -47,7 +47,7 @@ class CustomerTablePage extends StatelessWidget {
         if (flag == 1) {
           Application.eventBus.fire(SelectClientEvent(
               TargetClient.fromCategoryCustomerModelBean(bean)));
-          Navigator.of(context).pop();
+          Navigator.of(context)..pop()..pop();
         } else {
           RouteHandler.goCustomerDetailPage(context, id);
         }

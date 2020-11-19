@@ -22,6 +22,7 @@ class CartProvider with ChangeNotifier {
               CartCategory('抱枕', 0),
               CartCategory('沙发', 0),
               CartCategory('床品', 0),
+              CartCategory('饰品', 0),
             ];
 
   List<List<CartModel>> modelsList = [];
@@ -75,11 +76,6 @@ class CartProvider with ChangeNotifier {
   List<Map> get checkedModels {
     final selectedModels =
         models?.where((item) => item.isChecked == true)?.toList()?.reversed;
-    print(selectedModels
-        ?.map((item) => item?.toString())
-        ?.toList()
-        ?.map((item) => Map.castFrom(jsonDecode(item)))
-        ?.toList());
 
     return selectedModels
         ?.map((item) => item?.toString())

@@ -42,7 +42,7 @@ class SceneDesignRelativeProductSectionView extends StatelessWidget {
                   crossAxisCount: 3,
                   childAspectRatio: 0.75,
                   crossAxisSpacing: 10,
-                  mainAxisSpacing: 8),
+                  mainAxisSpacing: 10),
               itemBuilder: (BuildContext context, int index) {
                 // return Text('12345678');
                 return RelativeProductCard(goodsList[index]);

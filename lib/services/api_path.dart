@@ -81,7 +81,7 @@ class ApiPath {
 
   static const String feedback = '/api/goods/addGoodsConsult';
 
-  static const String resetPwd = '/api/member/modifyPassword';
+  static const String modifyPassword = '/api/member/modifyPassword';
 
   static const String windowStyle = '/api/order/wcCategory';
 
@@ -115,4 +115,14 @@ class ApiPath {
   static const String addCartList = '/api/goods/addCartList';
 
   static const String hasCollect = '/api/goods/whetherCollection';
+
+  static const String location = 'https://restapi.amap.com/v3/geocode/regeo';
+
+  static const String ipLocation = 'https://restapi.amap.com/v3/ip';
+
+  static const String sendSms = '/api/login/sendBusinessesPhoneCode';
+
+  static const String validateSms = '/api/login/checkPhoneCode';
+
+  static const String resetPwd = '/api/login/passwordReset';
 }

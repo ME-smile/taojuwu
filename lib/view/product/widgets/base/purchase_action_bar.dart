@@ -2,10 +2,12 @@
  * @Description: //加入购物车 立即购买按钮
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:17:00
- * @LastEditTime: 2020-11-05 09:37:57
+ * @LastEditTime: 2020-11-12 17:38:27
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_prodcut_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/design/base_design_product_detail_bean.dart';
+import 'package:taojuwu/view/product/dialog/dialog.dart';
 
 class PurchaseActionBar extends StatelessWidget {
   final AbstractProductDetailBean bean;
@@ -49,7 +51,19 @@ class PurchaseActionBar extends StatelessWidget {
           ),
           Expanded(
               child: GestureDetector(
-                onTap: () => bean?.buyAction(context, callback: callback),
+                onTap: () {
+                  if (bean is BaseDesignProductDetailBean &&
+                      (bean as BaseDesignProductDetailBean)
+                              .useDefaultSizeCurtainCount >
+                          0) {
+                    confirmCurtainMeasureData(context, bean,
+                        callback: () =>
+                            bean?.buyAction(context, callback: callback));
+                  } else {
+                    bean?.buyAction(context, callback: callback);
+                  }
+                },
+                // onTap: () => bean?.buyAction(context, callback: callback),
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 5),
                   decoration: BoxDecoration(

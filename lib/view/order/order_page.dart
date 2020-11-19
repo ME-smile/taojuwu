@@ -8,7 +8,6 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/repository/order/order_model.dart';
-import 'package:taojuwu/view/order/order_detail_page.dart';
 import 'package:taojuwu/view/order/widgets/measure_order_card.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -642,7 +641,6 @@ class _OrderPageState extends State<OrderPage>
           controller: _tabController,
           children: List.generate(tabs.length ?? 0, (int i) {
             params[i]['order_time'] = currentTimePeriodOption['index'];
-            print(params[i]);
 
             return OrderTabView(
               tab: i,
@@ -965,44 +963,55 @@ class _OrderTabViewState extends State<OrderTabView>
                       itemBuilder: (BuildContext context, int i) {
                         OrderModelData item = models[i];
                         Widget child;
-                        if (item?.hasMoreThanTwoItems == true) {
-                          child = item?.isMeasureOrder == true
-                              ? MeasureOrderCard(
-                                  orderModelData: item,
-                                  canClick: true,
-                                  orderStatus: orderStatus,
-                                )
-                              : OrderCard(
-                                  item,
-                                  canClick: true,
-                                  orderStatus: orderStatus,
-                                );
-                        } else {
-                          child = OpenContainer<bool>(
-                            transitionDuration: Constants.TRANSITION_DURATION,
-                            closedBuilder:
-                                (BuildContext context, VoidCallback _) {
-                              return item?.isMeasureOrder == true
-                                  ? MeasureOrderCard(
-                                      orderModelData: item,
-                                      orderStatus: orderStatus,
-                                    )
-                                  : OrderCard(
-                                      item,
-                                      orderStatus: orderStatus,
-                                    );
-                            },
-                            closedElevation: 0,
-                            openElevation: 0,
-                            openBuilder:
-                                (BuildContext context, VoidCallback _) {
-                              return OrderDetailPage(
-                                id: item?.orderId,
+                        child = item?.isMeasureOrder == true
+                            ? MeasureOrderCard(
+                                orderModelData: item,
+                                canClick: true,
+                                orderStatus: orderStatus,
+                              )
+                            : OrderCard(
+                                item,
+                                canClick: true,
                                 orderStatus: orderStatus,
                               );
-                            },
-                          );
-                        }
+                        // if (item?.hasMoreThanTwoItems == true) {
+                        //   child = item?.isMeasureOrder == true
+                        //       ? MeasureOrderCard(
+                        //           orderModelData: item,
+                        //           canClick: true,
+                        //           orderStatus: orderStatus,
+                        //         )
+                        //       : OrderCard(
+                        //           item,
+                        //           canClick: true,
+                        //           orderStatus: orderStatus,
+                        //         );
+                        // } else {
+                        // child = OpenContainer<bool>(
+                        //   transitionDuration: Constants.TRANSITION_DURATION,
+                        //   closedBuilder:
+                        //       (BuildContext context, VoidCallback _) {
+                        //     return item?.isMeasureOrder == true
+                        //         ? MeasureOrderCard(
+                        //             orderModelData: item,
+                        //             orderStatus: orderStatus,
+                        //           )
+                        //         : OrderCard(
+                        //             item,
+                        //             orderStatus: orderStatus,
+                        //           );
+                        //   },
+                        //   closedElevation: 0,
+                        //   openElevation: 0,
+                        //   openBuilder:
+                        //       (BuildContext context, VoidCallback _) {
+                        //     return OrderDetailPage(
+                        //       id: item?.orderId,
+                        //       orderStatus: orderStatus,
+                        //     );
+                        //   },
+                        // );
+                        // }
                         return AnimationConfiguration.staggeredList(
                             duration: const Duration(milliseconds: 375),
                             position: i,

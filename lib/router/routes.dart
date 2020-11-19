@@ -38,7 +38,7 @@ class Routes {
   static const String editOpenMode = '/editOpenMode';
   static const String collectList = '/collectList';
 
-  static const String resetPwd = '/resetPwd';
+  static const String modifyPwd = '/modifyPwd';
   static const String forgetPwd = 'forgetPwd';
   static const String version = '/version';
   static const String mainfest = '/mainfest';
@@ -59,7 +59,9 @@ class Routes {
   static const String gauzeCurtainProductDetail = '/gauzeCurtainProductDetail';
   static const String sceneDesign = '/sceneDesign';
 
-  static void configureRoutes(fluro.Router router) {
+  static const String resetPwd = '/resetPwd';
+
+  static void configureRoutes(fluro.FluroRouter router) {
     router.notFoundHandler = new fluro.Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
       return Scaffold(
@@ -100,7 +102,7 @@ class Routes {
     router.define(measureDataPreview, handler: RouteHandler.measureDataPreview);
     router.define(editOpenMode, handler: RouteHandler.editOpenMode);
     router.define(collectList, handler: RouteHandler.collectList);
-    router.define(resetPwd, handler: RouteHandler.resetPwd);
+    router.define(modifyPwd, handler: RouteHandler.modifyPwd);
     router.define(version, handler: RouteHandler.version);
     router.define(refund, handler: RouteHandler.refund);
     router.define(forgetPwd, handler: RouteHandler.forgetPwd);
@@ -117,5 +119,6 @@ class Routes {
     router.define(gauzeCurtainProductDetail,
         handler: RouteHandler.gauzeCurtainProductDetail);
     router.define(sceneDesign, handler: RouteHandler.sceneDesign);
+    router.define(resetPwd, handler: RouteHandler.resetPwd);
   }
 }

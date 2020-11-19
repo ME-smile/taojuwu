@@ -2,10 +2,11 @@
  * @Description: 商品的抽象类
  * @Author: iamsmiling
  * @Date: 2020-11-05 09:34:22
- * @LastEditTime: 2020-11-05 16:11:32
+ * @LastEditTime: 2020-11-10 15:57:35
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/view/order/submit_order_page.dart';
@@ -16,13 +17,13 @@ abstract class AbstractProductDetailBean extends AbstractBaseProductDetailBean {
   double get totalPrice;
 
   Future addToCartAction(BuildContext context, {Function callback}) {
-    return isClientIdNull
+    return isClientIdNull(context)
         ? Future.value(false)
         : addToCart(context, callback: callback);
   }
 
   Future buyAction(BuildContext context, {Function callback}) {
-    return isClientIdNull
+    return isClientIdNull(context)
         ? Future.value(false)
         : buy(context, callback: callback);
   }
@@ -49,9 +50,10 @@ abstract class AbstractProductDetailBean extends AbstractBaseProductDetailBean {
       productType == ProductType.SceneDesignProductType ||
       productType == ProductType.SoftDesignProductType;
 
-  bool get isClientIdNull {
+  bool isClientIdNull(BuildContext context) {
     if (clientId == null) {
-      ToastKit.showInfo('请先选择客户哦');
+      ToastKit.showInfo('请先添加客户哦');
+      RouteHandler.goCustomerEditPage(context, title: '添加客户');
       return true;
     }
     return false;

@@ -74,11 +74,13 @@ class ZYPhotoView extends StatelessWidget {
   final double height;
   final String tag;
   final BoxFit fit;
+  final String bigImageUrl;
   const ZYPhotoView(this.imgUrl,
       {Key key,
       this.width: 120,
-      this.height: 120,
+      this.height,
       this.tag,
+      this.bigImageUrl,
       this.fit: BoxFit.fill})
       : super(key: key);
 
@@ -93,14 +95,15 @@ class ZYPhotoView extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => ZYPhotoPreviewer(
-                  heroTag: tag ?? imgUrl,
-                  imageProvider:
-                      isNetworkImg ? NetworkImage(imgUrl) : AssetImage(imgUrl)),
+                  heroTag: tag ?? bigImageUrl ?? imgUrl,
+                  imageProvider: isNetworkImg
+                      ? NetworkImage(bigImageUrl ?? imgUrl)
+                      : AssetImage(bigImageUrl ?? imgUrl)),
             ),
           );
         },
         child: Hero(
-            tag: tag ?? imgUrl,
+            tag: tag ?? bigImageUrl ?? imgUrl,
             child: Container(
               alignment: Alignment.centerLeft,
               child: isNetworkImg

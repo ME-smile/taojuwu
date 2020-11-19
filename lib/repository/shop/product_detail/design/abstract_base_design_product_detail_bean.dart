@@ -2,7 +2,7 @@
  * @Description: 软装方案 场景 商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:20:43
- * @LastEditTime: 2020-10-30 18:00:32
+ * @LastEditTime: 2020-11-13 09:36:12
  */
 
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
@@ -19,6 +19,7 @@ abstract class AbstractDesignProductDetailBean extends MultiProductDetailBean {
   double get marketPrice;
   String designName;
   String picture;
+  String bigPicture;
   int picId;
 
   //  是否为混合商品 是否包含成品为主要依据

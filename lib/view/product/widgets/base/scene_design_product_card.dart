@@ -2,7 +2,7 @@
  * @Description: 场景轮播图卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:42:58
- * @LastEditTime: 2020-11-06 11:08:20
+ * @LastEditTime: 2020-11-16 13:11:08
  */
 import 'dart:math';
 
@@ -53,12 +53,13 @@ class SceneDesignProductCard extends StatelessWidget {
                   //     'mask.jpg',
                   //   ),
                   // ))),
+                  width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     image: DecorationImage(
                         fit: BoxFit.cover,
                         image: NetworkImage(
-                            UIKit.getNetworkImgPath(bean.picture))),
+                            (UIKit.getNetworkImgPath(bean.picture)))),
                   ),
                 ),
                 Positioned(
@@ -104,6 +105,7 @@ class SceneDesignProductCard extends StatelessWidget {
                       crossAxisSpacing: 8),
                   itemBuilder: (BuildContext context, int index) {
                     SingleProductDetailBean item = bean?.goodsList[index];
+                    print('封面是${item?.cover}');
                     return Container(
                       margin: EdgeInsets.symmetric(horizontal: 2),
                       child: Column(
@@ -115,24 +117,25 @@ class SceneDesignProductCard extends StatelessWidget {
                             child: Stack(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.circular(2),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            offset: Offset(0, 2),
-                                            blurRadius: 2,
-                                            color: Color.fromARGB(45, 0, 0, 0)),
-                                        // BoxShadow(
-                                        //     offset: Offset(0, -2),
-                                        //     blurRadius: 2,
-                                        //     color: Color.fromARGB(45, 0, 0, 0)),
-                                      ]),
-                                  child: ZYNetImage(
-                                    imgPath: item?.cover,
-                                  ),
-                                ),
+                                    padding: EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor,
+                                        borderRadius: BorderRadius.circular(2),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              offset: Offset(0, 2),
+                                              blurRadius: 2,
+                                              color:
+                                                  Color.fromARGB(45, 0, 0, 0)),
+                                          // BoxShadow(
+                                          //     offset: Offset(0, -2),
+                                          //     blurRadius: 2,
+                                          //     color: Color.fromARGB(45, 0, 0, 0)),
+                                        ]),
+                                    child: Image.network(
+                                      'http://106.14.219.213:8001/upload/system/2019123109055461787_SMALL.jpg',
+                                      // errorBuilder: BU),
+                                    )),
                                 Container(
                                   color: index == 4
                                       ? Colors.black.withAlpha(80)

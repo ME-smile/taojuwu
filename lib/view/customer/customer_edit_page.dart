@@ -1,7 +1,10 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+
 import 'package:taojuwu/application.dart';
+
 import 'package:taojuwu/event_bus/events/select_client_event.dart';
+
 import 'package:taojuwu/repository/user/customer_detail_model.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/router/handlers.dart';
@@ -55,6 +58,11 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
     params['client_age'] = '${bean?.clientAge ?? ''}';
     params['shop_id'] = '${bean?.shopId ?? ''}';
     params['detail_address'] = '${bean?.detailAddress ?? ''}';
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override

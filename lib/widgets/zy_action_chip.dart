@@ -1,3 +1,9 @@
+/*
+ * @Description: 
+ * @Author: iamsmiling
+ * @Date: 2020-10-31 13:34:35
+ * @LastEditTime: 2020-11-13 18:06:06
+ */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/widgets/triangle_clipper.dart';
 
@@ -24,21 +30,32 @@ class _ZYActionChipState extends State<ZYActionChip> {
       child: Stack(
         children: <Widget>[
           Container(
-              child: Text(
-                '${bean?.text}${showNumber ? "(${bean?.count})" : ""}',
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                    fontSize: 12,
-                    color:
-                        isChecked == true ? Colors.black : Color(0xFF333333)),
-              ),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(2)),
-                  border: Border.all(
-                      width: 1,
-                      color: isChecked ? Colors.black : Color(0xFF979797)))),
+              height: 28,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Text(
+                      '${bean?.text}${showNumber ? "(${bean?.count})" : ""}',
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: isChecked == true
+                              ? Colors.black
+                              : Color(0xFF333333)),
+                    ),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(2)),
+                        border: Border.all(
+                            width: 1,
+                            color:
+                                isChecked ? Colors.black : Color(0xFF979797))),
+                  )
+                ],
+              )),
           Positioned(
             child: isChecked ? TriAngle() : Container(),
             bottom: 0,

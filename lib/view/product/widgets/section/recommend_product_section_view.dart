@@ -2,7 +2,7 @@
  * @Description: 为你推荐商品列表视图
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:59:48
- * @LastEditTime: 2020-11-04 10:48:30
+ * @LastEditTime: 2020-11-09 14:07:24
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';
@@ -22,11 +22,10 @@ class RecommendedProductSectionView extends StatelessWidget {
       child: Container(
         color: Theme.of(context).primaryColor,
         margin: EdgeInsets.only(top: 8),
-        // padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

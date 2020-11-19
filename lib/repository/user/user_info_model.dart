@@ -1,3 +1,9 @@
+/*
+ * @Description: 
+ * @Author: iamsmiling
+ * @Date: 2020-10-31 13:34:35
+ * @LastEditTime: 2020-11-12 11:21:17
+ */
 import 'package:taojuwu/application.dart';
 
 class UserInfo {
@@ -24,7 +30,9 @@ class UserInfo {
   }
 
   void saveUserInfo(Map<String, dynamic> json) {
+    if (json == null) return;
     _token = json['token'];
+
     shopName = json['shop_name'];
     shopId = json['shop_id'];
     nickName = json['nick_name'];

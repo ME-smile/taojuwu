@@ -7,6 +7,7 @@ import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
+import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -218,6 +219,18 @@ class _LoginPageState extends State<LoginPage> {
 
   bool canClick = true;
 
+  Future sendSms(LoginViewModel model) {
+    String tel = model?.phoneController?.text;
+
+    return OTPService.sendSms(params: {'mobile': tel, 'type': 2}).then((_) {
+      model?.hasSendSms = true;
+    }).catchError((err) {
+      model?.hasSendSms = false;
+      ToastKit.showErrorInfo('验证码发送失败!');
+      throw Exception('发送验证码失败');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 750, height: 1334);
@@ -242,14 +255,14 @@ class _LoginPageState extends State<LoginPage> {
                   style: textTheme.headline5,
                 ),
                 VSpacing(10),
-                Text(
-                  '登陆后可购买商品或者查看更多内容',
-                  style: textTheme.subtitle2.copyWith(
-                    fontSize: UIKit.sp(28),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                VSpacing(60),
+                // Text(
+                //   '登陆后可购买商品或者查看更多内容',
+                //   style: textTheme.subtitle2.copyWith(
+                //     fontSize: UIKit.sp(28),
+                //   ),
+                //   textAlign: TextAlign.center,
+                // ),
+                // VSpacing(60),
                 Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: UIKit.width(70), vertical: UIKit.height(20)),
@@ -324,6 +337,7 @@ class _LoginPageState extends State<LoginPage> {
                       model.isPwdMode
                           ? TextField(
                               controller: model.smsController,
+                              keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                   hintText: '请输入验证码',
                                   focusedBorder: UnderlineInputBorder(
@@ -333,11 +347,9 @@ class _LoginPageState extends State<LoginPage> {
                                       borderSide: BorderSide(
                                           color: Color(0xFFC7C8CB), width: 1)),
                                   suffixIcon: SendSmsButton(
-                                    isActive: model.isValidTel,
-                                    callback: () {
-                                      ToastKit.showToast('暂未开通注册');
-                                    },
-                                  )),
+                                      telPhoneController: model.phoneController,
+                                      isActive: model.isValidTel,
+                                      callback: () => sendSms(model))),
                             )
                           : TextField(
                               obscureText: true,

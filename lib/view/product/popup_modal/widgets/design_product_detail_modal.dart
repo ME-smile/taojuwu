@@ -2,7 +2,7 @@
  * @Description: 软装方案详情
  * @Author: iamsmiling
  * @Date: 2020-10-23 15:34:30
- * @LastEditTime: 2020-11-03 16:49:45
+ * @LastEditTime: 2020-11-13 09:25:16
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -140,6 +140,7 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
                     ),
                     Expanded(
                         child: ListView.separated(
+                            padding: EdgeInsets.all(0),
                             shrinkWrap: true,
                             itemBuilder: (BuildContext context, int i) {
                               SingleProductDetailBean item = goodsList[i];
@@ -155,7 +156,8 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
                             },
                             separatorBuilder: (BuildContext context, int i) =>
                                 Divider(
-                                  thickness: 8,
+                                  height: 1,
+                                  thickness: .8,
                                   color: const Color(0xFFF8F8F8),
                                 ),
                             itemCount: goodsList?.length ?? 0))

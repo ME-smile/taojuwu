@@ -2,7 +2,7 @@
  * @Description: 软装方案 场景设计商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:22:16
- * @LastEditTime: 2020-11-03 15:49:32
+ * @LastEditTime: 2020-11-13 09:36:35
  */
 
 import 'dart:convert';
@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
+import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/fabric_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
@@ -28,6 +29,7 @@ abstract class BaseDesignProductDetailBean
     name = json['name'];
     designName = json['scenes_name'];
     picture = json['image'];
+    bigPicture = json['image_big'];
     room = json['space'];
     style = json['style'];
     desc = json['scenes_detail'];
@@ -58,8 +60,6 @@ abstract class BaseDesignProductDetailBean
 
   @override
   Future addToCart(BuildContext context, {Function callback}) {
-    print('软装方案加入购物车');
-
     // Map<String, dynamic> params = {'client_uid': 395, 'cart_list': "$cartArgs"};
     // print(params);
     // OTPService.addCartList(params).then((ZYResponse response) {
@@ -75,14 +75,15 @@ abstract class BaseDesignProductDetailBean
     // LogUtil.e({'client_uid': clientId, 'cart_list': jsonEncode(cartArgs)});
     // print({'client_uid': clientId, 'cart_list': cartArgs});
     // LogUtil.e({'client_uid': clientId, 'cart_list': cartArgs});
-
+    print({'client_uid': clientId, 'cart_list': cartArgs});
     return OTPService.addCartList(
             {'client_uid': clientId, 'cart_list': jsonEncode(cartArgs)})
         .then((ZYResponse response) {
       if (response?.valid == true) {
         ToastKit.showInfo(response?.message);
         Application.eventBus.fire(AddToCartEvent(response?.data));
-      }
+      } else {}
+
       // ToastKit.showInfo(response?.data);
 
       // ToastKit.showInfo(response?.message);
@@ -138,4 +139,15 @@ abstract class BaseDesignProductDetailBean
               })
           ?.toList() ??
       [];
+  //使用默认宽高窗帘的个数
+  int get useDefaultSizeCurtainCount {
+    int count = 0;
+    for (int i = 0; i < goodsList?.length; i++) {
+      SingleProductDetailBean e = goodsList[i];
+      if (e is BaseCurtainProductDetailBean && e?.isUseDefaultSize == true) {
+        count++;
+      }
+    }
+    return count;
+  }
 }

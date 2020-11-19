@@ -61,7 +61,7 @@ class _OrderBuyerCardState extends State<OrderBuyerCard> {
             });
             return;
           }
-          return ToastKit.showInfo('请先选择客户哦');
+          return ToastKit.showInfo('请先添加客户哦');
         },
         child: Container(
           color: themeData.primaryColor,

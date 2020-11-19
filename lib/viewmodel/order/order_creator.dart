@@ -2,7 +2,7 @@
  * @Description: 订单创建的模型
  * @Author: iamsmiling
  * @Date: 2020-10-29 17:22:23
- * @LastEditTime: 2020-11-05 09:45:08
+ * @LastEditTime: 2020-11-10 16:21:01
  */
 
 import 'dart:convert';
@@ -19,6 +19,7 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
+import 'package:taojuwu/view/product/mixin/client_select_listener.dart';
 import 'package:taojuwu/widgets/time_period_picker.dart';
 
 class OrderCreator {
@@ -196,8 +197,8 @@ class OrderCreator {
   Future _sendCreateOrderRequest(BuildContext context) {
     return OTPService.createOrder(params: orderArgs)
         .then((ZYResponse response) {
-      print(response?.data);
       if (response?.valid == true) {
+        TargetClientHolder.targetClient = null;
         return RouteHandler.goOrderCommitSuccessPage(context, '$clientId',
             orderType: 2, showTip: 1);
       }

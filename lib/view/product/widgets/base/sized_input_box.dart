@@ -2,15 +2,16 @@
  * @Description: //T
  * @Author: iamsmiling
  * @Date: 2020-10-26 11:12:05
- * @LastEditTime: 2020-10-26 14:55:39
+ * @LastEditTime: 2020-11-10 11:15:59
  */
 import 'package:flutter/material.dart';
 
 class SizedInputBox extends StatefulWidget {
   final String hintText;
-
+  final FocusNode focusNode;
   final TextEditingController controller;
-  const SizedInputBox({this.hintText = '', this.controller, Key key})
+  const SizedInputBox(
+      {this.hintText = '', this.controller, this.focusNode, Key key})
       : super(key: key);
 
   @override
@@ -40,6 +41,7 @@ class _SizedInputBoxState extends State<SizedInputBox> {
           Container(
             child: TextField(
               maxLines: 1,
+              focusNode: widget.focusNode,
               controller: controller,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(

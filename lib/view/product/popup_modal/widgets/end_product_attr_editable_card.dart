@@ -2,7 +2,7 @@
  * @Description:成品属性编辑卡片
  * @Author: iamsmiling
  * @Date: 2020-10-23 13:42:54
- * @LastEditTime: 2020-11-04 12:14:05
+ * @LastEditTime: 2020-11-12 16:16:29
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
@@ -40,8 +40,9 @@ class _EndProductAttrEditableCardState<T>
                 child: AspectRatio(
                   aspectRatio: 1,
                   child: ZYPhotoView(
-                    UIKit.getNetworkImgPath(bean?.currentSkuBean?.image),
-                    tag: bean?.currentSkuBean?.image,
+                    UIKit.getNetworkImgPath(bean?.mainImg),
+                    tag: bean?.mainImg,
+                    fit: BoxFit.fitHeight,
                   ),
                 ),
               ),

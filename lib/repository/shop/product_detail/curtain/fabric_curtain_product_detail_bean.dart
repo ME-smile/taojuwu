@@ -2,18 +2,35 @@
  * @Description: 布艺帘商品
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:12:26
- * @LastEditTime: 2020-10-31 16:10:15
+ * @LastEditTime: 2020-11-13 09:08:22
  */
 
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/services/otp_service.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 import 'base_curtain_product_detail_bean.dart';
 
 class FabricCurtainProductDetailBean extends BaseCurtainProductDetailBean {
+  bool hasFlower; // 窗帘是否有拼花
+  bool isFixedHeight; // 窗帘是否定高
+  bool isFixedWidth; //窗帘是否定宽
+  bool isCustomSize; //自定义宽高
+  double doorWidth; //门幅
+  double flowerSize; //花距
   FabricCurtainProductDetailBean.fromJson(Map<String, dynamic> json)
-      : super.fromJson(json);
+      : super.fromJson(json) {
+    hasFlower = json['is_flower'] == 1;
+    isFixedHeight = json['fixed_height'] == 1;
+    isFixedWidth = json['fixed_height'] == 2;
+    isCustomSize = json['fixed_height'] == 3;
+    doorWidth =
+        CommonKit.parseDouble(json['larghezza_size'], defaultVal: 0.0) / 100;
+    flowerSize =
+        CommonKit.parseDouble(json['flower_distance'], defaultVal: 0.0) / 100;
+    print('_________________+++++++++++++++');
+  }
 
   ///[refresh]刷新页面的回调函数 在数据返回时刷新页面
   // 获取属性相关的数据
@@ -49,30 +66,26 @@ class FabricCurtainProductDetailBean extends BaseCurtainProductDetailBean {
     refresh == null ? '' : refresh();
   }
 
+  // 褶皱系数
+  double get foldingFactor => 2.0;
+
   @override
   double get totalPrice {
     // 配饰价格计算 acc-->accesspry
     double tmp = unitPrice;
-    double heightFactor = 1.0;
-    double mainHeightFactor = 1.0;
-    if (heightCM != null && heightCM > 270) {
-      heightFactor = 1.5;
-      if (!isFixedHeight) {
-        mainHeightFactor = (widthM + heightM - 2.65) / widthM;
-      }
-      //如果窗纱存在
-      if (hasWindowGauze) {
-        tmp = unitPrice * widthM * mainHeightFactor * 2 +
-            (windowShadeClothPrice + windowGauzePrice) *
-                2 *
-                widthM *
-                heightFactor +
-            canopyPrice * widthM +
-            partPrice * widthM * 2 +
-            accessoriesPrice;
-      }
+
+    //如果窗纱存在
+    if (hasWindowGauze) {
+      tmp = mainCurtainClothPrice +
+          (windowShadeClothPrice + windowGauzePrice) *
+              2 *
+              widthM *
+              heightFactor +
+          canopyPrice * widthM +
+          partPrice * widthM * 2 +
+          accessoriesPrice;
     } else {
-      tmp = unitPrice * widthM * mainHeightFactor * 2 +
+      tmp = mainCurtainClothPrice +
           (windowShadeClothPrice + windowGauzePrice) *
               2 *
               widthM *
@@ -83,6 +96,40 @@ class FabricCurtainProductDetailBean extends BaseCurtainProductDetailBean {
     }
 
     return tmp;
+  }
+
+  //窗帘主布价格计算
+  double get mainCurtainClothPrice {
+    if (isFixedHeight) {
+      return widthM * foldingFactor * heightFactor * unitPrice;
+    }
+    if (isFixedWidth) {
+      if (hasFlower) {
+        return unitPrice *
+            ((widthM * foldingFactor / doorWidth).ceil() *
+                ((heightM + 0.2) / flowerSize).ceil() *
+                flowerSize);
+      }
+
+      return unitPrice *
+          ((widthM * foldingFactor / doorWidth).ceil() * ((heightM + 0.2)));
+    }
+
+    return widthM * foldingFactor * mainHeightFactor * unitPrice;
+  }
+
+  //窗帘主布高度因子
+  double get mainHeightFactor {
+    double factor = 1.0;
+    if ((heightCM != null && heightCM > 270) && isCustomSize) {
+      factor = (widthM + heightM - 2.65) / widthM;
+    }
+    return factor;
+  }
+
+  // 窗帘高度因子2
+  double get heightFactor {
+    return heightCM != null && heightCM > 270 ? 1.5 : 1.0;
   }
 
   @override
