@@ -2,7 +2,7 @@
  * @Description: //TODO
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-11-19 17:32:39
+ * @LastEditTime: 2020-11-23 09:28:52
 -->
 # taojuwu
 
@@ -26,6 +26,14 @@ vivo 1.0.1 2002
 
 
 1.1.5 管理后台
+
+
+version: 1.2.0+1005
+
+
+1.修复已知bug
+2.优化ui,提升用户体验
+3.商品详情新增:搭配精选、场景推荐、软装方案、为你推荐等功能
 
 
 flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --no-tree-shake-icons -v

@@ -2,7 +2,7 @@
  * @Description: 商品详情页
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:55:05
- * @LastEditTime: 2020-11-19 18:57:17
+ * @LastEditTime: 2020-11-23 14:10:32
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,10 @@ import 'package:taojuwu/widgets/network_error.dart';
 
 class FabricCurtainProductDetailPage extends BaseProductDetailPage {
   final int goodsId;
-  FabricCurtainProductDetailPage(this.goodsId, {Key key}) : super(goodsId);
+  final bool isMeasureOrderGoods;
+  FabricCurtainProductDetailPage(this.goodsId,
+      {Key key, this.isMeasureOrderGoods = false})
+      : super(goodsId, isMeasureOrderGoods: isMeasureOrderGoods);
 
   @override
   _CurtainProductDetailPageState createState() =>
@@ -38,8 +41,11 @@ class _CurtainProductDetailPageState
       hasError = false;
       isLoading = true;
     });
-    return fetchData(context, widget.goodsId).then((_) {
+    return fetchData(context, widget.goodsId,
+            isMeasureOrderGoods: widget.isMeasureOrderGoods)
+        .then((_) {
       (productDetailBean as FabricCurtainProductDetailBean).fetchAttrsData(() {
+        (productDetailBean as FabricCurtainProductDetailBean)?.filter();
         setState(() {
           isLoading = false;
         });
@@ -51,7 +57,8 @@ class _CurtainProductDetailPageState
           .fetchRoomAttrData()
           .whenComplete(() {
         copyData();
-        updateMeasureData();
+        super.sendRequest();
+        // updateMeasureData();
       });
     }).catchError((err) {
       setState(() {

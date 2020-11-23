@@ -25,8 +25,12 @@ class _EditGoodsAttrPageState extends State<EditGoodsAttrPage> {
   int get goodsId => widget.goodsId;
   int get clientId => widget.clientId;
   int get cartId => widget.cartId;
-  List<GoodsAttr> get goodsAttrs =>
-      widget.attrs?.map((e) => GoodsAttr.fromJson(e))?.toList();
+  List<GoodsAttr> get goodsAttrs {
+    List<GoodsAttr> list =
+        widget.attrs?.map((e) => GoodsAttr.fromJson(e))?.toList();
+    list?.sort((a, b) => a.type - b.type);
+    return list;
+  }
 
   Map<int, dynamic> get selectedId {
     Map<int, dynamic> dict = {};
@@ -49,15 +53,15 @@ class _EditGoodsAttrPageState extends State<EditGoodsAttrPage> {
             goodsProvider: provider);
       },
       () {
+        ZYDialog.checkAttr(context, '幔头选择', provider?.curCanopyAttrBean,
+            goodsProvider: provider);
+      },
+      () {
         ZYDialog.checkAttr(context, '里布选择', provider?.curWindowShadeAttrBean,
             goodsProvider: provider);
       },
       () {
         ZYDialog.checkAttr(context, '配饰选择', provider?.curAccessoryAttrBeans,
-            goodsProvider: provider);
-      },
-      () {
-        ZYDialog.checkAttr(context, '幔头选择', provider?.curCanopyAttrBean,
             goodsProvider: provider);
       },
     ];

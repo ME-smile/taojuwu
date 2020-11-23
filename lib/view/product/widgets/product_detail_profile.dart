@@ -2,7 +2,7 @@
  * @Description: 商品描述
  * @Author: iamsmiling
  * @Date: 2020-10-22 09:37:24
- * @LastEditTime: 2020-11-06 10:08:57
+ * @LastEditTime: 2020-11-20 18:07:04
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
@@ -33,12 +33,12 @@ class ProductDetailProfile extends StatelessWidget {
                     text: bean?.goodsName ?? '',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                     children: [
-                      WidgetSpan(
-                          child: Padding(
-                        padding: EdgeInsets.only(left: 8),
-                        child: Text(bean?.goodsName ?? '',
-                            style: textTheme.caption.copyWith(fontSize: 12)),
-                      ))
+                      // WidgetSpan(
+                      //     child: Padding(
+                      //   padding: EdgeInsets.only(left: 8),
+                      //   child: Text(bean?.goodsName ?? '',
+                      //       style: textTheme.caption.copyWith(fontSize: 12)),
+                      // ))
                     ])),
                 Container(
                   padding: EdgeInsets.only(bottom: 10),

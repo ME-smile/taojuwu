@@ -89,7 +89,6 @@ class CurtainProductListDataBean {
     dataBean.currentCategory =
         CurtainCurrentCategoryBean.fromMap(map['current_category']);
     dataBean.totalCount = map['total_count'];
-    dataBean.pageIndex = map['page_index'];
 
     dataBean.categoryType = map['category_type'] is int
         ? map['category_type']

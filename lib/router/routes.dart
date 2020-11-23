@@ -61,6 +61,8 @@ class Routes {
 
   static const String resetPwd = '/resetPwd';
 
+  static const String selectProduct = '/selectProduct';
+
   static void configureRoutes(fluro.FluroRouter router) {
     router.notFoundHandler = new fluro.Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
@@ -120,5 +122,6 @@ class Routes {
         handler: RouteHandler.gauzeCurtainProductDetail);
     router.define(sceneDesign, handler: RouteHandler.sceneDesign);
     router.define(resetPwd, handler: RouteHandler.resetPwd);
+    router.define(selectProduct, handler: RouteHandler.selectProductMall);
   }
 }

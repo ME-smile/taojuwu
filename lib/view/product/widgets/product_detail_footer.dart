@@ -2,7 +2,7 @@
  * @Description: 商品详情底部
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:15:20
- * @LastEditTime: 2020-11-18 14:16:13
+ * @LastEditTime: 2020-11-20 16:23:00
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';
@@ -34,15 +34,16 @@ class ProductDeatilFooter extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   flex: 2,
-                  child: Text.rich(TextSpan(text: '预计:\n', children: [
-                    TextSpan(
-                        // text: '0.00',
-                        text: '${bean?.totalPrice?.toStringAsFixed(2)}',
-                        // text:
-                        //     '${baseGoodsViewModel.totalPrice.toStringAsFixed(2) ?? "0.00"}',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500)),
-                  ])),
+                  child: Container(
+                    padding: EdgeInsets.only(top: 4),
+                    child: Text.rich(TextSpan(text: '预计:\n', children: [
+                      WidgetSpan(
+                        child: Text('¥${bean?.totalPrice?.toStringAsFixed(2)}',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w600)),
+                      ),
+                    ])),
+                  ),
                 ),
                 Expanded(
                     flex: 3,

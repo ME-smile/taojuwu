@@ -2,7 +2,7 @@
  * @Description: 布艺帘商品
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:12:26
- * @LastEditTime: 2020-11-17 13:05:35
+ * @LastEditTime: 2020-11-22 15:31:57
  */
 
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
@@ -61,6 +61,7 @@ class FabricCurtainProductDetailBean extends BaseCurtainProductDetailBean {
     }).toList();
     await Future.wait(futures);
     attrList?.sort((ProductSkuAttr a, ProductSkuAttr b) => a.type - b.type);
+
     // ignore: unnecessary_statements
     refresh == null ? '' : refresh();
   }

@@ -11,7 +11,9 @@ import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class GridCard extends StatelessWidget {
   final GoodsItemBean bean;
-  const GridCard(this.bean, {Key key}) : super(key: key);
+  final bool isMeasureOrderGoods;
+  const GridCard(this.bean, {Key key, this.isMeasureOrderGoods = false})
+      : super(key: key);
 
   Widget buildContent(BuildContext context) {
     ThemeData themeData = Theme.of(context);
@@ -89,15 +91,18 @@ class GridCard extends StatelessWidget {
     }
     if (type == 1) {
       return RouteHandler.goFabricCurtainProductDetailPage(
-          context, bean?.goodsId);
+          context, bean?.goodsId,
+          isMeasureOrderGoods: isMeasureOrderGoods ? 1 : 0);
     }
     if (type == 2) {
       return RouteHandler.goRollingCurtainProductDetailPage(
-          context, bean?.goodsId);
+          context, bean?.goodsId,
+          isMeasureOrderGoods: isMeasureOrderGoods ? 1 : 0);
     }
     if (type == 3) {
       return RouteHandler.goGauzeCurtainProductDetailPage(
-          context, bean?.goodsId);
+          context, bean?.goodsId,
+          isMeasureOrderGoods: isMeasureOrderGoods ? 1 : 0);
     }
   }
 

@@ -901,8 +901,7 @@ class OrderTabView extends StatefulWidget {
   _OrderTabViewState createState() => _OrderTabViewState();
 }
 
-class _OrderTabViewState extends State<OrderTabView>
-    with AutomaticKeepAliveClientMixin, RouteAware {
+class _OrderTabViewState extends State<OrderTabView> with RouteAware {
   Map<String, dynamic> get params => widget.params;
   List<OrderModelData> get models => widget.models;
   String get orderStatus {
@@ -1010,8 +1009,6 @@ class _OrderTabViewState extends State<OrderTabView>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     return PageTransitionSwitcher(
       duration: Duration(milliseconds: 500),
       transitionBuilder: (
@@ -1113,6 +1110,6 @@ class _OrderTabViewState extends State<OrderTabView>
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
+  // @override
+  // bool get wantKeepAlive => true;
 }

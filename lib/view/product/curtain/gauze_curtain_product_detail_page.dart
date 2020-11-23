@@ -2,7 +2,7 @@
  * @Description: 窗纱商品详情页面
  * @Author: iamsmiling
  * @Date: 2020-10-31 15:35:02
- * @LastEditTime: 2020-11-19 18:57:46
+ * @LastEditTime: 2020-11-23 14:16:20
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,10 @@ import 'package:taojuwu/widgets/network_error.dart';
 
 class GauzeCurtainProductDetailPage extends BaseProductDetailPage {
   final int id;
-  GauzeCurtainProductDetailPage(this.id, {Key key}) : super(id);
+  final bool isMeasureOrderGoods;
+  GauzeCurtainProductDetailPage(this.id,
+      {Key key, this.isMeasureOrderGoods = false})
+      : super(id, isMeasureOrderGoods: isMeasureOrderGoods);
 
   @override
   _GauzeCurtainProductDetailPageState createState() =>
@@ -38,9 +41,12 @@ class _GauzeCurtainProductDetailPageState
       hasError = false;
       isLoading = true;
     });
-    return fetchData(context, widget.goodsId).whenComplete(() {
+    return fetchData(context, widget.goodsId,
+            isMeasureOrderGoods: widget.isMeasureOrderGoods)
+        .whenComplete(() {
       // 初始化商品属性
       (productDetailBean as GauzeCurtainProductDetailBean)?.fetchAttrsData(() {
+        (productDetailBean as GauzeCurtainProductDetailBean).filter();
         setState(() {
           isLoading = false;
         });
@@ -50,7 +56,7 @@ class _GauzeCurtainProductDetailPageState
           .fetchRoomAttrData()
           .whenComplete(() {
         copyData();
-        updateMeasureData();
+        // updateMeasureData();
       });
     }).catchError((err) {
       hasError = true;

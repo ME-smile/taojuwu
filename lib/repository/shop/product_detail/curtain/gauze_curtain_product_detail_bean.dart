@@ -2,7 +2,7 @@
  * @Description: 窗纱详情数据模型
  * @Author: iamsmiling
  * @Date: 2020-10-31 15:40:49
- * @LastEditTime: 2020-10-31 17:14:55
+ * @LastEditTime: 2020-11-23 15:04:15
  */
 
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
@@ -35,8 +35,24 @@ class GauzeCurtainProductDetailBean extends BaseCurtainProductDetailBean {
     }).toList();
     await Future.wait(futures);
     attrList?.sort((ProductSkuAttr a, ProductSkuAttr b) => a.type - b.type);
+
     // ignore: unnecessary_statements
     refresh == null ? '' : refresh();
+  }
+
+  @override
+  void filter() {
+    originAttrList ??= copyAttrs();
+    String keyword0 = "单";
+    String keyword1 = "GD";
+    ProductSkuAttr craftAttr =
+        originAttrList?.firstWhere((e) => e.type == 4, orElse: () => null);
+    ProductSkuAttr partAttr =
+        originAttrList?.firstWhere((e) => e.type == 5, orElse: () => null);
+    craftSkuAttr?.data =
+        craftAttr?.data?.where((e) => e.name.contains(keyword0))?.toList();
+    partSkuAttr?.data =
+        partAttr?.data?.where((e) => e?.name?.contains(keyword1))?.toList();
   }
 
   @override

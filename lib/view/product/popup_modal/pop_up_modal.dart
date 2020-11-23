@@ -2,7 +2,7 @@
  * @Description: //选择属性
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:36:14
- * @LastEditTime: 2020-11-19 15:33:48
+ * @LastEditTime: 2020-11-23 15:46:46
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +42,7 @@ Future pickAttr(
                     ? RoomAttrOptionView(bean, attr)
                     : CommonAttrOptionView(
                         bean,
-                        attr?.data,
+                        attr,
                       ),
               ),
               onWillPop: () {
@@ -64,7 +64,7 @@ Future showRelativeProductModalPopup(
       builder: (BuildContext context) {
         return SkuAttrPicker(
           title: '搭配精选',
-          height: UIKit.height(1200),
+          height: UIKit.height(1000),
           showButton: false,
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 16),
@@ -93,7 +93,7 @@ Future showDesignProductDetailModal(BuildContext ctx, int id) {
       context: ctx,
       builder: (BuildContext context) {
         return SkuAttrPicker(
-            height: UIKit.height(900),
+            height: UIKit.height(1000),
             showButton: false,
             child: ClipRRect(
               borderRadius: BorderRadius.only(

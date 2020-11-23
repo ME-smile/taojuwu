@@ -2,7 +2,7 @@
  * @Description: 收藏安努
  * @Author: iamsmiling
  * @Date: 2020-10-28 15:04:00
- * @LastEditTime: 2020-11-06 10:06:26
+ * @LastEditTime: 2020-11-20 17:41:58
  */
 import 'dart:async';
 
@@ -13,6 +13,7 @@ import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/view/product/mixin/client_select_listener.dart';
 
 class LikeButton extends StatefulWidget {
   final bool hasLiked;
@@ -34,6 +35,7 @@ class _LikeButtonState extends State<LikeButton> {
   @override
   void initState() {
     hasLiked = widget.hasLiked;
+    clientId = TargetClientHolder.targetClient?.clientId;
     _subscription =
         Application.eventBus.on<SelectClientEvent>().listen((event) {
       clientId = event.mTargetClient.clientId;

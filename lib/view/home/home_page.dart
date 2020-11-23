@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,6 @@ import 'package:taojuwu/router/handlers.dart';
 // import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
-import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -156,12 +156,17 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: AspectRatio(
                       aspectRatio: 1.4,
-                      child: ZYNetImage(
-                        imgPath: 'upload/master.jpg',
-                        isCache: true,
-                        width: MediaQuery.of(context).size.width,
-                        fit: BoxFit.fitWidth,
-                      ),
+                      child: CachedNetworkImage(
+                          fit: BoxFit.fitWidth,
+                          width: MediaQuery.of(context).size.width,
+                          imageUrl:
+                              UIKit.getNetworkImgPath('upload/master.jpg')),
+                      // child: ZYNetImage(
+                      //   imgPath: 'upload/master.jpg',
+                      //   isCache: true,
+                      //   width: MediaQuery.of(context).size.width,
+                      //   fit: BoxFit.fitWidth,
+                      // ),
                       // child: Image.network(
                       //   UIKit.getNetworkImgPath('upload/master.jpg'),
                       //   fit: BoxFit.fitWidth,

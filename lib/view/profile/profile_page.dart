@@ -68,7 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         width: 30,
                       ),
                       ZYRaisedButton('确定', () async {
-                        Application.clearCache();
+                        await Application.clearCache();
                         Navigator.of(context).pop();
                         cacheSizeStr = await getAppCacheSize();
                         setState(() {});

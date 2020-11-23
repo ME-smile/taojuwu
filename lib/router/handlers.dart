@@ -4,6 +4,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/export/export_pages.dart';
+import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/after_sale_service/after_sale_service_page.dart';
 
@@ -38,6 +39,7 @@ import 'package:taojuwu/view/product/curtain/fabric_curtain_product_detail_page.
 import 'package:taojuwu/view/product/curtain/gauze_curtain_product_detail_page.dart';
 import 'package:taojuwu/view/product/curtain/rolling_curtain_product_detail_page.dart';
 import 'package:taojuwu/view/product/end_product/end_product_detail_page.dart';
+import 'package:taojuwu/view/product/mall/select_product_mall.page.dart';
 import 'package:taojuwu/view/product/scene_design/scene_design_page.dart';
 import 'package:taojuwu/view/profile/profile_page.dart';
 import 'package:taojuwu/view/profile/subPages/forget_pwd_page.dart';
@@ -61,12 +63,14 @@ class RouteHandler {
       {bool replace = false,
       bool clearStack = false,
       bool maintainState = false,
+      RouteSettings routeSettings,
       Duration transitionDuration = const Duration(milliseconds: 250),
       RouteTransitionsBuilder transitionBuilder}) {
     return Application.router.navigateTo(context, path,
         replace: replace,
         clearStack: clearStack,
         maintainState: maintainState,
+        routeSettings: routeSettings,
         transitionDuration: transitionDuration,
         transitionBuilder: transitionBuilder,
         transition: TransitionType.cupertino);
@@ -126,39 +130,48 @@ class RouteHandler {
   static Handler fabricCurtainProductDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int goodsId = int.parse(params['id']?.first);
+    int isMeasureOrderGoods = int.parse(params['isMeasureOrderGoods']?.first);
     return FabricCurtainProductDetailPage(
       goodsId,
+      isMeasureOrderGoods: isMeasureOrderGoods == 1 ? true : false,
     );
   });
   static Future goFabricCurtainProductDetailPage(BuildContext context, int id,
-      {bool replace: false}) {
-    return _jumpTo(context, '${Routes.fabricCurtainProductDetail}?id=$id',
+      {bool replace: false, int isMeasureOrderGoods = 0}) {
+    return _jumpTo(context,
+        '${Routes.fabricCurtainProductDetail}?id=$id&isMeasureOrderGoods=$isMeasureOrderGoods',
         maintainState: true, replace: replace);
   }
 
   static Handler rollingCurtainProductDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int goodsId = int.parse(params['id']?.first);
+    int isMeasureOrderGoods = int.parse(params['isMeasureOrderGoods']?.first);
     return RollingCurtainProductDetailPage(
       goodsId,
+      isMeasureOrderGoods: isMeasureOrderGoods == 1 ? true : false,
     );
   });
   static Future goRollingCurtainProductDetailPage(BuildContext context, int id,
-      {bool replace: false}) {
-    return _jumpTo(context, '${Routes.rollingCurtainProducDetail}?id=$id',
+      {bool replace: false, int isMeasureOrderGoods = 0}) {
+    return _jumpTo(context,
+        '${Routes.rollingCurtainProducDetail}?id=$id&isMeasureOrderGoods=$isMeasureOrderGoods',
         maintainState: true, replace: replace);
   }
 
   static Handler gauzeCurtainProductDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int goodsId = int.parse(params['id']?.first);
+    int isMeasureOrderGoods = int.parse(params['isMeasureOrderGoods']?.first);
     return GauzeCurtainProductDetailPage(
       goodsId,
+      isMeasureOrderGoods: isMeasureOrderGoods == 1 ? true : false,
     );
   });
   static Future goGauzeCurtainProductDetailPage(BuildContext context, int id,
-      {bool replace: false}) {
-    return _jumpTo(context, '${Routes.gauzeCurtainProductDetail}?id=$id',
+      {bool replace: false, int isMeasureOrderGoods = 0}) {
+    return _jumpTo(context,
+        '${Routes.gauzeCurtainProductDetail}?id=$id&isMeasureOrderGoods=$isMeasureOrderGoods',
         maintainState: true, replace: replace);
   }
 
@@ -339,6 +352,18 @@ class RouteHandler {
       orderGoodsId: orderGoodsId,
     );
     // return;
+  });
+
+  static Future goSelectProduct(BuildContext context,
+      {RouteSettings routeSettings}) {
+    return _jumpTo(context, Routes.selectProduct,
+        routeSettings: routeSettings, maintainState: true);
+  }
+
+  static Handler selectProductMall = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    final args = context.settings.arguments as OrderGoodsMeasureData;
+    return SelectProductMallPage(args);
   });
 
   static Future goCurtainMallPage(BuildContext context,

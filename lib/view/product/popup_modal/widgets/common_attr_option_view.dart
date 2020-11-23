@@ -2,7 +2,7 @@
  * @Description: 选择属性
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:41:57
- * @LastEditTime: 2020-11-19 15:20:42
+ * @LastEditTime: 2020-11-23 15:44:08
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
@@ -11,11 +11,11 @@ import 'package:taojuwu/view/goods/curtain/widgets/option_view.dart';
 
 class CommonAttrOptionView extends StatefulWidget {
   final BaseCurtainProductDetailBean bean;
-  final List<ProductSkuAttrBean> list;
+  final ProductSkuAttr attr;
 
   CommonAttrOptionView(
     this.bean,
-    this.list, {
+    this.attr, {
     Key key,
   }) : super(key: key);
 
@@ -24,7 +24,7 @@ class CommonAttrOptionView extends StatefulWidget {
 }
 
 class _CommonAttrOptionViewState extends State<CommonAttrOptionView> {
-  List<ProductSkuAttrBean> get list => widget.list;
+  List<ProductSkuAttrBean> get list => widget.attr?.data;
 
   @override
   Widget build(BuildContext context) {

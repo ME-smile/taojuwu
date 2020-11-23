@@ -72,6 +72,7 @@ class CustomerTablePage extends StatelessWidget {
     ThemeData themeData = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: Text('初谈客户'),
         centerTitle: true,

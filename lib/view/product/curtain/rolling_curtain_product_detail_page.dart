@@ -2,7 +2,7 @@
  * @Description: 卷帘详情
  * @Author: iamsmiling
  * @Date: 2020-10-26 14:14:35
- * @LastEditTime: 2020-11-19 18:57:57
+ * @LastEditTime: 2020-11-22 13:33:20
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,10 @@ import 'package:taojuwu/widgets/network_error.dart';
 
 class RollingCurtainProductDetailPage extends BaseProductDetailPage {
   final int id;
-  RollingCurtainProductDetailPage(this.id, {Key key}) : super(id);
+  final bool isMeasureOrderGoods;
+  RollingCurtainProductDetailPage(this.id,
+      {Key key, this.isMeasureOrderGoods = false})
+      : super(id, isMeasureOrderGoods: isMeasureOrderGoods);
 
   @override
   _RollingCurtainProductDetailPageState createState() =>
@@ -39,12 +42,14 @@ class _RollingCurtainProductDetailPageState
       hasError = false;
       isLoading = true;
     });
-    return fetchData(context, widget.goodsId).then((_) {
+    return fetchData(context, widget.goodsId,
+            isMeasureOrderGoods: widget.isMeasureOrderGoods)
+        .then((_) {
       (productDetailBean as RollingCurtainProductDetailBean)
           .fetchRoomAttrData()
           .then((_) {
         copyData();
-        updateMeasureData();
+        // updateMeasureData();
       }).catchError((err) {
         hasError = true;
       }).whenComplete(() {

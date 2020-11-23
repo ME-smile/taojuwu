@@ -54,22 +54,25 @@ class _CartPageState extends State<CartPage> with TickerProviderStateMixin {
   Future fetchData() {
     return OTPService.cartCategory(context, params: {
       'client_uid': clientId,
-    }).then((CartCategoryResp response) {
-      categoryList = response?.data?.data;
+    })
+        .then((CartCategoryResp response) {
+          categoryList = response?.data?.data;
 
-      cartProvider?.categoryList = categoryList;
+          cartProvider?.categoryList = categoryList;
 
-      tabController = TabController(
-          length: cartProvider?.categoryList?.length, vsync: this);
-    }).whenComplete(() {
-      if (mounted) {
-        // CartProvider cartProvider = context.watch()<CartProvider>();
-        // cartProvider?.setData(
-        //     List.filled(categoryList?.length ?? 0, []), categoryList);
-        // cartProvider?.assignModelList(0, wrapper?.data);
+          tabController = TabController(
+              length: cartProvider?.categoryList?.length, vsync: this);
+        })
+        .catchError((err) {})
+        .whenComplete(() {
+          if (mounted) {
+            // CartProvider cartProvider = context.watch()<CartProvider>();
+            // cartProvider?.setData(
+            //     List.filled(categoryList?.length ?? 0, []), categoryList);
+            // cartProvider?.assignModelList(0, wrapper?.data);
 
-      }
-    });
+          }
+        });
   }
 
   @override

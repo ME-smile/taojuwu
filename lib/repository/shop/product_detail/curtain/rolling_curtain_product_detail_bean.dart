@@ -2,11 +2,10 @@
  * @Description: 卷帘商品
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:13:51
- * @LastEditTime: 2020-10-31 16:11:13
+ * @LastEditTime: 2020-11-23 14:17:01
  */
 
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
-
 import 'base_curtain_product_detail_bean.dart';
 
 class RollingCurtainProductDetailBean extends BaseCurtainProductDetailBean {

@@ -63,7 +63,7 @@ class BaseCurtainProductAttrEditableCardHeader extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         child: Text(
-                          '默认数据:宽:${bean?.widthMStr ?? 0.0}米 高:${bean?.heightMStr ?? 0.0}米 ${bean?.roomAttr?.selectedAttrName ?? ''}',
+                          '${bean?.isDefaultMeasureData == true ? "默认" : "测装"}数据:宽:${bean?.widthMStr ?? 0.0}米 高:${bean?.heightMStr ?? 0.0}米 ${bean?.roomAttr?.selectedAttrName ?? ''}',
                           style: TextStyle(fontSize: 13),
                         ),
                       ),

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/view/order/utils/order_kit.dart';
-import 'package:taojuwu/view/product/mixin/target_product_holder.dart';
 
 class OrderDetailProvider with ChangeNotifier {
   OrderDetailModel model;
@@ -191,7 +190,6 @@ class OrderDetailProvider with ChangeNotifier {
 
   @override
   void dispose() {
-    TargetProductHolder.clear();
     super.dispose();
   }
 }

@@ -2,7 +2,7 @@
  * @Description: 为你推荐商品列表视图
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:59:48
- * @LastEditTime: 2020-11-16 18:10:07
+ * @LastEditTime: 2020-11-23 10:36:27
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';

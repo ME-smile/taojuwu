@@ -2,7 +2,7 @@
  * @Description: 相关商品卡片
  * @Author: iamsmiling
  * @Date: 2020-10-22 17:09:43
- * @LastEditTime: 2020-11-17 09:55:14
+ * @LastEditTime: 2020-11-20 16:17:18
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
@@ -35,6 +35,7 @@ class RelativeProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () => jump(context, bean?.goodsType),
       child: Container(
@@ -44,7 +45,7 @@ class RelativeProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              width: 108,
+              width: (width - 96) / 3,
               child: AspectRatio(
                 aspectRatio: 1.0,
                 child: ZYNetImage(

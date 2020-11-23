@@ -183,43 +183,39 @@ class ZYDialog {
                                                             e =
                                                             item?.value[index];
                                                         return Container(
-                                                          height: 26,
-                                                          child: AspectRatio(
-                                                            aspectRatio: 3,
-                                                            child: ZYActionChip(
-                                                              callback: () {
-                                                                item?.value
-                                                                    ?.forEach(
-                                                                        (element) {
-                                                                  element?.selected =
-                                                                      false;
-                                                                });
-                                                                setState(() {
-                                                                  e.selected = !e
-                                                                      .selected;
-                                                                });
-                                                                provider
-                                                                    ?.skuList
-                                                                    ?.forEach(
-                                                                        (element) {
-                                                                  if (element
-                                                                          ?.attrValueItemsFormat ==
-                                                                      provider
-                                                                          ?.checkedOptionsValueStr) {
-                                                                    provider?.skuId =
-                                                                        element
-                                                                            ?.skuId;
-                                                                  }
-                                                                });
-                                                              },
-                                                              bean: ActionBean
-                                                                  .fromJson({
-                                                                'text': e
-                                                                    .specValueName,
-                                                                'is_checked':
-                                                                    e.selected
-                                                              }),
-                                                            ),
+                                                          height: 28,
+                                                          child: ZYActionChip(
+                                                            callback: () {
+                                                              item?.value
+                                                                  ?.forEach(
+                                                                      (element) {
+                                                                element?.selected =
+                                                                    false;
+                                                              });
+                                                              setState(() {
+                                                                e.selected =
+                                                                    !e.selected;
+                                                              });
+                                                              provider?.skuList
+                                                                  ?.forEach(
+                                                                      (element) {
+                                                                if (element
+                                                                        ?.attrValueItemsFormat ==
+                                                                    provider
+                                                                        ?.checkedOptionsValueStr) {
+                                                                  provider?.skuId =
+                                                                      element
+                                                                          ?.skuId;
+                                                                }
+                                                              });
+                                                            },
+                                                            bean: ActionBean
+                                                                .fromJson({
+                                                              'text': e
+                                                                  .specValueName,
+                                                              'is_checked':
+                                                                  e.selected
+                                                            }),
                                                           ),
                                                         );
                                                       }),

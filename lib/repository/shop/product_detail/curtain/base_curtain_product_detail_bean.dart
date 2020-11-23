@@ -2,11 +2,12 @@
  * @Description: 所有窗帘类的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:11:06
- * @LastEditTime: 2020-11-19 13:14:07
+ * @LastEditTime: 2020-11-23 15:51:43
  */
 
 import 'dart:convert';
 import 'dart:developer' as developer;
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
@@ -15,7 +16,7 @@ import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
-import 'package:taojuwu/view/order/utils/order_kit.dart';
+// import 'package:taojuwu/view/order/utils/order_kit.dart';
 import 'package:taojuwu/view/product/mixin/target_product_holder.dart';
 
 import 'abstract_curtain_product_detail_bean.dart';
@@ -27,6 +28,7 @@ abstract class BaseCurtainProductDetailBean
     extends AbstractCurtainProductDetailBean {
   static num defaultWidth;
   static num defaultHeight;
+  List<ProductSkuAttr> originAttrList;
   List<ProductSkuAttr> attrList = []; // 窗纱 工艺方式 型材 里布 幔头 配饰等属性
   ProductSkuAttr roomAttr;
   OrderGoodsMeasureData measureData = OrderGoodsMeasureData();
@@ -46,6 +48,15 @@ abstract class BaseCurtainProductDetailBean
 
   String get widthMStr => measureData?.widthMStr;
   String get heightMStr => measureData?.heightMStr;
+
+  String get currentSelectedWindowGauzeOptionName =>
+      attrList
+          ?.firstWhere((element) => element?.type == 3, orElse: () => null)
+          ?.data
+          ?.firstWhere((element) => element?.isChecked == true,
+              orElse: () => null)
+          ?.name ??
+      '';
 
   BaseCurtainProductDetailBean.fromJson(Map<String, dynamic> json)
       : super.fromJson(json) {
@@ -112,7 +123,7 @@ abstract class BaseCurtainProductDetailBean
   }
 
   void selectAttrBean(ProductSkuAttr attr, int i) {
-    List<ProductSkuAttrBean> list = attr?.data ?? [];
+    final List<ProductSkuAttrBean> list = attr?.data ?? [];
     if (attr.canMultiSelect) {
       ProductSkuAttrBean bean = list[i];
       bean.isChecked = !bean.isChecked;
@@ -122,6 +133,50 @@ abstract class BaseCurtainProductDetailBean
         bean.isChecked = i == j;
       }
     }
+
+    if (attr?.type == 3) {
+      filter();
+    }
+    if (attr?.type == 4) {
+      ProductSkuAttr partAttr =
+          originAttrList?.firstWhere((e) => e.type == 5, orElse: () => null);
+
+      partSkuAttr?.data = filterPart(partAttr?.data);
+      selectFirstItem(partSkuAttr?.data);
+    }
+  }
+
+  void filter() {
+    originAttrList ??= copyAttrs();
+
+    ProductSkuAttr craftAttr =
+        originAttrList?.firstWhere((e) => e.type == 4, orElse: () => null);
+
+    // selectFirstItem(craftAttr?.data);
+    craftSkuAttr?.data = filterCraft(craftAttr?.data)
+        ?.map((e) => ProductSkuAttrBean.fromJson(e.toMap()))
+        ?.toList();
+    selectFirstItem(craftSkuAttr?.data);
+    ProductSkuAttr partAttr =
+        originAttrList?.firstWhere((e) => e.type == 5, orElse: () => null);
+    // partAttr?.data = filterCraft(partAttr?.data)
+    //     ?.map((e) => ProductSkuAttrBean.fromJson(e.toMap()))
+    //     ?.toList();
+    partSkuAttr?.data = filterPart(partAttr?.data)
+        ?.map((e) => ProductSkuAttrBean.fromJson(e.toMap()))
+        ?.toList();
+    selectFirstItem(partSkuAttr?.data);
+    print('___________');
+  }
+
+  List<ProductSkuAttrBean> selectFirstItem(List<ProductSkuAttrBean> list) {
+    if (!CommonKit.isNullOrEmpty(list)) {
+      for (int i = 0; i < list?.length; i++) {
+        ProductSkuAttrBean e = list[i];
+        e?.isChecked = i == 0;
+      }
+    }
+    return list;
   }
 
   OrderGoodsMeasureData copyMeasureData() {
@@ -250,14 +305,18 @@ abstract class BaseCurtainProductDetailBean
       ToastKit.showInfo('高度不能为0哦');
       return false;
     }
-    // if (heightCM > 350) {
-    //   ToastKit.showInfo('暂不支持3.5m以上定制');
-    //   return false;
-    // }
+    if (heightCM > 350 && isFixedHeight) {
+      ToastKit.showInfo('暂不支持3.5m以上定制');
+      return false;
+    }
     return true;
   }
 
   bool get isValidSize => _isValidWidth() && _isValidHeight();
+
+  bool get isDefaultMeasureData =>
+      measureData?.widthM == defaultWidth &&
+      measureData?.heightM == defaultHeight;
 
   Future addToCartRequest() {
     developer.log(cartArgs?.toString());
@@ -368,8 +427,69 @@ abstract class BaseCurtainProductDetailBean
           'num': '$count',
         })
       };
-  @override
+
   List<ProductSkuAttrBean> filterCraft(List<ProductSkuAttrBean> list) {
+    if (list?.isNotEmpty != true) return [];
+
+    String keyword1 = r'打孔';
+    List<ProductSkuAttrBean> temp1 = [];
+    // 进行第一步筛选 根据有义务轨道
+
+    // 有盒
+    if (styleSelector?.getFirst(styleSelector?.boxOptionList)?.id == 2) {
+      for (int i = 0; i < list?.length; i++) {
+        ProductSkuAttrBean bean = list[i];
+        if (bean?.name?.contains(keyword1) == true) {
+          temp1.add(bean);
+        }
+      }
+    } else {
+      temp1 = list;
+    }
+    String keyword2 = '不要';
+
+    String keyword3 = '单';
+    String keyword4 = '双';
+
+    // 进行第二步过滤
+    List<ProductSkuAttrBean> temp2 = [];
+    //不需要窗纱
+    if (currentSelectedWindowGauzeOptionName?.contains(keyword2) == true) {
+      for (int i = 0; i < temp1?.length; i++) {
+        ProductSkuAttrBean item = temp1[i];
+        if (item?.name?.contains(keyword3) == true &&
+            temp2.contains(item) == false) {
+          temp2.add(item);
+        }
+      }
+    } else {
+      for (int i = 0; i < temp1?.length; i++) {
+        ProductSkuAttrBean item = temp1[i];
+        print(item?.name?.contains(keyword4));
+        if (item?.name?.contains(keyword4) == true) {
+          temp2.add(item);
+        }
+      }
+    }
+
+    return temp2;
+    // // 如果需要打孔
+    // if (temp1?.isNotEmpty != true) return [];
+    // if (curCanopyAttrBean?.name?.contains(keyword1) == true) {
+    //   for (int i = 0; i < temp1.length; i++) {
+    //     ProductSkuAttrBean bean = list[i];
+    //     if (bean?.name?.contains(keyword2) == true) {
+    //       temp2.add(bean);
+    //     }
+    //   }
+    // } else {
+    //   temp2 = temp1;
+    // }
+
+    // 第三步筛选
+  }
+
+  List<ProductSkuAttrBean> filterPart(List<ProductSkuAttrBean> list) {
     if (list?.isNotEmpty != true) return [];
     // 进行第一步筛选 根据有义务轨道
     String keyword0 = 'GD';
@@ -386,18 +506,15 @@ abstract class BaseCurtainProductDetailBean
       temp1 = list;
     }
     // 进行第二步过滤
+    String keyword1 = "打孔";
+    String keyword2 = "LMG";
+
     List<ProductSkuAttrBean> temp2 = [];
-    String keyword1 = '打孔';
-    String keyword2 = 'LMG';
     // 如果需要打孔
     if (temp1?.isNotEmpty != true) return [];
-    if (curCanopyAttrBean?.name?.contains(keyword1) == true) {
-      for (int i = 0; i < temp1.length; i++) {
-        ProductSkuAttrBean bean = list[i];
-        if (bean?.name?.contains(keyword2) == true) {
-          temp2.add(bean);
-        }
-      }
+    if (craftSkuAttr?.selectedAttrName?.contains(keyword1) == true) {
+      temp2 =
+          temp1?.where((e) => RegexUtil.matches(keyword2, e.name))?.toList();
     } else {
       temp2 = temp1;
     }
@@ -409,22 +526,27 @@ abstract class BaseCurtainProductDetailBean
     return attrList?.firstWhere((e) => e.type == 4, orElse: () => null);
   }
 
+  ProductSkuAttr get partSkuAttr {
+    if (attrList?.isNotEmpty != true) return null;
+    return attrList?.firstWhere((e) => e.type == 5, orElse: () => null);
+  }
+
   bool get isUseDefaultSize =>
       measureData?.widthM == defaultWidth &&
       measureData?.heightM == defaultHeight;
 
   Future selectProduct(BuildContext context) {
-    Map<int, String> id2Name = {1: '布艺帘', 2: '卷帘'};
+    // Map<int, String> id2Name = {1: '布艺帘', 2: '卷帘'};
     if (measureData?.hasConfirmed == false) {
       ToastKit.showInfo('请先确认测装数据哦');
       return Future.value(false);
     }
-    if (TargetProductHolder.goodsType != goodsType) {
-      return selectProductTipAfter(context,
-          currentType: id2Name[goodsType ?? 1],
-          targetType: TargetProductHolder.categoryName,
-          callback: () => sendSelectProductRequest(context));
-    }
+    // if (TargetProductHolder.goodsType != goodsType) {
+    //   return selectProductTipAfter(context,
+    //       currentType: id2Name[goodsType ?? 1],
+    //       targetType: TargetProductHolder.categoryName,
+    //       callback: () => sendSelectProductRequest(context));
+    // }
     return sendSelectProductRequest(context);
   }
 

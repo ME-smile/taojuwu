@@ -2,7 +2,7 @@
  * @Description: 搭配精选视图
  * @Author: iamsmiling
  * @Date: 2020-10-09 13:05:48
- * @LastEditTime: 2020-11-19 16:30:07
+ * @LastEditTime: 2020-11-20 16:19:41
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -56,13 +56,16 @@ class RelativeProductSectionView extends StatelessWidget {
                     ]),
               ),
               Container(
-                height: 160,
+                height: 180,
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Swiper(
                   itemCount: groupCount,
                   loop: false,
                   pagination: new SwiperPagination(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      margin: EdgeInsets.only(
+                        left: 5,
+                        right: 5,
+                      ),
                       builder: DotSwiperPaginationBuilder(
                           size: 6.0,
                           activeSize: 6.0,

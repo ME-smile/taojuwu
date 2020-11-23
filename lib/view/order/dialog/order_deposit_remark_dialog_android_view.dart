@@ -2,10 +2,10 @@
  * @Description: 订单押金对话框
  * @Author: iamsmiling
  * @Date: 2020-10-29 17:52:09
- * @LastEditTime: 2020-10-30 07:46:23
+ * @LastEditTime: 2020-11-20 17:35:38
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/utils/common_kit.dart';
+
 import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/viewmodel/order/order_creator.dart';
 import 'package:taojuwu/widgets/zy_outline_button.dart';
@@ -38,10 +38,10 @@ class _OrderDepositRemarkDialogAndroidViewState
       ToastKit.showInfo('定金不能为空哦');
       return false;
     }
-    if (CommonKit.parseDouble(text) == 0) {
-      ToastKit.showInfo('定金不能为0哦');
-      return false;
-    }
+    // if (CommonKit.parseDouble(text) == 0) {
+    //   ToastKit.showInfo('定金不能为0哦');
+    //   return false;
+    // }
     return true;
   }
 

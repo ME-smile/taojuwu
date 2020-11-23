@@ -2,7 +2,7 @@
  * @Description: 相关产品卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:40:20
- * @LastEditTime: 2020-11-17 14:40:49
+ * @LastEditTime: 2020-11-20 15:08:18
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
@@ -13,6 +13,7 @@ import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class RelativeProductCard<T> extends StatelessWidget {
   final SingleProductDetailBean bean;
+
   const RelativeProductCard(this.bean, {Key key}) : super(key: key);
 
   jump(BuildContext context, int type) {

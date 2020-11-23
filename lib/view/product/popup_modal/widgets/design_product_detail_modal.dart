@@ -2,7 +2,7 @@
  * @Description: 软装方案详情
  * @Author: iamsmiling
  * @Date: 2020-10-23 15:34:30
- * @LastEditTime: 2020-11-19 15:00:11
+ * @LastEditTime: 2020-11-20 15:23:28
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ import 'package:taojuwu/view/product/mixin/client_select_listener.dart';
 import 'package:taojuwu/view/product/mixin/measure_data_holder.dart';
 import 'package:taojuwu/view/product/mixin/product_attr_holder.dart';
 import 'package:taojuwu/view/product/mixin/style_selector_holder.dart';
+import 'package:taojuwu/view/product/mixin/target_product_holder.dart';
 import 'package:taojuwu/view/product/popup_modal/widgets/end_product_attr_editable_card.dart';
 import 'package:taojuwu/view/product/popup_modal/widgets/rolling_curtain_product_attr_editable_card.dart';
 import 'package:taojuwu/view/product/widgets/base/purchase_action_bar.dart';
@@ -85,7 +86,17 @@ class _DesignProductDetailModalState extends State<DesignProductDetailModal>
         e.roomAttr = roomAttr?.copy();
 
         // ignore: unnecessary_statements
-        hasSetSzie ? e.measureData = MeasureDataHolder.copy() : '';
+        if (TargetProductHolder.measureData != null) {
+          e.measureData = TargetProductHolder.measureData;
+        } else {
+          hasSetSzie
+              ? e.measureData =
+                  // ignore: unnecessary_statements
+                  MeasureDataHolder.copy()
+              // ignore: unnecessary_statements
+              : '';
+        }
+
         e.styleSelector = StyleSelectorHolder.copy();
       }
     });

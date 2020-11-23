@@ -2,7 +2,7 @@
  * @Description: 确认测装数据的页面
  * @Author: iamsmiling
  * @Date: 2020-11-19 09:38:32
- * @LastEditTime: 2020-11-19 10:51:38
+ * @LastEditTime: 2020-11-20 10:18:03
  */
 
 import 'package:flutter/cupertino.dart';
@@ -42,8 +42,10 @@ class _ConfirmMeasureDataPageState extends State<ConfirmMeasureDataPage> {
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
         title: Text('测装数据'),
+        elevation: 0,
         centerTitle: true,
       ),
       body: SingleChildScrollView(

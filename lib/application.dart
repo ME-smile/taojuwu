@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:fluro/fluro.dart' as fluro;
 import 'package:flutter/material.dart';
 import 'package:flutter_app_upgrade/flutter_app_upgrade.dart';
@@ -9,8 +8,9 @@ import 'package:install_plugin/install_plugin.dart';
 
 import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:rxdart/rxdart.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taojuwu/event_bus/rx_event_bus.dart';
 
 import 'package:taojuwu/utils/toast_kit.dart';
 
@@ -24,16 +24,17 @@ class Application {
   static String deviceInfo;
   static String versionInfo;
   static RouteObserver routeObserver = RouteObserver();
-  static EventBus eventBus =
-      EventBus.customController(BehaviorSubject(sync: true));
+  static EventBus eventBus = EventBus();
   static const String appName = '淘居屋商家';
   static const String apkName = '淘居屋商家.apk';
   static bool get hasAgree => sp?.getBool('hasAgree') ?? false;
+
   static AppInfoWrapper appInfo;
   static Future<AppUpgradeInfo> appUpgradeInfo;
   static AppInfoModel appInfoModel;
   static init() async {
     sp = await SharedPreferences.getInstance();
+
     deviceInfo = await getAppInfo();
   }
 
@@ -90,7 +91,7 @@ class Application {
       });*/
   }
 
-  static void clearCache() async {
+  static Future clearCache() async {
     Directory tempDir = await getTemporaryDirectory();
     //删除缓存目录
     await delDir(tempDir);

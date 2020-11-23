@@ -14,6 +14,9 @@ PODS:
   - flutter_bugly (0.0.1):
     - Bugly
     - Flutter
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - "geolocator (6.0.0+4)":
     - Flutter
   - install_plugin (0.0.1):
@@ -25,6 +28,9 @@ PODS:
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
+  - sqflite (0.0.2):
+    - Flutter
+    - FMDB (>= 2.7.5)
   - SwiftProtobuf (1.13.0)
 
 DEPENDENCIES:
@@ -39,10 +45,12 @@ DEPENDENCIES:
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
 SPEC REPOS:
   trunk:
     - Bugly
+    - FMDB
     - MTBBarcodeScanner
     - SwiftProtobuf
 
@@ -69,6 +77,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
 
 SPEC CHECKSUMS:
   barcode_scan: 6dd1caf4a5faecef4144392ec66c4fd3a5a84d61
@@ -78,12 +88,14 @@ SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_app_upgrade: a62fbe2a09a2176a7b44211c8355adfcfb969779
   flutter_bugly: c9800f4d5bc5bdc27ffdde3417a26ba44266e0c3
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator: 1ae40084cc6c1586ce5ad12cfc3fd38c64d05f2f
   install_plugin: cedf2dc224415ab9eecd5bfbf5eb39ac015f2485
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   package_info: d4726d54c0214c4d363b2333d66a753d1d6ec22a
   path_provider: d1a68c4065ce2e0f6fd03f8a46d698525dc79f06
   shared_preferences: 5d0fc5691f4e7293ddfc1b599ca398f8af42f5e7
+  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   SwiftProtobuf: fd4693388a96c8c2df35d3b063272b0e7c499d00
 
 PODFILE CHECKSUM: 596c7d1b21f258d38d9dcd8e5a2c3694110eb349

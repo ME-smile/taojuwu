@@ -2,7 +2,7 @@
  * @Description:提交订单页面 2.0
  * @Author: iamsmiling
  * @Date: 2020-10-28 11:14:01
- * @LastEditTime: 2020-11-06 15:36:12
+ * @LastEditTime: 2020-11-20 16:47:07
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/constants/constants.dart';

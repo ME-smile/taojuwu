@@ -10,6 +10,7 @@ import 'package:taojuwu/repository/order/order_model.dart';
 
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/singleton/target_client.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/order/order_detail_page.dart';
 import 'package:taojuwu/view/order/widgets/aftersale_button.dart';
 import 'package:taojuwu/view/order/widgets/cancel_order_button.dart';
@@ -795,24 +796,14 @@ class OrderKit {
               child: SelectedProductButton(
                 text: goods?.hasSelectedProduct == false ? '去选品' : '更换选品',
                 callback: () {
-                  selectProductTipBefore(context, goods?.categoryName,
-                      callback: () {
-                    Application.eventBus.fire(SelectClientEvent(
-                        TargetClient.fromLiteral(
-                            provider?.clientId, provider?.clientName)));
-                    TargetProductHolder.status = 0;
-                    TargetProductHolder.goodsType = goods?.goodsType;
-                    TargetProductHolder.categoryName = goods?.categoryName;
-                    TargetProductHolder.measureData =
-                        goods?.orderGoodsMeasureData;
-
-                    // Application.eventBus
-                    //     .fire(SelectProductEvent(goods?.orderGoodsId));
-                    RouteHandler.goCurtainMallPage(context,
-                        orderGoodsId: goods?.orderGoodsId);
-                    // RouteHandler.goCurtainMallPage(
-                    //   context,
-                    // );
+                  if (CommonKit.isNullOrEmpty(goods?.categoryName)) {
+                    return goToSelectProduct(context, provider, goods);
+                  }
+                  return selectProductTipBefore(
+                    context,
+                    goods?.categoryName,
+                  ).whenComplete(() {
+                    goToSelectProduct(context, provider, goods);
                   });
                 },
               ),
@@ -821,6 +812,21 @@ class OrderKit {
         ],
       ),
     );
+  }
+
+  static Future goToSelectProduct(
+      BuildContext context, OrderDetailProvider provider, OrderGoods goods) {
+    Application.eventBus.fire(SelectClientEvent(
+        TargetClient.fromLiteral(provider?.clientId, provider?.clientName)));
+    TargetProductHolder.status = 0;
+    TargetProductHolder.goodsType = goods?.goodsType;
+    TargetProductHolder.categoryName = goods?.categoryName;
+    TargetProductHolder.measureData = goods?.orderGoodsMeasureData;
+    TargetProductHolder.height = goods?.orderGoodsMeasureData?.height;
+    // Application.eventBus
+    //     .fire(SelectProductEvent(goods?.orderGoodsId));
+    return RouteHandler.goSelectProduct(context,
+        routeSettings: RouteSettings(arguments: goods?.orderGoodsMeasureData));
   }
 }
 

@@ -2,7 +2,7 @@
  * @Description: 修改窗帘商品属性叶脉你
  * @Author: iamsmiling
  * @Date: 2020-10-26 13:04:29
- * @LastEditTime: 2020-11-06 14:00:22
+ * @LastEditTime: 2020-11-22 15:32:26
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
@@ -29,7 +29,6 @@ class _EditCurtainProductAttrPageState
   //备份未修改前的数据，在直接返回时，重新指向
   @override
   void initState() {
-    originAttrList = bean?.attrList;
     bean?.attrList = originAttrList?.map((e) => e?.copy())?.toList();
     super.initState();
   }

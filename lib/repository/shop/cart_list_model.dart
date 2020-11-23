@@ -7,6 +7,7 @@ import 'package:taojuwu/repository/base/goods_attr.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/repository/order/order_model.dart';
 import 'package:taojuwu/repository/zy_response.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 class CartCategoryResp extends ZYResponse<CartCategoryListWrapper> {
   CartCategoryResp.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -107,7 +108,7 @@ class CartModel extends CountModel {
 
     return isEndProduct
         ? price * count
-        : double.parse(estimatedPrice ?? '0.00');
+        : CommonKit.parseDouble(estimatedPrice, defaultVal: 0.0);
   }
 
   CartModel.fromJson(Map<String, dynamic> json) {
@@ -123,7 +124,7 @@ class CartModel extends CountModel {
     skuId = json['sku_id'] is int ? json['sku_id'] : int.parse(json['sku_id']);
     skuName = json['sku_name'];
     String priceStr = '${json['price'] ?? '0.00'}';
-    price = double.parse(priceStr);
+    price = CommonKit.parseDouble(priceStr, defaultVal: 0.0);
     count = json['num'] is int ? json['num'] : int.parse(json['num']);
 
     blId = json['bl_id'];
@@ -151,8 +152,8 @@ class CartModel extends CountModel {
       wrapper.add(tmp);
     });
 
-    wcAttr =
-        wrapper.map((item) => OrderProductAttrWrapper.fromJson(item)).toList();
+    // wcAttr =
+    //     wrapper.map((item) => OrderProductAttrWrapper.fromJson(item)).toList();
     pictureInfo = json['picture_info'] != null
         ? new PictureInfo.fromJson(json['picture_info'])
         : null;
@@ -221,7 +222,7 @@ class CartModel extends CountModel {
       'total_price': isCustomizedProduct
           ? estimatedPrice is double
               ? estimatedPrice
-              : double.parse(estimatedPrice ?? '0.0')
+              : CommonKit.parseDouble(estimatedPrice)
           : totalPrice,
       'is_shade': isShade,
       'cart_id': cartId,
@@ -254,7 +255,7 @@ class GoodsAttrWrapper {
   GoodsAttrWrapper.fromJson(Map<String, dynamic> json) {
     totalPrice = json['estimated_price'] is double
         ? json['estimated_price']
-        : double.parse(json['estimated_price'] ?? '0.00');
+        : CommonKit.parseDouble(json['estimated_price'], defaultVal: 0.0);
     Map attr = json['wc_attr'] is Map ? json['wc_attr'] : {};
 
     //可修改的 3 5 8 12 13

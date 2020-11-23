@@ -2,7 +2,7 @@
  * @Description: 下测量单
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-17 10:36:13
+ * @LastEditTime: 2020-11-20 16:42:48
  */
 
 import 'package:flutter/material.dart';
@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/view/product/mixin/client_select_listener.dart';
 import 'package:taojuwu/viewmodel/order/base/base_order_creator.dart';
 import 'package:taojuwu/viewmodel/order/curtain/measure_curtain_order_creator.dart';
 import 'package:taojuwu/viewmodel/order/order_creator.dart';
@@ -34,6 +35,7 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
   @override
   void initState() {
     orderCreator = OrderCreator();
+    orderCreator.targetClient = TargetClientHolder.targetClient;
     super.initState();
   }
 
@@ -74,7 +76,7 @@ class _MeasureOrderPageState extends State<MeasureOrderPage> {
                   // ),
                   MeasureOrderRemarkCard(orderCreator),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                    padding: EdgeInsets.all(UIKit.width(20)),
                     child: Text(
                       Constants.SERVER_PROMISE,
                       style: textTheme.caption,

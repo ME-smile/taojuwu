@@ -12,6 +12,7 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/view/product/mixin/target_product_holder.dart';
 
 class SearchPage extends StatefulWidget {
   final int type; // 1 商品搜索 2 客户搜索 3 订单搜索
@@ -44,7 +45,9 @@ class _SearchPageState extends State<SearchPage> {
   String keyword = '';
   bool get isVisible => keyword?.isNotEmpty == true ?? false;
   fetchData() {
-    OTPService.associativeWords(context).then((AssociativeWordResp response) {
+    String height = TargetProductHolder.height;
+    OTPService.associativeWords(context, params: {'height': height})
+        .then((AssociativeWordResp response) {
       if (response?.valid == true) {
         data?.addAll(response?.data?.data);
       }
@@ -72,6 +75,7 @@ class _SearchPageState extends State<SearchPage> {
           break;
         }
     }
+    history = history.reversed?.toList();
   }
 
   void clearHistory() {

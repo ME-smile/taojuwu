@@ -2,7 +2,7 @@
  * @Description: 属性选择项的类
  * @Author: iamsmiling
  * @Date: 2020-09-28 09:14:34
- * @LastEditTime: 2020-11-05 09:30:47
+ * @LastEditTime: 2020-11-23 14:49:40
  */
 
 import 'package:taojuwu/repository/zy_response.dart';
@@ -80,11 +80,18 @@ class ProductSkuAttr {
 
   String get selectedAttrName {
     if (data == null || data.isEmpty) return '';
-    return data
-        ?.where((element) => element.isChecked)
-        ?.toList()
-        ?.map((e) => e?.name)
-        ?.join(',');
+    if (canMultiSelect) {
+      return data
+          ?.where((element) => element.isChecked)
+          ?.toList()
+          ?.map((e) => e?.name)
+          ?.join(',');
+    } else {
+      return data
+              ?.firstWhere((element) => element.isChecked, orElse: () => null)
+              ?.name ??
+          '';
+    }
   }
 
   ProductSkuAttrBean get selcetedAttrBean {

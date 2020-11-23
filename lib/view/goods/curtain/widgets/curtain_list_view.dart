@@ -12,7 +12,9 @@ import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class ListCard extends StatelessWidget {
   final GoodsItemBean bean;
-  const ListCard(this.bean, {Key key}) : super(key: key);
+  final bool isMeasureOrderGooods;
+  const ListCard(this.bean, {Key key, this.isMeasureOrderGooods = false})
+      : super(key: key);
 
   Widget buildContent(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -49,15 +51,18 @@ class ListCard extends StatelessWidget {
     }
     if (type == 1) {
       return RouteHandler.goFabricCurtainProductDetailPage(
-          context, bean?.goodsId);
+          context, bean?.goodsId,
+          isMeasureOrderGoods: isMeasureOrderGooods ? 1 : 0);
     }
     if (type == 2) {
       return RouteHandler.goRollingCurtainProductDetailPage(
-          context, bean?.goodsId);
+          context, bean?.goodsId,
+          isMeasureOrderGoods: isMeasureOrderGooods ? 1 : 0);
     }
     if (type == 3) {
       return RouteHandler.goGauzeCurtainProductDetailPage(
-          context, bean?.goodsId);
+          context, bean?.goodsId,
+          isMeasureOrderGoods: isMeasureOrderGooods ? 1 : 0);
     }
   }
 
