@@ -441,6 +441,8 @@ class OptionView extends StatelessWidget {
               padding: EdgeInsets.only(top: UIKit.height(10)),
               child: Text(
                 text,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: showBorder
                     ? textTheme.bodyText2.copyWith(fontSize: 12)

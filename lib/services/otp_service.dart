@@ -690,7 +690,6 @@ class OTPService {
       {Map<String, dynamic> params}) async {
     Response response =
         await xhr.get(context, ApiPath.softDetail, params: params);
-
     return SoftProjectDetailBeanResp.fromJson(response?.data);
   }
 
@@ -726,18 +725,14 @@ class OTPService {
         await xhr.get(context, ApiPath.ipLocation, params: params);
     print(response?.data);
     Map<String, dynamic> dict = response?.data;
-    dict = (dict['result'] ?? {})['ad_info']??{};
+    dict = (dict['result'] ?? {})['ad_info'] ?? {};
     return LocationBean.fromJson(dict);
   }
 
   static Future<ZYResponse> sendSms({Map<String, dynamic> params}) async {
     Response response = await xhr.post(ApiPath.sendSms, formdata: params);
     ZYResponse zyResponse = ZYResponse.fromJsonWithData(response?.data);
-    if (zyResponse?.valid == true) {
-      return zyResponse;
-    } else {
-      throw Exception('验证码发送失败--------');
-    }
+    return zyResponse;
   }
 
   static Future validateSms({Map<String, dynamic> params}) async {

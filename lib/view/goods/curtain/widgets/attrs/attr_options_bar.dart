@@ -2,7 +2,7 @@
  * @Description: 属性选泽
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-10-28 17:52:31
+ * @LastEditTime: 2020-11-24 15:24:26
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -64,18 +64,25 @@ class _AttrOptionsBarState extends State<AttrOptionsBar> {
               flex: 1,
             ),
             Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Text(
-                    widget.skuAttr.selectedAttrName,
-                    style: TextStyle(fontSize: 14, color: Color(0xFF1B1B1B)),
-                  ),
-                  Icon(
-                    ZYIcon.next,
-                    size: 20,
-                  )
-                ],
+              child: Container(
+                margin: EdgeInsets.only(left: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Expanded(
+                        child: Text(
+                      widget.skuAttr.selectedAttrName,
+                      textAlign: TextAlign.end,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 14, color: Color(0xFF1B1B1B)),
+                    )),
+                    Icon(
+                      ZYIcon.next,
+                      size: 20,
+                    )
+                  ],
+                ),
               ),
               flex: 4,
             )

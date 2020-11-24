@@ -2,7 +2,7 @@
  * @Description: 成品详情
  * @Author: iamsmiling
  * @Date: 2020-10-26 14:15:00
- * @LastEditTime: 2020-11-19 18:59:33
+ * @LastEditTime: 2020-11-24 18:19:40
  */
 
 import 'package:animations/animations.dart';
@@ -15,6 +15,7 @@ import 'package:taojuwu/view/product/widgets/product_detail_footer.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_header.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_profile.dart';
 import 'package:taojuwu/view/product/widgets/section/product_detail_img_section_view.dart';
+import 'package:taojuwu/view/product/widgets/section/product_material_info_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/recommend_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/relative_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/scene_design_product_section_view.dart';
@@ -108,6 +109,10 @@ class _EndProductDetailPageState
                                 softDesignProductList,
                                 goodsId: productDetailBean?.goodsId,
                               ),
+                            ),
+                            SliverToBoxAdapter(
+                              child: ProductMaterialInfoSectionView(
+                                  productDetailBean?.materialInfoDetailBean),
                             ),
                             SliverToBoxAdapter(
                               child: ProductDetailImgSectionView(

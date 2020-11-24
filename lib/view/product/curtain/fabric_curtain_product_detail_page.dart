@@ -14,6 +14,7 @@ import 'package:taojuwu/view/product/widgets/section/fabric_curtain_product_attr
 import 'package:taojuwu/view/product/widgets/product_detail_header.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_profile.dart';
 import 'package:taojuwu/view/product/widgets/section/product_detail_img_section_view.dart';
+import 'package:taojuwu/view/product/widgets/section/product_material_info_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/recommend_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/relative_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/scene_design_product_section_view.dart';
@@ -118,6 +119,10 @@ class _CurtainProductDetailPageState
                                 softDesignProductList,
                                 goodsId: productDetailBean?.goodsId,
                               ),
+                            ),
+                            SliverToBoxAdapter(
+                              child: ProductMaterialInfoSectionView(
+                                  productDetailBean?.materialInfoDetailBean),
                             ),
                             SliverToBoxAdapter(
                               child: ProductDetailImgSectionView(

@@ -2,7 +2,7 @@
  * @Description: 获取验证码按钮
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-11-16 14:36:37
+ * @LastEditTime: 2020-11-24 09:38:25
  */
 import 'dart:async';
 
@@ -43,7 +43,7 @@ class _SendSmsButtonState extends State<SendSmsButton> {
     super.initState();
     hasSend = ValueNotifier<bool>(widget.hasSend);
 
-    countDown = ValueNotifier<int>(120);
+    countDown = ValueNotifier<int>(60);
     isValidTel = ValueNotifier<bool>(validateTel());
     widget.telPhoneController.addListener(switchButtonDisabledStatus);
   }
@@ -61,9 +61,15 @@ class _SendSmsButtonState extends State<SendSmsButton> {
   void dispose() {
     super.dispose();
     hasSend?.dispose();
-    countDown?.dispose();
-    timer?.cancel();
+
     //force to close stream
+  }
+
+  void closeTimer() {
+    if (timer.isActive) {
+      countDown?.dispose();
+      timer?.cancel();
+    }
   }
 
   Future onTap() async {
@@ -79,7 +85,7 @@ class _SendSmsButtonState extends State<SendSmsButton> {
     timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (countDown.value <= 0) {
         hasSend.value = false;
-        countDown.value = 120;
+        countDown.value = 60;
         timer?.cancel();
         return;
       }

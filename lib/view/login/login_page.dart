@@ -7,6 +7,7 @@ import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/providers/user_provider.dart';
+import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
@@ -223,12 +224,20 @@ class _LoginPageState extends State<LoginPage> {
 
   Future sendSms(LoginViewModel model) {
     String tel = model?.phoneController?.text;
-
-    return OTPService.sendSms(params: {'mobile': tel, 'type': 2}).then((_) {
-      model?.hasSendSms = true;
+    String errMsg;
+    return OTPService.sendSms(params: {'mobile': tel, 'type': 2})
+        .then((ZYResponse response) {
+      if (response?.valid == true) {
+        model?.hasSendSms = true;
+      } else {
+        model?.hasSendSms = false;
+        errMsg = response?.message ?? '';
+        ToastKit.showInfo(errMsg);
+        throw Exception('发送验证码失败');
+      }
     }).catchError((err) {
       model?.hasSendSms = false;
-      ToastKit.showErrorInfo('验证码发送失败!');
+      ToastKit.showInfo(err);
       throw Exception('发送验证码失败');
     });
   }
@@ -371,59 +380,62 @@ class _LoginPageState extends State<LoginPage> {
                         Container(
                           alignment: Alignment.centerLeft,
                           padding: EdgeInsets.only(top: 16),
-                          child: model.isPwdMode
-                              ? Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    TextField(
-                                        maxLines: 1,
-                                        controller: model.smsController,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                          hintText: '请输入验证码',
+                          child: IndexedStack(
+                            index: model.isPwdMode ? 0 : 1,
+                            children: [
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  TextField(
+                                      maxLines: 1,
+                                      controller: model.smsController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        hintText: '请输入验证码',
 
-                                          focusedBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Color(0xFFC7C8CB),
-                                                  width: 1)),
-                                          enabledBorder: UnderlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Color(0xFFC7C8CB),
-                                                  width: 1)),
-                                          // suffixIcon: ),
-                                        )),
-                                    Positioned(
-                                      right: 0,
-                                      bottom: -4,
-                                      // bottom: 1,
-                                      child: SendSmsButton(
-                                          telPhoneController:
-                                              model.phoneController,
-                                          isActive: model.isValidTel,
-                                          callback: () => sendSms(model)),
-                                    )
-                                  ],
-                                )
-                              : TextField(
-                                  obscureText: true,
-                                  controller: model.pwdController,
-                                  decoration: InputDecoration(
-                                      hintText: '请输入密码',
-                                      focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFC7C8CB),
-                                              width: .5)),
-                                      enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                              color: Color(0xFFC7C8CB),
-                                              width: .5)),
-                                      suffixIcon: FlatButton(
-                                          onPressed: () {
-                                            RouteHandler.goForgetPwdPage(
-                                                context);
-                                          },
-                                          child: Text('忘记密码'))),
-                                ),
+                                        focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFC7C8CB),
+                                                width: 1)),
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Color(0xFFC7C8CB),
+                                                width: 1)),
+                                        // suffixIcon: ),
+                                      )),
+                                  Positioned(
+                                    right: 0,
+                                    bottom: -4,
+                                    // bottom: 1,
+                                    child: SendSmsButton(
+                                        telPhoneController:
+                                            model.phoneController,
+                                        isActive: model.isValidTel,
+                                        callback: () => sendSms(model)),
+                                  )
+                                ],
+                              ),
+                              TextField(
+                                obscureText: true,
+                                controller: model.pwdController,
+                                decoration: InputDecoration(
+                                    hintText: '请输入密码',
+                                    focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xFFC7C8CB),
+                                            width: .5)),
+                                    enabledBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Color(0xFFC7C8CB),
+                                            width: .5)),
+                                    suffixIcon: FlatButton(
+                                        onPressed: () {
+                                          RouteHandler.goForgetPwdPage(context);
+                                        },
+                                        child: Text('忘记密码'))),
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),

@@ -2,7 +2,7 @@
  * @Description: 场景详情 相关商品视图
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:16:05
- * @LastEditTime: 2020-11-18 10:47:51
+ * @LastEditTime: 2020-11-24 14:50:25
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
@@ -26,6 +26,7 @@ class SceneDesignRelativeProductSectionView extends StatelessWidget {
     return Visibility(
       visible: !isNullOrEmpty(goodsList),
       child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           children: [
             Padding(

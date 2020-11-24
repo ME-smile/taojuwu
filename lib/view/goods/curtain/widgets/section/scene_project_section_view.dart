@@ -2,7 +2,7 @@
  * @Description: 场景推荐
  * @Author: iamsmiling
  * @Date: 2020-10-09 14:27:32
- * @LastEditTime: 2020-11-02 10:28:05
+ * @LastEditTime: 2020-11-24 18:21:23
  */
 import 'dart:math';
 
@@ -106,7 +106,7 @@ class SceneProjectCard extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.all(16),
                   child: Text(
-                    '${bean?.space},${bean?.style}',
+                    '${bean?.space ?? ''},${bean?.style ?? ''}',
                     style: TaojuwuTextStyle.WHITE_TEXT_STYLE,
                   ),
                 )

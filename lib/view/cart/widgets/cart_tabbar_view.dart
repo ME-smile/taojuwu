@@ -297,7 +297,7 @@ class CustomizedProductCardState extends State<CustomizedProductCard>
                                   provider?.checkGoods(cartModel, isSelected);
                                 }),
                             ZYNetImage(
-                              imgPath: cartModel?.pictureInfo?.picCoverSmall,
+                              imgPath: cartModel?.pictureInfo?.picCoverMid,
                               isCache: false,
                               width: UIKit.width(180),
                             ),
@@ -492,7 +492,7 @@ class _ProductCardState extends State<ProductCard>
                                 value: cartModel?.isChecked,
                                 onChanged: checkCallback),
                             ZYNetImage(
-                              imgPath: cartModel?.pictureInfo?.picCoverSmall,
+                              imgPath: cartModel?.pictureInfo?.picCoverMid,
                               isCache: false,
                               width: UIKit.width(180),
                             ),

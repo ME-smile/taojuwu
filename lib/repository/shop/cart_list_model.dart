@@ -212,7 +212,7 @@ class CartModel extends CountModel {
 
     return {
       'tag': tag,
-      'img': pictureInfo?.picCoverSmall,
+      'img': pictureInfo?.picCoverMid,
       'price': price,
       'goods_name': goodsName,
       'sku_id': skuId,

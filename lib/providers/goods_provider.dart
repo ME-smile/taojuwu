@@ -18,6 +18,7 @@ import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 
 class GoodsProvider with ChangeNotifier {
@@ -357,7 +358,13 @@ class GoodsProvider with ChangeNotifier {
   CanopyAttrBean get curCanopyAttrBean => _curCanopyAttrBean;
   int get createType => _createType;
   String get curAccessoryAttrBeansName =>
-      curAccessoryAttrBeans?.map((e) => e?.name)?.toList()?.join(',') ?? '无';
+      curAccessoryAttrBeans
+          ?.map((e) =>
+              (e?.name ?? '') +
+              '${CommonKit.isNumNullOrZero(e?.price) ? '' : '¥${e?.price}'}')
+          ?.toList()
+          ?.join(',') ??
+      '无';
   List<AccessoryAttrBean> get curAccessoryAttrBeans =>
       accessoryAttr?.data?.isNotEmpty == true
           ? accessoryAttr?.data
@@ -758,7 +765,11 @@ class GoodsProvider with ChangeNotifier {
 
   double get area {
     double area = widthM * heightM;
-    return area > 0 ? area < 1 ? 1 : area : 0;
+    return area > 0
+        ? area < 1
+            ? 1
+            : area
+        : 0;
   }
 
   double get unitPrice {

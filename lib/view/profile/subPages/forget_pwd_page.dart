@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -41,12 +42,17 @@ class _ForgetPwdPageState extends State<ForgetPwdPage> {
 
   Future sendSms() {
     return OTPService.sendSms(params: {'mobile': telInput?.text, 'type': 2})
-        .then((_) {
-      ToastKit.showInfo('验证码发送成功');
-      canForward.value = true;
+        .then((ZYResponse response) {
+      if (response?.valid == true) {
+        canForward.value = true;
+        ToastKit.showInfo('验证码发送成功');
+      } else {
+        canForward.value = true;
+        ToastKit.showInfo(response?.message ?? '');
+      }
     }).catchError((err) {
       print('发送验证码失败');
-      ToastKit.showErrorInfo('验证码发送失败!');
+
       canForward.value = false;
       throw Exception('发送验证码失败');
     });

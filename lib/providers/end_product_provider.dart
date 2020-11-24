@@ -207,7 +207,7 @@ class EndProductProvider with ChangeNotifier {
             CartModel model = CartModel.fromJson(response?.data);
 
             cartModel?.price = model?.price;
-            cartModel?.pictureInfo?.picCoverSmall =
+            cartModel?.pictureInfo?.picCoverMid =
                 model?.pictureInfo?.picCoverSmall;
 
             cartModel?.skuId = model?.skuId;

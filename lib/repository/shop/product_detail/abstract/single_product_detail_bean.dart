@@ -2,9 +2,10 @@
  * @Description: 单商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:06:20
- * @LastEditTime: 2020-11-17 16:54:18
+ * @LastEditTime: 2020-11-24 17:56:12
  */
 
+import 'package:taojuwu/repository/shop/product_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/fabric_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/gauze_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
@@ -44,6 +45,8 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
   bool get isFabricCurtainProduct => goodsType == 1;
   // 是否为卷帘
   bool get isRollingCurtainProduct => goodsType == 2;
+
+  ProductMaterialDetailBean materialInfoDetailBean;
   SingleProductDetailBean.fromJson(Map<String, dynamic> json) {
     goodsId = json['goods_id'];
     goodsName = json['goods_name'];
@@ -74,6 +77,8 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
         ?.toList();
     width = CommonKit.parseDouble(json['width'], defaultVal: 0.0);
     height = CommonKit.parseDouble(json['height'], defaultVal: 0.0);
+
+    materialInfoDetailBean = ProductMaterialDetailBean.fromJson(json);
   }
 
   String get detailDescription => null;

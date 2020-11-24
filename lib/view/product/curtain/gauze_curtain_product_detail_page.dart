@@ -2,7 +2,7 @@
  * @Description: 窗纱商品详情页面
  * @Author: iamsmiling
  * @Date: 2020-10-31 15:35:02
- * @LastEditTime: 2020-11-23 14:16:20
+ * @LastEditTime: 2020-11-24 17:59:03
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +14,7 @@ import 'package:taojuwu/view/product/widgets/product_detail_header.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_profile.dart';
 import 'package:taojuwu/view/product/widgets/section/gauze_curtain_product_attrs_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/product_detail_img_section_view.dart';
+import 'package:taojuwu/view/product/widgets/section/product_material_info_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/recommend_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/relative_product_section_view.dart';
 import 'package:taojuwu/view/product/widgets/section/scene_design_product_section_view.dart';
@@ -107,10 +108,7 @@ class _GauzeCurtainProductDetailPageState
                             // // RollingCurtainProductAttrsSectionView(ProductDetailBean),
                             // // RollingCurtainProductAttrSectionView(ProductDetailBean),
                             RelativeProductSectionView(relativeProductList),
-                            SliverToBoxAdapter(
-                              child: ProductDetailImgSectionView(
-                                  productDetailBean?.detailImgList),
-                            ),
+
                             SliverToBoxAdapter(
                               child: SceneDesignProductSectionView(
                                   sceneDesignProductList),
@@ -121,7 +119,14 @@ class _GauzeCurtainProductDetailPageState
                                 goodsId: productDetailBean?.goodsId,
                               ),
                             ),
-
+                            SliverToBoxAdapter(
+                              child: ProductMaterialInfoSectionView(
+                                  productDetailBean?.materialInfoDetailBean),
+                            ),
+                            SliverToBoxAdapter(
+                              child: ProductDetailImgSectionView(
+                                  productDetailBean?.detailImgList),
+                            ),
                             SliverToBoxAdapter(
                               child: RecommendedProductSectionView(
                                   recommendProductList),

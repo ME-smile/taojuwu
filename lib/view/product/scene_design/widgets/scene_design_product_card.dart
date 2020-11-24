@@ -2,7 +2,7 @@
  * @Description: 场景瀑布流卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:08:17
- * @LastEditTime: 2020-11-16 16:46:24
+ * @LastEditTime: 2020-11-24 18:57:23
  */
 import 'dart:math';
 
@@ -65,7 +65,7 @@ class SceneProjectGoodsCard extends StatelessWidget {
               ),
               Container(
                 child: Text(
-                  '${bean?.room ?? ''},${bean?.style ?? ''}',
+                  '${bean?.room ?? ''} ${bean?.style ?? ''}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.start,

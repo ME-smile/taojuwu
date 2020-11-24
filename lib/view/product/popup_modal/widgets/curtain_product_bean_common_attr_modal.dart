@@ -2,7 +2,7 @@
  * @Description: 窗帘通用属性选取
  * @Author: iamsmiling
  * @Date: 2020-10-26 10:55:49
- * @LastEditTime: 2020-11-02 15:19:21
+ * @LastEditTime: 2020-11-24 17:12:25
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
@@ -36,8 +36,9 @@ class _CurtainProductDetailBeanCommonAttrModalState
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             //横轴间距
-            crossAxisSpacing: 10.0,
-            childAspectRatio: 0.84,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            childAspectRatio: 0.72,
           ),
           itemCount: list.length ?? 0,
           itemBuilder: (BuildContext context, int i) {

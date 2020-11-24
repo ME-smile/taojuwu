@@ -2,7 +2,7 @@
  * @Description: //TODO
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-11-23 09:28:52
+ * @LastEditTime: 2020-11-24 15:58:04
 -->
 # taojuwu
 
@@ -28,7 +28,7 @@ vivo 1.0.1 2002
 1.1.5 管理后台
 
 
-version: 1.2.0+1005
+version: 1.2.0+1007
 
 
 1.修复已知bug

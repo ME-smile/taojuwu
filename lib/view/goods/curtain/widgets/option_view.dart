@@ -2,7 +2,7 @@
  * @Description: 属性的选项
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-17 17:08:38
+ * @LastEditTime: 2020-11-24 18:36:57
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
@@ -69,29 +69,49 @@ class OptionView extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(top: 5),
-              child: Text(
-                bean.name,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: isChecked
-                    ? textTheme.bodyText2.copyWith(fontSize: 12)
-                    : textTheme.caption.copyWith(fontSize: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                      child: Text.rich(
+                    TextSpan(
+                      text: '${bean.name}\n',
+                      children: [
+                        WidgetSpan(
+                            child: Container(
+                          margin: EdgeInsets.only(top: 5),
+                          child: Text(
+                            '${CommonKit.isNumNullOrZero(bean.price) ? '' : "¥${bean.price}"}',
+                            style: isChecked
+                                ? textTheme.bodyText2.copyWith(fontSize: 12)
+                                : textTheme.caption.copyWith(fontSize: 12),
+                          ),
+                        ))
+                        // TextSpan(
+                        //     text: '\n\n' +
+                        //         '${CommonKit.isNumNullOrZero(bean.price) ? '' : "¥${bean.price}"}')
+                      ],
+                      style: isChecked
+                          ? textTheme.bodyText2.copyWith(fontSize: 12)
+                          : textTheme.caption.copyWith(fontSize: 12),
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ))
+                ],
               ),
             ),
-            Visibility(
-              visible: showPrice,
-              child: Padding(
-                padding: EdgeInsets.only(top: 5),
-                child: Text(
-                  '${bean.price}',
-                  textAlign: TextAlign.center,
-                  style: isChecked
-                      ? textTheme.bodyText2.copyWith(fontSize: 12)
-                      : textTheme.caption.copyWith(fontSize: 12),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: EdgeInsets.only(top: 5),
+            //   child: Text(
+            //     '${CommonKit.isNumNullOrZero(bean.price) ? '' : "¥${bean.price}"}',
+            //     textAlign: TextAlign.center,
+            //     style: isChecked
+            //         ? textTheme.bodyText2.copyWith(fontSize: 12)
+            //         : textTheme.caption.copyWith(fontSize: 12),
+            //   ),
+            // ),
           ],
         ),
       ),

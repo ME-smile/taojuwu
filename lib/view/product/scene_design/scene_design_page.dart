@@ -2,7 +2,7 @@
  * @Description: 软装方案详情
  * @Author: iamsmiling
  * @Date: 2020-10-23 11:05:49
- * @LastEditTime: 2020-11-19 19:08:46
+ * @LastEditTime: 2020-11-24 14:50:10
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +94,6 @@ class _SceneDesignPageState extends State<SceneDesignPage> {
                     ),
                     body: Container(
                       color: Theme.of(context).primaryColor,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: CustomScrollView(
                         shrinkWrap: true,
                         slivers: [

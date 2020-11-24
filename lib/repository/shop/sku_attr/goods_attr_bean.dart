@@ -2,7 +2,7 @@
  * @Description: 属性选择项的类
  * @Author: iamsmiling
  * @Date: 2020-09-28 09:14:34
- * @LastEditTime: 2020-11-23 14:49:40
+ * @LastEditTime: 2020-11-24 15:05:24
  */
 
 import 'package:taojuwu/repository/zy_response.dart';
@@ -84,13 +84,17 @@ class ProductSkuAttr {
       return data
           ?.where((element) => element.isChecked)
           ?.toList()
-          ?.map((e) => e?.name)
+          ?.map((e) =>
+              e.name +
+              ' ' +
+              '${CommonKit.isNumNullOrZero(e.price) ? '' : '¥${e.price}'}')
           ?.join(',');
     } else {
-      return data
-              ?.firstWhere((element) => element.isChecked, orElse: () => null)
-              ?.name ??
-          '';
+      var e =
+          data?.firstWhere((element) => element.isChecked, orElse: () => null);
+      return e.name +
+          ' ' +
+          '${CommonKit.isNumNullOrZero(e.price) ? '' : '¥${e.price}'}';
     }
   }
 

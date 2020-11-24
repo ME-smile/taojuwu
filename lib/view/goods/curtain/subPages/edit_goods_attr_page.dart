@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/base/goods_attr.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/goods/curtain/widgets/zy_dialog.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -69,11 +70,14 @@ class _EditGoodsAttrPageState extends State<EditGoodsAttrPage> {
 
   List<String> get valueStrList {
     GoodsProvider provider = TargetOrderGoods.instance.cartGoodsProvider;
+
     return [
       provider?.curWindowGauzeAttrBean?.name,
       provider?.curPartAttrBean?.name,
-      provider?.curCanopyAttrBean?.name,
-      provider?.curWindowShadeAttrBean?.name,
+      (provider?.curCanopyAttrBean?.name ?? ' ') +
+          ('${CommonKit.isNumNullOrZero(provider?.curCanopyAttrBean?.price) ? '' : "¥${provider?.curCanopyAttrBean?.price}"}'),
+      (provider?.curWindowShadeAttrBean?.name ?? ' ') +
+          ('${CommonKit.isNumNullOrZero(provider?.curWindowShadeAttrBean?.price) ? '' : "¥${provider?.curWindowShadeAttrBean?.price}"}'),
       provider?.curAccessoryAttrBeansName,
     ];
   }
@@ -139,15 +143,24 @@ class _EditGoodsAttrPageState extends State<EditGoodsAttrPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Text(bean?.name ?? ''),
-                                Container(
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text(valueStrList[i] ?? ''),
-                                      Icon(
-                                        ZYIcon.next,
-                                        size: 16,
-                                      )
-                                    ],
+                                Expanded(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 24),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Expanded(
+                                            child: Text(
+                                          valueStrList[i] ?? '',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.end,
+                                        )),
+                                        Icon(
+                                          ZYIcon.next,
+                                          size: 16,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],

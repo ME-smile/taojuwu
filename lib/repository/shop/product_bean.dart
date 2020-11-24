@@ -10,6 +10,8 @@ import 'curtain_product_list_model.dart';
 import 'product_sku_bean.dart';
 import 'sku_attr/window_style_sku_option.dart';
 
+import 'dart:developer' as developer;
+
 class ProductDetailBeanRespList
     extends ZYResponse<ListDataWrapperProductDetailBean> {
   ProductDetailBeanRespList.fromJson(Map<String, dynamic> json)
@@ -60,14 +62,17 @@ class ProductDetailBeanDataWrapper {
   int skuId;
   SingleProductDetailBean goodsDetail;
   ProductDetailBean goods;
+
   List<SingleProductDetailBean> relativeProductList = [];
   List<SceneDesignProductDetailBean> sceneDesignProductList = [];
   List<SoftDesignProductDetailBean> softDesignProductList = [];
   List<SingleProductDetailBean> recommendProductList = [];
 
   ProductDetailBeanDataWrapper.fromJson(Map<String, dynamic> map) {
+    developer.log(map.toString());
     goodsId = map['goods_id'];
     skuId = CommonKit.parseInt(map['sku_id']);
+
     goods = ProductDetailBean.fromJson(map['goods_detail']);
     goodsDetail = SingleProductDetailBean.instantiate(map['goods_detail']);
     // goodsDetail = FabricCurtainProductDetailBean.fromJson(map['goods_detail']);
@@ -84,6 +89,27 @@ class ProductDetailBeanDataWrapper {
         CommonKit.parseList(map['referrals_goods'])?.map((e) {
       return SingleProductDetailBean.instantiate(e);
     })?.toList();
+  }
+}
+
+class ProductMaterialDetailBean {
+  List<ProductMaterialInfo> list;
+
+  ProductMaterialDetailBean.fromJson(Map<String, dynamic> json) {
+    list = CommonKit.parseList(json['goods_attribute_list'])
+        .map((e) => ProductMaterialInfo.fromJson(e))
+        ?.toList();
+  }
+}
+
+class ProductMaterialInfo {
+  int id;
+  String key;
+  String value;
+  ProductMaterialInfo.fromJson(Map<String, dynamic> json) {
+    id = json['attr_value_id'];
+    key = json['attr_value'];
+    value = json['attr_value_name'];
   }
 }
 
@@ -289,8 +315,8 @@ class ProjectBean {
     scenesName = json['scenes_name'];
     picture = json['picture'];
     name = json['name'];
-    space = json['space'];
-    style = json['style'];
+    space = json['space'] ?? '';
+    style = json['style'] ?? '';
     goodsDetail = json['scenes_detail'];
     goodsList = CommonKit.parseList(json['goods_list'])
         ?.map((e) => ProjectGoodsBean.fromJson(e))

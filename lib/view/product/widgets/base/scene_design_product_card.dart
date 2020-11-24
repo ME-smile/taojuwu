@@ -2,7 +2,7 @@
  * @Description: 场景轮播图卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:42:58
- * @LastEditTime: 2020-11-17 10:28:25
+ * @LastEditTime: 2020-11-24 18:42:18
  */
 import 'dart:math';
 
@@ -82,7 +82,7 @@ class SceneDesignProductCard extends StatelessWidget {
                       // width: MediaQuery.of(context).size.width,
                       padding: EdgeInsets.all(16),
                       child: Text(
-                        '${bean?.room},${bean?.style}',
+                        '${bean?.room ?? ''} ${bean?.style ?? ''}',
                         style: TaojuwuTextStyle.WHITE_TEXT_STYLE,
                       ),
                     ),
