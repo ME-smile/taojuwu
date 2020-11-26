@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/select_client_event.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
@@ -11,10 +10,10 @@ import 'package:taojuwu/repository/order/order_model.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/common_kit.dart';
-import 'package:taojuwu/view/order/order_detail_page.dart';
 import 'package:taojuwu/view/order/widgets/aftersale_button.dart';
 import 'package:taojuwu/view/order/widgets/cancel_order_button.dart';
 import 'package:taojuwu/view/order/widgets/cancel_order_goods_button.dart';
+import 'package:taojuwu/view/order/widgets/edit_price_view.dart';
 import 'package:taojuwu/view/order/widgets/preview_delivery_info_button.dart';
 import 'package:taojuwu/view/order/widgets/remind_button.dart';
 import 'package:taojuwu/view/order/widgets/select_product_button.dart';
@@ -301,130 +300,135 @@ class OrderKit {
   }
 
   static Future editPrice(BuildContext ctx, int orderId,
-      {Function callback}) async {
-    showDialog(
+      {Function callback, OrderDetailProvider provider}) async {
+    return showCupertinoModalPopup(
         context: ctx,
         builder: (BuildContext context) {
-          String deltaMoney = '';
-          String remark = '';
-          return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
-              title: Text(
-                '修改价格',
-                textAlign: TextAlign.center,
-              ),
-              titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('金额调整:'),
-                          VSpacing(20),
-                          Text('说明:'),
-                        ],
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                SignSymbol(ctx),
-                                Container(
-                                    decoration: BoxDecoration(
-                                        color: const Color(0xFFF2F2F2),
-                                        borderRadius: BorderRadius.circular(5)),
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal: UIKit.width(10)),
-                                    width: UIKit.width(160),
-                                    height: UIKit.height(60),
-                                    child: TextField(
-                                        onChanged: (String text) {
-                                          deltaMoney = text;
-                                        },
-                                        autofocus: true,
-                                        keyboardType: TextInputType.number,
-                                        decoration: InputDecoration(
-                                          isDense: true,
-                                          contentPadding:
-                                              EdgeInsets.symmetric(vertical: 8),
-                                        ))),
-                                Text('元')
-                              ],
-                            ),
-                            VSpacing(20),
-                            Container(
-                                child: Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: UIKit.width(10)),
-                              decoration: BoxDecoration(
-                                  color: const Color(0xFFF2F2F2),
-                                  borderRadius: BorderRadius.circular(5)),
-                              width: UIKit.width(380),
-                              height: UIKit.height(60),
-                              child: TextField(
-                                onChanged: (String text) {
-                                  remark = text;
-                                },
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding:
-                                      EdgeInsets.symmetric(vertical: 8),
-                                ),
-                              ),
-                            )),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  VSpacing(40),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      ZYOutlineButton('取消', () {
-                        Navigator.of(context).pop();
-                      }),
-                      SizedBox(
-                        width: 50,
-                      ),
-                      ZYRaisedButton('确认', () {
-                        // Navigator.of(context).pop();
-                        OrderDetailProvider provider =
-                            Provider.of(ctx, listen: false);
-                        double deltaPrice = 0.0;
-                        if (deltaMoney?.trim()?.isEmpty == true) {
-                          return ToastKit.showInfo('请输入正确的金额');
-                        }
-                        deltaPrice = double.parse(deltaMoney) ?? 0;
-                        if (provider?.isMinus == true) {
-                          deltaPrice = -deltaPrice;
-                        }
-                        sendEditPriceRequest(context, {
-                          'adjust_money': deltaPrice,
-                          'adjust_money_remark': remark,
-                          'order_id': orderId ?? -1
-                        }, callback: () {
-                          provider?.deltaPrice = deltaPrice;
-                          provider?.changePriceRemark = remark;
-                        }).then((_) {}).catchError((err) => err);
-                      }),
-                    ],
-                  )
-                ],
-              ));
+          return EditPriceModalView(provider);
         });
+    // showDialog(
+    //     context: ctx,
+    //     builder: (BuildContext context) {
+    //       String deltaMoney = '';
+    //       String remark = '';
+    //       return AlertDialog(
+    //           shape: RoundedRectangleBorder(
+    //               borderRadius: BorderRadius.all(Radius.circular(8))),
+    //           title: Text(
+    //             '修改价格',
+    //             textAlign: TextAlign.center,
+    //           ),
+    //           titleTextStyle: TextStyle(fontSize: 16, color: Color(0xFF333333)),
+    //           content: Column(
+    //             mainAxisSize: MainAxisSize.min,
+    //             crossAxisAlignment: CrossAxisAlignment.start,
+    //             children: <Widget>[
+    //               Row(
+    //                 mainAxisSize: MainAxisSize.min,
+    //                 children: <Widget>[
+    //                   Column(
+    //                     mainAxisSize: MainAxisSize.min,
+    //                     crossAxisAlignment: CrossAxisAlignment.start,
+    //                     children: <Widget>[
+    //                       Text('金额调整:'),
+    //                       VSpacing(20),
+    //                       Text('说明:'),
+    //                     ],
+    //                   ),
+    //                   SizedBox(width: 10),
+    //                   Expanded(
+    //                     child: Column(
+    //                       mainAxisSize: MainAxisSize.max,
+    //                       crossAxisAlignment: CrossAxisAlignment.start,
+    //                       mainAxisAlignment: MainAxisAlignment.start,
+    //                       children: <Widget>[
+    //                         Row(
+    //                           children: <Widget>[
+    //                             SignSymbol(ctx),
+    //                             Container(
+    //                                 decoration: BoxDecoration(
+    //                                     color: const Color(0xFFF2F2F2),
+    //                                     borderRadius: BorderRadius.circular(5)),
+    //                                 margin: EdgeInsets.symmetric(
+    //                                     horizontal: UIKit.width(10)),
+    //                                 width: UIKit.width(160),
+    //                                 height: UIKit.height(60),
+    //                                 child: TextField(
+    //                                     onChanged: (String text) {
+    //                                       deltaMoney = text;
+    //                                     },
+    //                                     autofocus: true,
+    //                                     keyboardType: TextInputType.number,
+    //                                     decoration: InputDecoration(
+    //                                       isDense: true,
+    //                                       contentPadding:
+    //                                           EdgeInsets.symmetric(vertical: 8),
+    //                                     ))),
+    //                             Text('元')
+    //                           ],
+    //                         ),
+    //                         VSpacing(20),
+    //                         Container(
+    //                             child: Container(
+    //                           margin: EdgeInsets.symmetric(
+    //                               horizontal: UIKit.width(10)),
+    //                           decoration: BoxDecoration(
+    //                               color: const Color(0xFFF2F2F2),
+    //                               borderRadius: BorderRadius.circular(5)),
+    //                           width: UIKit.width(380),
+    //                           height: UIKit.height(60),
+    //                           child: TextField(
+    //                             onChanged: (String text) {
+    //                               remark = text;
+    //                             },
+    //                             decoration: InputDecoration(
+    //                               isDense: true,
+    //                               contentPadding:
+    //                                   EdgeInsets.symmetric(vertical: 8),
+    //                             ),
+    //                           ),
+    //                         )),
+    //                       ],
+    //                     ),
+    //                   )
+    //                 ],
+    //               ),
+    //               VSpacing(40),
+    //               Row(
+    //                 mainAxisAlignment: MainAxisAlignment.center,
+    //                 children: <Widget>[
+    //                   ZYOutlineButton('取消', () {
+    //                     Navigator.of(context).pop();
+    //                   }),
+    //                   SizedBox(
+    //                     width: 50,
+    //                   ),
+    // ZYRaisedButton('确认', () {
+    //   // Navigator.of(context).pop();
+    //   OrderDetailProvider provider =
+    //       Provider.of(ctx, listen: false);
+    //   double deltaPrice = 0.0;
+    //   if (deltaMoney?.trim()?.isEmpty == true) {
+    //     return ToastKit.showInfo('请输入正确的金额');
+    //   }
+    //   deltaPrice = double.parse(deltaMoney) ?? 0;
+    //   if (provider?.isMinus == true) {
+    //     deltaPrice = -deltaPrice;
+    //   }
+    //   sendEditPriceRequest(context, {
+    //     'adjust_money': deltaPrice,
+    //     'adjust_money_remark': remark,
+    //     'order_id': orderId ?? -1
+    //   }, callback: () {
+    //     provider?.deltaPrice = deltaPrice;
+    //     provider?.changePriceRemark = remark;
+    //   }).then((_) {}).catchError((err) => err);
+    // }),
+    //                 ],
+    //               )
+    //             ],
+    //           ));
+    //     });
   }
 
   static void sendOrderRemindRequest(
@@ -690,6 +694,20 @@ class OrderKit {
     if (provider?.isWaitingToship == true) {
       return [];
     }
+    if (provider?.model?.hasPaid == false) {
+      return [
+        ZYOutlineButton('修改价格', () {
+          provider?.editPrict(context);
+        }),
+        SizedBox(width: 20),
+        CancelOrderButton(
+          callback: () {
+            provider?.cancelOrder(context, provider?.model?.orderId ?? -1);
+          },
+          isActive: provider?.canCancelOrder,
+        ),
+      ];
+    }
 
     if (provider?.hasMeasured == true) {
       if (provider?.isMeasureOrder == true) {
@@ -733,6 +751,7 @@ class OrderKit {
         })
       ];
     }
+
     if (provider?.hasAudited == true && provider?.hasMeasured == false) {
       return [
         CancelOrderButton(

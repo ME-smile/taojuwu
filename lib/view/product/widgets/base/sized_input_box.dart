@@ -2,7 +2,7 @@
  * @Description: //T
  * @Author: iamsmiling
  * @Date: 2020-10-26 11:12:05
- * @LastEditTime: 2020-11-10 11:15:59
+ * @LastEditTime: 2020-11-25 14:05:48
  */
 import 'package:flutter/material.dart';
 
@@ -10,8 +10,13 @@ class SizedInputBox extends StatefulWidget {
   final String hintText;
   final FocusNode focusNode;
   final TextEditingController controller;
+  final double width;
   const SizedInputBox(
-      {this.hintText = '', this.controller, this.focusNode, Key key})
+      {this.hintText = '',
+      this.controller,
+      this.focusNode,
+      Key key,
+      this.width = 80})
       : super(key: key);
 
   @override
@@ -50,8 +55,8 @@ class _SizedInputBoxState extends State<SizedInputBox> {
                     EdgeInsets.symmetric(vertical: 3, horizontal: 2),
               ),
             ),
-            margin: EdgeInsets.symmetric(horizontal: 10),
-            width: 80,
+            margin: EdgeInsets.only(left: 10),
+            width: widget.width,
             height: 28,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(4)),

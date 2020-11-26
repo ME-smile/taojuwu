@@ -26,6 +26,18 @@ class OrderDetailProvider with ChangeNotifier {
   bool get isWaitingToInstall => model?.isWaitingToInstall;
 
   bool get isWaitingToShipOrReceive => model?.isWaitingToShipOrReceive;
+
+  bool modifyPriceByAmount = true;
+  bool modifyPriceByDisscount = false;
+
+  double _discountFactor = 0;
+  double get discountFactor => _discountFactor;
+  set discountFactor(double n) {
+    _discountFactor = n;
+    notifyListeners();
+  }
+
+  double get newPrice => originPrice * discountFactor;
   double get afterChangeTailMoney {
     if (_deltaPrice == null) {
       return tailPrice;
@@ -177,10 +189,7 @@ class OrderDetailProvider with ChangeNotifier {
   void editPrict(
     BuildContext ctx,
   ) {
-    OrderKit.editPrice(
-      ctx,
-      model?.orderId ?? -1,
-    );
+    OrderKit.editPrice(ctx, model?.orderId ?? -1, provider: this);
   }
 
   void updateModel(OrderDetailModel m) {

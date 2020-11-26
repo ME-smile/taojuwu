@@ -2,7 +2,7 @@
  * @Description: 商品详情底部
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:15:20
- * @LastEditTime: 2020-11-20 16:23:00
+ * @LastEditTime: 2020-11-26 15:08:25
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/base_product_detail_bean.dart';
@@ -19,8 +19,9 @@ class ProductDeatilFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return ((bean is BaseCurtainProductDetailBean) &&
-            (bean as BaseCurtainProductDetailBean).isMeasureOrder)
+    return (((bean is BaseCurtainProductDetailBean) &&
+                (bean as BaseCurtainProductDetailBean).isMeasureOrder)) ??
+            false
         ? SelectProductActionBar(bean)
         : Container(
             decoration: BoxDecoration(

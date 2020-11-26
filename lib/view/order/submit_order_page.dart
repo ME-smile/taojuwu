@@ -2,7 +2,7 @@
  * @Description:提交订单页面 2.0
  * @Author: iamsmiling
  * @Date: 2020-10-28 11:14:01
- * @LastEditTime: 2020-11-20 16:47:07
+ * @LastEditTime: 2020-11-26 14:46:15
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/constants/constants.dart';
@@ -114,7 +114,8 @@ class _SubmitOrderPageState extends State<SubmitOrderPage> {
   Widget _buildProductOrderCard(AbstractProductDetailBean bean) {
     return bean.productType == ProductType.EndProductType
         ? EndProductOrderCard(bean)
-        : bean.productType == ProductType.FabricCurtainProductType
+        : bean.productType == ProductType.FabricCurtainProductType ||
+                bean.productType == ProductType.GauzeCurtainProductType
             ? FabricCurtainProductOrderCard(bean)
             : RollingCurtainProductOrderCard(bean);
   }

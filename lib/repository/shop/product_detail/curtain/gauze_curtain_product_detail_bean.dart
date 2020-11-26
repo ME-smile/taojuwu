@@ -2,7 +2,7 @@
  * @Description: 窗纱详情数据模型
  * @Author: iamsmiling
  * @Date: 2020-10-31 15:40:49
- * @LastEditTime: 2020-11-23 15:04:15
+ * @LastEditTime: 2020-11-26 15:12:46
  */
 
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
@@ -12,7 +12,9 @@ import 'package:taojuwu/services/otp_service.dart';
 
 class GauzeCurtainProductDetailBean extends BaseCurtainProductDetailBean {
   GauzeCurtainProductDetailBean.fromJson(Map<String, dynamic> json)
-      : super.fromJson(json);
+      : super.fromJson(json) {
+    isFixedHeight = false;
+  }
 
   Future fetchAttrsData(Function refresh) async {
     List<Map<String, dynamic>> args = [
