@@ -1,9 +1,5 @@
-import 'dart:convert';
-
-import 'package:city_pickers/city_pickers.dart';
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:taojuwu/config/sdk/tencent_map.dart';
@@ -14,6 +10,7 @@ import 'package:taojuwu/repository/user/customer_detail_model.dart';
 import 'package:taojuwu/services/otp_service.dart';
 
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/city_picker/x_city_picker.dart';
 
 class FeatureInfoSegment extends StatefulWidget {
   final CustomerDetailModel model;
@@ -28,9 +25,9 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
   TextEditingController addressInput;
   CustomerDetailModel model;
 
-  String provinceId;
-  String cityId;
-  String districtId;
+  int provinceId = 1;
+  int cityId = 1;
+  int districtId = 1;
 
   String enterTime;
 
@@ -48,23 +45,26 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
     super.initState();
     model = widget.model;
     params = widget.params;
-    getLocation()
-        .then((LocationBean locationBean) {
-          provinceName = locationBean?.province;
-          cityName = locationBean?.city;
-          districtName = locationBean?.district;
-          locationDataBean = locationBean;
-          print(locationDataBean?.data);
-        })
-        .catchError((err) => err)
-        .whenComplete(() {
-          // ignore: unnecessary_statements
-          mounted ? setState(() {}) : '';
-        });
+    // getLocation()
+    //     .then((LocationBean locationBean) {
+    //       provinceName = locationBean?.province;
+    //       cityName = locationBean?.city;
+    //       districtName = locationBean?.district;
+    //       locationDataBean = locationBean;
+    //       print(locationDataBean?.data);
+    //     })
+    //     .catchError((err) => err)
+    //     .whenComplete(() {
+    //       // ignore: unnecessary_statements
+    //       mounted ? setState(() {}) : '';
+    //     });
     if (model != null) {
       provinceName = model?.provinceName;
       cityName = model?.cityName;
       districtName = model?.districtName;
+      provinceId = model?.provinceId;
+      cityId = model?.cityId;
+      districtId = model?.districtId;
     } else {}
 
     if (model == null) {
@@ -165,53 +165,53 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
     );
   }
 
-  Future getId(String filePath, String name) async {
-    if (filePath.isEmpty || name.isEmpty) return;
-    rootBundle.loadString(filePath).then((String data) {
-      Map json = jsonDecode(data);
-      List list = json['RECORDS'];
-      switch (filePath) {
-        case 'assets/data/province.json':
-          {
-            for (int i = 0; i < list.length; i++) {
-              Map item = list[i];
-              if (item['province_name'].contains(name)) {
-                provinceId = '${item['province_id']}';
-                params['province_id'] = provinceId;
-                return;
-              }
-            }
-            break;
-          }
-        case 'assets/data/city.json':
-          {
-            for (int i = 0; i < list.length; i++) {
-              Map item = list[i];
-              if (item['city_name'].contains(name)) {
-                cityId = '${item['city_id']}';
-                params['city_id'] = cityId;
-                return;
-              }
-            }
-          }
-          break;
-        default:
-          {
-            {
-              for (int i = 0; i < list.length; i++) {
-                Map item = list[i];
+  // Future getId(String filePath, String name) async {
+  //   if (filePath.isEmpty || name.isEmpty) return;
+  //   rootBundle.loadString(filePath).then((String data) {
+  //     Map json = jsonDecode(data);
+  //     List list = json['RECORDS'];
+  //     switch (filePath) {
+  //       case 'assets/data/province.json':
+  //         {
+  //           for (int i = 0; i < list.length; i++) {
+  //             Map item = list[i];
+  //             if (item['province_name'].contains(name)) {
+  //               provinceId = '${item['province_id']}';
+  //               params['province_id'] = provinceId;
+  //               return;
+  //             }
+  //           }
+  //           break;
+  //         }
+  //       case 'assets/data/city.json':
+  //         {
+  //           for (int i = 0; i < list.length; i++) {
+  //             Map item = list[i];
+  //             if (item['city_name'].contains(name)) {
+  //               cityId = '${item['city_id']}';
+  //               params['city_id'] = cityId;
+  //               return;
+  //             }
+  //           }
+  //         }
+  //         break;
+  //       default:
+  //         {
+  //           {
+  //             for (int i = 0; i < list.length; i++) {
+  //               Map item = list[i];
 
-                if (item['district_name'].contains(name)) {
-                  districtId = '${item['district_id']}';
-                  params['district_id'] = districtId;
-                  return;
-                }
-              }
-            }
-          }
-      }
-    }).catchError((err) => err);
-  }
+  //               if (item['district_name'].contains(name)) {
+  //                 districtId = '${item['district_id']}';
+  //                 params['district_id'] = districtId;
+  //                 return;
+  //               }
+  //             }
+  //           }
+  //         }
+  //     }
+  //   }).catchError((err) => err);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -259,26 +259,44 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
                   }, trailText: '$enterTime' ?? ''),
                   Divider(),
                   _bar(context, '区域地址', () {
-                    CityPickers.showCityPicker(
-                        context: context,
-                        height: UIKit.BOTTOM_PICKER_HEIGHT,
-                        itemExtent: UIKit.ITEM_EXTENT,
-                        cancelWidget:
-                            Text('取消', style: UIKit.CANCEL_BUTTON_STYLE),
-                        confirmWidget: Text(
-                          '确定',
-                          style: UIKit.CONFIRM_BUTTON_STYLE,
-                        )).then((Result result) async {
-                      await getId(
-                          'assets/data/province.json', result.provinceName);
-                      await getId('assets/data/city.json', result.cityName);
-                      await getId('assets/data/area.json', result.areaName);
-                      setState(() {
-                        provinceName = result?.provinceName;
-                        cityName = result?.cityName;
-                        districtName = result?.areaName;
-                      });
-                    }).catchError((err) => err);
+                    showXCityPicker(context,
+                            addressResult: AddressResult.fromId(
+                                provinceId, cityId, districtId))
+                        .then((data) {
+                      if (data is AddressResult) {
+                        provinceId = data.provicne.id;
+                        cityId = data.city.id;
+                        districtId = data.district.id;
+                        provinceName = data.provicne.name;
+                        cityName = data.city.name;
+                        districtName = data.district.name;
+                        params["province_id"] = '$provinceId';
+                        params["city_id"] = '$cityId';
+                        params["district_id"] = '$districtId';
+                      }
+                    }).whenComplete(() {
+                      setState(() {});
+                    });
+                    // CityPickers.showCityPicker(
+                    //     context: context,
+                    //     height: UIKit.BOTTOM_PICKER_HEIGHT,
+                    //     itemExtent: UIKit.ITEM_EXTENT,
+                    //     cancelWidget:
+                    //         Text('取消', style: UIKit.CANCEL_BUTTON_STYLE),
+                    //     confirmWidget: Text(
+                    //       '确定',
+                    //       style: UIKit.CONFIRM_BUTTON_STYLE,
+                    //     )).then((Result result) async {
+                    //   await getId(
+                    //       'assets/data/province.json', result.provinceName);
+                    //   await getId('assets/data/city.json', result.cityName);
+                    //   await getId('assets/data/area.json', result.areaName);
+                    //   setState(() {
+                    //     provinceName = result?.provinceName;
+                    //     cityName = result?.cityName;
+                    //     districtName = result?.areaName;
+                    //   });
+                    // }).catchError((err) => err);
                   }, trailText: address),
                   // Text('${locationDataBean?.data}'),
                   // Text('经度:$longitude'),

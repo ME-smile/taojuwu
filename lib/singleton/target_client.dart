@@ -2,7 +2,7 @@
  * @Description: 下单时选中的目标客户
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-06 14:44:24
+ * @LastEditTime: 2020-11-26 20:46:16
  */
 import 'package:taojuwu/repository/user/category_customer_model.dart';
 import 'package:taojuwu/repository/user/customer_model.dart';

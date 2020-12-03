@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/constants/constants.dart';
+import 'package:taojuwu/event_bus/events/select_product_event.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/view/logistics/logistics_data_card.dart';
@@ -41,11 +44,18 @@ class OrderDetailPage extends StatefulWidget {
 class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
   int get id => widget.id;
   String get orderStatus => widget.orderStatus;
-
+  StreamSubscription _streamSubscription;
   @override
   void initState() {
     super.initState();
     orderDetailProvider = OrderDetailProvider();
+    _streamSubscription =
+        Application.eventBus.on<SelectProductEvent>().listen((event) {
+      if (event is SelectProductEvent && event?.status == 1) {
+        fetchData();
+        Application.eventBus.fire(SelectProductEvent(status: 0));
+      }
+    });
     Future.delayed(Constants.TRANSITION_DURATION, () {
       fetchData();
     });
@@ -83,16 +93,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
   }
 
   @override
-  void didPopNext() {
-    // fetchData().then((value) {
-    //   Provider.of<OrderDetailProvider>(context, listen: false)
-    //       .updateModel(model);
-    // });
-    fetchData();
-    super.didPopNext();
-  }
-
-  @override
   void didPop() {
     TargetProductHolder.clear();
     super.didPop();
@@ -107,6 +107,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
   @override
   void dispose() {
     Application.routeObserver.unsubscribe(this);
+    _streamSubscription?.cancel();
     super.dispose();
   }
 
@@ -1136,4 +1137,4 @@ class _SignSymbolState extends State<SignSymbol> {
   }
 }
 
-//http://buyi.taoju5.com admin tjw2023
+//http://106.14.219.213:8001 admin tjw2023

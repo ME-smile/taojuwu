@@ -1,4 +1,5 @@
 import 'package:fluro/fluro.dart' as fluro;
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
 import 'handlers.dart';
@@ -63,7 +64,7 @@ class Routes {
 
   static const String selectProduct = '/selectProduct';
 
-  static void configureRoutes(fluro.FluroRouter router) {
+  static void configureRoutes(Router router) {
     router.notFoundHandler = new fluro.Handler(
         handlerFunc: (BuildContext context, Map<String, List<String>> params) {
       return Scaffold(
@@ -122,6 +123,6 @@ class Routes {
         handler: RouteHandler.gauzeCurtainProductDetail);
     router.define(sceneDesign, handler: RouteHandler.sceneDesign);
     router.define(resetPwd, handler: RouteHandler.resetPwd);
-    router.define(selectProduct, handler: RouteHandler.selectProductMall);
+    // router.define(selectProduct, handler: RouteHandler.selectProductMall);
   }
 }

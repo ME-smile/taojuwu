@@ -2,7 +2,7 @@
  * @Description: 买家信息栏目条条
  * @Author: iamsmiling
  * @Date: 2020-10-29 15:51:56
- * @LastEditTime: 2020-10-30 09:35:45
+ * @LastEditTime: 2020-11-27 10:22:08
  */
 import 'dart:async';
 
@@ -88,14 +88,14 @@ class _OrderBuyerCardState extends State<OrderBuyerCard> {
                     Row(
                       children: [
                         Text(
-                          '收货人: ${client?.clientName ?? ''}',
+                          '收货人: ${client?.addressId == null ? '' : client?.clientName ?? ''}',
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: 16),
                           child: Text(
-                            '${client?.tel ?? ''}',
+                            '${client?.addressId == null ? '' : client?.tel ?? ''}',
                             style: TextStyle(
                                 color: Color(0xFF6D6D6D), fontSize: 13),
                           ),
@@ -105,7 +105,7 @@ class _OrderBuyerCardState extends State<OrderBuyerCard> {
                     Container(
                       padding: EdgeInsets.only(top: 4),
                       child: Text(
-                        '收货地址:${client?.address ?? ''}',
+                        '收货地址:${client?.addressId == null ? '' : client?.address ?? ''}',
                         style:
                             TextStyle(fontSize: 13, color: Color(0xFF6D6D6D)),
                         maxLines: 2,

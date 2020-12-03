@@ -203,6 +203,7 @@ class _CustomerManagePageState extends State<CustomerManagePage>
                   onTap: () {
                     // Navigator.pop(context, model);
                     if (widget.flag == 1) {
+                      TargetClient().clear();
                       Application.eventBus.fire(SelectClientEvent(
                           TargetClient.fromCustomerModelBean(model)));
                       Navigator.of(context)..pop()..pop();

@@ -57,9 +57,13 @@ class OrderCommitSuccessPage extends StatelessWidget {
 
                 ZYRaisedButton(
                   '继续挑选',
-                  () {
+                  () async {
                     if (orderType == 2) {
-                      RouteHandler.goCurtainMallPage(context, replace: true);
+                      RouteHandler.goHomePage(context, clearStack: true);
+
+                      RouteHandler.goCurtainMallPage(
+                        context,
+                      );
                     } else {
                       Navigator.of(context).popUntil(
                           ModalRoute.withName(TargetRoute.instance.route));

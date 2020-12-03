@@ -2,7 +2,7 @@
  * @Description: eventbus
  * @Author: iamsmiling
  * @Date: 2020-11-20 09:31:39
- * @LastEditTime: 2020-11-22 13:34:13
+ * @LastEditTime: 2020-11-26 20:40:06
  */
 import 'package:rxdart/rxdart.dart';
 
@@ -13,7 +13,7 @@ class EventBus {
 
   EventBus({bool sync = false})
       : _behaviorSubject = BehaviorSubject(sync: sync);
-  on<T>() {
+  Stream on<T>() {
     if (T == dynamic) {
       return _behaviorSubject.stream;
     } else {

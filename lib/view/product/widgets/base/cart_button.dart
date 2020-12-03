@@ -2,13 +2,14 @@
  * @Description: 加入购物车按钮
  * @Author: iamsmiling
  * @Date: 2020-10-28 15:04:13
- * @LastEditTime: 2020-11-22 16:11:01
+ * @LastEditTime: 2020-11-26 21:19:58
  */
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
+import 'package:taojuwu/event_bus/events/login_event.dart';
 import 'package:taojuwu/event_bus/events/select_client_event.dart';
 import 'package:taojuwu/repository/shop/cart_list_model.dart';
 import 'package:taojuwu/router/handlers.dart';
@@ -36,23 +37,27 @@ class _CartButtonState extends State<CartButton> {
   @override
   void initState() {
     _subscription = Application.eventBus.on().listen((event) {
+      if (event is LoginEvent) {
+        setState(() {
+          clientId = null;
+          count = 0;
+        });
+      }
       if (event is SelectClientEvent) {
         clientId = event.mTargetClient?.clientId;
+        count = 0;
         if (clientId == null) {
           mounted
-              ? setState(() {
-                  count = 0;
-                })
+              ? setState(() {})
               // ignore: unnecessary_statements
               : '';
         }
         _fetchData();
       }
       if (event is AddToCartEvent) {
+        count = event.count;
         mounted
-            ? setState(() {
-                count = event.count;
-              })
+            ? setState(() {})
             // ignore: unnecessary_statements
             : '';
       }

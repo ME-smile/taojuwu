@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:device_info/device_info.dart';
-import 'package:fluro/fluro.dart' as fluro;
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_upgrade/flutter_app_upgrade.dart';
 import 'package:install_plugin/install_plugin.dart';
@@ -18,7 +18,7 @@ import 'repository/app_info/app_info_model.dart';
 import 'services/otp_service.dart';
 
 class Application {
-  static fluro.FluroRouter router;
+  static Router router;
   static BuildContext context;
   static SharedPreferences sp;
   static String deviceInfo;

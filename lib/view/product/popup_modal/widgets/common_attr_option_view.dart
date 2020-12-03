@@ -2,7 +2,7 @@
  * @Description: 选择属性
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:41:57
- * @LastEditTime: 2020-11-24 16:51:28
+ * @LastEditTime: 2020-11-26 23:53:59
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
@@ -35,8 +35,8 @@ class _CommonAttrOptionViewState extends State<CommonAttrOptionView> {
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
               //横轴间距
-              crossAxisSpacing: 5.0,
-              mainAxisSpacing: 30.0,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
               childAspectRatio: 0.64),
           itemCount: list.length,
           itemBuilder: (BuildContext context, int i) {

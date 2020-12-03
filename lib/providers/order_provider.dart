@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/select_client_event.dart';
@@ -228,6 +229,8 @@ class OrderProvider with ChangeNotifier {
           "goods_sku_list": "$goodsSkuListText"
         }'''
     }.toString());
+    EasyLoading.instance.maskType = EasyLoadingMaskType.black;
+    EasyLoading.show(status: '正在提交');
     OTPService.createOrder(
       params: {
         'order_earnest_money': deposit,
@@ -253,10 +256,13 @@ class OrderProvider with ChangeNotifier {
         }'''
       },
     ).then((ZYResponse response) {
+      EasyLoading.dismiss();
+      EasyLoading.instance.maskType = EasyLoadingMaskType.none;
       if (response.valid) {
         int id = TargetClientHolder.targetClient?.clientId;
 
         TargetClientHolder.targetClient = null;
+        TargetClient().clear();
         Application.eventBus.fire(SelectClientEvent(null));
         clear();
         return RouteHandler.goOrderCommitSuccessPage(context, '$id',
@@ -268,6 +274,8 @@ class OrderProvider with ChangeNotifier {
         ToastKit.showErrorInfo(response?.message ?? '');
       }
     }).catchError((err) {
+      EasyLoading.dismiss();
+      EasyLoading.instance.maskType = EasyLoadingMaskType.none;
       return err;
     }).whenComplete(() {
       if (afterCallback != null) afterCallback();
@@ -294,6 +302,8 @@ class OrderProvider with ChangeNotifier {
       'order_window_num': windowNum,
     });
     if (!beforeCreateOrder(ctx)) return;
+    EasyLoading.instance.maskType = EasyLoadingMaskType.black;
+    EasyLoading.show(status: '正在提交');
     OTPService.createMeasureOrder(params: {
       'client_uid': clientUid,
       'measure_time': measureTimeStr,
@@ -303,14 +313,21 @@ class OrderProvider with ChangeNotifier {
       'shop_id': shopId,
       'order_window_num': windowNum,
     }).then((ZYResponse response) {
+      EasyLoading.dismiss();
+      EasyLoading.instance.maskType = EasyLoadingMaskType.none;
       if (response.valid) {
         RouteHandler.goOrderCommitSuccessPage(ctx, clientUid,
             orderType: 2, showTip: 1);
         TargetClient().clear();
+        Application.eventBus.fire(SelectClientEvent(null));
       } else {
         ToastKit.showErrorInfo(response?.message ?? '');
       }
-    }).catchError((err) => err);
+    }).catchError((err) {
+      EasyLoading.dismiss();
+      EasyLoading.instance.maskType = EasyLoadingMaskType.none;
+      return err;
+    });
   }
 
   // i标示orderGoods中的第i个商品

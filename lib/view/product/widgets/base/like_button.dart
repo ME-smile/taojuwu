@@ -2,12 +2,13 @@
  * @Description: 收藏安努
  * @Author: iamsmiling
  * @Date: 2020-10-28 15:04:00
- * @LastEditTime: 2020-11-20 17:41:58
+ * @LastEditTime: 2020-11-27 10:46:28
  */
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
+import 'package:taojuwu/event_bus/events/login_event.dart';
 import 'package:taojuwu/event_bus/events/select_client_event.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -36,10 +37,15 @@ class _LikeButtonState extends State<LikeButton> {
   void initState() {
     hasLiked = widget.hasLiked;
     clientId = TargetClientHolder.targetClient?.clientId;
-    _subscription =
-        Application.eventBus.on<SelectClientEvent>().listen((event) {
-      clientId = event.mTargetClient.clientId;
-      _fetchData();
+    _subscription = Application.eventBus.on().listen((event) {
+      if (event is SelectClientEvent) {
+        clientId = event.mTargetClient?.clientId;
+        _fetchData();
+      }
+      if (event is LoginEvent) {
+        hasLiked = false;
+        clientId = null;
+      }
     });
     super.initState();
   }

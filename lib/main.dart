@@ -2,14 +2,14 @@
  * @Description: App程序入口
  * @Author: iamsmiling
  * @Date: 2020-10-31 13:34:34
- * @LastEditTime: 2020-11-19 16:34:36
+ * @LastEditTime: 2020-11-26 17:52:27
  */
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bugly/flutter_bugly.dart';
 // import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:provider/provider.dart';
-import 'package:fluro/fluro.dart' as fluro;
 import 'package:taojuwu/providers/theme_provider.dart';
 import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/routes.dart';
@@ -20,7 +20,7 @@ import 'application.dart';
 void main() {
   return FlutterBugly.postCatchedException(() async {
     WidgetsFlutterBinding.ensureInitialized();
-    fluro.FluroRouter router = fluro.FluroRouter();
+    Router router = Router();
     Routes.configureRoutes(router);
     Application.router = router;
 

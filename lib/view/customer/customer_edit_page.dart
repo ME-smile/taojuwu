@@ -148,10 +148,11 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
       ToastKit.showInfo('请输入正确的手机号');
       return Future.value(false);
     }
-
+    print(params);
     return OTPService.addUser(params).then((ZYResponse response) {
       if (response?.valid == true) {
         Map<String, dynamic> json = response?.data;
+        TargetClient().clear();
         Application.eventBus.fire(SelectClientEvent(
             TargetClient.fromLiteral(json['id'], json['client_name'])));
         Navigator.of(context).pop();

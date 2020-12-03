@@ -35,7 +35,7 @@ class OrderAttrCard extends StatelessWidget {
         Row(
           children: <Widget>[
             ZYPhotoView(
-              UIKit.getNetworkImgPath(goods?.pictureInfo?.picCoverSmall ?? ''),
+              UIKit.getNetworkImgPath(goods?.pictureInfo?.picCoverMid ?? ''),
               height: 90,
               width: 90,
               tag: CommonKit.getRandomStr(),

@@ -2,7 +2,7 @@
  * @Description: 所有窗帘类的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:11:06
- * @LastEditTime: 2020-11-26 15:11:39
+ * @LastEditTime: 2020-11-27 10:35:14
  */
 
 import 'dart:convert';
@@ -11,7 +11,9 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
+import 'package:taojuwu/event_bus/events/select_product_event.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
+import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -94,11 +96,7 @@ abstract class BaseCurtainProductDetailBean
   //窗帘面积
   double get area {
     double _area = widthM * heightM;
-    return _area > 0
-        ? _area < 1
-            ? 1
-            : _area
-        : 0;
+    return _area > 0 ? _area < 1 ? 1 : _area : 0;
   }
 
   bool isFixedHeight;
@@ -375,10 +373,18 @@ abstract class BaseCurtainProductDetailBean
   }
 
   bool hasSetSize() {
-    if (measureData?.hasSetSize == false) {
-      ToastKit.showInfo('请先填写测装数据哦');
-      return false;
+    if (this is RollingCurtainProductDetailBean) {
+      if (measureData?.hasSetSize == false) {
+        ToastKit.showInfo('请先填写宽高和离地距离哦');
+        return false;
+      }
+    } else {
+      if (measureData?.hasSetSize == false) {
+        ToastKit.showInfo('请先填写测装数据哦');
+        return false;
+      }
     }
+
     return true;
   }
 
@@ -398,7 +404,8 @@ abstract class BaseCurtainProductDetailBean
           "install_room": "0",
           'w': '$widthCM',
           'h': '$heightCM',
-          '13': attrList?.last?.toJson(),
+          '13':
+              CommonKit.isNullOrEmpty(attrList) ? {} : attrList?.last?.toJson(),
           'selected': {
             '安装选项': [styleSelector?.curInstallMode?.name ?? ''],
             '打开方式': styleSelector?.openModeData
@@ -566,6 +573,7 @@ abstract class BaseCurtainProductDetailBean
     return OTPService.selectProduct(params: params).then((ZYResponse response) {
       if (response?.valid == true) {
         TargetProductHolder.clear();
+        Application.eventBus.fire(SelectProductEvent(status: 1));
         Navigator.of(context)..pop()..pop();
       } else {
         ToastKit.showInfo(response?.message);

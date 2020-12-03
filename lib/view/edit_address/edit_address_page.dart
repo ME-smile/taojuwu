@@ -13,6 +13,7 @@ import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/widgets/city_picker/x_city_picker.dart';
 import 'package:taojuwu/widgets/loading.dart';
 import 'package:taojuwu/widgets/network_error.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
@@ -244,162 +245,190 @@ class _EditAddressPageState extends State<EditAddressPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text('填写收货地址'),
-          centerTitle: true,
-        ),
-        body: isLoading
-            ? LoadingCircle()
-            : hasError
-                ? NetworkErrorWidget(callback: fetchData)
-                : Container(
-                    color: themeData.primaryColor,
-                    padding: EdgeInsets.symmetric(horizontal: UIKit.width(20)),
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Text('联系人:'),
-                            Expanded(
-                              child: TextField(
-                                controller: nameInput,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: UIKit.width(20)),
-                                  hintText: '请填写联系人的姓名',
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        Divider(),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: UIKit.height(10)),
-                          child: Row(
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pop(targetClient);
+        return Future.value(true);
+      },
+      child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: Text('填写收货地址'),
+            centerTitle: true,
+          ),
+          body: isLoading
+              ? LoadingCircle()
+              : hasError
+                  ? NetworkErrorWidget(callback: fetchData)
+                  : Container(
+                      color: themeData.primaryColor,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: UIKit.width(20)),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
                             children: <Widget>[
-                              Text(' '.padLeft(15)),
-                              gender == 1
-                                  ? ZYRaisedButton('先生', () {
-                                      if (gender == 1) return;
-                                      unFocus();
-
-                                      setState(() {
-                                        gender = 1;
-                                      });
-                                    })
-                                  : ZYOutlineButton('先生', () {
-                                      unFocus();
-                                      if (gender == 1) return;
-                                      setState(() {
-                                        gender = 1;
-                                      });
-                                    }),
-                              SizedBox(
-                                width: UIKit.width(40),
-                              ),
-                              gender == 2
-                                  ? ZYRaisedButton('女士', () {
-                                      unFocus();
-                                      if (gender == 2) return;
-                                      setState(() {
-                                        gender = 2;
-                                      });
-                                    })
-                                  : ZYOutlineButton('女士', () {
-                                      unFocus();
-                                      if (gender == 2) return;
-                                      setState(() {
-                                        gender = 2;
-                                      });
-                                    }),
+                              Text('联系人:'),
+                              Expanded(
+                                child: TextField(
+                                  controller: nameInput,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: UIKit.width(20)),
+                                    hintText: '请填写联系人的姓名',
+                                  ),
+                                ),
+                              )
                             ],
                           ),
-                        ),
-                        Divider(),
-                        Row(
-                          children: <Widget>[
-                            Text('手机号:'),
-                            Expanded(
-                              child: TextField(
-                                controller: telInput,
-                                keyboardType: TextInputType.phone,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: UIKit.width(20)),
-                                  hintText: '请输入手机号',
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        Divider(),
-                        InkWell(
-                          onTap: () {
-                            unFocus();
-                            CityPickers.showCityPicker(
-                              context: context,
-                              height: UIKit.BOTTOM_PICKER_HEIGHT,
-                              itemExtent: UIKit.ITEM_EXTENT,
-                              cancelWidget:
-                                  Text('取消', style: UIKit.CANCEL_BUTTON_STYLE),
-                              confirmWidget:
-                                  Text('确定', style: UIKit.CONFIRM_BUTTON_STYLE),
-                            ).then((Result result) async {
-                              // provinceId = result.provinceId;
-                              await setAddress(result);
-                            });
-                          },
-                          child: Container(
+                          Divider(),
+                          Container(
                             padding: EdgeInsets.symmetric(
                                 vertical: UIKit.height(10)),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Text('收货地址:'),
-                                Spacer(),
-                                Text('${bean?.address ?? ''}'),
-                                Icon(ZYIcon.next)
+                                Text(' '.padLeft(15)),
+                                gender == 1
+                                    ? ZYRaisedButton('先生', () {
+                                        if (gender == 1) return;
+                                        unFocus();
+
+                                        setState(() {
+                                          gender = 1;
+                                        });
+                                      })
+                                    : ZYOutlineButton('先生', () {
+                                        unFocus();
+                                        if (gender == 1) return;
+                                        setState(() {
+                                          gender = 1;
+                                        });
+                                      }),
+                                SizedBox(
+                                  width: UIKit.width(40),
+                                ),
+                                gender == 2
+                                    ? ZYRaisedButton('女士', () {
+                                        unFocus();
+                                        if (gender == 2) return;
+                                        setState(() {
+                                          gender = 2;
+                                        });
+                                      })
+                                    : ZYOutlineButton('女士', () {
+                                        unFocus();
+                                        if (gender == 2) return;
+                                        setState(() {
+                                          gender = 2;
+                                        });
+                                      }),
                               ],
                             ),
                           ),
-                        ),
-                        Divider(),
-                        Row(
-                          children: <Widget>[
-                            Text('门牌号:'),
-                            Expanded(
-                              child: TextField(
-                                controller: houseNumInput,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: UIKit.width(20)),
-                                  hintText: '请填写您要测量安装的具体地址',
+                          Divider(),
+                          Row(
+                            children: <Widget>[
+                              Text('手机号:'),
+                              Expanded(
+                                child: TextField(
+                                  controller: telInput,
+                                  keyboardType: TextInputType.phone,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: UIKit.width(20)),
+                                    hintText: '请输入手机号',
+                                  ),
                                 ),
+                              )
+                            ],
+                          ),
+                          Divider(),
+                          InkWell(
+                            onTap: () {
+                              unFocus();
+                              // CityPickers.showCityPicker(
+                              //   context: context,
+                              //   height: UIKit.BOTTOM_PICKER_HEIGHT,
+                              //   itemExtent: UIKit.ITEM_EXTENT,
+                              //   cancelWidget: Text('取消',
+                              //       style: UIKit.CANCEL_BUTTON_STYLE),
+                              //   confirmWidget: Text('确定',
+                              //       style: UIKit.CONFIRM_BUTTON_STYLE),
+                              // ).then((Result result) async {
+                              //   // provinceId = result.provinceId;
+                              //   await setAddress(result);
+                              // });
+
+                              showXCityPicker(context,
+                                      addressResult: AddressResult.fromId(
+                                          bean?.provinceId,
+                                          bean?.cityId,
+                                          bean?.districtId))
+                                  .then((data) {
+                                if (data is AddressResult) {
+                                  bean?.provinceId = data.provicne.id;
+                                  bean?.cityId = data.city.id;
+                                  bean?.districtId = data.district.id;
+                                  bean?.provinceName = data.provicne.name;
+
+                                  bean?.cityName = data.city.name;
+                                  bean?.districtName = data.district.name;
+                                }
+                              }).whenComplete(() {
+                                setState(() {});
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: UIKit.height(10)),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text('收货地址:'),
+                                  Spacer(),
+                                  Text('${bean?.address ?? ''}'),
+                                  Icon(ZYIcon.next)
+                                ],
                               ),
-                            )
-                          ],
-                        ),
-                        VSpacing(50),
-                        ZYSubmitButton('保存并使用', () {
-                          saveData(bean);
-                          if (!beforeCommit()) return;
-                          setParams(bean);
-                          OTPService.editAddress(context, params: params)
-                              .then((ZYResponse response) {
-                            if (response.valid) {
-                              int id = int.parse('${response.data}' ?? '-1');
-                              saveInfoToTargetClient(id);
-                              Navigator.of(context).pop(targetClient);
-                            } else {
-                              ToastKit.showToast('${response?.message ?? ''}');
-                            }
-                          }).catchError((err) => err);
-                        })
-                      ],
-                    ),
-                  ));
+                            ),
+                          ),
+                          Divider(),
+                          Row(
+                            children: <Widget>[
+                              Text('门牌号:'),
+                              Expanded(
+                                child: TextField(
+                                  controller: houseNumInput,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: UIKit.width(20)),
+                                    hintText: '请填写您要测量安装的具体地址',
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          VSpacing(50),
+                          ZYSubmitButton('保存并使用', () {
+                            saveData(bean);
+                            if (!beforeCommit()) return;
+                            setParams(bean);
+                            OTPService.editAddress(context, params: params)
+                                .then((ZYResponse response) {
+                              if (response.valid) {
+                                int id = int.parse('${response.data}' ?? '-1');
+                                saveInfoToTargetClient(id);
+                                Navigator.of(context).pop(targetClient);
+                              } else {
+                                ToastKit.showToast(
+                                    '${response?.message ?? ''}');
+                              }
+                            }).catchError((err) => err);
+                          })
+                        ],
+                      ),
+                    )),
+    );
   }
 }

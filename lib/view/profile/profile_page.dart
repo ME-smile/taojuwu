@@ -10,6 +10,7 @@ import 'package:taojuwu/providers/user_provider.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/singleton/target_client.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
+import 'package:taojuwu/view/product/mixin/client_select_listener.dart';
 import 'package:taojuwu/widgets/v_spacing.dart';
 import 'package:taojuwu/widgets/zy_assetImage.dart';
 import 'package:taojuwu/widgets/zy_listTile.dart';
@@ -111,9 +112,13 @@ class _ProfilePageState extends State<ProfilePage> {
   void clearUserInfo() {
     Navigator.of(context).pop();
     UserProvider user = Provider.of<UserProvider>(context, listen: false);
-    Application.eventBus.fire(LoginEvent(0));
+
     user.logOut();
     TargetClient().clear();
+
+    TargetClientHolder.targetClient = null;
+    Application.eventBus.fire(LoginEvent(0));
+
     RouteHandler.goLoginPage(context, clearStack: true);
   }
 
@@ -257,11 +262,28 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             ZYListTile(
               title: '关于淘居屋',
-              showDivider: false,
+              showDivider: true,
               callback: () {
                 RouteHandler.goVersionPage(context);
               },
             ),
+            ZYListTile(
+                title: '我的客服',
+                showDivider: false,
+                trailing: Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Text(
+                    '18968072319',
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  ),
+                )
+                // callback: () {
+                //   Navigator.of(context)
+                //       .push(CupertinoPageRoute(builder: (BuildContext context) {
+                //     return CustomerServicePage();
+                //   }));
+                // },
+                ),
             VSpacing(20),
             // _LoginButton(
             //   title: '切换账号',

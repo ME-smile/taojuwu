@@ -26,9 +26,11 @@ class _BuyerInfoBarState extends State<BuyerInfoBar> {
           }
           RouteHandler.goEditAddressPage(context, id: targetClient?.clientId)
               .then((value) {
-            setState(() {
-              targetClient = value;
-            });
+            if (value != null) {
+              setState(() {
+                targetClient = value;
+              });
+            }
           });
         },
         child: Container(
@@ -57,14 +59,14 @@ class _BuyerInfoBarState extends State<BuyerInfoBar> {
                     Row(
                       children: [
                         Text(
-                          '收货人: ${targetClient?.clientName ?? ''}',
+                          '收货人: ${targetClient?.addressId == null ? '' : targetClient?.clientName ?? ''}',
                           style: TextStyle(
                               fontSize: 14, fontWeight: FontWeight.w600),
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: UIKit.width(32)),
                           child: Text(
-                            '${targetClient?.tel ?? ''}',
+                            '${targetClient?.addressId == null ? '' : targetClient?.tel ?? ''}',
                             style: TextStyle(
                                 color: Color(0xFF6D6D6D), fontSize: 13),
                           ),
@@ -74,7 +76,7 @@ class _BuyerInfoBarState extends State<BuyerInfoBar> {
                     Container(
                       padding: EdgeInsets.only(top: 4),
                       child: Text(
-                        '收货地址:${targetClient?.address ?? ''}',
+                        '收货地址:${targetClient?.addressId == null ? '' : targetClient?.address ?? ''}',
                         style:
                             TextStyle(fontSize: 13, color: Color(0xFF6D6D6D)),
                         maxLines: 2,

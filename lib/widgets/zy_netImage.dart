@@ -2,9 +2,9 @@
  * @Description: 网络图片封装
  * @Author: iamsmiling
  * @Date: 2020-09-25 12:47:45
- * @LastEditTime: 2020-11-20 16:13:06
+ * @LastEditTime: 2020-11-27 09:35:29
  */
-import 'package:extended_image/extended_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -32,17 +32,31 @@ class ZYNetImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: callback,
-        child: FadeInImage(
-            width: width,
-            height: height,
-            fit: fit,
-            fadeInDuration: Duration(milliseconds: needAnimation ? 200 : 10),
-            placeholder: AssetImage(UIKit.getAssetsImagePath(
+      onTap: callback,
+      child: CachedNetworkImage(
+        imageUrl: UIKit.getNetworkImgPath(imgPath),
+        width: width,
+        height: height,
+        fit: fit,
+        fadeInDuration: Duration(milliseconds: 180),
+        fadeOutDuration: Duration(milliseconds: 180),
+        placeholder: (BuildContext context, _) {
+          return Image.asset(
+            UIKit.getAssetsImagePath(
               'placeholder_img.jpg',
-            )),
-            image: ExtendedNetworkImageProvider(
-                UIKit.getNetworkImgPath(imgPath),
-                cache: true)));
+            ),
+            fit: fit,
+          );
+        },
+        errorWidget: (BuildContext context, String name, _) {
+          return Image.asset(
+            UIKit.getAssetsImagePath(
+              'placeholder_img.jpg',
+            ),
+            fit: fit,
+          );
+        },
+      ),
+    );
   }
 }

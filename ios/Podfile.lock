@@ -28,9 +28,9 @@ PODS:
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
-  - sqflite (0.0.2):
+  - sqflite (0.0.1):
     - Flutter
-    - FMDB (>= 2.7.5)
+    - FMDB (~> 2.7.2)
   - SwiftProtobuf (1.13.0)
 
 DEPENDENCIES:
@@ -95,7 +95,7 @@ SPEC CHECKSUMS:
   package_info: d4726d54c0214c4d363b2333d66a753d1d6ec22a
   path_provider: d1a68c4065ce2e0f6fd03f8a46d698525dc79f06
   shared_preferences: 5d0fc5691f4e7293ddfc1b599ca398f8af42f5e7
-  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
+  sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   SwiftProtobuf: fd4693388a96c8c2df35d3b063272b0e7c499d00
 
 PODFILE CHECKSUM: 596c7d1b21f258d38d9dcd8e5a2c3694110eb349

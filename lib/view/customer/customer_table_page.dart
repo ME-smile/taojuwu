@@ -45,6 +45,7 @@ class CustomerTablePage extends StatelessWidget {
         child: InkWell(
       onTap: () {
         if (flag == 1) {
+          TargetClient().clear();
           Application.eventBus.fire(SelectClientEvent(
               TargetClient.fromCategoryCustomerModelBean(bean)));
           Navigator.of(context)..pop()..pop();

@@ -2,13 +2,14 @@
  * @Description: 订单创建的模型
  * @Author: iamsmiling
  * @Date: 2020-10-29 17:22:23
- * @LastEditTime: 2020-11-18 17:45:10
+ * @LastEditTime: 2020-12-03 14:13:45
  */
 
 import 'dart:convert';
 import 'dart:developer' as developer;
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/select_client_event.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
@@ -164,6 +165,7 @@ class OrderCreator {
       if (response?.valid == true) {
         int id = TargetClientHolder.targetClient?.clientId;
         TargetClientHolder.targetClient = null;
+        TargetClient().clear();
         Application.eventBus.fire(SelectClientEvent(null));
         return RouteHandler.goOrderCommitSuccessPage(context, '$id',
             orderType: 2, showTip: 1);
@@ -182,8 +184,12 @@ class OrderCreator {
 
   Future _sendCreateOrderRequest(BuildContext context) {
     developer.log(orderArgs.toString());
+    EasyLoading.instance.maskType = EasyLoadingMaskType.black;
+    EasyLoading.show(status: '正在提交');
     return OTPService.createOrder(params: orderArgs)
         .then((ZYResponse response) {
+      EasyLoading.dismiss();
+      EasyLoading.instance.maskType = EasyLoadingMaskType.none;
       if (response?.valid == true) {
         int id = TargetClientHolder.targetClient?.clientId;
 
@@ -194,6 +200,9 @@ class OrderCreator {
             orderType: 2, showTip: 1);
       }
       ToastKit.showErrorInfo(response?.message ?? '');
-    }).catchError((err) => err);
+    }).catchError((err) {
+      EasyLoading.dismiss();
+      EasyLoading.instance.maskType = EasyLoadingMaskType.none;
+    }).whenComplete(() {});
   }
 }

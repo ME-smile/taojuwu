@@ -4,7 +4,6 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/export/export_pages.dart';
-import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/after_sale_service/after_sale_service_page.dart';
 
@@ -39,7 +38,6 @@ import 'package:taojuwu/view/product/curtain/fabric_curtain_product_detail_page.
 import 'package:taojuwu/view/product/curtain/gauze_curtain_product_detail_page.dart';
 import 'package:taojuwu/view/product/curtain/rolling_curtain_product_detail_page.dart';
 import 'package:taojuwu/view/product/end_product/end_product_detail_page.dart';
-import 'package:taojuwu/view/product/mall/select_product_mall.page.dart';
 import 'package:taojuwu/view/product/scene_design/scene_design_page.dart';
 import 'package:taojuwu/view/profile/profile_page.dart';
 import 'package:taojuwu/view/profile/subPages/forget_pwd_page.dart';
@@ -70,7 +68,6 @@ class RouteHandler {
         replace: replace,
         clearStack: clearStack,
         maintainState: maintainState,
-        routeSettings: routeSettings,
         transitionDuration: transitionDuration,
         transitionBuilder: transitionBuilder,
         transition: TransitionType.cupertino);
@@ -360,20 +357,23 @@ class RouteHandler {
         routeSettings: routeSettings, maintainState: true);
   }
 
-  static Handler selectProductMall = Handler(
-      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    final args = context.settings.arguments as OrderGoodsMeasureData;
-    return SelectProductMallPage(args);
-  });
+  // static Handler selectProductMall = Handler(
+  //     handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+  //   final args = context.settings.arguments as OrderGoodsMeasureData;
+  //   return SelectProductMallPage(args);
+  // });
 
   static Future goCurtainMallPage(BuildContext context,
-      {String keyword: '', bool replace: false, int orderGoodsId}) {
+      {String keyword: '',
+      bool replace: false,
+      int orderGoodsId,
+      bool clearStack = false}) {
     keyword = FluroConvertUtils.fluroCnParamsEncode(keyword);
     TargetRoute.instance.setRoute(
         '${Routes.curtainMall}?keyword=$keyword&orderGoodsId=$orderGoodsId');
     return _jumpTo(context,
         '${Routes.curtainMall}?keyword=$keyword&orderGoodsId=$orderGoodsId',
-        maintainState: true, replace: replace);
+        maintainState: true, replace: replace, clearStack: clearStack);
   }
 
   static Handler switchAccount = Handler(
