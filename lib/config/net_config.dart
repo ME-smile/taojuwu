@@ -2,7 +2,7 @@
  * @Description: 网络请求相关配置
  * @Author: iamsmiling
  * @Date: 2020-09-24 12:08:26
- * @LastEditTime: 2020-12-03 14:25:42
+ * @LastEditTime: 2020-12-24 20:34:53
  */
 
 import '../application.dart';

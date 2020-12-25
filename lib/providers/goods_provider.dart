@@ -765,11 +765,7 @@ class GoodsProvider with ChangeNotifier {
 
   double get area {
     double area = widthM * heightM;
-    return area > 0
-        ? area < 1
-            ? 1
-            : area
-        : 0;
+    return area > 0 ? area < 1 ? 1 : area : 0;
   }
 
   double get unitPrice {
@@ -814,7 +810,7 @@ class GoodsProvider with ChangeNotifier {
       // 配饰价格计算 acc-->accesspry
       double heightFactor = 1.0;
       double mainHeightFactor = 1.0;
-      if (heightCM > 270) {
+      if (heightCM > 276) {
         heightFactor = 1.5;
         if (!isFixedHeight) {
           mainHeightFactor = (widthM + heightM - 2.65) / widthM;

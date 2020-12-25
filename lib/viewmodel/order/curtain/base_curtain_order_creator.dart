@@ -2,7 +2,7 @@
  * @Description: 窗帘定创建基类
  * @Author: iamsmiling
  * @Date: 2020-10-09 09:34:59
- * @LastEditTime: 2020-10-09 10:00:30
+ * @LastEditTime: 2020-12-22 10:24:39
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/utils/common_kit.dart';
@@ -17,18 +17,18 @@ abstract class BaseCurtainOrderCreator extends BaseOrderCreator {
   String remark; // 订单备注-->选填
 
   bool isMeasureTimeValid() {
-    if (CommonKit.isNullOrEmpty(measureTime)) {
-      ToastKit.showInfo('请填写上门量尺意向时间');
-      return false;
-    }
+    // if (CommonKit.isNullOrEmpty(measureTime)) {
+    //   ToastKit.showInfo('请填写上门量尺意向时间');
+    //   return false;
+    // }
     return true;
   }
 
   bool isInstallTimeValid() {
-    if (CommonKit.isNullOrEmpty(measureTime)) {
-      ToastKit.showInfo('请填写客户意向安装时间');
-      return false;
-    }
+    // if (CommonKit.isNullOrEmpty(measureTime)) {
+    //   ToastKit.showInfo('请填写客户意向安装时间');
+    //   return false;
+    // }
     return true;
   }
 

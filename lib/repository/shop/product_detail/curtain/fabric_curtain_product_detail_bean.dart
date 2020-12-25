@@ -2,7 +2,7 @@
  * @Description: 布艺帘商品
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:12:26
- * @LastEditTime: 2020-11-22 15:31:57
+ * @LastEditTime: 2020-12-22 10:20:07
  */
 
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';
@@ -121,7 +121,7 @@ class FabricCurtainProductDetailBean extends BaseCurtainProductDetailBean {
   //窗帘主布高度因子
   double get mainHeightFactor {
     double factor = 1.0;
-    if ((heightCM != null && heightCM > 270) && isCustomSize) {
+    if ((heightCM != null && heightCM > 276) && isCustomSize) {
       factor = (widthM + heightM - 2.65) / widthM;
     }
     return factor;
@@ -129,7 +129,7 @@ class FabricCurtainProductDetailBean extends BaseCurtainProductDetailBean {
 
   // 窗帘高度因子2
   double get heightFactor {
-    return heightCM != null && heightCM > 270 ? 1.5 : 1.0;
+    return heightCM != null && heightCM > 276 ? 1.5 : 1.0;
   }
 
   @override

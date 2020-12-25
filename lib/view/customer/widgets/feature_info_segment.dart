@@ -245,7 +245,7 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
                         onConfirm: (date) {
                           if (hasChangeEnterTime == false)
                             tmp = now.millisecondsSinceEpoch;
-                          params['enter_timer'] = '${tmp ~/ 1000}';
+                          params['enter_time'] = "${(tmp ~/ 1000)}";
                           setState(() {
                             enterTime = DateUtil.formatDateMs(tmp,
                                 format: 'yyyy-MM-dd HH:mm:ss');

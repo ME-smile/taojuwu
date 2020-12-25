@@ -43,6 +43,8 @@ import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'base/xhr.dart';
 
+import 'dart:developer' as developer;
+
 class OTPService {
   static Xhr xhr = Xhr.instance;
 
@@ -323,6 +325,7 @@ class OTPService {
 
   static Future<ZYResponse> addUser(Map<String, dynamic> params) async {
     Response response = await xhr.post(ApiPath.userAdd, data: params ?? {});
+    developer.log(response.data);
     return ZYResponse.fromJsonWithData(response.data);
   }
 

@@ -2,7 +2,7 @@
  * @Description: 城市选择
  * @Author: iamsmiling
  * @Date: 2020-11-28 23:11:50
- * @LastEditTime: 2020-12-03 14:45:12
+ * @LastEditTime: 2020-12-22 10:49:04
  */
 
 import 'dart:async';
@@ -243,8 +243,10 @@ class _XCityPickerState extends State<XCityPicker> {
   void initState() {
     super.initState();
     targetProvinceId = provinceEntity?.id ?? 1;
-    targetCityId = cityEntity?.id ?? 1;
-    targetDistrictId = districtEntity?.id ?? 1;
+    targetCityId =
+        cityEntity?.id ?? queryCityList(targetProvinceId)?.first["city_id"];
+    targetDistrictId = districtEntity?.id ??
+        queryDistrictList(targetCityId)?.first["district_id"];
     provinceController =
         FixedExtentScrollController(initialItem: _getInitialProviceIndex());
     cityController =

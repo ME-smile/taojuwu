@@ -247,7 +247,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
     ThemeData themeData = Theme.of(context);
     return WillPopScope(
       onWillPop: () async {
-        Navigator.of(context).pop(targetClient);
+        Navigator.of(context).pop();
         return Future.value(true);
       },
       child: Scaffold(

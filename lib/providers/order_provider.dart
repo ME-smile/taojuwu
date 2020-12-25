@@ -78,9 +78,9 @@ class OrderProvider with ChangeNotifier {
   String _windowNum;
 
   String get measureTimeStr => _measureTime == null
-      ? '时间'
-      : '${DateUtil.formatDate(_measureTime?.dateTime, format: 'yyyy年MM月dd日') ?? ''} ${_measureTime?.period ?? ''}' ??
-          '';
+      ? "时间"
+      : '${DateUtil.formatDate(_measureTime?.dateTime, format: 'yyyy年MM月dd日') ?? ''} ${_measureTime?.period ?? ''}'
+          '时间';
   String get installTime => _installTime;
   String get orderMark => _orderMark ?? '';
   String get deposit => _deposit;
@@ -159,14 +159,14 @@ class OrderProvider with ChangeNotifier {
       return false;
     }
     if (hasCustomizedProdoct == true) {
-      if (measureTimeStr == null || measureTimeStr?.trim()?.isEmpty == true) {
-        ToastKit.showInfo('请选择上门量尺意向时间');
-        return false;
-      }
-      if (installTime == null || installTime?.trim()?.isEmpty == true) {
-        ToastKit.showInfo('请选择客户意向安装时间');
-        return false;
-      }
+      // if (measureTimeStr == null || measureTimeStr?.trim()?.isEmpty == true) {
+      //   ToastKit.showInfo('请选择上门量尺意向时间');
+      //   return false;
+      // }
+      // if (installTime == null || installTime?.trim()?.isEmpty == true) {
+      //   ToastKit.showInfo('请选择客户意向安装时间');
+      //   return false;
+      // }
       if (deposit == null || deposit?.trim()?.isEmpty == true) {
         ToastKit.showInfo('请输入定金');
         return false;
@@ -214,7 +214,7 @@ class OrderProvider with ChangeNotifier {
       'vertical_ground_height': dy,
       'measure_id':
           '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
-      'measure_time': measureTimeStr,
+      'measure_time': measureTimeStr == "时间" ? "" : measureTimeStr,
       'install_time': installTime,
       'order_remark': orderMark,
       'wc_attr': jsonEncode(attr),
@@ -240,7 +240,7 @@ class OrderProvider with ChangeNotifier {
         'vertical_ground_height': dy,
         'measure_id':
             '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
-        'measure_time': measureTimeStr,
+        'measure_time': measureTimeStr == "时间" ? "" : measureTimeStr,
         'install_time': installTime,
         'order_remark': orderMark,
         'wc_attr': jsonEncode(attr),

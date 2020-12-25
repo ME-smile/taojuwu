@@ -69,7 +69,7 @@ class GauzeCurtainProductDetailBean extends BaseCurtainProductDetailBean {
     double tmp = unitPrice;
     double heightFactor = 1.0;
     double mainHeightFactor = 1.0;
-    if (heightCM != null && heightCM > 270) {
+    if (heightCM != null && heightCM > 276) {
       heightFactor = 1.5;
       if (!isFixedHeight) {
         mainHeightFactor = (widthM + heightM - 2.65) / widthM;

@@ -2,7 +2,7 @@
  * @Description: 买家信息栏目条条
  * @Author: iamsmiling
  * @Date: 2020-10-29 15:51:56
- * @LastEditTime: 2020-11-27 10:22:08
+ * @LastEditTime: 2020-12-09 10:26:40
  */
 import 'dart:async';
 
@@ -55,7 +55,8 @@ class _OrderBuyerCardState extends State<OrderBuyerCard> {
           if (!orderCreator.isClientNull) {
             RouteHandler.goEditAddressPage(context, id: orderCreator?.clientId)
                 .then((value) {
-              orderCreator.targetClient = value;
+              if (value == null) return;
+              if (value is TargetClient) orderCreator.targetClient = value;
               // ignore: unnecessary_statements
               mounted ? setState(() {}) : '';
             });

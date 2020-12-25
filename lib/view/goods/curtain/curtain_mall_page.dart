@@ -883,6 +883,7 @@ class _CurtainMallPageState extends State<CurtainMallPage>
             child: Scaffold(
               key: _scaffoldKey,
               endDrawer: endDrawer(context),
+              endDrawerEnableOpenDragGesture: false,
               body: TabBarView(
                 children: List.generate(tabs?.length ?? 0, (int i) {
                   return GoodsTabBarView(

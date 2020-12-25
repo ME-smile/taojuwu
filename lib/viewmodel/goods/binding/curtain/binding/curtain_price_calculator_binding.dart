@@ -2,7 +2,7 @@
  * @Description: 声明一个mixin的类，拥有计算商品价格的功能
  * @Author: iamsmiling
  * @Date: 2020-09-27 09:06:14
- * @LastEditTime: 2020-10-15 10:22:35
+ * @LastEditTime: 2020-12-22 10:20:29
  */
 
 import 'package:taojuwu/viewmodel/goods/binding/base/curtain_goods_binding.dart';
@@ -59,7 +59,7 @@ class CurtainPriceCalculatorBinding extends CurtainGoodsBinding
     // 配饰价格计算 acc-->accesspry
     double heightFactor = 1.0;
     double mainHeightFactor = 1.0;
-    if (heightCM > 270) {
+    if (heightCM > 276) {
       heightFactor = 1.5;
       if (!isFixedHeight) {
         mainHeightFactor = (widthM + heightM - 2.65) / widthM;

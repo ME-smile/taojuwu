@@ -88,7 +88,7 @@ class _SceneDesignPageState extends State<SceneDesignPage> {
                   )
                 : Scaffold(
                     appBar: AppBar(
-                      title: Text('相关场景'),
+                      title: Text(''),
                       centerTitle: true,
                       actions: [const UserChooseButton()],
                     ),

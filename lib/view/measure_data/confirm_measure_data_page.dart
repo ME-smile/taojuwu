@@ -2,7 +2,7 @@
  * @Description: 确认测装数据的页面
  * @Author: iamsmiling
  * @Date: 2020-11-19 09:38:32
- * @LastEditTime: 2020-11-20 10:18:03
+ * @LastEditTime: 2020-12-09 10:02:09
  */
 
 import 'package:flutter/cupertino.dart';
@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
-import 'package:taojuwu/repository/shop/product_detail/curtain/fabric_curtain_product_detail_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 import 'package:taojuwu/view/measure_data/dialog.dart';
@@ -27,7 +26,7 @@ class ConfirmMeasureDataPage extends StatefulWidget {
 }
 
 class _ConfirmMeasureDataPageState extends State<ConfirmMeasureDataPage> {
-  FabricCurtainProductDetailBean get bean => widget.bean;
+  BaseCurtainProductDetailBean get bean => widget.bean;
   OrderGoodsMeasureData get measureData => bean.measureData;
 
   Widget buildText(String text, {double width}) {

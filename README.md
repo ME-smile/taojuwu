@@ -2,7 +2,7 @@
  * @Description: //TODO
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-11-24 15:58:04
+ * @LastEditTime: 2020-12-22 11:11:19
 -->
 # taojuwu
 
@@ -35,6 +35,19 @@ version: 1.2.0+1007
 2.优化ui,提升用户体验
 3.商品详情新增:搭配精选、场景推荐、软装方案、为你推荐等功能
 
+
+version: 1.2.1+1009
+
+1.修复选品时选择窗纱白屏问题
+2.修复城市信息不显示
+3.筛选商品时,出现测量单按钮
+
+version:1.2.3+1010
+1.窗纱选品白屏问题
+
+version:1.2.4
+1.修改测量事件 安装时间为选填
+2. 定宽修改为2.76米
 
 flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --no-tree-shake-icons -v
 

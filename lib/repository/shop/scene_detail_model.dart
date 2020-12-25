@@ -2,7 +2,7 @@
  * @Description: 相关场景数据模型
  * @Author: iamsmiling
  * @Date: 2020-10-16 10:32:19
- * @LastEditTime: 2020-10-23 13:14:28
+ * @LastEditTime: 2020-12-14 16:13:05
  */
 import 'package:taojuwu/repository/shop/product_detail/design/scene_design_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';

@@ -408,7 +408,7 @@ class RouteHandler {
 
   static Handler editAddress = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    int id = int.parse(params['id']?.first ?? '-1') ?? -1;
+    int id = int.parse(params['id']?.first);
     return EditAddressPage(
       id: id,
     );

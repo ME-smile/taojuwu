@@ -2,7 +2,7 @@
  * @Description: 订单创建的模型
  * @Author: iamsmiling
  * @Date: 2020-10-29 17:22:23
- * @LastEditTime: 2020-12-03 14:13:45
+ * @LastEditTime: 2020-12-22 17:53:14
  */
 
 import 'dart:convert';
@@ -29,9 +29,9 @@ class OrderCreator {
   TimePeriod measureTimePeriod;
 
   String get measureTimeStr => measureTimePeriod == null
-      ? '时间'
+      ? "时间"
       : '${DateUtil.formatDate(measureTimePeriod?.dateTime, format: 'yyyy年MM月dd日') ?? ''} ${measureTimePeriod?.period ?? ''}' ??
-          '';
+          '时间';
   String installTime;
 
   AbstractProductDetailBean productDetailBean;
@@ -72,14 +72,14 @@ class OrderCreator {
       ToastKit.showInfo('请填写收货地址');
       return false;
     }
-    if (measureTimeStr == null || measureTimeStr?.trim()?.isEmpty == true) {
-      ToastKit.showInfo('请选择上门量尺意向时间');
-      return false;
-    }
-    if (installTime == null || installTime?.trim()?.isEmpty == true) {
-      ToastKit.showInfo('请选择客户意向安装时间');
-      return false;
-    }
+    // if (measureTimeStr == null || measureTimeStr?.trim()?.isEmpty == true) {
+    //   ToastKit.showInfo('请选择上门量尺意向时间');
+    //   return false;
+    // }
+    // if (installTime == null || installTime?.trim()?.isEmpty == true) {
+    //   ToastKit.showInfo('请选择客户意向安装时间');
+    //   return false;
+    // }
     if (depositAmount == null || depositAmount?.trim()?.isEmpty == true) {
       ToastKit.showInfo('请输入定金');
       return false;
@@ -126,7 +126,7 @@ class OrderCreator {
       'client_uid': clientId,
       'vertical_ground_height': deltaYCM,
       'measure_id': measureId,
-      'measure_time': measureTimeStr,
+      'measure_time': measureTimeStr == "时间" ? "" : measureTimeStr,
       'install_time': installTime,
       'order_remark': extraRemark ?? '',
       'wc_attr': jsonEncode(attrStrList),
@@ -146,7 +146,7 @@ class OrderCreator {
   Map<String, dynamic> get measureOrderArgs {
     return {
       'client_uid': clientId,
-      'measure_time': measureTimeStr,
+      'measure_time': measureTimeStr == "时间" ? "" : measureTimeStr,
       'install_time': installTime,
       'order_earnest_money': depositAmount,
       'order_remark': extraRemark,
