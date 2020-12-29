@@ -2,7 +2,7 @@
  * @Description:提交订单页面 2.0
  * @Author: iamsmiling
  * @Date: 2020-10-28 11:14:01
- * @LastEditTime: 2020-11-26 14:46:15
+ * @LastEditTime: 2020-12-29 15:57:10
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/constants/constants.dart';
@@ -17,6 +17,7 @@ import 'package:taojuwu/view/order/widgets/order_seller_card.dart';
 import 'package:taojuwu/view/order/widgets/product_order_card/end_product_order_card.dart';
 import 'package:taojuwu/view/order/widgets/product_order_card/fabric_curtain_product_order_card.dart';
 import 'package:taojuwu/view/order/widgets/product_order_card/rolling_curtain_product_order_card.dart';
+import 'package:taojuwu/view/order/widgets/product_order_card/sectionalbar_product_order_card.dart';
 import 'package:taojuwu/view/order/widgets/submit_order_action_bar.dart';
 import 'package:taojuwu/viewmodel/order/order_creator.dart';
 
@@ -112,11 +113,15 @@ class _SubmitOrderPageState extends State<SubmitOrderPage> {
   }
 
   Widget _buildProductOrderCard(AbstractProductDetailBean bean) {
-    return bean.productType == ProductType.EndProductType
-        ? EndProductOrderCard(bean)
-        : bean.productType == ProductType.FabricCurtainProductType ||
-                bean.productType == ProductType.GauzeCurtainProductType
-            ? FabricCurtainProductOrderCard(bean)
-            : RollingCurtainProductOrderCard(bean);
+    return bean.productType == ProductType.SectionalProductType
+        ? SectionalbarProductOrderCard(
+            bean: bean,
+          )
+        : bean.productType == ProductType.EndProductType
+            ? EndProductOrderCard(bean)
+            : bean.productType == ProductType.FabricCurtainProductType ||
+                    bean.productType == ProductType.GauzeCurtainProductType
+                ? FabricCurtainProductOrderCard(bean)
+                : RollingCurtainProductOrderCard(bean);
   }
 }

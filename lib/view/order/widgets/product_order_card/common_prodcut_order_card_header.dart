@@ -2,11 +2,12 @@
  * @Description: 提交订单 统统商品卡片样式
  * @Author: iamsmiling
  * @Date: 2020-10-28 14:24:58
- * @LastEditTime: 2020-11-06 15:33:53
+ * @LastEditTime: 2020-12-28 14:44:26
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/end_product/base_end_product_detail_bean.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class CommonProductOrderCardHeader extends StatelessWidget {
@@ -29,7 +30,7 @@ class CommonProductOrderCardHeader extends StatelessWidget {
                     ? (bean as BaseCurtainProductDetailBean)
                         ?.roomAttr
                         ?.selectedAttrName
-                    : '',
+                    : (bean as BaseEndProductDetailBean).selectedOptionsName,
                 style: TextStyle(
                     fontSize: 14,
                     color: const Color(0xFF333333),

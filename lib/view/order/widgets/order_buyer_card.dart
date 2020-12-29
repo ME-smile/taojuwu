@@ -2,7 +2,7 @@
  * @Description: 买家信息栏目条条
  * @Author: iamsmiling
  * @Date: 2020-10-29 15:51:56
- * @LastEditTime: 2020-12-09 10:26:40
+ * @LastEditTime: 2020-12-28 12:37:57
  */
 import 'dart:async';
 

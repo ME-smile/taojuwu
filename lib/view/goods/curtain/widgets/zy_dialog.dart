@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/shop/cart_list_model.dart';
 import 'package:taojuwu/repository/shop/product_bean.dart';
@@ -13,6 +14,7 @@ import 'package:taojuwu/repository/shop/sku_attr/window_gauze_attr.dart';
 import 'package:taojuwu/repository/shop/sku_attr/window_shade_attr.dart';
 import 'package:taojuwu/providers/end_product_provider.dart';
 import 'package:taojuwu/providers/goods_provider.dart';
+import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/singleton/target_order_goods.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
@@ -35,6 +37,147 @@ class ZYDialog {
             title,
             goodsProvider,
             curOpotion,
+          );
+        });
+  }
+
+  static Future<CartModel> eidtSectionalBarLength(
+      BuildContext ctx, CartModel cartModel,
+      {Function callback}) {
+    String temp = cartModel.length;
+    return showCupertinoModalPopup<CartModel>(
+        context: ctx,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext cpntext, StateSetter setState) {
+              return Material(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(10),
+                    topLeft: Radius.circular(10)),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * .64,
+                  padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  child: Scaffold(
+                    bottomNavigationBar: Container(
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      child: ZYSubmitButton('确定', () {
+                        OTPService.modifyCartAttr(context, {
+                          "cart_id": cartModel.cartId,
+                          "num": cartModel.length,
+                          "type": 2,
+                        }).then((ZYResponse response) {
+                          Navigator.of(context).pop();
+                          cartModel.length = temp;
+                          if (callback != null) callback();
+                        });
+                        // provider?.modifyEndProductAttr(context,
+                        //     cartModel: cartModel, callback: callback);
+                      }),
+                    ),
+                    body: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 90,
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: ZYNetImage(
+                                  imgPath:
+                                      cartModel?.pictureInfo?.picCoverSmall,
+                                  needAnimation: false,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                                child: Container(
+                              margin: EdgeInsets.only(left: 12),
+                              child: SizedBox(
+                                height: 90,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Padding(
+                                    //   padding: const EdgeInsets.only(bottom: 3.0),
+                                    //   child: Text(
+                                    //     '${bean?.goodsName}',
+                                    //     style: TaojuwuTextStyle.TITLE_TEXT_STYLE,
+                                    //   ),
+                                    // ),
+                                    Spacer(),
+                                    Text(
+                                      '¥${cartModel?.price}',
+                                      style: TaojuwuTextStyle.RED_TEXT_STYLE
+                                          .copyWith(fontSize: 14),
+                                    ),
+
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 12),
+                                      child: Text(
+                                        '已选:' + "${cartModel?.length}米",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                            color: const Color(0xFF6D6D6D)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ))
+                          ],
+                        ),
+                        Divider(),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 12),
+                          child: Text(
+                            '米数',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: const Color(0xFF333333),
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: 36,
+                            maxWidth: 128,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(5)),
+                            child: TextField(
+                              // autofocus: true,
+                              controller:
+                                  TextEditingController(text: cartModel.length),
+                              onChanged: (String text) {
+                                temp = text;
+                              },
+                              keyboardType: TextInputType.numberWithOptions(
+                                  decimal: true),
+                              decoration: InputDecoration(
+                                  isDense: true,
+                                  filled: true,
+                                  fillColor: Color(0xFFF5F5F5),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: const Color(0xFFEFF0F0))),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: const Color(0xFFEFF0F0))),
+                                  contentPadding: EdgeInsets.only(
+                                      left: 10, top: 8, bottom: 8, right: 10),
+                                  hintText: "输入米数"),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           );
         });
   }

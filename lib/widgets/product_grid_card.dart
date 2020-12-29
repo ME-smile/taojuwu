@@ -2,17 +2,15 @@
  * @Description: 商品列表片
  * @Author: iamsmiling
  * @Date: 2020-10-23 10:10:18
- * @LastEditTime: 2020-11-23 10:49:54
+ * @LastEditTime: 2020-12-29 15:20:27
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 
 import 'package:taojuwu/router/handlers.dart';
-import 'package:taojuwu/utils/ui_kit.dart';
 
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
-import 'dart:developer' as developer;
 
 class ProductGridCard extends StatelessWidget {
   final SingleProductDetailBean bean;
@@ -34,13 +32,16 @@ class ProductGridCard extends StatelessWidget {
       return RouteHandler.goGauzeCurtainProductDetailPage(
           context, bean?.goodsId);
     }
+    if (type == 4) {
+      return RouteHandler.goSectionalbarProductDetailPage(
+          context, bean?.goodsId);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     ThemeData themeData = Theme.of(context);
-    developer.log(bean?.goodsName);
-    developer.log(UIKit.getNetworkImgPath(bean?.cover));
+
     // double width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {

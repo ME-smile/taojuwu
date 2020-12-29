@@ -2,7 +2,7 @@
  * @Description: 单商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:06:20
- * @LastEditTime: 2020-11-24 17:56:12
+ * @LastEditTime: 2020-12-28 14:51:13
  */
 
 import 'package:taojuwu/repository/shop/product_bean.dart';
@@ -10,6 +10,7 @@ import 'package:taojuwu/repository/shop/product_detail/curtain/fabric_curtain_pr
 import 'package:taojuwu/repository/shop/product_detail/curtain/gauze_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/rolling_curtain_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/end_product/concrete_end_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/end_product/sectional_product_detail_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
 
 import 'base_product_detail_bean.dart';
@@ -97,6 +98,9 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
     }
     if (type == 3) {
       return GauzeCurtainProductDetailBean.fromJson(json);
+    }
+    if (type == 4) {
+      return SectionalProductDetailBean.fromJson(json);
     }
 
     return null;

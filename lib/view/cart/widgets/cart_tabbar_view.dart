@@ -46,22 +46,14 @@ class _CartTabBarViewState extends State<CartTabBarView> {
   bool hasError = false;
   Widget buildCartCard(CartModel cartModel, int index) {
     return SlideAnimation(
-      child: cartModel?.isCustomizedProduct == true
-          ? CustomizedProductCard(
-              cartModel: cartModel,
-              index: index,
-              clientId: clientId,
-              editAttrCallback: () {
-                FocusManager.instance.primaryFocus.unfocus();
-                provider?.curCartModel = cartModel;
-              },
-            )
-          : ProductCard(
+      child: cartModel?.isSectionalbarProduct == true
+          ? SectionalbarProductCard(
               cartModel: cartModel,
               index: index,
               clientId: clientId,
               tapCallback: () {
-                ZYDialog.checkEndProductAttr(context, cartModel, callback: () {
+                ZYDialog.eidtSectionalBarLength(context, cartModel,
+                    callback: () {
                   setState(() {});
                   context.read<CartProvider>().refresh();
                 });
@@ -69,7 +61,32 @@ class _CartTabBarViewState extends State<CartTabBarView> {
               checkCallback: (bool isSelected) {
                 provider?.checkGoods(cartModel, isSelected);
               },
-            ),
+            )
+          : cartModel?.isCustomizedProduct == true
+              ? CustomizedProductCard(
+                  cartModel: cartModel,
+                  index: index,
+                  clientId: clientId,
+                  editAttrCallback: () {
+                    FocusManager.instance.primaryFocus.unfocus();
+                    provider?.curCartModel = cartModel;
+                  },
+                )
+              : ProductCard(
+                  cartModel: cartModel,
+                  index: index,
+                  clientId: clientId,
+                  tapCallback: () {
+                    ZYDialog.checkEndProductAttr(context, cartModel,
+                        callback: () {
+                      setState(() {});
+                      context.read<CartProvider>().refresh();
+                    });
+                  },
+                  checkCallback: (bool isSelected) {
+                    provider?.checkGoods(cartModel, isSelected);
+                  },
+                ),
     );
   }
 
@@ -362,6 +379,204 @@ class CustomizedProductCardState extends State<CustomizedProductCard>
                                     fontWeight: FontWeight.w500))
                           ]),
                           textAlign: TextAlign.end,
+                        ),
+                      ],
+                    ),
+                  ));
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SectionalbarProductCard extends StatefulWidget {
+  final CartModel cartModel;
+  final int index;
+  final int clientId;
+  final Function longPressCallback;
+  final Function tapCallback;
+  final Function checkCallback;
+  SectionalbarProductCard(
+      {Key key,
+      this.cartModel,
+      this.index,
+      this.clientId,
+      this.longPressCallback,
+      this.tapCallback,
+      this.checkCallback})
+      : super(key: key);
+
+  @override
+  _SectionalbarProductCardState createState() =>
+      _SectionalbarProductCardState();
+}
+
+class _SectionalbarProductCardState extends State<SectionalbarProductCard>
+    with TickerProviderStateMixin {
+  int get clientId => widget.clientId;
+  CartModel get cartModel => widget.cartModel;
+  Function get longPressCallback => widget.longPressCallback;
+  Function get tapCallback => widget.tapCallback;
+  Function get checkCallback => widget.checkCallback;
+
+  AnimationController slideAnimationController;
+  AnimationController sizeAnimationController;
+  Animation<Offset> slideAnimation;
+  Animation<double> sizeAnimation;
+
+  @override
+  void initState() {
+    slideAnimationController =
+        AnimationController(duration: Duration(milliseconds: 500), vsync: this);
+    sizeAnimationController =
+        AnimationController(duration: Duration(milliseconds: 300), vsync: this);
+    slideAnimation = Tween(begin: Offset(0.0, 0.0), end: Offset(1.0, 0.0))
+        .animate(slideAnimationController)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              sizeAnimationController?.forward();
+            }
+          });
+    sizeAnimation =
+        Tween(begin: 1.0, end: 0.0).animate(sizeAnimationController);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    slideAnimationController?.dispose();
+    sizeAnimationController?.dispose();
+    super.dispose();
+  }
+
+  void refresh() {
+    context?.read<CartProvider>()?.refresh();
+  }
+
+  bool visible = true;
+
+  @override
+  Widget build(BuildContext context) {
+    ThemeData themeData = Theme.of(context);
+    TextTheme textTheme = themeData.textTheme;
+
+    return SizeTransition(
+      sizeFactor: sizeAnimation,
+      child: SlideTransition(
+        position: slideAnimation,
+        child: AnimatedOpacity(
+          opacity: visible ? 1.0 : 0.0,
+          duration: Duration(milliseconds: 500),
+          child: Consumer(
+            builder: (BuildContext context, CartProvider provider, Widget _) {
+              return GestureDetector(
+                  onLongPress: () {
+                    setState(() {
+                      provider?.isEditting = false;
+                      cartModel?.isChecked = true;
+                    });
+
+                    provider.remove(context, cartModel, clientId: clientId,
+                        confirm: () {
+                      setState(() {
+                        visible = false;
+                        slideAnimationController?.forward();
+                      });
+                    }, cancel: () {
+                      setState(() {
+                        cartModel?.isChecked = false;
+                        visible = true;
+                      });
+                      Navigator.of(context).pop();
+                    });
+                  },
+                  onTap: tapCallback,
+                  child: Container(
+                    color: themeData.primaryColor,
+                    margin: EdgeInsets.only(top: UIKit.height(20)),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: UIKit.width(20),
+                        vertical: UIKit.height(20)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Checkbox(
+                                value: cartModel?.isChecked,
+                                onChanged: checkCallback),
+                            ZYNetImage(
+                              imgPath: cartModel?.pictureInfo?.picCoverMid,
+                              isCache: false,
+                              width: UIKit.width(180),
+                            ),
+                            Expanded(
+                                child: Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: UIKit.width(20)),
+                              height: UIKit.height(190),
+                              // width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        cartModel?.goodsName ?? '',
+                                        style: textTheme.headline6
+                                            .copyWith(fontSize: UIKit.sp(28)),
+                                      ),
+                                      Text('￥' + '${cartModel?.price}' ?? '')
+                                      // Text.rich(TextSpan(
+                                      //     text: '￥' + '${cartModel?.price}' ?? '',
+                                      //     children: [TextSpan(text: cartModel?.unit)])),
+                                    ],
+                                  ),
+                                  Flexible(
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "米数:${cartModel?.length ?? ''}",
+                                          softWrap: true,
+                                          style: textTheme.caption
+                                              .copyWith(fontSize: 12),
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 5,
+                                        ),
+                                        Icon(
+                                          Icons.keyboard_arrow_down,
+                                          size: 18,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  // Expanded(
+                                  //     child: Container(
+                                  //   alignment: Alignment.bottomRight,
+                                  //   child: StepCounter(
+                                  //     key: ValueKey(cartModel?.count),
+                                  //     count: cartModel?.count ?? 0,
+                                  //     model: cartModel,
+                                  //     callback: () {
+                                  //       EndProductProvider.editCount(context,
+                                  //           cartModel: cartModel, callback: () {
+                                  //         refresh();
+                                  //       });
+                                  //     },
+                                  //   ),
+                                  // ))
+                                ],
+                              ),
+                            ))
+                          ],
                         ),
                       ],
                     ),

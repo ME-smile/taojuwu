@@ -2,7 +2,7 @@
  * @Description: 窗帘属性状态
  * @Author: iamsmiling
  * @Date: 2020-10-31 06:34:24
- * @LastEditTime: 2020-11-13 09:28:59
+ * @LastEditTime: 2020-12-28 13:48:07
  */
 import 'package:taojuwu/repository/shop/sku_attr/goods_attr_bean.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -19,6 +19,9 @@ class ProductAttrHolder {
   }
 
   ProductSkuAttr get roomAttr => _roomAttr;
+
+  ProductSkuAttr get sectionalbarAttr =>
+      _attrList?.firstWhere((e) => e.type == 5, orElse: () => null);
 
   set roomAttr(ProductSkuAttr attr) {
     _roomAttr = attr;

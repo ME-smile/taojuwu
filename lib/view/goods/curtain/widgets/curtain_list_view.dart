@@ -64,6 +64,11 @@ class ListCard extends StatelessWidget {
           context, bean?.goodsId,
           isMeasureOrderGoods: isMeasureOrderGooods ? 1 : 0);
     }
+    if (type == 4) {
+      return RouteHandler.goSectionalbarProductDetailPage(
+          context, bean?.goodsId,
+          isMeasureOrderGoods: isMeasureOrderGooods ? 1 : 0);
+    }
   }
 
   @override

@@ -32,6 +32,10 @@ class RelativeProductCard<T> extends StatelessWidget {
       return RouteHandler.goGauzeCurtainProductDetailPage(
           context, bean?.goodsId);
     }
+    if (type == 4) {
+      return RouteHandler.goSectionalbarProductDetailPage(
+          context, bean?.goodsId);
+    }
   }
 
   @override

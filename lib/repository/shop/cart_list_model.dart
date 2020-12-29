@@ -88,7 +88,7 @@ class CartModel extends CountModel {
   int isShade;
   String estimatedPrice;
   String measureId;
-
+  String length;
   String earnestMoney;
   num promotionPrice;
   String categoryId;
@@ -103,6 +103,8 @@ class CartModel extends CountModel {
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
   bool get isEndProduct => goodsType == 0; //等于0时表示成品
   bool get isCustomizedProduct => goodsType != 0;
+
+  bool get isSectionalbarProduct => goodsType == 4;
   double get totalPrice {
     price = price == null ? 0.0 : price;
 
@@ -135,7 +137,7 @@ class CartModel extends CountModel {
     earnestMoney = json['earnest_money'];
     promotionPrice = json['promotion_price'];
     goodsAttrStr = json['goods_attr_str'] ?? '';
-
+    length = "${json["length"]}";
     goodsType = json['goods_special_type'];
 
     Map map = json['wc_attr'] is Map ? json['wc_attr'] : {};
@@ -228,7 +230,9 @@ class CartModel extends CountModel {
       'cart_id': cartId,
       'goods_type': goodsType,
       'goods_attrs': jsonEncode(args),
-      'desc': isEndProduct ? '$goodsAttrStr\n数量x$count' : goodsAttrStr,
+      'desc': isSectionalbarProduct
+          ? "米数:$length米"
+          : isEndProduct ? '$goodsAttrStr\n数量x$count' : goodsAttrStr,
     };
   }
 

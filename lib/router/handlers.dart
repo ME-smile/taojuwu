@@ -37,6 +37,7 @@ import 'package:taojuwu/view/order/subPages/order_search_page.dart';
 import 'package:taojuwu/view/product/curtain/fabric_curtain_product_detail_page.dart';
 import 'package:taojuwu/view/product/curtain/gauze_curtain_product_detail_page.dart';
 import 'package:taojuwu/view/product/curtain/rolling_curtain_product_detail_page.dart';
+import 'package:taojuwu/view/product/curtain/sectionbar_curtain_product_detail_page.dart';
 import 'package:taojuwu/view/product/end_product/end_product_detail_page.dart';
 import 'package:taojuwu/view/product/scene_design/scene_design_page.dart';
 import 'package:taojuwu/view/profile/profile_page.dart';
@@ -156,10 +157,29 @@ class RouteHandler {
         maintainState: true, replace: replace);
   }
 
+  static Future goSectionalbarProductDetailPage(BuildContext context, int id,
+      {bool replace: false, int isMeasureOrderGoods = 0}) {
+    return _jumpTo(context,
+        '${Routes.sectionalBar}?id=$id&isMeasureOrderGoods=$isMeasureOrderGoods',
+        maintainState: true, replace: replace);
+  }
+
+  static Handler sectionalBarProductDetail = Handler(
+      handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
+    int goodsId = int.parse(params['id']?.first);
+    // int isMeasureOrderGoods = int.parse(params['isMeasureOrderGoods']?.first);
+
+    return SectionalbarProductDetailPage(
+      goodsId,
+      // isMeasureOrderGoods: isMeasureOrderGoods == 1 ? true : false,
+    );
+  });
+
   static Handler gauzeCurtainProductDetail = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
     int goodsId = int.parse(params['id']?.first);
     int isMeasureOrderGoods = int.parse(params['isMeasureOrderGoods']?.first);
+
     return GauzeCurtainProductDetailPage(
       goodsId,
       isMeasureOrderGoods: isMeasureOrderGoods == 1 ? true : false,

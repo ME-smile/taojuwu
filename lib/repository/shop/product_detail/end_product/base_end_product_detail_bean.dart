@@ -2,7 +2,7 @@
  * @Description: 所有成品商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:17:00
- * @LastEditTime: 2020-11-17 16:43:03
+ * @LastEditTime: 2020-12-28 15:50:41
  */
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
@@ -32,6 +32,7 @@ abstract class BaseEndProductDetailBean
   }
 
   Future addToCartRequest() {
+    print(cartArgs);
     return OTPService.addCart(params: cartArgs).then((ZYResponse response) {
       if (response?.valid == true) {
         ToastKit.showSuccessDIYInfo('加入购物车成功');

@@ -2,7 +2,7 @@
  * @Description: //所有商品的抽象类基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:03:47
- * @LastEditTime: 2020-11-05 14:30:41
+ * @LastEditTime: 2020-12-28 11:04:37
  */
 
 enum ProductType {
@@ -12,6 +12,9 @@ enum ProductType {
   RollingCurtainProductType,
   //窗纱
   GauzeCurtainProductType,
+
+  //型材
+  SectionalProductType,
   // 成品
   EndProductType,
 

@@ -2,7 +2,7 @@
  * @Description: //选择属性
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:36:14
- * @LastEditTime: 2020-11-23 15:46:46
+ * @LastEditTime: 2020-12-28 15:45:08
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +17,7 @@ import 'package:taojuwu/view/product/popup_modal/widgets/common_attr_option_view
 import 'package:taojuwu/view/product/popup_modal/widgets/end_product_detail_modal.dart';
 
 import 'package:taojuwu/view/product/popup_modal/widgets/room_attr_option_view.dart';
+import 'package:taojuwu/view/product/popup_modal/widgets/sectionalbar_prodcut_detail_modal.dart';
 
 import 'package:taojuwu/widgets/product_grid_card.dart';
 
@@ -124,6 +125,30 @@ Future showEndProductDetailModalPopup(
             }
           },
           child: EndProductDetailModal(bean),
+        );
+      });
+}
+
+///型材弹窗
+Future showSectionalbarProductDetailModalPopup(
+    BuildContext ctx, BaseEndProductDetailBean bean,
+    {FutureCallback callback}) {
+  return showCupertinoModalPopup(
+      context: ctx,
+      builder: (BuildContext context) {
+        return SkuAttrPicker(
+          height: UIKit.height(900),
+          showButton: true,
+          callback: () {
+            if (callback != null) {
+              callback().then((value) {
+                Navigator.of(context).pop();
+              });
+            } else {
+              Navigator.of(context).pop();
+            }
+          },
+          child: SectionalbarProductDetailModal(bean),
         );
       });
 }
