@@ -13,6 +13,28 @@ import 'package:taojuwu/utils/ui_kit.dart';
 
 class ScanButton extends StatelessWidget {
   const ScanButton({Key key}) : super(key: key);
+
+  jump(BuildContext context, int type, int id) {
+    if (type == 1) {
+      return RouteHandler.goFabricCurtainProductDetailPage(
+        context,
+        id,
+      );
+    }
+    if (type == 2) {
+      return RouteHandler.goRollingCurtainProductDetailPage(context, id,
+          isMeasureOrderGoods: 0);
+    }
+    if (type == 3) {
+      return RouteHandler.goGauzeCurtainProductDetailPage(context, id,
+          isMeasureOrderGoods: 0);
+    }
+    if (type == 4) {
+      return RouteHandler.goSectionalbarProductDetailPage(context, id,
+          isMeasureOrderGoods: 0);
+    }
+  }
+
   void scan(BuildContext context) async {
     try {
       ScanResult barcode = await BarcodeScanner.scan(
@@ -29,10 +51,11 @@ class ScanButton extends StatelessWidget {
         OTPService.scanQR(params: {'type': type, 'model': model})
             .then((ZYResponse response) {
           if (response?.valid == true && response?.data != null) {
-            RouteHandler.goCurtainDetailPage(
-                context, response?.data['goods_id']);
+            int type = response?.data['goods_type'];
+            int id = response?.data['goods_id'];
+            jump(context, type, id);
           } else {
-            // ToastKit.showToast('识别失败');
+            ToastKit.showToast('二维码无效');
           }
         }).catchError((err) {
           ToastKit.showToast('识别出错');

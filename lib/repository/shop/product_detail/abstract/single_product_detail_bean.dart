@@ -2,7 +2,7 @@
  * @Description: 单商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:06:20
- * @LastEditTime: 2020-12-28 14:51:13
+ * @LastEditTime: 2020-12-31 13:50:13
  */
 
 import 'package:taojuwu/repository/shop/product_bean.dart';
@@ -19,6 +19,7 @@ import 'package:taojuwu/utils/extensions/map_kit.dart';
 abstract class SingleProductDetailBean extends BaseProductDetailBean {
   int goodsId;
   String goodsName;
+  String showName;
   int shopId;
   int isCollect;
 
@@ -51,6 +52,7 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
   SingleProductDetailBean.fromJson(Map<String, dynamic> json) {
     goodsId = json['goods_id'];
     goodsName = json['goods_name'];
+    showName = json['show_name'];
     shopId = json['shop_id'];
     isCollect = json['is_collect'];
     goodsType = json['goods_type'];

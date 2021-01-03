@@ -2,10 +2,9 @@
  * @Description:  型材
  * @Author: iamsmiling
  * @Date: 2020-12-29 15:47:38
- * @LastEditTime: 2020-12-29 16:12:47
+ * @LastEditTime: 2020-12-30 16:37:13
  */
 import 'package:flutter/material.dart';
-import 'package:taojuwu/repository/shop/product_detail/end_product/base_end_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/end_product/sectional_product_detail_bean.dart';
 
 import 'common_prodcut_order_card_header.dart';

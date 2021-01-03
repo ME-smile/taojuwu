@@ -2,7 +2,7 @@
  * @Description: 成品属性选择栏目
  * @Author: iamsmiling
  * @Date: 2020-10-28 15:41:54
- * @LastEditTime: 2020-11-19 16:24:35
+ * @LastEditTime: 2020-12-31 15:49:17
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
@@ -84,6 +84,8 @@ class EndProductAttrActionBar extends StatelessWidget {
                                 ]),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
+                            key: ValueKey(
+                                "${bean?.selectedOptionsName} x${bean?.count}"),
                           ),
                           Icon(
                             ZYIcon.three_dot,

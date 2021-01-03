@@ -2,7 +2,7 @@
  * @Description: 商品详情页
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:55:05
- * @LastEditTime: 2020-12-24 20:05:05
+ * @LastEditTime: 2020-12-31 10:40:01
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +10,7 @@ import 'package:taojuwu/repository/shop/product_detail/curtain/fabric_curtain_pr
 import 'package:taojuwu/view/product/base/base_curtain_product_detail_state.dart';
 import 'package:taojuwu/view/product/base/base_product_detail_state.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_footer.dart';
+import 'package:taojuwu/view/product/widgets/product_detail_profile.dart';
 import 'package:taojuwu/view/product/widgets/section/fabric_curtain_product_attrs_section_view.dart';
 import 'package:taojuwu/view/product/widgets/product_detail_header.dart';
 import 'package:taojuwu/view/product/widgets/section/product_detail_img_section_view.dart';
@@ -105,6 +106,7 @@ class _CurtainProductDetailPageState
                         body: CustomScrollView(
                           shrinkWrap: true,
                           slivers: [
+                            ProductDetailProfile(productDetailBean),
                             FabricCurtainProductAttrSectionView(
                                 productDetailBean),
                             RelativeProductSectionView(relativeProductList),

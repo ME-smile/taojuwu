@@ -23,10 +23,12 @@ class OrderCartGoods extends CountModel {
   int goodsType;
   bool isEndproduct;
   String desc;
+  String length;
   List<GoodsAttr> attrs;
   OrderCartGoods.fromJson(Map<dynamic, dynamic> json) {
     tag = json['tag'];
     img = json['img'];
+    length = json["length"];
     if (json['wc_attr'] != null) {
       List list = json['wc_attr'].isEmpty ? [] : json['wc_attr'];
       wcAttr = list
@@ -43,13 +45,16 @@ class OrderCartGoods extends CountModel {
     isShade = '${json['is_shade'] ?? '0'}';
     totalPrice = json['total_price'] != null ? '${json['total_price']}' : '0';
     totalPrice = double.parse(totalPrice)?.toStringAsFixed(2);
-    attr = json['attr'];
+
     count = int.parse('${json['count'] ?? 1}');
     dy = '${json['dy']}';
     goodsType = json['goods_type'] ?? 1;
+    attr = (goodsType == 4 || goodsType == 0) ? "" : json['attr'];
     isEndproduct = json['is_endproduct'] ?? false;
     desc = json['desc'] ?? '';
-    List list = jsonDecode(json['goods_attrs']);
+    List list = (goodsType == 0 || goodsType == 4)
+        ? []
+        : jsonDecode(json['goods_attrs']);
     attrs = list?.map((e) => GoodsAttr.fromJson(e))?.toList();
   }
 

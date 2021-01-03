@@ -167,7 +167,7 @@ class GridCard extends StatelessWidget {
                       style: TextStyle(fontSize: UIKit.sp(32)),
                       children: [
                     TextSpan(
-                      text: '起',
+                      text: '米',
                       style: themeData.textTheme.caption
                           .copyWith(fontSize: UIKit.sp(22)),
                     ),

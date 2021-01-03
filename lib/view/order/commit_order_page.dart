@@ -42,7 +42,9 @@ class _CommitOrderPageState extends State<CommitOrderPage> with RouteAware {
 
 //
   bool get hasCustomizedProduct =>
-      goodsList?.indexWhere((element) => element?.goodsType != 0) != -1;
+      goodsList?.indexWhere(
+          (element) => (element?.goodsType != 0 && element?.goodsType != 4)) !=
+      -1;
 
   @override
   void dispose() {

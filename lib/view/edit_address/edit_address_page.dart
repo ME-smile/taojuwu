@@ -95,6 +95,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
 
   void setParams(CustomerDetailModel model) {
     params['id'] = '${model?.id ?? ''}';
+    params['consigner'] = '${model?.clientName ?? ''}';
     params['gender'] = '${model?.clientSex ?? ''}';
     params['province'] = '${model?.provinceId ?? ''}';
     params['city'] = '${model?.cityId ?? ''}';

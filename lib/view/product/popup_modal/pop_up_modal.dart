@@ -2,7 +2,7 @@
  * @Description: //选择属性
  * @Author: iamsmiling
  * @Date: 2020-10-22 10:36:14
- * @LastEditTime: 2020-12-28 15:45:08
+ * @LastEditTime: 2020-12-31 15:54:08
  */
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -118,7 +118,7 @@ Future showEndProductDetailModalPopup(
           callback: () {
             if (callback != null) {
               callback().then((value) {
-                Navigator.of(context).pop();
+                bean.addToCartRequest(context: ctx);
               });
             } else {
               Navigator.of(context).pop();

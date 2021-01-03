@@ -2,8 +2,9 @@
  * @Description: 所有成品商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:17:00
- * @LastEditTime: 2020-12-28 15:50:41
+ * @LastEditTime: 2020-12-31 15:53:58
  */
+import 'package:flutter/material.dart';
 import 'package:taojuwu/application.dart';
 import 'package:taojuwu/event_bus/events/add_to_cart_event.dart';
 import 'package:taojuwu/repository/shop/product_detail/base/spec/product_spec_bean.dart';
@@ -31,12 +32,14 @@ abstract class BaseEndProductDetailBean
         ?.toList();
   }
 
-  Future addToCartRequest() {
-    print(cartArgs);
+  Future addToCartRequest({Function callback, BuildContext context}) {
     return OTPService.addCart(params: cartArgs).then((ZYResponse response) {
       if (response?.valid == true) {
         ToastKit.showSuccessDIYInfo('加入购物车成功');
         Application.eventBus.fire(AddToCartEvent(response?.data));
+        if (context != null) {
+          Navigator.of(context).pop();
+        }
       } else {
         ToastKit.showErrorInfo(response?.message);
       }
@@ -85,7 +88,7 @@ abstract class BaseEndProductDetailBean
       : currentSkuBean?.image;
 
   String get specName {
-    if (CommonKit.isNullOrEmpty(specList)) return '请选择数量';
+    if (CommonKit.isNullOrEmpty(specList)) return '数量:x$count';
     return '请选择' +
         ((specList?.map((e) => e?.name)?.toList())?.join('/') ?? '') +
         '/数量';

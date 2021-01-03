@@ -2,14 +2,13 @@
  * @Description: 型材属性选择
  * @Author: iamsmiling
  * @Date: 2020-12-28 11:16:52
- * @LastEditTime: 2020-12-29 15:36:44
+ * @LastEditTime: 2020-12-31 13:48:32
  */
 
 import 'package:flutter/material.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/shop/product_detail/end_product/sectional_product_detail_bean.dart';
 import 'package:taojuwu/utils/common_kit.dart';
-import 'package:taojuwu/view/product/popup_modal/pop_up_modal.dart';
 
 class SectionalbarProductAttrBar extends StatefulWidget {
   final SectionalProductDetailBean bean;
@@ -27,8 +26,7 @@ class _SectionalbarProductAttrBarState
     return SliverToBoxAdapter(
       child: GestureDetector(
         onTap: () {
-          showSectionalbarProductDetailModalPopup(context, widget.bean,
-              callback: () => widget.bean.addToCart(context)).whenComplete(() {
+          widget.bean.addToCart(context).whenComplete(() {
             setState(() {});
           });
           // selectAttrOption(provider, () {
@@ -55,7 +53,7 @@ class _SectionalbarProductAttrBarState
                       TextSpan(
                           text: CommonKit.isNumNullOrZero(widget.bean.width)
                               ? ''
-                              : '已选:${widget.bean.selectedOptionsName}米',
+                              : '已选:${widget.bean.selectedOptionsName}',
                           style: TextStyle(
                             fontSize: 14,
                             color: const Color(0xFF333333),

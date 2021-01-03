@@ -2,7 +2,7 @@
  * @Description: 选品商品列表页
  * @Author: iamsmiling
  * @Date: 2020-11-20 11:05:07
- * @LastEditTime: 2020-11-20 17:53:54
+ * @LastEditTime: 2020-12-31 17:35:01
  */
 
 import 'dart:async';
@@ -118,15 +118,13 @@ class _SelectProductMallPageState extends State<SelectProductMallPage>
     _refreshController = RefreshController(
         initialRefresh: false, initialLoadStatus: LoadStatus.idle);
     filterSubscription = Application.eventBus.on<FilterEvent>().listen((event) {
-      if (event.tab == 1) {
-        extraArgs = event?.args;
-        params?.addAll(event?.args);
+      extraArgs = event?.args;
+      params?.addAll(event?.args);
 
-        setState(() {
-          isLoading = true;
-        });
-        refresh();
-      }
+      setState(() {
+        isLoading = true;
+      });
+      refresh();
       // goodsList?.clear();
     });
     super.initState();
@@ -428,6 +426,7 @@ class _SelectProductMallPageState extends State<SelectProductMallPage>
       'page_index': pageIndex,
       'height': height,
       'keyword': keyword,
+      'order_goods_id': orderGoodsId,
     });
     params.addAll(extraArgs);
     hasError = false;

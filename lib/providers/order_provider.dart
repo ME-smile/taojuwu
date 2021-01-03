@@ -59,7 +59,7 @@ class OrderProvider with ChangeNotifier {
   String get goodsSkuListText =>
       orderGoods
           ?.map((item) =>
-              '${item?.skuId ?? ''}:${item?.count ?? ''}:${item?.isShade ?? ''}:${item?.totalPrice ?? ''}')
+              '${item?.skuId ?? ''}:${item?.count ?? ''}:${item?.length ?? 0}:${item?.totalPrice ?? ''}')
           ?.toList()
           ?.join(',') ??
       '';
@@ -207,7 +207,7 @@ class OrderProvider with ChangeNotifier {
       beforeCallback();
     }
     developer.log({
-      'order_earnest_money': deposit,
+      'order_earnest_money': deposit ?? '',
       'client_uid': clientUid,
       'shop_id': shopId,
       'cart_id': cartId,
@@ -215,7 +215,7 @@ class OrderProvider with ChangeNotifier {
       'measure_id':
           '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
       'measure_time': measureTimeStr == "时间" ? "" : measureTimeStr,
-      'install_time': installTime,
+      'install_time': installTime ?? '',
       'order_remark': orderMark,
       'wc_attr': jsonEncode(attr),
       'data': '''{
@@ -233,7 +233,7 @@ class OrderProvider with ChangeNotifier {
     EasyLoading.show(status: '正在提交');
     OTPService.createOrder(
       params: {
-        'order_earnest_money': deposit,
+        'order_earnest_money': deposit ?? '',
         'client_uid': clientUid,
         'shop_id': shopId,
         'cart_id': cartId,
@@ -241,7 +241,7 @@ class OrderProvider with ChangeNotifier {
         'measure_id':
             '${orderGoods?.map((item) => item.measureId)?.toList()?.join(',')}',
         'measure_time': measureTimeStr == "时间" ? "" : measureTimeStr,
-        'install_time': installTime,
+        'install_time': installTime ?? '',
         'order_remark': orderMark,
         'wc_attr': jsonEncode(attr),
         'data': '''{

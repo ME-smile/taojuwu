@@ -137,7 +137,7 @@ class CartModel extends CountModel {
     earnestMoney = json['earnest_money'];
     promotionPrice = json['promotion_price'];
     goodsAttrStr = json['goods_attr_str'] ?? '';
-    length = "${json["length"]}";
+    length = "${json["material"]}";
     goodsType = json['goods_special_type'];
 
     Map map = json['wc_attr'] is Map ? json['wc_attr'] : {};
@@ -216,6 +216,7 @@ class CartModel extends CountModel {
       'tag': tag,
       'img': pictureInfo?.picCoverMid,
       'price': price,
+      'length': length,
       'goods_name': goodsName,
       'sku_id': skuId,
       'attr': jsonEncode(attr),
@@ -231,7 +232,7 @@ class CartModel extends CountModel {
       'goods_type': goodsType,
       'goods_attrs': jsonEncode(args),
       'desc': isSectionalbarProduct
-          ? "米数:$length米"
+          ? "用料:$length米"
           : isEndProduct ? '$goodsAttrStr\n数量x$count' : goodsAttrStr,
     };
   }

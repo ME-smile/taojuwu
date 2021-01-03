@@ -2,7 +2,7 @@
  * @Description: 成品详情弹窗视图
  * @Author: iamsmiling
  * @Date: 2020-10-28 16:03:14
- * @LastEditTime: 2020-11-19 13:59:20
+ * @LastEditTime: 2020-12-31 15:38:52
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
@@ -102,6 +102,8 @@ class _EndProductDetailModalState extends State<EndProductDetailModal> {
           ),
           StepCounter(
             model: bean,
+            count: bean?.count,
+            callback: () {},
           ),
           EndProductSpecSelector(bean, setState: setState),
         ],

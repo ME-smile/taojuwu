@@ -2,7 +2,7 @@
  * @Description: //TODO
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-12-22 11:11:19
+ * @LastEditTime: 2020-12-31 17:16:03
 -->
 # taojuwu
 
@@ -45,9 +45,14 @@ version: 1.2.1+1009
 version:1.2.3+1010
 1.窗纱选品白屏问题
 
-version:1.2.4
+version:1.2.4+1011
 1.修改测量事件 安装时间为选填
 2. 定宽修改为2.76米
+
+version:1.2.5+1012
+1.型材单独下单 
+2.二维码扫描bug修复
+3.选品筛选bug修复
 
 flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --no-tree-shake-icons -v
 

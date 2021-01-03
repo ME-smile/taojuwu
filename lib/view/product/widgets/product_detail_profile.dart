@@ -2,10 +2,11 @@
  * @Description: 商品描述
  * @Author: iamsmiling
  * @Date: 2020-10-22 09:37:24
- * @LastEditTime: 2020-11-20 18:07:04
+ * @LastEditTime: 2020-12-31 15:55:20
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/view/product/widgets/base/cart_button.dart';
 import 'package:taojuwu/view/product/widgets/base/like_button.dart';
@@ -33,12 +34,15 @@ class ProductDetailProfile extends StatelessWidget {
                     text: bean?.goodsName ?? '',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                     children: [
-                      // WidgetSpan(
-                      //     child: Padding(
-                      //   padding: EdgeInsets.only(left: 8),
-                      //   child: Text(bean?.goodsName ?? '',
-                      //       style: textTheme.caption.copyWith(fontSize: 12)),
-                      // ))
+                      WidgetSpan(
+                          child: Padding(
+                        padding: EdgeInsets.only(left: 8),
+                        child: Visibility(
+                          visible: !CommonKit.isNullOrEmpty(bean?.showName),
+                          child: Text(bean?.showName ?? '',
+                              style: textTheme.caption.copyWith(fontSize: 12)),
+                        ),
+                      ))
                     ])),
                 Container(
                   padding: EdgeInsets.only(bottom: 10),
@@ -61,7 +65,7 @@ class ProductDetailProfile extends StatelessWidget {
             Container(
               margin: EdgeInsets.only(top: 6),
               child: Text.rich(TextSpan(
-                  text: '¥${bean?.price ?? 0.00}',
+                  text: '¥${bean?.price?.toStringAsFixed(2) ?? 0.00}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   children: [
                     TextSpan(text: bean.unit, style: textTheme.caption),

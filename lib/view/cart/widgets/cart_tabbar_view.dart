@@ -544,7 +544,7 @@ class _SectionalbarProductCardState extends State<SectionalbarProductCard>
                                     child: Row(
                                       children: [
                                         Text(
-                                          "米数:${cartModel?.length ?? ''}",
+                                          "用料:${double.tryParse(cartModel?.length)?.toStringAsFixed(2) ?? ''}米",
                                           softWrap: true,
                                           style: textTheme.caption
                                               .copyWith(fontSize: 12),

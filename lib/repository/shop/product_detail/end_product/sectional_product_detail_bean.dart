@@ -2,7 +2,7 @@
  * @Description: SectionalProductDetailBean
  * @Author: iamsmiling
  * @Date: 2020-12-28 11:01:39
- * @LastEditTime: 2020-12-29 16:18:43
+ * @LastEditTime: 2020-12-31 13:15:30
  */
 
 import 'dart:convert';
@@ -34,7 +34,7 @@ class SectionalProductDetailBean extends BaseEndProductDetailBean {
           'shop_id': '$shopId',
           'picture': '$picture',
           'num': '$count',
-          'length': '$width',
+          'material': '$width',
           'estimated_price': totalPrice,
         })
       };
@@ -43,17 +43,14 @@ class SectionalProductDetailBean extends BaseEndProductDetailBean {
   ProductType get productType => ProductType.SectionalProductType;
 
   @override
-  double get totalPrice => price * width;
+  double get totalPrice => price * (width ?? 0);
 
   @override
   Future addToCart(BuildContext context, {Function callback}) {
     // print(cartArgs);
-    showSectionalbarProductDetailModalPopup(context, this,
-            callback: addToCartRequest)
-        .whenComplete(() {
-      // setState(() {});
-    });
-    return Future.value(false);
+    return showSectionalbarProductDetailModalPopup(context, this,
+        callback: addToCartRequest);
+
     // throw UnimplementedError();
   }
 
@@ -65,12 +62,12 @@ class SectionalProductDetailBean extends BaseEndProductDetailBean {
   }
 
   String get widthMStr =>
-      (CommonKit.isNumNullOrZero(width) ? 0 : width).toStringAsFixed(1);
+      (CommonKit.isNumNullOrZero(width) ? 0 : width).toStringAsFixed(2);
 
   String get selectedOptionsName =>
-      CommonKit.isNumNullOrZero(width) ? '' : "宽:$widthMStr";
+      CommonKit.isNumNullOrZero(width) ? '' : "宽:$widthMStr米";
 
   String get selectedAttrName => selectedOptionsName;
 
-  String get detailDescription => "米数:$widthMStr米";
+  String get detailDescription => "用料:$widthMStr米";
 }

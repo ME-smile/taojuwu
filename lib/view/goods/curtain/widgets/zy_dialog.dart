@@ -51,19 +51,22 @@ class ZYDialog {
           return StatefulBuilder(
             builder: (BuildContext cpntext, StateSetter setState) {
               return Material(
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.only(
                     topRight: Radius.circular(10),
                     topLeft: Radius.circular(10)),
                 child: Container(
                   height: MediaQuery.of(context).size.height * .64,
+                  color: Theme.of(context).primaryColor,
                   padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   child: Scaffold(
+                    backgroundColor: Theme.of(context).primaryColor,
                     bottomNavigationBar: Container(
                       margin: EdgeInsets.symmetric(vertical: 8),
                       child: ZYSubmitButton('确定', () {
-                        OTPService.modifyCartAttr(context, {
+                        OTPService.editCartCount(context, params: {
                           "cart_id": cartModel.cartId,
-                          "num": cartModel.length,
+                          "num": temp,
                           "type": 2,
                         }).then((ZYResponse response) {
                           Navigator.of(context).pop();
@@ -133,9 +136,9 @@ class ZYDialog {
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 12),
                           child: Text(
-                            '米数',
+                            '米数:(单位/米)',
                             style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 14,
                                 color: const Color(0xFF333333),
                                 fontWeight: FontWeight.w500),
                           ),
@@ -143,14 +146,14 @@ class ZYDialog {
                         ConstrainedBox(
                           constraints: BoxConstraints(
                             maxHeight: 36,
-                            maxWidth: 128,
+                            maxWidth: 148,
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             child: TextField(
                               // autofocus: true,
-                              controller:
-                                  TextEditingController(text: cartModel.length),
+                              // maxLength: 4,
+
                               onChanged: (String text) {
                                 temp = text;
                               },
@@ -168,7 +171,7 @@ class ZYDialog {
                                           color: const Color(0xFFEFF0F0))),
                                   contentPadding: EdgeInsets.only(
                                       left: 10, top: 8, bottom: 8, right: 10),
-                                  hintText: "输入米数"),
+                                  hintText: "输入米数 例:1.5"),
                             ),
                           ),
                         )
@@ -220,6 +223,7 @@ class ZYDialog {
                           width: width,
                           height: height * .7,
                           child: Scaffold(
+                            backgroundColor: Theme.of(context).primaryColor,
                             body: Stack(
                               children: <Widget>[
                                 Container(

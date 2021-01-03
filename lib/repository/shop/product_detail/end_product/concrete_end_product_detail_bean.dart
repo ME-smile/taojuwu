@@ -2,7 +2,7 @@
  * @Description: 成品商品的具体实现类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:18:26
- * @LastEditTime: 2020-11-05 09:56:39
+ * @LastEditTime: 2020-12-31 15:48:30
  */
 import 'dart:convert';
 
@@ -25,6 +25,7 @@ class ConcreteEndProductDetailBean extends BaseEndProductDetailBean
   @override
   Future addToCart(BuildContext context, {Function callback}) {
     // print(cartArgs);
+
     showEndProductDetailModalPopup(context, this, callback: addToCartRequest)
         .whenComplete(() {
       // setState(() {});

@@ -2,7 +2,7 @@
  * @Description:提交订单页面 2.0
  * @Author: iamsmiling
  * @Date: 2020-10-28 11:14:01
- * @LastEditTime: 2020-12-29 15:57:10
+ * @LastEditTime: 2020-12-31 10:11:09
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/constants/constants.dart';
@@ -95,7 +95,8 @@ class _SubmitOrderPageState extends State<SubmitOrderPage> {
                     },
                     itemCount: goodsList?.length),
             Visibility(
-              visible: bean?.productType != ProductType.EndProductType,
+              visible: (bean?.productType != ProductType.EndProductType &&
+                  bean?.productType != ProductType.SectionalProductType),
               child: CurtainOrderRemarkCard(orderCreator),
             ),
             Container(

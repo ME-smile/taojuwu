@@ -2,7 +2,7 @@
  * @Description: 订单创建的模型
  * @Author: iamsmiling
  * @Date: 2020-10-29 17:22:23
- * @LastEditTime: 2020-12-22 17:53:14
+ * @LastEditTime: 2020-12-31 10:12:26
  */
 
 import 'dart:convert';
@@ -17,6 +17,7 @@ import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_prodcut
 import 'package:taojuwu/repository/shop/product_detail/abstract/multi_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';
+import 'package:taojuwu/repository/shop/product_detail/end_product/sectional_product_detail_bean.dart';
 import 'package:taojuwu/repository/zy_response.dart';
 import 'package:taojuwu/router/handlers.dart';
 import 'package:taojuwu/services/otp_service.dart';
@@ -90,6 +91,9 @@ class OrderCreator {
   bool get isEndPorductOrder =>
       productDetailBean?.productType == ProductType.EndProductType;
 
+  bool get isSectionalProductType =>
+      productDetailBean?.productType == ProductType.SectionalProductType;
+
   num get deltaYCM => productDetailBean is BaseCurtainProductDetailBean
       ? (productDetailBean as BaseCurtainProductDetailBean)?.deltaYCM
       : 0;
@@ -115,7 +119,7 @@ class OrderCreator {
   String get goodsSkuListStr {
     return goodsList
         ?.map((e) =>
-            '${e?.skuId ?? 0}:${e?.count ?? ''}:0:${e?.totalPrice ?? ''}')
+            '${e?.skuId ?? e?.defalutSkuId ?? 0}:${e?.count ?? ''}:${e is SectionalProductDetailBean ? e.width : 0}:${e?.totalPrice ?? ''}')
         ?.toList()
         ?.join(',');
   }
@@ -176,7 +180,7 @@ class OrderCreator {
 
   Future createOrder(BuildContext context) {
     developer.log(orderArgs.toString());
-    if (!isEndPorductOrder) {
+    if (!isEndPorductOrder && !isSectionalProductType) {
       if (!isValidOrderInfo()) return Future.value(false);
     }
     return _sendCreateOrderRequest(context);

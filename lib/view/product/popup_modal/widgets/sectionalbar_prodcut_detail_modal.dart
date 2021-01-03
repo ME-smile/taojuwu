@@ -2,12 +2,13 @@
  * @Description: 型材详情弹窗视图
  * @Author: iamsmiling
  * @Date: 2020-12-28 11:24:20
- * @LastEditTime: 2020-12-28 15:39:26
+ * @LastEditTime: 2020-12-31 15:28:33
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/config/text_style/taojuwu_text_style.dart';
 import 'package:taojuwu/repository/shop/product_detail/base/spec/product_spec_bean.dart';
 import 'package:taojuwu/repository/shop/product_detail/end_product/sectional_product_detail_bean.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/widgets/zy_netImage.dart';
 
 class SectionalbarProductDetailModal extends StatefulWidget {
@@ -22,11 +23,13 @@ class SectionalbarProductDetailModal extends StatefulWidget {
 class _SectionalbarProductDetailModalState
     extends State<SectionalbarProductDetailModal> {
   SectionalProductDetailBean get bean => widget.bean;
-  TextEditingController _controller;
+
+  ValueNotifier<String> valueNotifier;
+
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: bean.width.toString());
+    valueNotifier = ValueNotifier<String>("${bean?.width}");
     for (ProductSpecBean specBean in bean?.specList) {
       for (ProductSpecOptionBean optionBean in specBean?.options) {
         optionBean?.isSelected = false;
@@ -36,7 +39,7 @@ class _SectionalbarProductDetailModalState
 
   @override
   void dispose() {
-    _controller?.dispose();
+    valueNotifier?.dispose();
     super.dispose();
   }
 
@@ -83,11 +86,16 @@ class _SectionalbarProductDetailModalState
 
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Text(
-                          '已选:' + bean?.selectedOptionsName ?? '',
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: const Color(0xFF6D6D6D)),
+                        child: ValueListenableBuilder(
+                          valueListenable: valueNotifier,
+                          builder: (BuildContext context, String text, _) {
+                            return Text(
+                              ('已选:' + '$text米'),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(color: const Color(0xFF6D6D6D)),
+                            );
+                          },
                         ),
                       ),
                     ],
@@ -100,9 +108,9 @@ class _SectionalbarProductDetailModalState
           Padding(
             padding: EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              '米数',
+              '米数:(单位/米)',
               style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 14,
                   color: const Color(0xFF333333),
                   fontWeight: FontWeight.w500),
             ),
@@ -110,18 +118,20 @@ class _SectionalbarProductDetailModalState
           ConstrainedBox(
             constraints: BoxConstraints(
               maxHeight: 36,
-              maxWidth: 128,
+              maxWidth: 148,
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(5)),
               child: TextField(
                 // autofocus: true,
-                controller: _controller,
+
                 onChanged: (String text) {
-                  setState(() {
-                    bean.width = double.tryParse(text);
-                  });
+                  valueNotifier.value =
+                      CommonKit.parseDouble(text, defaultVal: 0.0)
+                          ?.toStringAsFixed(2);
+                  bean.width = CommonKit.parseDouble(text, defaultVal: 0.0);
                 },
+
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                 decoration: InputDecoration(
                     isDense: true,
@@ -133,7 +143,7 @@ class _SectionalbarProductDetailModalState
                         borderSide: BorderSide(color: const Color(0xFFEFF0F0))),
                     contentPadding:
                         EdgeInsets.only(left: 10, top: 8, bottom: 8, right: 10),
-                    hintText: "请输入型材米数"),
+                    hintText: "输入米数 例:1.5"),
               ),
             ),
           )

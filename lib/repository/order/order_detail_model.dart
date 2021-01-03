@@ -271,9 +271,7 @@ class OrderDetailModel {
 
     orderStatus = status is int
         ? status
-        : status?.isEmpty == true
-            ? -1
-            : int.parse(status);
+        : status?.isEmpty == true ? -1 : int.parse(status);
     payStatus = json['pay_status'];
     shippingStatus = json['shipping_status'];
     reviewStatus = json['review_status'];
@@ -534,7 +532,7 @@ class OrderGoods {
   bool get isWindowRoller => goodsSpecialType == 2;
 
   String get unit => goodsSpecialType == 2 ? '元/平方米' : '元/米';
-  bool get isEndProduct => goodsSpecialType == 0;
+  bool get isEndProduct => goodsSpecialType == 0 || goodsSpecialType == 4;
 
   OrderGoods(
       {this.orderGoodsId,
