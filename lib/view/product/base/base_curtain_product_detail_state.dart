@@ -2,7 +2,7 @@
  * @Description: 窗帘样式混入
  * @Author: iamsmiling
  * @Date: 2020-10-31 06:31:55
- * @LastEditTime: 2020-11-23 13:15:57
+ * @LastEditTime: 2021-01-14 10:32:48
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/curtain/base_curtain_product_detail_bean.dart';

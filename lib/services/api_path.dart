@@ -1,9 +1,9 @@
 class ApiPath {
-  static const DEV_HOST = 'http://106.14.219.213:8001';
+  static const DEV_HOST = 'http://106.14.219.213:80';
 
-  static const PRO_HOST = 'http://106.14.219.213:8001';
+  static const PRO_HOST = 'http://106.14.219.213:80';
 
-  static const HOST = 'http://106.14.219.213:8001';
+  static const HOST = 'http://106.14.219.213:80';
 
   static const String appInfo = '/api/Config/getAppUpgradeInfo';
 

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:taojuwu/repository/zy_response.dart';
+import 'package:taojuwu/utils/common_kit.dart';
+import 'package:taojuwu/utils/json_kit.dart';
 
 class OrderModelListResp extends ZYResponse<OrderModelDataWrapper> {
   OrderModelListResp.fromMap(Map<String, dynamic> json) : super.fromJson(json) {
@@ -52,10 +54,14 @@ class OrderModelData {
   bool get isMeasureOrder => orderType == 2 ?? false;
   bool get hasNotsSelectedProduct => orderStatus == 14;
   bool get hasSelectedProduct => orderStatus != 14 && orderStatus > 2;
+
   bool get hasAudited => orderStatus > 1;
   bool get hasMeasured => orderStatus > 2;
   bool get hasInstalled => orderStatus >= 7;
   bool get hasProducted => orderStatus > 5;
+
+  bool get isCanceling => (orderStatus == 1 || orderStatus == 13);
+  bool get hasCanceled => orderStatus == 5;
   bool get hasFinished =>
       orderStatus >= 8 && [14, 15].contains(orderStatus) == false;
   String get orderEarnestMoneyStr {
@@ -110,7 +116,8 @@ class OrderModel {
   String get unit => goodsType == 2 ? '元/平方米' : '元/米';
   bool get hasSelectedGoods => isSelectedGoods == 1;
   bool get hasAudit => orderStatus > 2;
-  String get sizeTextDesc => '宽: ${width / 100}米 高: ${height / 100}米';
+  String get sizeTextDesc =>
+      '宽: ${(width / 100)?.toStringAsFixed(2)}米 高: ${(height / 100)?.toStringAsFixed(2)}米';
   bool get isEndProduct => goodsType == 0 ?? false;
   OrderModel.fromJson(Map<String, dynamic> json) {
     orderGoodsId = json['order_goods_id'].runtimeType == int
@@ -154,7 +161,10 @@ class OrderModel {
     //       ? ''
     //       : json['wc_attr']['2']['name'] ?? '';
     // }
+    Map wcAttr = json["wc_attr"] is Map ? json["wc_attr"] : {};
     mode = json['measure_data'] ?? '';
+    roomName = JsonKit.getValueInComplexMap(wcAttr, ["1", "name"]);
+    style = JsonKit.getValueInComplexMap(wcAttr, ["2", "name"]);
     orderStatus = json['order_status'].runtimeType == int
         ? json['order_status']
         : int.parse(json['order_status']);
@@ -163,6 +173,21 @@ class OrderModel {
     picture = json['picture'] != null
         ? OrderThumbnailPicture.fromJson(json['picture'])
         : null;
+    List list = CommonKit.parseList(
+        JsonKit.getValueInComplexMap(json, ["wc_attr", "9"]));
+
+    width = list.isEmpty
+        ? 0.0
+        : CommonKit.parseDouble(JsonKit.getValueByKey(list?.first, "value"),
+            defaultVal: 0);
+    height = list.isEmpty
+        ? 0.0
+        : CommonKit.parseDouble(
+            JsonKit.getValueByKey(
+              list?.last,
+              "value",
+            ),
+            defaultVal: 0);
   }
 }
 

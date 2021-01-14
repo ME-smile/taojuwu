@@ -34,7 +34,7 @@ class RelativeProductDetailBean extends BaseProductDetailBean {
   String cover;
   List<String> detailImgList;
 
-  String get unit => goodsType == 2 ? '元/平方米' : '元/米';
+  String unit;
 
   bool get isPromotionalProduct => marketPrice != 0 && price < marketPrice;
   //是否为成品
@@ -46,6 +46,7 @@ class RelativeProductDetailBean extends BaseProductDetailBean {
   RelativeProductDetailBean.fromJson(Map<String, dynamic> json) {
     goodsId = json['goods_id'];
     goodsName = json['goods_name'];
+    unit = json["goods_unit"];
     shopId = json['shop_id'];
     isCollect = json['is_collect'];
     goodsType = json['goods_type'];

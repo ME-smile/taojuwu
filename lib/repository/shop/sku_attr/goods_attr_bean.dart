@@ -2,7 +2,7 @@
  * @Description: 属性选择项的类
  * @Author: iamsmiling
  * @Date: 2020-09-28 09:14:34
- * @LastEditTime: 2020-11-24 15:05:24
+ * @LastEditTime: 2021-01-14 10:46:11
  */
 
 import 'package:taojuwu/repository/zy_response.dart';
@@ -110,7 +110,7 @@ class ProductSkuAttr {
     return {
       'type': type,
       'name': name,
-      'data': data?.map((e) => e?.toMap()),
+      'data': data?.map((e) => e?.toMap())?.toList(),
       'title': title,
     };
   }

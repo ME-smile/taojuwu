@@ -2,7 +2,7 @@
  * @Description: 所有窗帘类的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:11:06
- * @LastEditTime: 2020-11-27 10:35:14
+ * @LastEditTime: 2021-01-14 10:44:02
  */
 
 import 'dart:convert';
@@ -159,12 +159,11 @@ abstract class BaseCurtainProductDetailBean
         originAttrList?.firstWhere((e) => e.type == 5, orElse: () => null);
     // partAttr?.data = filterCraft(partAttr?.data)
     //     ?.map((e) => ProductSkuAttrBean.fromJson(e.toMap()))
-    //     ?.toList();
+    //     ?.toList()?
     partSkuAttr?.data = filterPart(partAttr?.data)
         ?.map((e) => ProductSkuAttrBean.fromJson(e.toMap()))
         ?.toList();
     selectFirstItem(partSkuAttr?.data);
-    print('___________');
   }
 
   List<ProductSkuAttrBean> selectFirstItem(List<ProductSkuAttrBean> list) {

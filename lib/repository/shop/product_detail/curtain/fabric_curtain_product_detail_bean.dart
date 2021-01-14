@@ -2,7 +2,7 @@
  * @Description: 布艺帘商品
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:12:26
- * @LastEditTime: 2020-12-22 10:20:07
+ * @LastEditTime: 2021-01-14 10:37:30
  */
 
 import 'package:taojuwu/repository/shop/product_detail/abstract/abstract_base_product_detail_bean.dart';

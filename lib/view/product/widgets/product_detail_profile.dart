@@ -68,7 +68,7 @@ class ProductDetailProfile extends StatelessWidget {
                   text: '¥${bean?.price?.toStringAsFixed(2) ?? 0.00}',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                   children: [
-                    TextSpan(text: bean.unit, style: textTheme.caption),
+                    TextSpan(text: bean?.unit ?? '', style: textTheme.caption),
                     TextSpan(text: ' '),
                     TextSpan(
                         text: bean?.isPromotionalProduct == true

@@ -2,7 +2,7 @@
  * @Description: 场景轮播图卡片布局
  * @Author: iamsmiling
  * @Date: 2020-10-23 09:42:58
- * @LastEditTime: 2020-11-24 18:42:18
+ * @LastEditTime: 2021-01-12 15:07:46
  */
 import 'dart:math';
 

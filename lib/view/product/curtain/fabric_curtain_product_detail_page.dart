@@ -2,7 +2,7 @@
  * @Description: 商品详情页
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:55:05
- * @LastEditTime: 2020-12-31 10:40:01
+ * @LastEditTime: 2021-01-14 10:38:45
  */
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';

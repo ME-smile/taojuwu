@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:taojuwu/application.dart';
+import 'package:taojuwu/event_bus/events/select_product_event.dart';
 import 'package:taojuwu/repository/order/order_detail_model.dart';
 import 'package:taojuwu/view/order/utils/order_kit.dart';
 
@@ -72,16 +74,19 @@ class OrderDetailProvider with ChangeNotifier {
   bool get hasInstalled => model?.hasInstalled ?? false;
   bool get hasProducted => model?.hasProducted ?? false;
   bool get hasScheduled => model?.hasScheduled ?? false;
+  bool get hasCanceled => model?.hasCanceled;
 
   bool get showSelectedProductButton =>
       hasMeasured &&
       isMeasureOrder &&
       hasNotsSelectedProduct == true &&
-      hasScheduled;
+      hasScheduled &&
+      !model.isCanceling &&
+      !model.hasCanceled;
 
   bool get canEditPrice => model?.orderStatus == 4;
   bool get hasFinished => model?.hasFinished ?? false;
-  bool get hasCanceled => model?.hasCanceled;
+
   bool get showButton =>
       [1, 2, 3, 6, 7, 8, 14, 15].contains(model?.orderStatus);
   bool get isWaitingToship => model?.isWaitingToship;
@@ -110,7 +115,8 @@ class OrderDetailProvider with ChangeNotifier {
 
   cancelOrder(BuildContext ctx, int orderId) {
     OrderKit.cancelOrder(ctx, orderId, callback: () {
-      model?.orderStatus = 0;
+      model?.orderStatus = 1;
+
       notifyListeners();
     });
   }
@@ -182,6 +188,7 @@ class OrderDetailProvider with ChangeNotifier {
     OrderKit.cancelOrderGoods(ctx, model?.orderId, orderGoods?.orderGoodsId,
         callback: () {
       orderGoods?.refundStatus = 1;
+      Application.eventBus.fire(SelectProductEvent(status: 1));
       notifyListeners();
     }).then((response) {}).catchError((err) => err);
   }

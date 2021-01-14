@@ -2,7 +2,7 @@
  * @Description: 单商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:06:20
- * @LastEditTime: 2020-12-31 13:50:13
+ * @LastEditTime: 2021-01-13 17:25:15
  */
 
 import 'package:taojuwu/repository/shop/product_bean.dart';
@@ -38,7 +38,7 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
   bool isChecked = true;
   num width;
   num height;
-  String get unit => goodsType == 2 ? '元/平方米' : '元/米';
+  String unit;
 
   bool get isPromotionalProduct => marketPrice != 0 && price < marketPrice;
   //是否为成品
@@ -51,6 +51,7 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
   ProductMaterialDetailBean materialInfoDetailBean;
   SingleProductDetailBean.fromJson(Map<String, dynamic> json) {
     goodsId = json['goods_id'];
+    unit = json["goods_unit"];
     goodsName = json['goods_name'];
     showName = json['show_name'];
     shopId = json['shop_id'];

@@ -2,7 +2,7 @@
  * @Description:  常用工具函数的封装
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2020-10-27 13:19:28
+ * @LastEditTime: 2021-01-13 13:48:33
  */
 import 'dart:async';
 
@@ -158,7 +158,8 @@ class CommonKit {
   static List parseList(var variable) {
     if (variable == null) return [];
     if (variable is List) return variable;
-    return variable.toList();
+    if (variable is Iterable) variable.toList();
+    return [];
   }
 
   static bool isNumNullOrZero(num n) {

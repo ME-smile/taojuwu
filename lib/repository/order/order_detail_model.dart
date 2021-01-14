@@ -204,6 +204,8 @@ class OrderDetailModel {
   bool get hasAlreadyCancel => orderStatus == 9;
   // bool get hasCancel
   bool get hasCanceled => orderStatus == 9;
+  bool get isCanceling =>
+      orderStatus == 1 || orderStatus == 5 || orderStatus == 13;
 
   bool get isProducting => orderStatus == 5;
   bool get isWaitingToship => orderStatus == 6;

@@ -57,11 +57,11 @@ class GridCard extends StatelessWidget {
               child: Container(
             color: themeData.primaryColor,
             child: Text.rich(TextSpan(
-                text: '￥${bean?.displayPrice ?? "0.00"}',
+                text: '￥${bean?.displayPrice?.toStringAsFixed(2) ?? "0.00"}',
                 style: TextStyle(fontSize: UIKit.sp(32)),
                 children: [
                   TextSpan(
-                    text: '起',
+                    text: '￥${bean?.unit ?? ""}',
                     style: themeData.textTheme.caption
                         .copyWith(fontSize: UIKit.sp(20)),
                   ),
@@ -70,7 +70,7 @@ class GridCard extends StatelessWidget {
                   ),
                   TextSpan(
                     text: bean?.isPromotionGoods == true
-                        ? '￥${bean?.marketPrice}起'
+                        ? '￥${bean?.marketPrice?.toStringAsFixed(2)}起'
                         : '',
                     style: themeData.textTheme.caption.copyWith(
                         decoration: TextDecoration.lineThrough,

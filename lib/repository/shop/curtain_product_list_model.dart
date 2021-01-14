@@ -205,6 +205,8 @@ class GoodsItemBean extends ProductDetailBean {
   double displayPrice;
   int goodsSpecialType;
 
+  String unit;
+
   bool get isPromotionGoods {
     return marketPrice != 0 && marketPrice != displayPrice;
   }
@@ -221,6 +223,8 @@ class GoodsItemBean extends ProductDetailBean {
     picCoverMid = json['pic_cover_mid'];
     marketPrice = CommonKit.parseDouble(json['market_price']);
     goodsType = CommonKit.parseInt(json['goods_type']);
+    unit = json["goods_unit"];
+
     displayPrice = CommonKit.parseDouble(
         json['price'] ?? json['display_price'] ?? json['market_price']);
     goodsSpecialType = json['goods_special_type'];

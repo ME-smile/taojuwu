@@ -35,7 +35,12 @@ class ListCard extends StatelessWidget {
             width: width - 2 * UIKit.width(20),
           ),
           Text(bean?.goodsName ?? ''),
-          Text('￥${bean?.displayPrice ?? "0.00"}'),
+          Row(
+            children: [
+              Text('￥${bean?.displayPrice ?? "0.00"}'),
+              Text('￥${bean?.unit ?? ""}')
+            ],
+          ),
           Offstage(
             offstage: bean?.isPromotionGoods == false,
             child: OnSaleTag(),

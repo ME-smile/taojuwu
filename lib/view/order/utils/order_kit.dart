@@ -560,7 +560,9 @@ class OrderKit {
       //     remindOrder(context, '是否提醒审核', model?.orderId ?? -1, 3);
       //   });
       // }
-      if (model?.hasNotsSelectedProduct == true) {
+      if (model?.hasNotsSelectedProduct == true &&
+          model?.hasCanceled == false &&
+          model?.isCanceling == false) {
         return SelectedProductButton(
           callback: callback,
         );
