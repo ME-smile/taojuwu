@@ -2,7 +2,7 @@
  * @Description: //TODO
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2021-01-13 14:40:09
+ * @LastEditTime: 2021-01-25 20:16:27
 -->
 # taojuwu
 
@@ -60,6 +60,13 @@ version:1.2.5+1013
 flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --no-tree-shake-icons -v
 
 
+version:1.2.5+1013
+1.宽高不可见的问题修复
+flutter build apk --target-platform android-arm,android-arm64,android-x64 --split-per-abi --no-tree-shake-icons -v
+
+
+version:1.2.7+1015
+1. 添加app分享功能
 
 sudo gem install cocoapods --pre -n /usr/local/bin
 flutter packages pub global run webdev serve taojuwu:8080

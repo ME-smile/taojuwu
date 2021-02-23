@@ -43,8 +43,6 @@ import 'package:taojuwu/utils/toast_kit.dart';
 
 import 'base/xhr.dart';
 
-import 'dart:developer' as developer;
-
 class OTPService {
   static Xhr xhr = Xhr.instance;
 
@@ -56,7 +54,6 @@ class OTPService {
 
   static Future<CurtainProductListResp> productGoodsList(BuildContext context,
       {Map<String, dynamic> params}) async {
-    print(params);
     Response response = await xhr.get(
       context,
       ApiPath.productMall,
@@ -325,7 +322,7 @@ class OTPService {
 
   static Future<ZYResponse> addUser(Map<String, dynamic> params) async {
     Response response = await xhr.post(ApiPath.userAdd, data: params ?? {});
-    developer.log(response.data);
+
     return ZYResponse.fromJsonWithData(response.data);
   }
 
@@ -742,5 +739,11 @@ class OTPService {
     print(params);
     Response response = await xhr.post(ApiPath.validateSms, formdata: params);
     print(response?.data);
+  }
+
+  static Future<ZYResponse> productShare({Map<String, dynamic> params}) async {
+    Response response = await xhr.post(ApiPath.productShare, formdata: params);
+    ZYResponse zyResponse = ZYResponse.fromJsonWithData(response?.data);
+    return zyResponse;
   }
 }

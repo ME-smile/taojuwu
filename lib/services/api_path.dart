@@ -11,6 +11,8 @@ class ApiPath {
 
   static const String productDetail = '/api/goods/goodsDetail';
 
+  static const String productShare = '//api/goods/goodsShare';
+
   static const String sms = '/api/login/sendRegisterMobileCode';
 
   static const String loginBySms = '/api/login/mobileLogin';

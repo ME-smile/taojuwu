@@ -2,7 +2,7 @@
  * @Description: 单商品的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:06:20
- * @LastEditTime: 2021-01-13 17:25:15
+ * @LastEditTime: 2021-01-25 20:09:03
  */
 
 import 'package:taojuwu/repository/shop/product_bean.dart';
@@ -22,6 +22,7 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
   String showName;
   int shopId;
   int isCollect;
+  bool canShare;
 
   //0  成品  1 布艺帘  2卷帘
   int goodsType;
@@ -58,6 +59,7 @@ abstract class SingleProductDetailBean extends BaseProductDetailBean {
     isCollect = json['is_collect'];
     goodsType = json['goods_type'];
     picId = json['pic_id'];
+    canShare = json["is_share"];
     marketPrice = CommonKit.parseDouble(json['market_price']);
     price = CommonKit.parseDouble(json['price']);
 

@@ -2,7 +2,7 @@
  * @Description: 商品描述
  * @Author: iamsmiling
  * @Date: 2020-10-22 09:37:24
- * @LastEditTime: 2020-12-31 15:55:20
+ * @LastEditTime: 2021-01-25 20:10:33
  */
 import 'package:flutter/material.dart';
 import 'package:taojuwu/repository/shop/product_detail/abstract/single_product_detail_bean.dart';
@@ -10,6 +10,7 @@ import 'package:taojuwu/utils/common_kit.dart';
 import 'package:taojuwu/view/goods/base/onsale_tag.dart';
 import 'package:taojuwu/view/product/widgets/base/cart_button.dart';
 import 'package:taojuwu/view/product/widgets/base/like_button.dart';
+import 'package:taojuwu/view/product/widgets/base/share_button.dart';
 
 class ProductDetailProfile extends StatelessWidget {
   final SingleProductDetailBean bean;
@@ -52,9 +53,19 @@ class ProductDetailProfile extends StatelessWidget {
                       //   padding: EdgeInsets.only(right: 20),
                       //   child: LikeButton(),
                       // ),
-                      LikeButton(hasLiked: false, goodsId: bean?.goodsId),
+
+                      Visibility(
+                        visible: bean?.canShare ?? false,
+                        child: ShareButton(
+                          id: bean?.goodsId,
+                        ),
+                      ),
                       Container(
-                        margin: EdgeInsets.only(left: 24),
+                          margin: EdgeInsets.only(left: 12),
+                          child: LikeButton(
+                              hasLiked: false, goodsId: bean?.goodsId)),
+                      Container(
+                        margin: EdgeInsets.only(left: 12),
                         child: CartButton(),
                       )
                     ],

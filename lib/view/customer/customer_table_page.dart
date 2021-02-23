@@ -96,37 +96,39 @@ class CustomerTablePage extends StatelessWidget {
               return Container(
                 child: beans?.isEmpty == true
                     ? NoData()
-                    : Table(
-                        children: List.generate(beans?.length ?? 0, (int i) {
-                          CategoryCustomerModelBean bean = beans[i];
+                    : SingleChildScrollView(
+                        child: Table(
+                          children: List.generate(beans?.length ?? 0, (int i) {
+                            CategoryCustomerModelBean bean = beans[i];
 
-                          return TableRow(
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                      bottom: BorderSide(
-                                          width: .5,
-                                          color: themeData.dividerColor))),
-                              children: [
-                                _tableCell(
-                                    bean?.clientName ?? '-', context, bean?.id,
-                                    bean: bean),
-                                _tableCell(
-                                    Constants.GENDER_MAP[bean?.clientSex] ??
-                                        '未知',
-                                    context,
-                                    bean?.id,
-                                    bean: bean),
-                                _tableCell(
-                                    bean?.clientAge ?? '-', context, bean?.id,
-                                    bean: bean),
-                                _tableCell(bean?.goodCategory ?? '-', context,
-                                    bean?.id,
-                                    bean: bean),
-                                _tableCell(
-                                    bean?.enterTime ?? '-', context, bean?.id,
-                                    bean: bean),
-                              ]);
-                        }),
+                            return TableRow(
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            width: .5,
+                                            color: themeData.dividerColor))),
+                                children: [
+                                  _tableCell(bean?.clientName ?? '-', context,
+                                      bean?.id,
+                                      bean: bean),
+                                  _tableCell(
+                                      Constants.GENDER_MAP[bean?.clientSex] ??
+                                          '未知',
+                                      context,
+                                      bean?.id,
+                                      bean: bean),
+                                  _tableCell(
+                                      bean?.clientAge ?? '-', context, bean?.id,
+                                      bean: bean),
+                                  _tableCell(bean?.goodCategory ?? '-', context,
+                                      bean?.id,
+                                      bean: bean),
+                                  _tableCell(
+                                      bean?.enterTime ?? '-', context, bean?.id,
+                                      bean: bean),
+                                ]);
+                          }),
+                        ),
                       ),
               );
             }),

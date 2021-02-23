@@ -2,7 +2,7 @@
  * @Description: 所有窗帘类的基类
  * @Author: iamsmiling
  * @Date: 2020-10-21 13:11:06
- * @LastEditTime: 2021-01-14 10:44:02
+ * @LastEditTime: 2021-01-14 10:53:14
  */
 
 import 'dart:convert';
