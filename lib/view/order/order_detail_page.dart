@@ -1029,9 +1029,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> with RouteAware {
                               ],
                             ),
                           ),
-                          bottomNavigationBar: BottomActionButtonBar(
-                            orderId: id,
-                            orderStatus: model?.orderStatus ?? 0,
+                          bottomNavigationBar: Container(
+                            color: Theme.of(context).primaryColor,
+                            child: BottomActionButtonBar(
+                              orderId: id,
+                              orderStatus: model?.orderStatus ?? 0,
+                            ),
                           ),
                         ),
                         onWillPop: () async {

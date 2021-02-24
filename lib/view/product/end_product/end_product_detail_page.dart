@@ -2,7 +2,7 @@
  * @Description: 成品详情
  * @Author: iamsmiling
  * @Date: 2020-10-26 14:15:00
- * @LastEditTime: 2020-11-24 18:19:40
+ * @LastEditTime: 2021-02-23 17:28:57
  */
 
 import 'package:animations/animations.dart';
@@ -90,9 +90,7 @@ class _EndProductDetailPageState
                         body: CustomScrollView(
                           shrinkWrap: true,
                           slivers: [
-                            ProductDetailProfile(
-                              productDetailBean,
-                            ),
+                            ProductDetailProfile(productDetailBean),
                             EndProductAttrActionBar(
                               bean:
                                   productDetailBean as BaseEndProductDetailBean,

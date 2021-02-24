@@ -38,7 +38,8 @@ class OrderCard extends StatelessWidget {
       3: remindOrder(context, '是否提醒退款', 3),
       6: remindOrder(context, '是否提醒安装', 3),
       8: () {
-        RouteHandler.goAfterSaleServicePage(context);
+        RouteHandler.goAfterSaleServicePage(context,
+            id: orderModelData?.orderId);
       },
       14: () {
         RouteHandler.goOrderDetailPage(context, orderModelData?.orderId,

@@ -448,7 +448,7 @@ class OrderKit {
   }
 
   static void goAfterSaleServicePage(BuildContext context, int id) {
-    RouteHandler.goAfterSaleServicePage(context);
+    RouteHandler.goAfterSaleServicePage(context, id: id);
   }
 
   static Future sendOrderGoodsCancelRequest(
@@ -545,8 +545,15 @@ class OrderKit {
   static Widget buildButton(BuildContext context, OrderModelData model,
       {Function callback}) {
     //状态从后往前判断
+    if (model?.hasCanceled == true || model?.hasServer == true) {
+      return Container(
+        margin: EdgeInsets.only(bottom: 8),
+      );
+    }
     if (model?.hasFinished == true) {
-      return AfterSaleButton();
+      return AfterSaleButton(
+        orderId: model.orderId,
+      );
     }
 
     // if (model?.hasProducted == true && model?.hasInstalled == false) {
@@ -679,7 +686,7 @@ class OrderKit {
       return [
         PreviewDeliveryInfoButton(orderId: provider?.model?.orderId),
         SizedBox(width: 20),
-        AfterSaleButton(),
+        AfterSaleButton(orderId: provider?.model?.orderId),
       ];
     }
 

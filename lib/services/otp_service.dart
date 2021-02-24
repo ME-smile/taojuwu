@@ -746,4 +746,10 @@ class OTPService {
     ZYResponse zyResponse = ZYResponse.fromJsonWithData(response?.data);
     return zyResponse;
   }
+
+  static Future<ZYResponse> aftersell({Map<String, dynamic> params}) async {
+    Response response = await xhr.post(ApiPath.aftersell, formdata: params);
+    ZYResponse zyResponse = ZYResponse.fromJsonWithData(response?.data);
+    return zyResponse;
+  }
 }

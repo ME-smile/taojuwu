@@ -2,6 +2,7 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 
 import 'package:taojuwu/application.dart';
+import 'package:taojuwu/event_bus/events/refresh_customer_data.dart';
 
 import 'package:taojuwu/event_bus/events/select_client_event.dart';
 
@@ -118,6 +119,7 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
                 }),
       ),
       bottomNavigationBar: Container(
+        color: Theme.of(context).primaryColor,
         padding: EdgeInsets.symmetric(horizontal: 48, vertical: 8),
         child: ZYRaisedButton(
           '保存并添加',
@@ -155,11 +157,14 @@ class _CustomerEditPageState extends State<CustomerEditPage> {
         TargetClient().clear();
         Application.eventBus.fire(SelectClientEvent(
             TargetClient.fromLiteral(json['id'], json['client_name'])));
+        Application.eventBus.fire(RefreshCustomerData());
         Navigator.of(context).pop();
 
         // RouteHandler.goCustomerPage(context,
         //     isReplaceMode: true);
       }
-    }).catchError((err) => err);
+    }).catchError((err) {
+      return ToastKit.showInfo("提交失败$err");
+    });
   }
 }

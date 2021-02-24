@@ -544,11 +544,13 @@ class RouteHandler {
 
   static Handler afterSaleService = Handler(
       handlerFunc: (BuildContext context, Map<String, List<Object>> params) {
-    return AfterSaleServicePage();
+    int id = int.parse(params['id']?.first ?? "-1");
+    return AfterSaleServicePage(id: id);
   });
 
-  static Future goAfterSaleServicePage(BuildContext context) {
-    return _jumpTo(context, Routes.afterSaleService);
+  static Future goAfterSaleServicePage(BuildContext context,
+      {@required int id}) {
+    return _jumpTo(context, "${Routes.afterSaleService}?id=$id");
   }
 
   static Handler measureDataPreview = Handler(

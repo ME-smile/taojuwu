@@ -111,7 +111,6 @@ class _OrderPageState extends State<OrderPage>
       'page': 1,
     },
     {
-      'status': '0',
       'page_size': PAGE_SIZE,
       'page': 1,
     },
@@ -908,7 +907,7 @@ class _OrderTabViewState extends State<OrderTabView> with RouteAware {
     if (tab == 4) {
       params['status'] = '3';
     }
-    return params['status'];
+    return widget.status ?? params['status'];
   }
 
   int get tab => widget.tab;
@@ -935,7 +934,7 @@ class _OrderTabViewState extends State<OrderTabView> with RouteAware {
   @override
   void didPopNext() {
     //当处于待选品状态时
-    if (mounted && tab == 3) {
+    if (mounted && (tab == 3 || tab == 9)) {
       isRefresh = true;
       params['page'] = 1;
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -954,7 +953,7 @@ class _OrderTabViewState extends State<OrderTabView> with RouteAware {
   @override
   void initState() {
     super.initState();
-
+    print(params);
     _refreshController = RefreshController(initialRefresh: false);
     isLoading = true;
     Future.delayed(Duration(milliseconds: 375), () {
@@ -967,9 +966,9 @@ class _OrderTabViewState extends State<OrderTabView> with RouteAware {
     // WidgetsBinding.instance.addPostFrameCallback((callback))
   }
 
-  void requestData(Map<String, dynamic> args) {
+  void requestData() {
     params.addAll({'client_uid': clientId});
-
+    print(params);
     OTPService.orderList(context, params: params)
         .then((OrderModelListResp response) {
       wrapper = response?.data;
@@ -1034,12 +1033,12 @@ class _OrderTabViewState extends State<OrderTabView> with RouteAware {
                   onRefresh: () {
                     params['page'] = 1;
                     isRefresh = true;
-                    requestData(params);
+                    requestData();
                   },
                   onLoading: () {
                     params['page']++;
                     isRefresh = false;
-                    requestData(params);
+                    requestData();
                   },
                   child: ListView.separated(
                       itemBuilder: (BuildContext context, int i) {

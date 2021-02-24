@@ -71,7 +71,7 @@ class _FeatureInfoSegmentState extends State<FeatureInfoSegment> {
       enterTime = DateUtil.formatDateMs(DateTime.now().millisecondsSinceEpoch,
           format: 'yyyy-MM-dd HH:mm:ss');
     } else {
-      enterTime = DateUtil.formatDateMs(model?.enterTime ?? 0,
+      enterTime = DateUtil.formatDateMs((model?.enterTime ?? 0) * 1000,
           format: 'yyyy-MM-dd HH:mm:ss');
     }
 

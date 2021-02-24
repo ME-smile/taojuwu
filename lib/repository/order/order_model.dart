@@ -61,7 +61,8 @@ class OrderModelData {
   bool get hasProducted => orderStatus > 5;
 
   bool get isCanceling => (orderStatus == 1 || orderStatus == 13);
-  bool get hasCanceled => orderStatus == 5;
+  bool get hasCanceled => orderStatus == 9;
+  bool get hasServer => orderStatus == 10;
   bool get hasFinished =>
       orderStatus >= 8 && [14, 15].contains(orderStatus) == false;
   String get orderEarnestMoneyStr {

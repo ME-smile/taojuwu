@@ -7,14 +7,14 @@ class AfterSaleButton extends StatelessWidget {
   final Function callback;
   final int orderId;
   const AfterSaleButton(
-      {Key key, this.text: '售后维权', this.orderId, this.callback})
+      {Key key, this.text: '售后维权', @required this.orderId, this.callback})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ZYOutlineButton(text, () {
       if (callback != null) callback();
-      RouteHandler.goAfterSaleServicePage(context);
+      RouteHandler.goAfterSaleServicePage(context, id: orderId);
     });
   }
 }

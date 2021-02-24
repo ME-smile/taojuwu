@@ -2,8 +2,9 @@
  * @Description: 分享按钮
  * @Author: iamsmiling
  * @Date: 2021-01-25 11:33:39
- * @LastEditTime: 2021-01-25 20:07:55
+ * @LastEditTime: 2021-02-23 18:05:21
  */
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
@@ -13,8 +14,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluwx/fluwx.dart';
 import 'package:taojuwu/icon/ZYIcon.dart';
 import 'package:taojuwu/repository/zy_response.dart';
+import 'package:taojuwu/services/api_path.dart';
 import 'package:taojuwu/services/otp_service.dart';
 import 'package:taojuwu/utils/net_kit.dart';
+import 'package:taojuwu/utils/toast_kit.dart';
 import 'package:taojuwu/utils/ui_kit.dart';
 
 class XShareModel {
@@ -67,6 +70,8 @@ class TaojuwuShareModel {
 
 class _ShareButtonState extends State<ShareButton> {
   TaojuwuShareModel shareModel;
+
+  StreamSubscription subscription;
   @override
   void initState() {
     super.initState();
@@ -75,7 +80,26 @@ class _ShareButtonState extends State<ShareButton> {
         .then((ZYResponse response) async {
       shareModel = await _parse(response.data);
       setState(() {});
+    }).catchError((err) {
+      print("拉取分享信息出错$err");
     });
+
+    subscription = weChatResponseEventHandler.listen((res) {
+      if (res is WeChatShareResponse) {
+        if (res.isSuccessful) {
+          ToastKit.showSuccessDIYInfo("分享成功!");
+        } else {
+          ToastKit.showInfo("分享失败!");
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    subscription?.cancel();
+    subscription = null;
+    super.dispose();
   }
 
   Future<TaojuwuShareModel> _parse(Map json) async {
@@ -84,7 +108,8 @@ class _ShareButtonState extends State<ShareButton> {
     String description = json["others_title"];
     String title = json["title"];
     String suffix = image.substring(image.lastIndexOf("."));
-    Uint8List source = await NetKit.resolveImageFromUrl(image);
+    Uint8List source =
+        await NetKit.resolveImageFromUrl(ApiPath.HOST + "/" + image);
     WeChatImage weChatImage = WeChatImage.binary(source, suffix: suffix);
     return TaojuwuShareModel(
         weChatImage: weChatImage,
@@ -104,12 +129,16 @@ class _ShareButtonState extends State<ShareButton> {
   shareToWxSession() {
     shareToWeChat(shareModel.sessionShareModel).then((value) {
       print(value);
+    }).catchError((err) {
+      ToastKit.showErrorInfo("分享出错");
     });
   }
 
   shareToWeChatMoment() {
     shareToWeChat(shareModel.momentShareModel).then((value) {
       print(value);
+    }).catchError((err) {
+      ToastKit.showErrorInfo("分享出错");
     });
   }
 

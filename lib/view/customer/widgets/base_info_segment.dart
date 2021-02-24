@@ -112,7 +112,7 @@ class _BaseInfoSegmentState extends State<BaseInfoSegment> {
           return BottomPicker(
             title: '选择性别',
             callback: () {
-              params['client_sex'] = '${gender ?? 0}';
+              params['client_sex'] = '${tmp ?? 0}';
               setState(() {
                 gender = tmp;
               });

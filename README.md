@@ -2,7 +2,7 @@
  * @Description: //TODO
  * @Author: iamsmiling
  * @Date: 2020-08-03 10:46:13
- * @LastEditTime: 2021-01-25 20:16:27
+ * @LastEditTime: 2021-02-24 11:57:13
 -->
 # taojuwu
 
@@ -67,6 +67,9 @@ flutter build apk --target-platform android-arm,android-arm64,android-x64 --spli
 
 version:1.2.7+1015
 1. 添加app分享功能
-
+version:1.2.8+1016
+1.分享功能优化
+2.售后服务功能的完善
+3.修复了一些bug
 sudo gem install cocoapods --pre -n /usr/local/bin
 flutter packages pub global run webdev serve taojuwu:8080

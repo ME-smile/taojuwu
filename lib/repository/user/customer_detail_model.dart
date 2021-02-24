@@ -1,4 +1,11 @@
+/*
+ * @Description: 
+ * @Author: iamsmiling
+ * @Date: 2020-10-31 13:34:35
+ * @LastEditTime: 2021-02-24 16:45:03
+ */
 import 'package:taojuwu/repository/zy_response.dart';
+import 'package:taojuwu/utils/common_kit.dart';
 
 class CustomerDetailModelResp extends ZYResponse<CustomerDetailModel> {
   CustomerDetailModelResp.fromMap(Map<String, dynamic> json)
@@ -45,18 +52,17 @@ class CustomerDetailModel {
       this.districtName});
 
   CustomerDetailModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = CommonKit.parseInt(json['id']);
     clientName = json['client_name'];
     clientType = json['client_type'];
     clientMobile = json['client_mobile'];
-    clientAge = json['client_age'];
-    clientSex = json['client_sex'] == 0 ? 1 : json['client_sex'];
+    clientAge = CommonKit.parseInt(json['client_age']);
+    clientSex = CommonKit.parseInt(json['client_sex']);
     clientWx = json['client_wx'];
     enterTime = json['enter_time'];
-    enterTime = enterTime != null ? enterTime * 1000 : enterTime;
-    provinceId = json['province_id'];
-    cityId = json['city_id'];
-    districtId = json['district_id'];
+    provinceId = CommonKit.parseInt(json['province_id']);
+    cityId = CommonKit.parseInt(json['city_id']);
+    districtId = CommonKit.parseInt(json['district_id']);
     detailAddress = json['detail_address'];
     shopId = json['shop_id'];
     provinceName = json['province_name'];
